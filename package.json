@@ -40,6 +40,7 @@
     "@importantimport/tsconfig": "^0.1.1",
     "@types/eslint": "^9.6.1",
     "@types/node": "^22.9.1",
+    "automd": "^0.3.12",
     "bumpp": "^9.8.1",
     "eslint": "^9.15.0",
     "jiti": "^2.4.0",
