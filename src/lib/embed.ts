@@ -4,6 +4,7 @@ import { clean } from '../utils/clean'
 import { base, type CommonRequestOptions } from './common'
 
 export interface EmbedOptions extends CommonRequestOptions {
+  [key: string]: unknown
   input: string | string[]
   model: EmbedModel
   /** @default `embeddings` */
