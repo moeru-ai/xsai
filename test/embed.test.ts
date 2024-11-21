@@ -10,8 +10,8 @@ describe('embed', () => {
     })
 
     expect(embedding).toMatchSnapshot()
-    expect(usage?.prompt_tokens).toBe(5)
-    expect(usage?.total_tokens).toBe(5)
+    expect(usage.prompt_tokens).toBe(5)
+    expect(usage.total_tokens).toBe(5)
   })
 
   it('array', async () => {
@@ -21,7 +21,7 @@ describe('embed', () => {
     })
 
     expect(embedding).toMatchSnapshot()
-    expect(usage?.prompt_tokens).toBe(12)
-    expect(usage?.total_tokens).toBe(12)
+    expect(usage.prompt_tokens).toBe(12)
+    expect(usage.total_tokens).toBe(12)
   })
 })

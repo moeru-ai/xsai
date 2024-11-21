@@ -19,7 +19,7 @@ export interface EmbedResponse {
   model: string
   object: 'list' | ({} & string)
   system_fingerprint?: string
-  usage?: EmbedResponseUsage
+  usage: EmbedResponseUsage
 }
 
 export interface EmbedResponseUsage {
@@ -31,7 +31,7 @@ export interface EmbedResult {
   embedding: number[]
   request: Request
   response: Response
-  usage?: EmbedResponseUsage
+  usage: EmbedResponseUsage
 }
 
 export const embed = async (options: EmbedOptions) => {
