@@ -2,6 +2,17 @@
   "name": "xsai",
   "version": "0.0.1",
   "type": "module",
+  "author": "藍+85CD",
+  "license": "MIT",
+  "homepage": "https://github.com/moeru-ai/xsai",
+  "repository": "github:moeru-ai/xsai",
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "description": "Extra-small AI SDK for any OpenAI-compatible API.",
+  "keywords": [
+    "ai",
+    "openai",
+    "ollama"
+  ],
   "private": true,
   "packageManager": "pnpm@9.14.2",
   "main": "./dist/index.js",
@@ -18,6 +29,7 @@
   "scripts": {
     "build": "pkgroll",
     "build:watch": "pkgroll --watch",
+    "bump": "bumpp --no-push",
     "lint": "eslint --flag unstable_ts_config .",
     "lint:fix": "eslint --flag unstable_ts_config . --fix",
     "test": "vitest run",
