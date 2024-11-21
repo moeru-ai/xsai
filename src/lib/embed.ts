@@ -39,8 +39,10 @@ export const embed = async (options: EmbedOptions) => {
     body: JSON.stringify(clean({
       ...options,
       base: undefined,
+      headers: undefined,
       path: undefined,
     })),
+    headers: options.headers,
     method: 'POST',
   })
 

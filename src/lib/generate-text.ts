@@ -45,8 +45,10 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
       stream: false,
       ...options,
       base: undefined,
+      headers: undefined,
       path: undefined,
     })),
+    headers: options.headers,
     method: 'POST',
   })
 
