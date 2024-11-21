@@ -1,12 +1,12 @@
 import type { Message } from './types/message'
-import type { Model } from './types/model'
+import type { GenerationModel } from './types/model'
 
 import { clean } from '../utils/clean'
 import { base, type CommonRequestOptions } from './common'
 
 export interface GenerateTextOptions extends CommonRequestOptions {
   messages?: Message[]
-  model: Model
+  model: GenerationModel
   /** @default `completions` */
   path?: 'completions' | ({} & string)
   prompt: string
