@@ -1,4 +1,5 @@
 import type { FinishReason } from './types/finish-reason'
+import type { Message } from './types/message'
 import type { GenerationModel } from './types/model'
 
 import { clean } from '../utils/clean'
@@ -6,22 +7,22 @@ import { base, type CommonRequestOptions } from './common'
 
 export interface GenerateTextOptions extends CommonRequestOptions {
   [key: string]: unknown
+  messages: Message[]
   model: GenerationModel
-  /** @default `completions` */
-  path?: 'completions' | ({} & string)
-  prompt: string
+  /** @default `chat/completions` */
+  path?: 'chat/completions' | ({} & string)
 }
 
 export interface GenerateTextResponse {
   choices: {
     finish_reason: FinishReason
     index: number
-    text: string
+    message: Message
   }[]
   created: number
   id: string
   model: string
-  object: 'text_completion'
+  object: 'chat.completion'
   system_fingerprint: string
   usage: GenerateTextResponseUsage
 }
@@ -41,7 +42,7 @@ export interface GenerateTextResult {
 }
 
 export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
-  const request = new Request(new URL(options.path ?? 'completions', options.base ?? base), {
+  const request = new Request(new URL(options.path ?? 'chat/completions', options.base ?? base), {
     body: JSON.stringify(clean({
       ...options,
       base: undefined,
@@ -49,7 +50,10 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
       path: undefined,
       stream: false,
     })),
-    headers: options.headers,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
     method: 'POST',
   })
 
@@ -61,7 +65,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     finishReason: json.choices[0].finish_reason,
     request,
     response,
-    text: json.choices[0].text,
+    text: json.choices[0].message.content,
     usage: json.usage,
   }
 }

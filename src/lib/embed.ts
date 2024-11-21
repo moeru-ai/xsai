@@ -43,7 +43,10 @@ export const embed = async (options: EmbedOptions) => {
       headers: undefined,
       path: undefined,
     })),
-    headers: options.headers,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
     method: 'POST',
   })
 

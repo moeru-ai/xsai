@@ -5,8 +5,17 @@ import { generateText } from '../src'
 describe('generateText', () => {
   it('basic', async () => {
     const { text } = await generateText({
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          role: 'user',
+        },
+      ],
       model: 'llama3.2',
-      prompt: 'This is a test, so please answer \'YES\' and nothing else.',
     })
 
     expect(text).toStrictEqual('YES')
