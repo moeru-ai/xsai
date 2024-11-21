@@ -1,1 +1,1 @@
-export { generateText } from './lib/generate-text'
+export { generateText, type GenerateTextOptions, type GenerateTextResult } from './lib/generate-text'
