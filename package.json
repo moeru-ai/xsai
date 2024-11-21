@@ -1,0 +1,37 @@
+{
+  "name": "xsai",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@9.14.2",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pkgroll",
+    "build:watch": "pkgroll --watch",
+    "lint": "eslint --flag unstable_ts_config .",
+    "lint:fix": "eslint --flag unstable_ts_config . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.9.2",
+    "@importantimport/eslint-config": "1.0.0-alpha.2",
+    "@importantimport/tsconfig": "^0.1.1",
+    "@types/eslint": "^9.6.1",
+    "@types/node": "^22.9.1",
+    "eslint": "^9.15.0",
+    "jiti": "^2.4.0",
+    "pkgroll": "^2.5.1",
+    "vitest": "^2.1.5"
+  }
+}
