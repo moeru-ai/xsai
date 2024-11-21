@@ -23,17 +23,20 @@ export interface GenerateTextResponse {
   model: string
   object: 'text_completion'
   system_fingerprint: string
-  usage: {
-    completion_tokens: number
-    prompt_tokens: number
-    total_tokens: number
-  }
+  usage: GenerateTextResponseUsage
+}
+
+export interface GenerateTextResponseUsage {
+  completion_tokens: number
+  prompt_tokens: number
+  total_tokens: number
 }
 
 export interface GenerateTextResult {
   request: Request
   response: Response
   text: string
+  usage: GenerateTextResponseUsage
 }
 
 export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
@@ -55,5 +58,6 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     request,
     response,
     text: json.choices[0].text,
+    usage: json.usage,
   }
 }
