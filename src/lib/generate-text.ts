@@ -43,11 +43,11 @@ export interface GenerateTextResult {
 export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
   const request = new Request(new URL(options.path ?? 'completions', options.base ?? base), {
     body: JSON.stringify(clean({
-      stream: false,
       ...options,
       base: undefined,
       headers: undefined,
       path: undefined,
+      stream: false,
     })),
     headers: options.headers,
     method: 'POST',
