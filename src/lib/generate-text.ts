@@ -1,11 +1,10 @@
-import type { Message } from './types/message'
+import type { FinishReason } from './types/finish-reason'
 import type { GenerationModel } from './types/model'
 
 import { clean } from '../utils/clean'
 import { base, type CommonRequestOptions } from './common'
 
 export interface GenerateTextOptions extends CommonRequestOptions {
-  messages?: Message[]
   model: GenerationModel
   /** @default `completions` */
   path?: 'completions' | ({} & string)
@@ -14,7 +13,7 @@ export interface GenerateTextOptions extends CommonRequestOptions {
 
 export interface GenerateTextResponse {
   choices: {
-    finish_reason: 'content_filter' | 'length' | 'stop'
+    finish_reason: FinishReason
     index: number
     text: string
   }[]
@@ -33,6 +32,7 @@ export interface GenerateTextResponseUsage {
 }
 
 export interface GenerateTextResult {
+  finishReason: FinishReason
   request: Request
   response: Response
   text: string
@@ -55,6 +55,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
   const json = await response.json() as GenerateTextResponse
 
   return {
+    finishReason: json.choices[0].finish_reason,
     request,
     response,
     text: json.choices[0].text,
