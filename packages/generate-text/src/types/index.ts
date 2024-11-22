@@ -1,3 +1,5 @@
 export type { FinishReason } from './finish-reason'
 export type { Message } from './message'
 export type { TextGenerationModel } from './model'
+export type { Tool } from './tool'
+export type { ToolChoice } from './tool_choice'
