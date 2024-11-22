@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@xsai/tool > generateText 1`] = `"The current temperature in San Francisco is 76 degrees Fahrenheit."`;

@@ -62,18 +62,17 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
 
   const json = await response.json() as GenerateTextResponse
 
-  // TODO: FIXME: remove this
-  console.log(JSON.stringify(json, null, 2))
-
   const { finish_reason, message } = json.choices[0]
 
   if (message.tool_calls) {
-    const tool = (options.tools as Tool[]).find(tool => tool.function.name === message.tool_calls!.function.name)!
-    const toolResult = await tool.execute(JSON.parse(message.tool_calls.function.arguments))
+    const toolCalls = message.tool_calls[0]
+
+    const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCalls.function.name)!
+    const toolResult = await tool.execute(JSON.parse(toolCalls.function.arguments))
     const toolMessage = {
       content: toolResult,
       role: 'tool',
-      tool_call_id: message.tool_calls.id,
+      tool_call_id: toolCalls.id,
     } satisfies Message
 
     return await generateText({

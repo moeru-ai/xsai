@@ -10,5 +10,5 @@ export interface Message {
     }
     id: string
     type: 'function'
-  }
+  }[]
 }
