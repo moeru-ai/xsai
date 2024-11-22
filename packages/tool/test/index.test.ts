@@ -33,7 +33,7 @@ describe('@xsai/tool', () => {
     })
   })
 
-  it('generateText', async () => {
+  it('generateText with tool', async () => {
     const weather = await tool({
       description: 'Get the weather in a location',
       execute: ({ location }) => JSON.stringify({
