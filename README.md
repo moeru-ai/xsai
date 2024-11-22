@@ -2,12 +2,12 @@
 
 Extra-small AI SDK for any OpenAI-compatible API.
 
-<!-- automd:badges color="lime" license bundlephobia -->
+<!-- automd:badges provider="badgen" color="cyan" license bundlephobia -->
 
-[![npm version](https://img.shields.io/npm/v/xsai?color=lime)](https://npmjs.com/package/xsai)
-[![npm downloads](https://img.shields.io/npm/dm/xsai?color=lime)](https://npm.chart.dev/xsai)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/xsai?color=lime)](https://bundlephobia.com/package/xsai)
-[![license](https://img.shields.io/github/license/moeru-ai/xsai?color=lime)](https://github.com/moeru-ai/xsai/blob/main/LICENSE)
+[![npm version](https://flat.badgen.net/npm/v/xsai?color=cyan)](https://npmjs.com/package/xsai)
+[![npm downloads](https://flat.badgen.net/npm/dm/xsai?color=cyan)](https://npm.chart.dev/xsai)
+[![bundle size](https://flat.badgen.net/bundlephobia/minzip/xsai?color=cyan)](https://bundlephobia.com/package/xsai)
+[![license](https://flat.badgen.net/github/license/moeru-ai/xsai?color=cyan)](https://github.com/moeru-ai/xsai/blob/main/LICENSE)
 
 <!-- /automd -->
 
@@ -21,26 +21,12 @@ It provides an interface similar to the Vercel AI SDK, ESM-only and zero depende
 
 ## Install
 
-<!-- automd:pm-install auto=false -->
-
 ```sh
-# npm
-npm install xsai
-
-# yarn
-yarn add xsai
-
-# pnpm
-pnpm install xsai
-
-# bun
-bun install xsai
-
-# deno
-deno install xsai
+# without pre-compile
+npm i xsai
+# pre-compile
+npm i -D xsai
 ```
-
-<!-- /automd -->
 
 ## License
 
