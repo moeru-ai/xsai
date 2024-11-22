@@ -42,6 +42,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
   const request = new Request(requestUrl(options.path ?? 'chat/completions', options.base), {
     body: JSON.stringify(clean({
       ...objCamelToSnake(options),
+      abortSignal: undefined,
       base: undefined,
       headers: undefined,
       path: undefined,
@@ -56,6 +57,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
       ...options.headers,
     },
     method: 'POST',
+    signal: options.abortSingal,
   })
 
   const response = await fetch(request)

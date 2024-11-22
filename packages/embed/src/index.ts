@@ -36,6 +36,7 @@ export const embed = async (options: EmbedOptions) => {
   const request = new Request(requestUrl(options.path ?? 'embeddings', options.base), {
     body: JSON.stringify(clean({
       ...options,
+      abortSignal: undefined,
       base: undefined,
       headers: undefined,
       path: undefined,
@@ -45,6 +46,7 @@ export const embed = async (options: EmbedOptions) => {
       ...options.headers,
     },
     method: 'POST',
+    signal: options.abortSingal,
   })
 
   const response = await fetch(request)
