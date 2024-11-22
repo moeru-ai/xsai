@@ -34,11 +34,11 @@ describe('@xsai/tool', () => {
   })
 
   it('generateText', async () => {
-    const t = await tool({
+    const weather = await tool({
       description: 'Get the weather in a location',
       execute: ({ location }) => JSON.stringify({
         location,
-        temperature: 72 + Math.floor(Math.random() * 21) - 10,
+        temperature: 42,
       }),
       name: 'weather',
       parameters: object({
@@ -50,15 +50,20 @@ describe('@xsai/tool', () => {
     })
 
     const { text } = await generateText({
-      messages: [{
-        content: 'You are a helpful assistant.',
-        role: 'system',
-      }, {
-        content: 'What is the weather in San Francisco?',
-        role: 'user',
-      }],
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'What is the weather in San Francisco?',
+          role: 'user',
+        },
+      ],
       model: 'llama3.2',
-      tools: [t],
+      seed: 42,
+      toolChoice: 'required',
+      tools: [weather],
     })
 
     expect(text).toMatchSnapshot()
