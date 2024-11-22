@@ -65,22 +65,26 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
   const { finish_reason, message } = json.choices[0]
 
   if (message.tool_calls) {
-    const toolCalls = message.tool_calls[0]
+    const toolMessages = []
 
-    const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCalls.function.name)!
-    const toolResult = await tool.execute(JSON.parse(toolCalls.function.arguments))
-    const toolMessage = {
-      content: toolResult,
-      role: 'tool',
-      tool_call_id: toolCalls.id,
-    } satisfies Message
+    for (const toolCall of message.tool_calls) {
+      const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
+      const toolResult = await tool.execute(JSON.parse(toolCall.function.arguments))
+      const toolMessage = {
+        content: toolResult,
+        role: 'tool',
+        tool_call_id: toolCall.id,
+      } satisfies Message
+
+      toolMessages.push(toolMessage)
+    }
 
     return await generateText({
       ...options,
       messages: [
         ...options.messages,
         message,
-        toolMessage,
+        ...toolMessages,
       ],
     })
   }
