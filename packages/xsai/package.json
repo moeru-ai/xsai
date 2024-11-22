@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@xsai/embed": "workspace:^",
-    "@xsai/generate-text": "workspace:^"
+    "@xsai/generate-text": "workspace:^",
+    "@xsai/tool": "workspace:^"
   }
 }
