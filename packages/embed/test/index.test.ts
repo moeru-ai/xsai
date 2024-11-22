@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { embed } from '../src'
 
-describe('embed', () => {
+describe('@xsai/embed', () => {
   it('string', async () => {
     const { embedding, usage } = await embed({
       input: 'sunny day at the beach',

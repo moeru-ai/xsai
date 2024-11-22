@@ -1,6 +1,9 @@
 {
   "references": [
-    { "path": "./tsconfig.app.json" },
+    { "path": "./packages/embed/tsconfig.json" },
+    { "path": "./packages/generate-text/tsconfig.json" },
+    { "path": "./packages/shared/tsconfig.json" },
+    { "path": "./packages/xsai/tsconfig.json" },
     { "path": "./tsconfig.node.json" }
   ],
   "files": []

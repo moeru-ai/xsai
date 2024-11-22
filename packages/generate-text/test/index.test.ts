@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { generateText } from '../src'
 
-describe('generateText', () => {
+describe('@xsai/generate-text', () => {
   it('basic', async () => {
     const { text } = await generateText({
       messages: [

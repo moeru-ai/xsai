@@ -1,16 +1,11 @@
-import type { FinishReason } from './types/finish-reason'
-import type { Message } from './types/message'
-import type { GenerationModel } from './types/model'
+import { clean, type CommonRequestOptions, requestUrl } from '@xsai/shared'
 
-import { clean } from '../utils/clean'
-import { base, type CommonRequestOptions } from './common'
+import type { FinishReason, Message, TextGenerationModel } from './types'
 
-export interface GenerateTextOptions extends CommonRequestOptions {
+export interface GenerateTextOptions extends CommonRequestOptions<'chat/completions'> {
   [key: string]: unknown
   messages: Message[]
-  model: GenerationModel
-  /** @default `chat/completions` */
-  path?: 'chat/completions' | ({} & string)
+  model: TextGenerationModel
 }
 
 export interface GenerateTextResponse {
@@ -42,7 +37,7 @@ export interface GenerateTextResult {
 }
 
 export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
-  const request = new Request(new URL(options.path ?? 'chat/completions', options.base ?? base), {
+  const request = new Request(requestUrl(options.path ?? 'chat/completions', options.base), {
     body: JSON.stringify(clean({
       ...options,
       base: undefined,
@@ -69,3 +64,5 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     usage: json.usage,
   }
 }
+
+export default generateText

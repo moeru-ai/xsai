@@ -1,38 +1,17 @@
 {
-  "name": "xsai",
+  "name": "@xsai/workspace",
   "version": "0.0.5",
   "type": "module",
-  "author": "藍+85CD",
-  "license": "MIT",
-  "homepage": "https://github.com/moeru-ai/xsai",
-  "repository": "github:moeru-ai/xsai",
-  "bugs": "https://github.com/moeru-ai/xsai/issues",
-  "description": "Extra-small AI SDK for any OpenAI-compatible API.",
-  "keywords": [
-    "ai",
-    "openai",
-    "ollama"
-  ],
+  "private": true,
   "packageManager": "pnpm@9.14.2",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
+  "repository": "github:moeru-ai/xsai",
   "scripts": {
-    "build": "pkgroll",
-    "build:watch": "pkgroll --watch",
-    "bump": "bumpp --no-push",
+    "automd": "corepack pnpm -r automd",
+    "build": "corepack pnpm -r build",
+    "build:watch": "corepack pnpm -r build:watch",
+    "bump": "bumpp --all --no-push",
     "lint": "eslint --flag unstable_ts_config .",
-    "lint:fix": "eslint --flag unstable_ts_config . --fix",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "lint:fix": "eslint --flag unstable_ts_config . --fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.9.2",

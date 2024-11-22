@@ -2,7 +2,7 @@
 
 Extra-small AI SDK for any OpenAI-compatible API.
 
-<!-- automd:badges provider="badgen" color="cyan" license bundlephobia -->
+<!-- automd:badges name="xsai" provider="badgen" color="cyan" license bundlephobia -->
 
 [![npm version](https://flat.badgen.net/npm/v/xsai?color=cyan)](https://npmjs.com/package/xsai)
 [![npm downloads](https://flat.badgen.net/npm/dm/xsai?color=cyan)](https://npm.chart.dev/xsai)

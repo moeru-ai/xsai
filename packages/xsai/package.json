@@ -1,0 +1,35 @@
+{
+  "name": "xsai",
+  "version": "0.0.5",
+  "type": "module",
+  "author": "藍+85CD",
+  "license": "MIT",
+  "homepage": "https://github.com/moeru-ai/xsai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/xsai"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pkgroll",
+    "build:watch": "pkgroll --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@xsai/embed": "workspace:^",
+    "@xsai/generate-text": "workspace:^"
+  }
+}
