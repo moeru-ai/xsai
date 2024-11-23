@@ -32,14 +32,12 @@ export interface GenerateTextResponseUsage {
 
 export interface GenerateTextResult {
   finishReason: FinishReason
-  request: Request
-  response: Response
   text: string
   usage: GenerateTextResponseUsage
 }
 
-export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
-  const request = new Request(requestUrl(options.path ?? 'chat/completions', options.base), {
+export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> =>
+  await fetch(requestUrl(options.path ?? 'chat/completions', options.base), {
     body: JSON.stringify(clean({
       ...objCamelToSnake(options),
       abortSignal: undefined,
@@ -59,45 +57,41 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     method: 'POST',
     signal: options.abortSingal,
   })
+    .then(res => res.json() as Promise<GenerateTextResponse>)
+    .then(async ({ choices, usage }) => {
+      const { finish_reason, message } = choices[0]
 
-  const response = await fetch(request)
+      if (message.tool_calls) {
+        const toolMessages = []
 
-  const json = await response.json() as GenerateTextResponse
+        for (const toolCall of message.tool_calls) {
+          const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
+          const toolResult = await tool.execute(JSON.parse(toolCall.function.arguments))
+          const toolMessage = {
+            content: toolResult,
+            role: 'tool',
+            tool_call_id: toolCall.id,
+          } satisfies Message
 
-  const { finish_reason, message } = json.choices[0]
+          toolMessages.push(toolMessage)
+        }
 
-  if (message.tool_calls) {
-    const toolMessages = []
-
-    for (const toolCall of message.tool_calls) {
-      const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
-      const toolResult = await tool.execute(JSON.parse(toolCall.function.arguments))
-      const toolMessage = {
-        content: toolResult,
-        role: 'tool',
-        tool_call_id: toolCall.id,
-      } satisfies Message
-
-      toolMessages.push(toolMessage)
-    }
-
-    return await generateText({
-      ...options,
-      messages: [
-        ...options.messages,
-        message,
-        ...toolMessages,
-      ],
+        return await generateText({
+          ...options,
+          messages: [
+            ...options.messages,
+            message,
+            ...toolMessages,
+          ],
+        })
+      }
+      else {
+        return {
+          finishReason: finish_reason,
+          text: message.content,
+          usage,
+        }
+      }
     })
-  }
-
-  return {
-    finishReason: finish_reason,
-    request,
-    response,
-    text: message.content,
-    usage: json.usage,
-  }
-}
 
 export default generateText
