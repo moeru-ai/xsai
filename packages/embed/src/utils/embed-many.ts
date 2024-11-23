@@ -14,8 +14,8 @@ export interface EmbedManyResult {
   usage: EmbedResponseUsage
 }
 
-export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyResult> => {
-  const { data, usage } = await fetch(requestUrl(options.path ?? 'embeddings', options.base), {
+export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyResult> =>
+  await fetch(requestUrl(options.path ?? 'embeddings', options.base), {
     body: JSON.stringify(clean({
       ...options,
       abortSignal: undefined,
@@ -29,11 +29,10 @@ export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyRes
     },
     method: 'POST',
     signal: options.abortSingal,
-  }).then(res => res.json() as Promise<EmbedResponse>)
-
-  return {
-    embeddings: data.map(data => data.embedding),
-    input: options.input,
-    usage,
-  }
-}
+  })
+    .then(res => res.json() as Promise<EmbedResponse>)
+    .then(({ data, usage }) => ({
+      embeddings: data.map(data => data.embedding),
+      input: options.input,
+      usage,
+    }))

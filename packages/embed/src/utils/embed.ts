@@ -31,8 +31,8 @@ export interface EmbedResult {
   usage: EmbedResponseUsage
 }
 
-export const embed = async (options: EmbedOptions): Promise<EmbedResult> => {
-  const { data, usage } = await fetch(requestUrl(options.path ?? 'embeddings', options.base), {
+export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
+  await fetch(requestUrl(options.path ?? 'embeddings', options.base), {
     body: JSON.stringify(clean({
       ...options,
       abortSignal: undefined,
@@ -46,11 +46,10 @@ export const embed = async (options: EmbedOptions): Promise<EmbedResult> => {
     },
     method: 'POST',
     signal: options.abortSingal,
-  }).then(res => res.json() as Promise<EmbedResponse>)
-
-  return {
-    embedding: data[0].embedding,
-    input: options.input,
-    usage,
-  }
-}
+  })
+    .then(res => res.json() as Promise<EmbedResponse>)
+    .then(({ data, usage }) => ({
+      embedding: data[0].embedding,
+      input: options.input,
+      usage,
+    }))
