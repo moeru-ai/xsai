@@ -3,6 +3,7 @@ import { clean, type CommonRequestOptions, requestUrl } from '@xsai/shared'
 import type { EmbedModel, EmbedResponse, EmbedResponseUsage } from './embed'
 
 export interface EmbedManyOptions extends CommonRequestOptions<'embeddings'> {
+  [key: string]: unknown
   inputs: string[]
   model: EmbedModel
 }
@@ -20,6 +21,8 @@ export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyRes
       abortSignal: undefined,
       base: undefined,
       headers: undefined,
+      input: options.inputs,
+      inputs: undefined,
       path: undefined,
     })),
     headers: {
