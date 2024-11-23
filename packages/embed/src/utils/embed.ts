@@ -45,7 +45,7 @@ export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
       ...options.headers,
     },
     method: 'POST',
-    signal: options.abortSingal,
+    signal: options.abortSignal,
   })
     .then(res => res.json() as Promise<EmbedResponse>)
     .then(({ data, usage }) => ({

@@ -28,7 +28,7 @@ export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyRes
       ...options.headers,
     },
     method: 'POST',
-    signal: options.abortSingal,
+    signal: options.abortSignal,
   })
     .then(res => res.json() as Promise<EmbedResponse>)
     .then(({ data, usage }) => ({

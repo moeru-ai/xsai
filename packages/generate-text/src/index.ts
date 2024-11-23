@@ -55,7 +55,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
       ...options.headers,
     },
     method: 'POST',
-    signal: options.abortSingal,
+    signal: options.abortSignal,
   })
     .then(res => res.json() as Promise<GenerateTextResponse>)
     .then(async ({ choices, usage }) => {
