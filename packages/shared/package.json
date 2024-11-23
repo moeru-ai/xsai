@@ -24,8 +24,6 @@
   ],
   "scripts": {
     "build": "pkgroll",
-    "build:watch": "pkgroll --watch",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "build:watch": "pkgroll --watch"
   }
 }
