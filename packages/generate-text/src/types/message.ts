@@ -1,8 +1,17 @@
-export interface Message {
+export type Message = AssistantMessage | SystemMessage | ToolMessage | UserMessage
+
+export interface CommonMessage<T extends string> {
   content: string
-  role: 'assistant' | 'system' | 'tool' | 'user' | ({} & string)
-  // TODO: FIXME: new type ToolMessage
-  tool_call_id?: string
+  name?: string
+  role: T
+}
+
+export interface SystemMessage extends CommonMessage<'system'> {}
+
+export interface UserMessage extends CommonMessage<'user'> {}
+
+export interface AssistantMessage extends CommonMessage<'assistant'> {
+  refusal?: string
   tool_calls?: {
     function: {
       arguments: string
@@ -11,4 +20,9 @@ export interface Message {
     id: string
     type: 'function'
   }[]
+  // TODO: audio
+}
+
+export interface ToolMessage extends Omit<CommonMessage<'tool'>, 'name'> {
+  tool_call_id: string
 }

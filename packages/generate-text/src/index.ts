@@ -1,6 +1,6 @@
 import { clean, type CommonRequestOptions, objCamelToSnake, requestUrl } from '@xsai/shared'
 
-import type { FinishReason, Message, TextGenerationModel, Tool, ToolChoice } from './types'
+import type { AssistantMessage, FinishReason, Message, TextGenerationModel, Tool, ToolChoice } from './types'
 
 export interface GenerateTextOptions extends CommonRequestOptions<'chat/completions'> {
   [key: string]: unknown
@@ -14,7 +14,7 @@ export interface GenerateTextResponse {
   choices: {
     finish_reason: FinishReason
     index: number
-    message: Message
+    message: AssistantMessage
   }[]
   created: number
   id: string
