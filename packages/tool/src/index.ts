@@ -1,14 +1,7 @@
 import type { InferIn, Schema } from '@typeschema/main'
-import type { GenerateTextOptions as _GTO } from '@xsai/generate-text'
 
 import { toJSONSchema } from '@typeschema/main'
 import { clean } from '@xsai/shared'
-
-declare module '@xsai/generate-text' {
-  export interface GenerateTextOptions {
-    tools?: ToolResult<Schema>[]
-  }
-}
 
 export interface ToolOptions<T extends Schema> {
   description?: string

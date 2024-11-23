@@ -17,6 +17,9 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./generate-text": {
+      "types": "./dist/generate-text.d.ts"
     }
   },
   "files": [
@@ -39,5 +42,10 @@
   },
   "peerDependencies": {
     "@xsai/generate-text": "workspace:^"
+  },
+  "peerDependenciesMeta": {
+    "@xsai/generate-text": {
+      "optional": true
+    }
   }
 }
