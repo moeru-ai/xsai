@@ -4,13 +4,13 @@ import type { EmbedModel, EmbedResponse, EmbedResponseUsage } from './embed'
 
 export interface EmbedManyOptions extends CommonRequestOptions<'embeddings'> {
   [key: string]: unknown
-  inputs: string[]
+  input: string[]
   model: EmbedModel
 }
 
 export interface EmbedManyResult {
   embeddings: number[][]
-  inputs: string[]
+  input: string[]
   usage: EmbedResponseUsage
 }
 
@@ -21,8 +21,6 @@ export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyRes
       abortSignal: undefined,
       base: undefined,
       headers: undefined,
-      input: options.inputs,
-      inputs: undefined,
       path: undefined,
     })),
     headers: {
@@ -35,7 +33,7 @@ export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyRes
 
   return {
     embeddings: data.map(data => data.embedding),
-    inputs: options.inputs,
+    input: options.input,
     usage,
   }
 }
