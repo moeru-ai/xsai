@@ -1,0 +1,16 @@
+import { describe, expect, it } from 'vitest'
+
+import { embedMany } from '../src'
+
+describe('@xsai/embed', () => {
+  it('array', async () => {
+    const { embeddings, usage } = await embedMany({
+      input: ['why is the sky blue?', 'why is the grass green?'],
+      model: 'nomic-embed-text',
+    })
+
+    expect(embeddings).toMatchSnapshot()
+    expect(usage.prompt_tokens).toBe(12)
+    expect(usage.total_tokens).toBe(12)
+  })
+})

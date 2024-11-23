@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/embed > string 1`] = `
+exports[`@xsai/embed > embed 1`] = `
 [
   0.013758629,
   -0.0009981187,
