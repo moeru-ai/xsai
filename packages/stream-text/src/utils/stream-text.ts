@@ -29,6 +29,10 @@ export interface StreamTextResponse {
   system_fingerprint: string
 }
 
+/**
+ * @experimental
+ * WIP, currently only returns `textStream`, does not support function calling (tools).
+ */
 export const streamText = async (options: GenerateTextOptions): Promise<StreamTextResult> =>
   await fetch(requestUrl(options.path ?? 'chat/completions', options.base), {
     body: JSON.stringify(clean({
