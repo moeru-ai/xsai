@@ -10,6 +10,7 @@ import type { Tool } from '../types/internal/tool'
 
 // export interface StreamTextResult extends GenerateTextResult {
 export interface StreamTextResult {
+  finishReason?: FinishReason
   textStream: ReadableStream<string>
   // textStream: AsyncIterable<string> & ReadableStream<string>
 }
@@ -56,6 +57,8 @@ export const streamText = async (options: GenerateTextOptions): Promise<StreamTe
     signal: options.abortSignal,
   })
     .then((res) => {
+      let finishReason: string | undefined
+
       const decoder = new TextDecoder()
 
       const transformStream = new TransformStream({
@@ -63,7 +66,12 @@ export const streamText = async (options: GenerateTextOptions): Promise<StreamTe
           for (const line of decoder.decode(chunk).split('\n')) {
             if (line.startsWith('data: ') && line !== 'data: [DONE]') {
               const data = JSON.parse(line.slice(6)) as StreamTextResponse
+
               controller.enqueue(data.choices[0].delta.content)
+
+              if (data.choices[0].finish_reason) {
+                finishReason = data.choices[0].finish_reason
+              }
             }
             else if (line === 'data: [DONE]') {
               controller.terminate()
@@ -74,5 +82,5 @@ export const streamText = async (options: GenerateTextOptions): Promise<StreamTe
 
       const textStream = res.body!.pipeThrough(transformStream)
 
-      return { textStream }
+      return { finishReason, textStream }
     })
