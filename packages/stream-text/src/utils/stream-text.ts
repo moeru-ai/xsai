@@ -1,6 +1,7 @@
 import type {
-  GenerateTextOptions,
   // GenerateTextResult,
+  FinishReason,
+  GenerateTextOptions,
 } from '@xsai/generate-text'
 
 import { clean, objCamelToSnake, requestUrl } from '@xsai/shared'
@@ -19,7 +20,7 @@ export interface StreamTextResponse {
       content: string
       role: 'assistant'
     }
-    finish_reason?: 'stop' | ({} & string)
+    finish_reason?: FinishReason
     index: number
   }[]
   created: number
@@ -59,19 +60,14 @@ export const streamText = async (options: GenerateTextOptions): Promise<StreamTe
 
       const transformStream = new TransformStream({
         transform: (chunk, controller) => {
-          const text = decoder.decode(chunk)
-
-          for (const line of text.split('\n')) {
-            if (line.includes('[DONE]')) {
-              controller.terminate()
-              return
-            }
-
-            try {
+          for (const line of decoder.decode(chunk).split('\n')) {
+            if (line.startsWith('data: ') && line !== 'data: [DONE]') {
               const data = JSON.parse(line.slice(6)) as StreamTextResponse
               controller.enqueue(data.choices[0].delta.content)
             }
-            catch {}
+            else if (line === 'data: [DONE]') {
+              controller.terminate()
+            }
           }
         },
       })
