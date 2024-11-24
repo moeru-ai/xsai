@@ -1,1 +1,1 @@
-export { streamText, streamText as default, type StreamTextResult } from './utils/stream-text'
+export { streamText, streamText as default, type StreamTextOptions, type StreamTextResult } from './utils/stream-text'

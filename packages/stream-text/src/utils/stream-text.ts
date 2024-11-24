@@ -2,16 +2,29 @@ import type {
   // GenerateTextResult,
   FinishReason,
   GenerateTextOptions,
+  GenerateTextResponseUsage,
 } from '@xsai/generate-text'
 
 import { clean, objCamelToSnake, requestUrl } from '@xsai/shared'
 
 import type { Tool } from '../types/internal/tool'
 
+export interface StreamTextOptions extends GenerateTextOptions {
+  streamOptions?: {
+    /**
+     * Return usage.
+     * @default `undefined`
+     * @remarks Ollama doesn't support this, see {@link https://github.com/ollama/ollama/issues/5200}
+     */
+    usage?: boolean
+  }
+}
+
 // export interface StreamTextResult extends GenerateTextResult {
 export interface StreamTextResult {
   finishReason?: FinishReason
   textStream: ReadableStream<string>
+  usage?: GenerateTextResponseUsage
   // textStream: AsyncIterable<string> & ReadableStream<string>
 }
 
@@ -29,13 +42,14 @@ export interface StreamTextResponse {
   model: string
   object: 'chat.completion.chunk'
   system_fingerprint: string
+  usage?: GenerateTextResponseUsage
 }
 
 /**
  * @experimental
  * WIP, currently only returns `textStream`, does not support function calling (tools).
  */
-export const streamText = async (options: GenerateTextOptions): Promise<StreamTextResult> =>
+export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> =>
   await fetch(requestUrl(options.path ?? 'chat/completions', options.base), {
     body: JSON.stringify(clean({
       ...objCamelToSnake(options),
@@ -58,6 +72,7 @@ export const streamText = async (options: GenerateTextOptions): Promise<StreamTe
   })
     .then((res) => {
       let finishReason: string | undefined
+      let usage: GenerateTextResponseUsage | undefined
 
       const decoder = new TextDecoder()
 
@@ -72,6 +87,9 @@ export const streamText = async (options: GenerateTextOptions): Promise<StreamTe
               if (data.choices[0].finish_reason) {
                 finishReason = data.choices[0].finish_reason
               }
+
+              if (data.usage)
+                usage = data.usage
             }
             else if (line === 'data: [DONE]') {
               controller.terminate()
@@ -82,5 +100,5 @@ export const streamText = async (options: GenerateTextOptions): Promise<StreamTe
 
       const textStream = res.body!.pipeThrough(transformStream)
 
-      return { finishReason, textStream }
+      return { finishReason, textStream, usage }
     })

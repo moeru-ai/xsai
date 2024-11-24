@@ -4,7 +4,7 @@ import { streamText } from '../src'
 
 describe('@xsai/stream-text', () => {
   it('basic', async () => {
-    const { textStream } = await streamText({
+    const { textStream, usage } = await streamText({
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -16,6 +16,7 @@ describe('@xsai/stream-text', () => {
         },
       ],
       model: 'llama3.2',
+      streamOptions: { usage: true },
     })
 
     const result: string[] = []
@@ -25,6 +26,11 @@ describe('@xsai/stream-text', () => {
     }
 
     expect(result.join('')).toStrictEqual('YES')
+    expect(usage).toStrictEqual({
+      completion_tokens: 0,
+      prompt_tokens: 0,
+      total_tokens: 0,
+    })
   })
 
   it('42', async () => {
