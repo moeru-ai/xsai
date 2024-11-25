@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@xsai/embed": "workspace:",
+    "@xsai/generate-object": "workspace:",
     "@xsai/generate-text": "workspace:",
     "@xsai/stream-text": "workspace:",
     "@xsai/tool": "workspace:"
