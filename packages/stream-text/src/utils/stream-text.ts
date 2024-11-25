@@ -71,16 +71,20 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     signal: options.abortSignal,
   })
     .then((res) => {
-      let finishReason: string | undefined
-      let usage: GenerateTextResponseUsage | undefined
+      if (!res.body) {
+        return Promise.reject(res)
+      }
 
       const decoder = new TextDecoder()
 
-      const transformStream = new TransformStream({
+      let finishReason: string | undefined
+      let usage: GenerateTextResponseUsage | undefined
+
+      const textStream = res.body.pipeThrough(new TransformStream({
         transform: (chunk, controller) => {
-          for (const line of decoder.decode(chunk).split('\n')) {
-            if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-              const data = JSON.parse(line.slice(6)) as StreamTextResponse
+          for (const line of decoder.decode(chunk).split('\n').filter(line => line)) {
+            if (line !== 'data: [DONE]') {
+              const data: StreamTextResponse = JSON.parse(line.slice(6))
 
               controller.enqueue(data.choices[0].delta.content)
 
@@ -91,14 +95,12 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
               if (data.usage)
                 usage = data.usage
             }
-            else if (line === 'data: [DONE]') {
+            else {
               controller.terminate()
             }
           }
         },
-      })
-
-      const textStream = res.body!.pipeThrough(transformStream)
+      }))
 
       return { finishReason, textStream, usage }
     })
