@@ -29,7 +29,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/generate-text": "workspace:^",
-    "@xsai/shared": "workspace:^"
+    "@xsai/generate-text": "workspace:",
+    "@xsai/shared": "workspace:"
   }
 }

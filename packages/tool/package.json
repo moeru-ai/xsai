@@ -32,16 +32,16 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@typeschema/main": "^0.14.1",
-    "@xsai/shared": "workspace:^"
+    "@typeschema/main": "catalog:",
+    "@xsai/shared": "workspace:"
   },
   "devDependencies": {
-    "@gcornut/valibot-json-schema": "^0.42.0",
-    "@xsai/generate-text": "workspace:^",
-    "valibot": "1.0.0-beta.8"
+    "@gcornut/valibot-json-schema": "catalog:",
+    "@xsai/generate-text": "workspace:",
+    "valibot": "catalog:"
   },
   "peerDependencies": {
-    "@xsai/generate-text": "workspace:^"
+    "@xsai/generate-text": "workspace:"
   },
   "peerDependenciesMeta": {
     "@xsai/generate-text": {

@@ -27,9 +27,9 @@
     "build:watch": "pkgroll --watch"
   },
   "dependencies": {
-    "@xsai/embed": "workspace:^",
-    "@xsai/generate-text": "workspace:^",
-    "@xsai/stream-text": "workspace:^",
-    "@xsai/tool": "workspace:^"
+    "@xsai/embed": "workspace:",
+    "@xsai/generate-text": "workspace:",
+    "@xsai/stream-text": "workspace:",
+    "@xsai/tool": "workspace:"
   }
 }

@@ -4,6 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@gcornut/valibot-json-schema':
+      specifier: ^0.42.0
+      version: 0.42.0
+    '@typeschema/main':
+      specifier: ^0.14.1
+      version: 0.14.1
+    valibot:
+      specifier: ^0.42.1
+      version: 0.42.1
+
 importers:
 
   .:
@@ -45,13 +57,32 @@ importers:
   packages/embed:
     dependencies:
       '@xsai/shared':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../shared
+
+  packages/generate-object:
+    dependencies:
+      '@typeschema/main':
+        specifier: 'catalog:'
+        version: 0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))
+      '@xsai/generate-text':
+        specifier: 'workspace:'
+        version: link:../generate-text
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+    devDependencies:
+      '@gcornut/valibot-json-schema':
+        specifier: 'catalog:'
+        version: 0.42.0(esbuild@0.23.1)(typescript@5.6.3)
+      valibot:
+        specifier: 'catalog:'
+        version: 0.42.1(typescript@5.6.3)
 
   packages/generate-text:
     dependencies:
       '@xsai/shared':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../shared
 
   packages/shared: {}
@@ -59,44 +90,44 @@ importers:
   packages/stream-text:
     dependencies:
       '@xsai/generate-text':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../generate-text
       '@xsai/shared':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../shared
 
   packages/tool:
     dependencies:
       '@typeschema/main':
-        specifier: ^0.14.1
-        version: 0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@1.0.0-beta.8(typescript@5.6.3)))
+        specifier: 'catalog:'
+        version: 0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))
       '@xsai/shared':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../shared
     devDependencies:
       '@gcornut/valibot-json-schema':
-        specifier: ^0.42.0
+        specifier: 'catalog:'
         version: 0.42.0(esbuild@0.23.1)(typescript@5.6.3)
       '@xsai/generate-text':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../generate-text
       valibot:
-        specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(typescript@5.6.3)
+        specifier: 'catalog:'
+        version: 0.42.1(typescript@5.6.3)
 
   packages/xsai:
     dependencies:
       '@xsai/embed':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../embed
       '@xsai/generate-text':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../generate-text
       '@xsai/stream-text':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../stream-text
       '@xsai/tool':
-        specifier: workspace:^
+        specifier: 'workspace:'
         version: link:../tool
 
 packages:
@@ -2678,14 +2709,6 @@ packages:
       typescript:
         optional: true
 
-  valibot@1.0.0-beta.8:
-    resolution: {integrity: sha512-OPAwJZtowb0j91b+bd77+ny7D1VVzsCzD7Jl9waLUlMprTsfI9Y3HHbW3hAQD7wKDKHsmGEesuiYWaYvcZL2wg==}
-    peerDependencies:
-      typescript: '>=5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
@@ -3504,20 +3527,20 @@ snapshots:
     optionalDependencies:
       '@types/json-schema': 7.0.15
 
-  '@typeschema/main@0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@1.0.0-beta.8(typescript@5.6.3)))':
+  '@typeschema/main@0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))':
     dependencies:
       '@typeschema/core': 0.14.0(@types/json-schema@7.0.15)
     optionalDependencies:
-      '@typeschema/valibot': 0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@1.0.0-beta.8(typescript@5.6.3))
+      '@typeschema/valibot': 0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3))
     transitivePeerDependencies:
       - '@types/json-schema'
 
-  '@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@1.0.0-beta.8(typescript@5.6.3))':
+  '@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.23.1)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3))':
     dependencies:
       '@typeschema/core': 0.14.0(@types/json-schema@7.0.15)
     optionalDependencies:
       '@gcornut/valibot-json-schema': 0.42.0(esbuild@0.23.1)(typescript@5.6.3)
-      valibot: 1.0.0-beta.8(typescript@5.6.3)
+      valibot: 0.42.1(typescript@5.6.3)
     transitivePeerDependencies:
       - '@types/json-schema'
     optional: true
@@ -5472,10 +5495,6 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   valibot@0.42.1(typescript@5.6.3):
-    optionalDependencies:
-      typescript: 5.6.3
-
-  valibot@1.0.0-beta.8(typescript@5.6.3):
     optionalDependencies:
       typescript: 5.6.3
 

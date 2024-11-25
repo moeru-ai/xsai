@@ -1,5 +1,5 @@
 {
-  "name": "@xsai/generate-text",
+  "name": "@xsai/generate-object",
   "version": "0.0.10",
   "type": "module",
   "author": "藍+85CD",
@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages/generate-text"
+    "directory": "packages/generate-object"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "main": "./dist/index.js",
@@ -29,6 +29,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@typeschema/main": "catalog:",
+    "@xsai/generate-text": "workspace:",
     "@xsai/shared": "workspace:"
+  },
+  "devDependencies": {
+    "@gcornut/valibot-json-schema": "catalog:",
+    "valibot": "catalog:"
   }
 }

@@ -1,6 +1,7 @@
 {
   "references": [
     { "path": "./packages/embed/tsconfig.json" },
+    { "path": "./packages/generate-object/tsconfig.json" },
     { "path": "./packages/generate-text/tsconfig.json" },
     { "path": "./packages/shared/tsconfig.json" },
     { "path": "./packages/stream-text/tsconfig.json" },
