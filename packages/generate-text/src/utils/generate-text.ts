@@ -70,7 +70,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     .then(async ({ choices, usage }) => {
       const { finish_reason, message } = choices[0]
 
-      if (message.content == null || !message.tool_calls) {
+      if (!!message.content || !message.tool_calls) {
         return {
           finishReason: finish_reason,
           text: message.content,
