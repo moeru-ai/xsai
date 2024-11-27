@@ -22,6 +22,7 @@ describe('@xsai/generate-object', () => {
       }),
     })
 
+    // eslint-disable-next-line no-console
     console.log('object:', object)
     expect(object.anwser).toStrictEqual('YES')
   })
