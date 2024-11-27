@@ -1,6 +1,6 @@
 import { clean, type CommonRequestOptions, objCamelToSnake, requestUrl } from '@xsai/shared'
 
-import type { AssistantMessage, FinishReason, Message, TextGenerationModel, ToolChoice } from '../types'
+import type { AssistantMessageResponse, FinishReason, Message, TextGenerationModel, ToolChoice } from '../types'
 import type { Tool } from '../types/internal/tool'
 
 export interface GenerateTextOptions extends CommonRequestOptions<'chat/completions'> {
@@ -15,7 +15,7 @@ interface GenerateTextResponse {
   choices: {
     finish_reason: FinishReason
     index: number
-    message: AssistantMessage
+    message: AssistantMessageResponse
   }[]
   created: number
   id: string
@@ -33,7 +33,7 @@ export interface GenerateTextResponseUsage {
 
 export interface GenerateTextResult {
   finishReason: FinishReason
-  text: string
+  text?: string
   usage: GenerateTextResponseUsage
 }
 
@@ -70,35 +70,34 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     .then(async ({ choices, usage }) => {
       const { finish_reason, message } = choices[0]
 
-      if (message.tool_calls) {
-        const toolMessages = []
-
-        for (const toolCall of message.tool_calls) {
-          const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
-          const toolResult = await tool.execute(JSON.parse(toolCall.function.arguments))
-          const toolMessage = {
-            content: toolResult,
-            role: 'tool',
-            tool_call_id: toolCall.id,
-          } satisfies Message
-
-          toolMessages.push(toolMessage)
-        }
-
-        return await generateText({
-          ...options,
-          messages: [
-            ...options.messages,
-            message,
-            ...toolMessages,
-          ],
-        })
-      }
-      else {
+      if (message.content == null || !message.tool_calls) {
         return {
           finishReason: finish_reason,
           text: message.content,
           usage,
         }
       }
+
+      const toolMessages = []
+
+      for (const toolCall of message.tool_calls) {
+        const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
+        const toolResult = await tool.execute(JSON.parse(toolCall.function.arguments))
+        const toolMessage = {
+          content: toolResult,
+          role: 'tool',
+          tool_call_id: toolCall.id,
+        } satisfies Message
+
+        toolMessages.push(toolMessage)
+      }
+
+      return await generateText({
+        ...options,
+        messages: [
+          ...options.messages,
+          { ...message, content: message.content! },
+          ...toolMessages,
+        ],
+      })
     })
