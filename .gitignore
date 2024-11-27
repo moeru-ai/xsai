@@ -5,6 +5,7 @@ pnpm-debug.log*
 
 node_modules
 dist
+doc_build
 *.local
 
 # Editor directories and files

@@ -10,6 +10,7 @@
     "build": "corepack pnpm -r build",
     "build:watch": "corepack pnpm -r build:watch",
     "bump": "bumpp --all --no-push",
+    "docs:dev": "corepack pnpm -rF @xsai/docs dev",
     "lint": "eslint --flag unstable_ts_config .",
     "lint:fix": "eslint --flag unstable_ts_config . --fix"
   },

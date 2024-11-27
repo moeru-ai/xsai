@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "@importantimport/tsconfig/app.json",
+    "@importantimport/tsconfig/parts/jsx-react.json"
+  ],
+  "include": ["docs", "theme", "rspress.config.ts"],
+  "mdx": {
+    "checkMdx": true
+  }
+}
