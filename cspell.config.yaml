@@ -1,0 +1,21 @@
+version: "0.2"
+ignorePaths: []
+dictionaryDefinitions: []
+dictionaries: []
+words:
+  - all-minilm
+  - automd
+  - bumpp
+  - gcornut
+  - importantimport
+  - moeru-ai
+  - mxbai-embed-large
+  - nomic-embed-text
+  - Ollama
+  - pkgroll
+  - typeschema
+  - valibot
+  - Vitest
+  - xsai
+ignoreWords: []
+import: []
