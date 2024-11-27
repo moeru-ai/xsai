@@ -39,6 +39,6 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
   }))
     .then(({ finishReason, text, usage }) => ({
       finishReason,
-      object: JSON.parse(text),
+      object: JSON.parse(text || '{}'),
       usage,
     }))
