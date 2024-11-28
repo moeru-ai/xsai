@@ -1,3 +1,4 @@
+import { metadataImage } from '@/lib/metadata'
 import { source } from '@/lib/source'
 import { getGithubLastEdit } from 'fumadocs-core/server'
 import { Popup, PopupContent, PopupTrigger } from 'fumadocs-twoslash/ui'
@@ -65,8 +66,8 @@ export const generateMetadata = async (props: {
   if (!page)
     notFound()
 
-  return {
+  return metadataImage.withImage(page.slugs, {
     description: page.data.description,
     title: page.data.title,
-  }
+  })
 }
