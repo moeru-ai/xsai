@@ -13,6 +13,9 @@ const inter = Inter({
 
 export default ({ children }: PropsWithChildren) => (
   <html className={inter.className} lang="en" suppressHydrationWarning>
+    <head>
+      <link href="https://github.com/moeru-ai.png" rel="icon" type="image/png" />
+    </head>
     <body className="flex flex-col min-h-screen">
       <RootProvider>{children}</RootProvider>
     </body>
