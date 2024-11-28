@@ -5,7 +5,6 @@ pnpm-debug.log*
 
 node_modules
 dist
-doc_build
 *.local
 
 # Editor directories and files
@@ -16,3 +15,20 @@ doc_build
 *.njsproj
 *.sln
 *.sw?
+
+# docs:generated content
+.contentlayer
+.content-collections
+.source
+
+# docs:test & build
+coverage
+.next
+out
+build
+*.tsbuildinfo
+
+# docs:others
+.env*.local
+.vercel
+next-env.d.ts
