@@ -105,6 +105,9 @@ importers:
       '@xsai/stream-text':
         specifier: workspace:^
         version: link:../packages/stream-text
+      '@xsai/tool':
+        specifier: workspace:^
+        version: link:../packages/tool
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
