@@ -1,0 +1,8 @@
+{
+  "title": "Getting Started",
+  "defaultOpen": true,
+  "pages": [
+    "overview",
+    "generate-text"
+  ]
+}

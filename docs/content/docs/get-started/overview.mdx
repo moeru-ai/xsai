@@ -1,0 +1,36 @@
+---
+title: Overview
+---
+
+---
+
+## Packages
+
+xsAI splits different features into different packages.
+
+You can either choose to install a sub-package or an integrated package,
+which contains all the basic tools.
+
+```package-install
+npm i xsai
+```
+
+[Try with pkg-size.dev](https://pkg-size.dev/xsai)
+
+Update the import of the sub-package to an integrated package:
+
+```diff
+- import { generateText } from '@xsai/generate-text'
++ import { generateText } from '@xsai/generate-text'
+```
+
+## Steps
+
+<Cards>
+  <Card
+    title="Generating Text"
+    description="Call to LLM starts with a bundle size of about 1KB."
+    href="generate-text"
+    external={false}
+  />
+</Cards>
