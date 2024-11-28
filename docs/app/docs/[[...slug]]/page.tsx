@@ -28,13 +28,13 @@ export default async (props: {
     sha: 'main',
   }
 
-  // const time = await getGithubLastEdit({ owner, path, repo })
+  const time = await getGithubLastEdit({ owner, path, repo })
 
   return (
     <DocsPage
       editOnGithub={{ owner, path, repo, sha }}
       full={page.data.full}
-      // lastUpdate={new Date(time ?? Date.now())}
+      lastUpdate={new Date(time ?? Date.now())}
       toc={page.data.toc}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
