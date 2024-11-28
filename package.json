@@ -11,6 +11,7 @@
     "build:watch": "corepack pnpm -r build:watch",
     "bump": "bumpp --all --no-push",
     "docs:dev": "corepack pnpm -rF @xsai/docs dev",
+    "docs:generate-files": "corepack pnpm -rF @xsai/docs generate-files",
     "lint": "eslint --flag unstable_ts_config .",
     "lint:fix": "eslint --flag unstable_ts_config . --fix"
   },
@@ -25,6 +26,7 @@
     "eslint": "^9.15.0",
     "jiti": "^2.4.0",
     "pkgroll": "^2.5.1",
+    "tsx": "^4.19.2",
     "vitest": "^2.1.5"
   }
 }
