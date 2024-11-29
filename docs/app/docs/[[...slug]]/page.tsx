@@ -68,6 +68,7 @@ export const generateMetadata = async (props: {
 
   return metadataImage.withImage(page.slugs, {
     description: page.data.description,
+    metadataBase: new URL('https://xsai.js.org'),
     title: page.data.title,
   })
 }
