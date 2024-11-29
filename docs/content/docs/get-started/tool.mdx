@@ -1,6 +1,6 @@
 ---
-title: Tool Calling (WIP)
-# description: 
+title: Tool Calling
+description: Connect LLMs to external data and systems.
 ---
 
 ---
@@ -14,6 +14,48 @@ npm i @xsai/tool
 [Try with pkg-size.dev](https://pkg-size.dev/@xsai/tool)
 
 ## tool
+
+Define a tool.
+
+```ts twoslash
+import { tool } from '@xsai/tool'
+import { description, object, pipe, string } from 'valibot'
+
+const weather = await tool({
+  description: 'Get the weather in a location',
+  execute: ({ location }) => JSON.stringify({
+    location,
+    temperature: 42,
+  }),
+  name: 'weather',
+  parameters: object({
+    location: pipe(
+      string(),
+      description('The location to get the weather for'),
+    ),
+  }),
+})
+```
+
+### Options
+
+#### name, description
+
+Used to describe this tool.
+
+Since @xsai/tool is more directly related to the actual request parameters (using an array rather than an object), you need to specify the name.
+
+#### parameters
+
+Function parameters.
+
+With [`@typeschema/main`](https://typeschema.com), you can use (almost) any type validation library you want to use.
+
+#### execute
+
+Execute the function.
+
+It accepts parameters as defined above and returns the string (other types may be allowed later).
 
 ## Examples
 
