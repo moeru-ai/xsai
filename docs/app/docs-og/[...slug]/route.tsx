@@ -3,7 +3,7 @@ import { generateOGImage } from 'fumadocs-ui/og'
 
 export const GET = metadataImage.createAPI(page => generateOGImage({
   description: page.data.description,
-  icon: (<img src="https://github.com/moeru-ai.png" />),
+  icon: (<img height="16" src="https://github.com/moeru-ai.png" width="16" />),
   site: 'xsAI',
   title: page.data.title,
 }))

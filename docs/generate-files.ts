@@ -1,5 +1,4 @@
-import { generateFiles, generateMDX } from 'fumadocs-typescript'
-import * as fs from 'node:fs/promises'
+import { generateFiles } from 'fumadocs-typescript'
 import * as path from 'node:path'
 
 void generateFiles({
