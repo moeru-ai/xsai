@@ -1,0 +1,70 @@
+---
+title: Embeddings (WIP)
+# description: 
+---
+
+---
+
+## Install
+
+```package-install
+npm i @xsai/embed
+```
+
+[Try with pkg-size.dev](https://pkg-size.dev/@xsai/embed)
+
+## embed
+
+### Options
+
+#### model
+
+string.
+
+#### input
+
+string.
+
+## embedMany
+
+### Options
+
+#### model
+
+string.
+
+#### input
+
+string array.
+
+## Examples
+
+### Embedding a Single Value
+
+```ts twoslash
+import { embed } from '@xsai/embed'
+
+const { embedding } = await embed({
+  model: 'nomic-embed-text',
+  input: 'sunny day at the beach',
+})
+```
+
+### Embedding Many Values
+
+```ts twoslash
+import { embedMany } from '@xsai/embed'
+
+const { embeddings } = await embedMany({
+  model: 'nomic-embed-text',
+  input: [
+    'sunny day at the beach',
+    'rainy afternoon in the city',
+    'snowy night in the mountains',
+  ],
+})
+```
+
+## References
+
+see [`@xsai/embed`](../references/embed)

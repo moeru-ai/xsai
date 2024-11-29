@@ -6,6 +6,7 @@
     "generate-text",
     "stream-text",
     "generate-object",
-    "tool"
+    "tool",
+    "embed"
   ]
 }
