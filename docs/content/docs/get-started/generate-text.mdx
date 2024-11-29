@@ -13,9 +13,7 @@ npm i @xsai/generate-text
 
 [Try with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text)
 
-## Usage
-
-### generateText
+## generateText
 
 You can generate text using the `generateText` function.
 
@@ -36,6 +34,73 @@ const { text } = await generateText({
     }
   ],
   model: 'llama3.2',
+})
+```
+
+### Options
+
+#### base, path, headers
+
+xsAI connects to with Ollama's OpenAI-compatible API by default.
+
+Take `generateText` for example:
+
+```ts twoslash
+const base = 'http://localhost:11434/v1/'
+const path = 'chat/completions'
+
+// http://localhost:11434/v1/chat/completions
+const req = new Request(new URL(path, base))
+```
+
+If you want to connect to the OpenAI API, just set the `base` and `headers`:
+
+```diff
+import { generateText } from '@xsai/generate-text'
+
+const { text } = await generateText({
++ base: 'https://api.openai.com/v1/',
++ headers: { Authorization: 'Bearer sk-******' },
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+  model: 'llama3.2',
+})
+```
+
+#### messages
+
+xsAI doesn't support the `system` and `prompt` params,
+you must pass the full `messages`.
+
+```diff
+- import { generateText } from 'ai'
++ import { generateText } from '@xsai/generate-text'
+
+const { text } = await generateText({
+  model: yourModel,
+- system:
+-   'You are a professional writer. ' +
+-   'You write simple, clear, and concise content.',
+- prompt: `Summarize the following article in 3-5 sentences: ${article}`,
++ messages: [
++   {
++     content: 'You are a professional writer. ' +
++       'You write simple, clear, and concise content.',
++     role: 'system',
++   },
++   {
++     content: `Summarize the following article in 3-5 sentences: ${article}`,
++     role: 'user',
++   },
++ ]
 })
 ```
 
