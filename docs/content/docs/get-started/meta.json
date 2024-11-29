@@ -3,6 +3,9 @@
   "defaultOpen": true,
   "pages": [
     "overview",
-    "generate-text"
+    "generate-text",
+    "stream-text",
+    "generate-object",
+    "tool"
   ]
 }

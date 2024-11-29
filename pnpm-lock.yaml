@@ -120,6 +120,9 @@ importers:
       '@xsai/embed':
         specifier: workspace:^
         version: link:../packages/embed
+      '@xsai/generate-object':
+        specifier: workspace:^
+        version: link:../packages/generate-object
       '@xsai/generate-text':
         specifier: workspace:^
         version: link:../packages/generate-text
