@@ -15,6 +15,49 @@ npm i @xsai/tool
 
 ## tool
 
+## Examples
+
+### Get weather
+
+```ts twoslash
+import generateText from '@xsai/generate-text'
+import { tool } from '@xsai/tool'
+import { description, object, pipe, string } from 'valibot'
+
+import '@xsai/tool/generate-text'
+
+const weather = await tool({
+  description: 'Get the weather in a location',
+  execute: ({ location }) => JSON.stringify({
+    location,
+    temperature: 42,
+  }),
+  name: 'weather',
+  parameters: object({
+    location: pipe(
+      string(),
+      description('The location to get the weather for'),
+    ),
+  }),
+})
+
+const { text } = await generateText({
+  messages: [
+    {
+      content: 'You are a helpful assistant.',
+      role: 'system',
+    },
+    {
+      content: 'What is the weather in San Francisco?',
+      role: 'user',
+    },
+  ],
+  model: 'llama3.2',
+  toolChoice: 'required',
+  tools: [weather],
+})
+```
+
 ## References
 
 see [`@xsai/tool`](../references/tool)
