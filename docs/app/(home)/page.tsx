@@ -5,11 +5,8 @@ import Link from 'fumadocs-core/link'
 import React from 'react'
 
 export default () => (
-  <BackgroundLines className="-mt-14 h-screen w-full rounded-md flex md:items-center md:justify-center relative overflow-hidden">
-    <Spotlight
-      // className="-top-56"
-      fill="white"
-    />
+  <BackgroundLines className="-mt-14 h-screen w-full rounded-md flex items-center justify-center relative overflow-hidden">
+    <Spotlight fill="white" />
     <div className="flex flex-col items-center gap-8 p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
       <h1 className="text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-fd-foreground to-fd-muted-foreground bg-opacity-50">
         <small>extra-small</small>
