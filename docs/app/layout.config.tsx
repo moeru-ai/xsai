@@ -1,5 +1,7 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 
+import { version } from '../package.json' with { type: 'json' }
+
 /**
  * Shared layout configurations
  *
@@ -18,10 +20,13 @@ export const baseOptions: BaseLayoutProps = {
   ],
   nav: {
     title: (
-      <>
-        <img className="size-6" src="https://github.com/moeru-ai.png" />
+      <div className="prose flex items-center justify-center gap-3">
+        <img className="size-6 mb-0 -mr-1" src="https://github.com/moeru-ai.png" />
         <span>xsAI</span>
-      </>
+        <code className="py-0 px-1">
+          {version}
+        </code>
+      </div>
     ),
     transparentMode: 'top',
   },
