@@ -16,7 +16,7 @@ describe('@xsai/stream-text', () => {
         },
       ],
       model: 'llama3.2',
-      streamOptions: { usage: true },
+      // streamOptions: { usage: true },
     })
 
     const result: string[] = []
@@ -28,7 +28,7 @@ describe('@xsai/stream-text', () => {
     expect(result.join('')).toStrictEqual('YES')
   })
 
-  it('42', async () => {
+  it('pi', async () => {
     const { textStream } = await streamText({
       messages: [
         {
@@ -36,12 +36,11 @@ describe('@xsai/stream-text', () => {
           role: 'system',
         },
         {
-          content: 'What is the Answer to the Ultimate Question of Life, The Universe, and Everything?',
+          content: 'Please tell me the number of decimal places from zero to seventeen for PI and do not answer anything else.',
           role: 'user',
         },
       ],
-      model: 'llama3.2',
-      seed: 42,
+      model: 'mistral-nemo',
     })
 
     const result: string[] = []

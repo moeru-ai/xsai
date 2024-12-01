@@ -1,4 +1,4 @@
-import generateText from '@xsai/generate-text'
+import { generateText } from '@xsai/generate-text'
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
@@ -56,11 +56,11 @@ describe('@xsai/tool', () => {
           role: 'system',
         },
         {
-          content: 'What is the weather in San Francisco?',
+          content: 'What is the weather in San Francisco? do not answer anything else.',
           role: 'user',
         },
       ],
-      model: 'llama3.2',
+      model: 'mistral-nemo',
       seed: 42,
       toolChoice: 'required',
       tools: [weather],

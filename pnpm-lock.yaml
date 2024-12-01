@@ -175,20 +175,23 @@ importers:
 
   packages/generate-text:
     dependencies:
-      '@xsai/shared':
+      '@xsai/shared-chat-completion':
         specifier: 'workspace:'
-        version: link:../shared
+        version: link:../shared-chat-completion
 
   packages/shared: {}
 
-  packages/stream-text:
+  packages/shared-chat-completion:
     dependencies:
-      '@xsai/generate-text':
-        specifier: 'workspace:'
-        version: link:../generate-text
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
+
+  packages/stream-text:
+    dependencies:
+      '@xsai/shared-chat-completion':
+        specifier: 'workspace:'
+        version: link:../shared-chat-completion
 
   packages/tool:
     dependencies:

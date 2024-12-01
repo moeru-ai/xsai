@@ -1,5 +1,5 @@
 {
-  "name": "@xsai/stream-text",
+  "name": "@xsai/shared-chat-completion",
   "version": "0.0.10",
   "type": "module",
   "author": "藍+85CD",
@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages/stream-text"
+    "directory": "packages/shared"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "main": "./dist/index.js",
@@ -24,11 +24,9 @@
   ],
   "scripts": {
     "build": "pkgroll",
-    "build:watch": "pkgroll --watch",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "build:watch": "pkgroll --watch"
   },
   "dependencies": {
-    "@xsai/shared-chat-completion": "workspace:"
+    "@xsai/shared": "workspace:"
   }
 }
