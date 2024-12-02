@@ -2,9 +2,9 @@
   "name": "@xsai/embed",
   "version": "0.0.10",
   "type": "module",
-  "author": "藍+85CD",
+  "author": "Moeru AI",
   "license": "MIT",
-  "homepage": "https://github.com/moeru-ai/xsai",
+  "homepage": "https://xsai.js.org",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
