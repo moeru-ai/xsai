@@ -18,11 +18,17 @@ export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyRes
     body: JSON.stringify(clean({
       ...options,
       abortSignal: undefined,
+      apiKey: undefined,
       headers: undefined,
       url: undefined,
     })),
     headers: {
       'Content-Type': 'application/json',
+      ...(options.apiKey
+        ? {
+            Authorization: `Bearer ${options.apiKey}`,
+          }
+        : {}),
       ...options.headers,
     },
     method: 'POST',

@@ -6,6 +6,7 @@ export const chatCompletion = async <T extends ChatCompletionOptions>(options: T
   body: JSON.stringify(clean({
     ...objCamelToSnake(options),
     abortSignal: undefined,
+    apiKey: undefined,
     headers: undefined,
     tools: (options.tools as Tool[] | undefined)?.map(tool => ({
       function: tool.function,
@@ -15,6 +16,11 @@ export const chatCompletion = async <T extends ChatCompletionOptions>(options: T
   })),
   headers: {
     'Content-Type': 'application/json',
+    ...(options.apiKey
+      ? {
+          Authorization: `Bearer ${options.apiKey}`,
+        }
+      : {}),
     ...options.headers,
   },
   method: 'POST',

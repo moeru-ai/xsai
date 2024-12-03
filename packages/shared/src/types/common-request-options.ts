@@ -1,5 +1,6 @@
 export interface CommonRequestOptions {
   abortSignal?: AbortSignal
+  apiKey?: string
   /** @default `undefined` */
   headers?: Headers | Record<string, string>
   /** @example `gpt-4o` */

@@ -33,11 +33,17 @@ export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
     body: JSON.stringify(clean({
       ...options,
       abortSignal: undefined,
+      apiKey: undefined,
       headers: undefined,
       url: undefined,
     })),
     headers: {
       'Content-Type': 'application/json',
+      ...(options.apiKey
+        ? {
+            Authorization: `Bearer ${options.apiKey}`,
+          }
+        : {}),
       ...options.headers,
     },
     method: 'POST',
