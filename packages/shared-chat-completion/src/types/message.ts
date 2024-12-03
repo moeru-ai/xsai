@@ -13,7 +13,7 @@ export interface SystemMessage extends CommonMessage<'system', TextPart> {}
 export interface UserMessage extends CommonMessage<'user', AudioPart | ImagePart | TextPart> { }
 
 export interface AssistantMessage extends CommonMessage<'assistant', RefusalPart | TextPart> {
-  refusal?: string
+  refusal?: null | string
   tool_calls?: {
     function: {
       arguments: string
