@@ -42,6 +42,9 @@ export interface StreamTextResponse {
   usage?: StreamTextResponseUsage
 }
 
+const dataHeaderPrefix = 'data: '
+const dataErrorPrefix = `{"error":`
+
 /**
  * @experimental
  * WIP, currently only returns `textStream`, does not support function calling (tools).
@@ -64,20 +67,33 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       const rawChunkStream = res.body.pipeThrough(new TransformStream({
         transform: (chunk, controller) => {
           for (const line of decoder.decode(chunk).split('\n').filter(line => line)) {
-            if (line !== 'data: [DONE]') {
-              const data: StreamTextResponse = JSON.parse(line.slice(6))
-
-              controller.enqueue(data)
-
-              if (data.choices[0].finish_reason) {
-                finishReason = data.choices[0].finish_reason
-              }
-
-              if (data.usage)
-                usage = data.usage
+            // Some cases:
+            // - Empty chunk
+            // - :ROUTER PROCESSING from OpenRouter
+            if (!line || !line.startsWith(dataHeaderPrefix)) {
+              continue
             }
-            else {
+
+            if (line.startsWith(dataErrorPrefix)) {
+              // About controller error: https://developer.mozilla.org/en-US/docs/Web/API/TransformStreamDefaultController/error
+              controller.error(new Error(`Error from server: ${line}`))
+              continue
+            }
+
+            const lineWithoutPrefix = line.slice(dataHeaderPrefix.length)
+            if (lineWithoutPrefix === '[DONE]') {
               controller.terminate()
+              continue
+            }
+
+            const data: StreamTextResponse = JSON.parse(line.slice(6))
+            controller.enqueue(data)
+
+            if (data.choices[0].finish_reason) {
+              finishReason = data.choices[0].finish_reason
+            }
+            if (data.usage) {
+              usage = data.usage
             }
           }
         },
