@@ -17,6 +17,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./providers": {
+      "types": "./dist/providers.d.ts",
+      "default": "./dist/providers.js"
     }
   },
   "files": [
@@ -30,6 +34,7 @@
     "@xsai/embed": "workspace:",
     "@xsai/generate-object": "workspace:",
     "@xsai/generate-text": "workspace:",
+    "@xsai/providers": "workspace:",
     "@xsai/stream-text": "workspace:",
     "@xsai/tool": "workspace:"
   }

@@ -250,6 +250,9 @@ importers:
       '@xsai/generate-text':
         specifier: 'workspace:'
         version: link:../generate-text
+      '@xsai/providers':
+        specifier: 'workspace:'
+        version: link:../providers
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../stream-text
