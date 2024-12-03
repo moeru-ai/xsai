@@ -126,6 +126,9 @@ importers:
       '@xsai/generate-text':
         specifier: workspace:^
         version: link:../packages/generate-text
+      '@xsai/providers':
+        specifier: workspace:^
+        version: link:../packages/providers
       '@xsai/stream-text':
         specifier: workspace:^
         version: link:../packages/stream-text

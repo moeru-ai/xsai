@@ -43,9 +43,10 @@ string array.
 
 ```ts twoslash
 import { embed } from '@xsai/embed'
+import { ollama } from '@xsai/providers'
 
 const { embedding } = await embed({
-  model: 'nomic-embed-text',
+  ...ollama.embeddings('nomic-embed-text'),
   input: 'sunny day at the beach',
 })
 ```
@@ -54,9 +55,10 @@ const { embedding } = await embed({
 
 ```ts twoslash
 import { embedMany } from '@xsai/embed'
+import { ollama } from '@xsai/providers'
 
 const { embeddings } = await embedMany({
-  model: 'nomic-embed-text',
+  ...ollama.embeddings('nomic-embed-text'),
   input: [
     'sunny day at the beach',
     'rainy afternoon in the city',

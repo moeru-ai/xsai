@@ -21,8 +21,10 @@ It does not support streaming, so it is suitable for non-interactive use cases.
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
+import { ollama } from '@xsai/providers'
 
 const { text } = await generateText({
+  ...ollama.chat('llama3.2'),
   messages: [
     {
       content: 'You\'re a helpful assistant.',
@@ -33,47 +35,10 @@ const { text } = await generateText({
       role: 'user'
     }
   ],
-  model: 'llama3.2',
 })
 ```
 
 ### Options
-
-#### base, path, headers
-
-xsAI connects to with Ollama's OpenAI-compatible API by default.
-
-Take `generateText` for example:
-
-```ts twoslash
-const base = 'http://localhost:11434/v1/'
-const path = 'chat/completions'
-
-// http://localhost:11434/v1/chat/completions
-const req = new Request(new URL(path, base))
-```
-
-If you want to connect to the OpenAI API, just set the `base` and `headers`:
-
-```diff
-import { generateText } from '@xsai/generate-text'
-
-const { text } = await generateText({
-+ base: 'https://api.openai.com/v1/',
-+ headers: { Authorization: 'Bearer sk-******' },
-  messages: [
-    {
-      content: 'You\'re a helpful assistant.',
-      role: 'system'
-    },
-    {
-      content: 'Why is the sky blue?',
-      role: 'user'
-    }
-  ],
-  model: 'llama3.2',
-})
-```
 
 #### messages
 
