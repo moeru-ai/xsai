@@ -6,13 +6,12 @@ export const chatCompletion = async <T extends ChatCompletionOptions>(options: T
   body: JSON.stringify(clean({
     ...objCamelToSnake(options),
     abortSignal: undefined,
-    base: undefined,
     headers: undefined,
-    path: undefined,
     tools: (options.tools as Tool[] | undefined)?.map(tool => ({
       function: tool.function,
       type: 'function',
     })),
+    url: undefined,
   })),
   headers: {
     'Content-Type': 'application/json',

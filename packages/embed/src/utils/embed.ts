@@ -34,9 +34,8 @@ export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
     body: JSON.stringify(clean({
       ...options,
       abortSignal: undefined,
-      base: undefined,
       headers: undefined,
-      path: undefined,
+      url: undefined,
     })),
     headers: {
       'Content-Type': 'application/json',

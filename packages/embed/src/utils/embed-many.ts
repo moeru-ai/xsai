@@ -20,6 +20,7 @@ export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyRes
       ...options,
       abortSignal: undefined,
       headers: undefined,
+      url: undefined,
     })),
     headers: {
       'Content-Type': 'application/json',
