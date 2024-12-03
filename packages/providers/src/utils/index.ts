@@ -1,1 +1,1 @@
-export * from './generate-provider-result'
+export * from './generate-cro'

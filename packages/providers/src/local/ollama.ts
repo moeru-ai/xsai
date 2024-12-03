@@ -1,14 +1,15 @@
-import type { CommonProviderOptions } from '../types/common-provider-options'
-import type { ProviderResult } from '../types/provider-result'
+import type { CommonRequestOptions } from '@xsai/shared'
 
-import { generateProviderResult } from '../utils/generate-provider-result'
+import type { CommonProviderOptions } from '../types/common-provider-options'
+
+import { generateCRO } from '../utils/generate-cro'
 
 type OllamaChatModel = 'gemma2' | 'llama3.1' | 'llama3.2' | 'llama3.2-vision' | 'mistral-nemo' | 'mistral-small' | 'nemotron' | 'qwen2.5' | 'qwen2.5-coder' | ({} & string)
 type OllamaEmbeddingsModel = 'all-minilm' | 'mxbai-embed-large' | 'nomic-embed-text' | ({} & string)
 
 export interface OllamaProvider {
-  chat: (model: OllamaChatModel) => ProviderResult
-  embeddings: (model: OllamaEmbeddingsModel) => ProviderResult
+  chat: (model: OllamaChatModel) => CommonRequestOptions
+  embeddings: (model: OllamaEmbeddingsModel) => CommonRequestOptions
 }
 
 export const createOllama = (userOptions?: CommonProviderOptions): OllamaProvider => {
@@ -18,8 +19,8 @@ export const createOllama = (userOptions?: CommonProviderOptions): OllamaProvide
   }
 
   return {
-    chat: model => generateProviderResult(model, 'chat/completions', options),
-    embeddings: model => generateProviderResult(model, 'embeddings', options),
+    chat: model => generateCRO(model, 'chat/completions', options),
+    embeddings: model => generateCRO(model, 'embeddings', options),
   }
 }
 

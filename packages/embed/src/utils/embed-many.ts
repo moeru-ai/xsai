@@ -5,7 +5,6 @@ import type { EmbedResponse, EmbedResponseUsage } from './embed'
 export interface EmbedManyOptions extends CommonRequestOptions {
   [key: string]: unknown
   input: string[]
-  model: string
 }
 
 export interface EmbedManyResult {

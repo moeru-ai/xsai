@@ -1,7 +1,8 @@
-import type { CommonProviderOptions } from '../types/common-provider-options'
-import type { ProviderResult } from '../types/provider-result'
+import type { CommonRequestOptions } from '@xsai/shared'
 
-export const generateProviderResult = (model: string, path: string, { apiKey, baseURL, headers }: CommonProviderOptions): ProviderResult => ({
+import type { CommonProviderOptions } from '../types/common-provider-options'
+
+export const generateCRO = (model: string, path: string, { apiKey, baseURL, headers }: CommonProviderOptions): CommonRequestOptions => ({
   headers: {
     ...headers,
     ...(apiKey

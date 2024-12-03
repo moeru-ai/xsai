@@ -3,7 +3,6 @@ import { clean, type CommonRequestOptions } from '@xsai/shared'
 export interface EmbedOptions extends CommonRequestOptions {
   [key: string]: unknown
   input: string
-  model: string
 }
 
 export interface EmbedResponse {

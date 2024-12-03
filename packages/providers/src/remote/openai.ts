@@ -1,15 +1,16 @@
-import type { CommonProviderOptions } from '../types/common-provider-options'
-import type { ProviderResult } from '../types/provider-result'
+import type { CommonRequestOptions } from '@xsai/shared'
 
-import { generateProviderResult } from '../utils/generate-provider-result'
+import type { CommonProviderOptions } from '../types/common-provider-options'
+
+import { generateCRO } from '../utils/generate-cro'
 
 /** @see {@link https://platform.openai.com/docs/models#model-endpoint-compatibility} */
 type OpenAIChatModel = 'gpt-4o' | 'gpt-4o-mini' | 'o1-mini' | 'o1-preview' | ({} & string)
 type OpenAIEmbeddingsModel = 'text-embedding-3-large' | 'text-embedding-3-small' | ({} & string)
 
 export interface OpenAIProvider {
-  chat: (model: OpenAIChatModel) => ProviderResult
-  embeddings: (model: OpenAIEmbeddingsModel) => ProviderResult
+  chat: (model: OpenAIChatModel) => CommonRequestOptions
+  embeddings: (model: OpenAIEmbeddingsModel) => CommonRequestOptions
 }
 
 export const createOpenAI = (userOptions: Omit<CommonProviderOptions, 'apiKey'> & Required<Pick<CommonProviderOptions, 'apiKey'>>): OpenAIProvider => {
@@ -19,7 +20,7 @@ export const createOpenAI = (userOptions: Omit<CommonProviderOptions, 'apiKey'> 
   }
 
   return {
-    chat: model => generateProviderResult(model, 'chat/completions', options),
-    embeddings: model => generateProviderResult(model, 'embeddings', options),
+    chat: model => generateCRO(model, 'chat/completions', options),
+    embeddings: model => generateCRO(model, 'embeddings', options),
   }
 }
