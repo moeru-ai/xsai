@@ -39,6 +39,10 @@ If you only need the basic `generateText`, `@xsai/generate-text@0.0.12` is only 
 
 Read the [documentation](https://xsai.js.org/docs) to get started.
 
+## Status
+
+xsAI is currently in an early stage of development and may introduce breaking changes at any time.
+
 ## License
 
 [MIT](LICENSE.md)
