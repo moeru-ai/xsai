@@ -32,6 +32,7 @@
     "@xsai/shared-chat-completion": "workspace:"
   },
   "devDependencies": {
-    "@xsai/providers": "workspace:"
+    "@xsai/providers": "workspace:",
+    "@xsai/shared": "workspace:"
   }
 }

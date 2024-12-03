@@ -1,7 +1,8 @@
 import { ollama } from '@xsai/providers'
+import { clean } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
-import { streamText } from '../src'
+import { streamText, type StreamTextResponse } from '../src'
 
 describe('@xsai/stream-text', () => {
   it('basic', async () => {
@@ -29,28 +30,39 @@ describe('@xsai/stream-text', () => {
     expect(result.join('')).toStrictEqual('YES')
   })
 
-  it('pi', async () => {
-    const { textStream } = await streamText({
-      ...ollama.chat('mistral-nemo'),
+  it('the-quick-brown-fox', async () => {
+    const { chunkStream, textStream } = await streamText({
+      ...ollama.chat('llama3.2'),
       messages: [
         {
           content: 'You are a helpful assistant.',
           role: 'system',
         },
         {
-          content: 'Please tell me the number of decimal places from zero to seventeen for PI and do not answer anything else.',
+          content: 'This is a test, so please answer \'The quick brown fox jumps over the lazy dog.\' and nothing else.',
           role: 'user',
         },
       ],
     })
 
-    const result: string[] = []
+    const chunk: StreamTextResponse[] = []
+    const text: string[] = []
 
-    for await (const textPart of textStream) {
-      result.push(textPart)
+    for await (const chunkPart of chunkStream) {
+      chunk.push(clean({
+        ...chunkPart,
+        created: undefined,
+        id: undefined,
+      }))
     }
 
-    expect(result.join('')).toMatchSnapshot()
-    expect(result).toMatchSnapshot()
+    for await (const textPart of textStream) {
+      text.push(textPart)
+    }
+
+    expect(text.join('')).toBe('The quick brown fox jumps over the lazy dog.')
+    expect(text).toMatchSnapshot()
+
+    expect(chunk).toMatchSnapshot()
   })
 })

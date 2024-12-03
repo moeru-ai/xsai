@@ -213,6 +213,9 @@ importers:
       '@xsai/providers':
         specifier: 'workspace:'
         version: link:../providers
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
 
   packages/tool:
     dependencies:

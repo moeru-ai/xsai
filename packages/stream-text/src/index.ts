@@ -18,11 +18,13 @@ export interface StreamTextResponseUsage {
 }
 
 export interface StreamTextResult {
+  chunkStream: ReadableStream<StreamTextResponse>
   finishReason?: FinishReason
   textStream: ReadableStream<string>
   usage?: StreamTextResponseUsage
 }
 
+// TODO: improve chunk type
 export interface StreamTextResponse {
   choices: {
     delta: {
@@ -59,13 +61,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       let finishReason: string | undefined
       let usage: StreamTextResponseUsage | undefined
 
-      const textStream = res.body.pipeThrough(new TransformStream({
+      const rawChunkStream = res.body.pipeThrough(new TransformStream({
         transform: (chunk, controller) => {
           for (const line of decoder.decode(chunk).split('\n').filter(line => line)) {
             if (line !== 'data: [DONE]') {
               const data: StreamTextResponse = JSON.parse(line.slice(6))
 
-              controller.enqueue(data.choices[0].delta.content)
+              controller.enqueue(data)
 
               if (data.choices[0].finish_reason) {
                 finishReason = data.choices[0].finish_reason
@@ -81,7 +83,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         },
       }))
 
-      return { finishReason, textStream, usage }
+      const [chunkStream, rawTextStream] = rawChunkStream.tee()
+
+      const textStream = rawTextStream.pipeThrough(new TransformStream({
+        transform: (chunk, controller) => controller.enqueue(chunk.choices[0].delta.content),
+      }))
+
+      return { chunkStream, finishReason, textStream, usage }
     })
 
 export default streamText

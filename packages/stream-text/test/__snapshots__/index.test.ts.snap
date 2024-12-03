@@ -1,35 +1,187 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/stream-text > pi 1`] = `"Pi to 17 decimal places: 3.141592653589793"`;
-
-exports[`@xsai/stream-text > pi 2`] = `
+exports[`@xsai/stream-text > the-quick-brown-fox 1`] = `
 [
-  "Pi",
-  " to",
-  " ",
-  "1",
-  "7",
-  " decimal",
-  " places",
-  ":",
-  " ",
-  "3",
+  "The",
+  " quick",
+  " brown",
+  " fox",
+  " jumps",
+  " over",
+  " the",
+  " lazy",
+  " dog",
   ".",
-  "1",
-  "4",
-  "1",
-  "5",
-  "9",
-  "2",
-  "6",
-  "5",
-  "3",
-  "5",
-  "8",
-  "9",
-  "7",
-  "9",
-  "3",
   "",
+]
+`;
+
+exports[`@xsai/stream-text > the-quick-brown-fox 2`] = `
+[
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "The",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " quick",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " brown",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " fox",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " jumps",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " over",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " the",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " lazy",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " dog",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": ".",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "",
+          "role": "assistant",
+        },
+        "finish_reason": "stop",
+        "index": 0,
+      },
+    ],
+    "model": "llama3.2",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
 ]
 `;
