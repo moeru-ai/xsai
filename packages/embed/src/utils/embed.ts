@@ -1,11 +1,9 @@
-import { clean, type CommonRequestOptions, requestUrl } from '@xsai/shared'
+import { clean, type CommonRequestOptions } from '@xsai/shared'
 
-export type EmbedModel = 'all-minilm' | 'mxbai-embed-large' | 'nomic-embed-text' | ({} & string)
-
-export interface EmbedOptions extends CommonRequestOptions<'embeddings'> {
+export interface EmbedOptions extends CommonRequestOptions {
   [key: string]: unknown
   input: string
-  model: EmbedModel
+  model: string
 }
 
 export interface EmbedResponse {
@@ -32,7 +30,7 @@ export interface EmbedResult {
 }
 
 export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
-  await fetch(requestUrl(options.path ?? 'embeddings', options.base), {
+  await fetch(options.url, {
     body: JSON.stringify(clean({
       ...options,
       abortSignal: undefined,

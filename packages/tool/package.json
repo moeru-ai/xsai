@@ -38,6 +38,7 @@
   "devDependencies": {
     "@gcornut/valibot-json-schema": "catalog:",
     "@xsai/generate-text": "workspace:",
+    "@xsai/providers": "workspace:",
     "valibot": "catalog:"
   },
   "peerDependencies": {

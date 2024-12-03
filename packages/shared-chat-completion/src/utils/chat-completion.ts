@@ -1,8 +1,8 @@
-import { clean, objCamelToSnake, requestUrl } from '@xsai/shared'
+import { clean, objCamelToSnake } from '@xsai/shared'
 
 import type { ChatCompletionOptions, Tool } from '../types'
 
-export const chatCompletion = async <T extends ChatCompletionOptions>(options: T) => await fetch(requestUrl(options.path ?? 'chat/completions', options.base), {
+export const chatCompletion = async <T extends ChatCompletionOptions>(options: T) => await fetch(options.url, {
   body: JSON.stringify(clean({
     ...objCamelToSnake(options),
     abortSignal: undefined,

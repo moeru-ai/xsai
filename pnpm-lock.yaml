@@ -153,6 +153,10 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
+    devDependencies:
+      '@xsai/providers':
+        specifier: 'workspace:'
+        version: link:../providers
 
   packages/generate-object:
     dependencies:
@@ -178,6 +182,16 @@ importers:
       '@xsai/shared-chat-completion':
         specifier: 'workspace:'
         version: link:../shared-chat-completion
+    devDependencies:
+      '@xsai/providers':
+        specifier: 'workspace:'
+        version: link:../providers
+
+  packages/providers:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
 
   packages/shared: {}
 
@@ -192,6 +206,10 @@ importers:
       '@xsai/shared-chat-completion':
         specifier: 'workspace:'
         version: link:../shared-chat-completion
+    devDependencies:
+      '@xsai/providers':
+        specifier: 'workspace:'
+        version: link:../providers
 
   packages/tool:
     dependencies:
@@ -208,6 +226,9 @@ importers:
       '@xsai/generate-text':
         specifier: 'workspace:'
         version: link:../generate-text
+      '@xsai/providers':
+        specifier: 'workspace:'
+        version: link:../providers
       valibot:
         specifier: 'catalog:'
         version: 0.42.1(typescript@5.6.3)

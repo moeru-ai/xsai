@@ -1,4 +1,5 @@
 import { generateText } from '@xsai/generate-text'
+import { ollama } from '@xsai/providers'
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
@@ -50,6 +51,7 @@ describe('@xsai/tool', () => {
     })
 
     const { text } = await generateText({
+      ...ollama.chat('mistral-nemo'),
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -60,7 +62,6 @@ describe('@xsai/tool', () => {
           role: 'user',
         },
       ],
-      model: 'mistral-nemo',
       seed: 42,
       toolChoice: 'required',
       tools: [weather],

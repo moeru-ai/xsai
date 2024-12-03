@@ -1,4 +1,3 @@
-export type * from './chat-completion-model'
 export type * from './chat-completion-options'
 export type * from './finish-reason'
 export type * from './message'

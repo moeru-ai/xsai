@@ -1,3 +1,4 @@
+import { ollama } from '@xsai/providers'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'
@@ -5,6 +6,7 @@ import { streamText } from '../src'
 describe('@xsai/stream-text', () => {
   it('basic', async () => {
     const { textStream } = await streamText({
+      ...ollama.chat('llama3.2'),
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -15,7 +17,6 @@ describe('@xsai/stream-text', () => {
           role: 'user',
         },
       ],
-      model: 'llama3.2',
       // streamOptions: { usage: true },
     })
 
@@ -30,6 +31,7 @@ describe('@xsai/stream-text', () => {
 
   it('pi', async () => {
     const { textStream } = await streamText({
+      ...ollama.chat('mistral-nemo'),
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -40,7 +42,6 @@ describe('@xsai/stream-text', () => {
           role: 'user',
         },
       ],
-      model: 'mistral-nemo',
     })
 
     const result: string[] = []

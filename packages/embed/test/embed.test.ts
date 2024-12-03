@@ -1,3 +1,4 @@
+import { ollama } from '@xsai/providers'
 import { describe, expect, it } from 'vitest'
 
 import { embed } from '../src'
@@ -5,8 +6,8 @@ import { embed } from '../src'
 describe('@xsai/embed', () => {
   it('embed', async () => {
     const { embedding, usage } = await embed({
+      ...ollama.embeddings('nomic-embed-text'),
       input: 'sunny day at the beach',
-      model: 'nomic-embed-text',
     })
 
     expect(embedding).toMatchSnapshot()

@@ -1,3 +1,4 @@
+import { ollama } from '@xsai/providers'
 import { describe, expect, it } from 'vitest'
 
 import { generateText } from '../src'
@@ -5,6 +6,7 @@ import { generateText } from '../src'
 describe('@xsai/generate-text', () => {
   it('basic', async () => {
     const { text } = await generateText({
+      ...ollama.chat('llama3.2'),
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -15,7 +17,6 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'llama3.2',
     })
 
     expect(text).toStrictEqual('YES')
