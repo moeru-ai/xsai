@@ -1,6 +1,6 @@
 {
   "name": "@xsai/workspace",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "type": "module",
   "private": true,
   "packageManager": "pnpm@9.14.2",
@@ -26,6 +26,7 @@
     "eslint": "^9.15.0",
     "jiti": "^2.4.0",
     "pkgroll": "^2.5.1",
+    "tinyglobby": "^0.2.10",
     "tsx": "^4.19.2",
     "vitest": "^2.1.5"
   }

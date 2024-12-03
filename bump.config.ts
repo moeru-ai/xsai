@@ -1,6 +1,6 @@
 import { defineConfig } from 'bumpp'
-import { globSync as glob } from 'node:fs'
+import { globSync } from 'tinyglobby'
 
 export default defineConfig({
-  files: glob('**/package.json'),
+  files: globSync('**/package.json'),
 })
