@@ -1,4 +1,4 @@
-import { objCamelToSnake, requestBody } from '@xsai/shared'
+import { objCamelToSnake, requestBody, requestHeaders } from '@xsai/shared'
 
 import type { ChatCompletionOptions, Tool } from '../types'
 
@@ -10,15 +10,10 @@ export const chatCompletion = async <T extends ChatCompletionOptions>(options: T
       type: 'function',
     })),
   }),
-  headers: {
+  headers: requestHeaders({
     'Content-Type': 'application/json',
-    ...(options.apiKey
-      ? {
-          Authorization: `Bearer ${options.apiKey}`,
-        }
-      : {}),
     ...options.headers,
-  },
+  }, options.apiKey),
   method: 'POST',
   signal: options.abortSignal,
 })

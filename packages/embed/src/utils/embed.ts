@@ -1,4 +1,4 @@
-import { type CommonRequestOptions, requestBody } from '@xsai/shared'
+import { type CommonRequestOptions, requestBody, requestHeaders } from '@xsai/shared'
 
 export interface EmbedOptions extends CommonRequestOptions {
   [key: string]: unknown
@@ -31,15 +31,10 @@ export interface EmbedResult {
 export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
   await fetch(options.url, {
     body: requestBody(options),
-    headers: {
+    headers: requestHeaders({
       'Content-Type': 'application/json',
-      ...(options.apiKey
-        ? {
-            Authorization: `Bearer ${options.apiKey}`,
-          }
-        : {}),
       ...options.headers,
-    },
+    }, options.apiKey),
     method: 'POST',
     signal: options.abortSignal,
   })
