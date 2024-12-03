@@ -33,7 +33,7 @@ Notably, this contains dependencies introduced to support tool calls and structu
 
 At xsai you can install only the packages you need.
 
-If you only need the basic `generateText`, `@xsai/generate-text@0.0.12` is only 12KB install size and 1KB bundle size (606B gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
+If you only need the basic `generateText`, `@xsai/generate-text@0.0.12` is only 12KB install size and 1.1KB bundle size (606B gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
 
 ## Getting Started
 
