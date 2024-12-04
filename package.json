@@ -9,7 +9,7 @@
     "automd": "corepack pnpm -r automd",
     "build": "corepack pnpm -r build",
     "build:watch": "corepack pnpm -r build:watch",
-    "bump": "bumpp --all --no-push",
+    "bump": "bumpp",
     "docs:dev": "corepack pnpm -rF @xsai/docs dev",
     "docs:generate-files": "corepack pnpm -rF @xsai/docs generate-files",
     "lint": "eslint --flag unstable_ts_config .",
@@ -26,7 +26,6 @@
     "eslint": "^9.15.0",
     "jiti": "^2.4.0",
     "pkgroll": "^2.5.1",
-    "tinyglobby": "^0.2.10",
     "tsx": "^4.19.2",
     "vitest": "^2.1.5"
   }
