@@ -14,7 +14,7 @@ export interface GoogleGenerativeAIProvider {
   models: () => CommonProviderOptions
 }
 
-export const createGoogleGenerativeAI = (userOptions: Omit<CommonProviderOptions, 'apiKey'> & Required<Pick<CommonProviderOptions, 'apiKey'>>): GoogleGenerativeAIProvider => {
+export const createGoogleGenerativeAI = (userOptions: Partial<Omit<CommonProviderOptions, 'apiKey'>> & Required<Pick<CommonProviderOptions, 'apiKey'>>): GoogleGenerativeAIProvider => {
   const options: CommonProviderOptions = {
     ...userOptions,
     baseURL: userOptions.baseURL ?? new URL('https://generativelanguage.googleapis.com/v1beta/openai/'),

@@ -14,7 +14,7 @@ export interface OpenAIProvider {
   models: () => CommonProviderOptions
 }
 
-export const createOpenAI = (userOptions: Omit<CommonProviderOptions, 'apiKey'> & Required<Pick<CommonProviderOptions, 'apiKey'>>): OpenAIProvider => {
+export const createOpenAI = (userOptions: Partial<Omit<CommonProviderOptions, 'apiKey'>> & Required<Pick<CommonProviderOptions, 'apiKey'>>): OpenAIProvider => {
   const options: CommonProviderOptions = {
     ...userOptions,
     baseURL: userOptions.baseURL ?? new URL('https://openai.com/v1/'),

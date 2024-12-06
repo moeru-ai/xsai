@@ -13,7 +13,7 @@ export interface OllamaProvider {
   models: () => CommonProviderOptions
 }
 
-export const createOllama = (userOptions?: CommonProviderOptions): OllamaProvider => {
+export const createOllama = (userOptions?: Partial<CommonProviderOptions>): OllamaProvider => {
   const options: CommonProviderOptions = {
     ...userOptions,
     baseURL: userOptions?.baseURL ?? new URL('http://localhost:11434/v1/'),
