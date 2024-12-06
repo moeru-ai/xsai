@@ -10,17 +10,21 @@ type OllamaEmbeddingsModel = 'all-minilm' | 'mxbai-embed-large' | 'nomic-embed-t
 export interface OllamaProvider {
   chat: (model: OllamaChatModel) => CommonRequestOptions
   embeddings: (model: OllamaEmbeddingsModel) => CommonRequestOptions
+  models: () => CommonProviderOptions
 }
 
 export const createOllama = (userOptions?: CommonProviderOptions): OllamaProvider => {
   const options: CommonProviderOptions = {
-    baseURL: new URL('http://localhost:11434/v1/'),
     ...userOptions,
+    baseURL: userOptions?.baseURL ?? new URL('http://localhost:11434/v1/'),
   }
 
+  const result = (model: string) => generateCRO(model, options)
+
   return {
-    chat: model => generateCRO(model, 'chat/completions', options),
-    embeddings: model => generateCRO(model, 'embeddings', options),
+    chat: result,
+    embeddings: result,
+    models: () => options,
   }
 }
 

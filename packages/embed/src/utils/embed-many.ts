@@ -14,7 +14,7 @@ export interface EmbedManyResult {
 }
 
 export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyResult> =>
-  await fetch(options.url, {
+  await fetch(new URL('embeddings', options.baseURL), {
     body: requestBody(options),
     headers: requestHeaders({
       'Content-Type': 'application/json',

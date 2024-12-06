@@ -2,7 +2,7 @@ import { objCamelToSnake, requestBody, requestHeaders } from '@xsai/shared'
 
 import type { ChatCompletionOptions, Tool } from '../types'
 
-export const chatCompletion = async <T extends ChatCompletionOptions>(options: T) => await fetch(options.url, {
+export const chatCompletion = async <T extends ChatCompletionOptions>(options: T) => await fetch(new URL('chat/completions', options.baseURL), {
   body: requestBody({
     ...objCamelToSnake(options),
     tools: (options.tools as Tool[] | undefined)?.map(tool => ({
