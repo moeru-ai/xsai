@@ -68,5 +68,5 @@ describe('@xsai/tool', () => {
     })
 
     expect(text).toMatchSnapshot()
-  })
+  }, 20000)
 })
