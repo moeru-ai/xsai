@@ -190,6 +190,16 @@ importers:
         specifier: 'workspace:'
         version: link:../providers
 
+  packages/model:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+    devDependencies:
+      '@xsai/providers':
+        specifier: 'workspace:'
+        version: link:../providers
+
   packages/providers:
     dependencies:
       '@xsai/shared':
