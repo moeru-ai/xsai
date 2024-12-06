@@ -1,0 +1,141 @@
+---
+title: Providers
+description: Use the `@xsai/providers` to specify the API, or not.
+---
+
+## Basics
+
+### CommonRequestOptions
+
+The options of the xsAI utils are based on the `CommonRequestOptions` interface from `@xsai/shared`.
+
+```ts twoslash
+interface CommonRequestOptions {
+    abortSignal?: AbortSignal;
+    apiKey?: string;
+    /**
+     * @example `https://openai.com/v1/`
+     * @remarks make sure the baseURL ends with a slash.
+     */
+    baseURL: `${string}/` | URL;
+    /** @default `undefined` */
+    headers?: Headers | Record<string, string>;
+    /** @example `gpt-4o` */
+    model: string;
+}
+```
+
+### Example
+
+None of xsAI's tools come with defaults, you need to specify the API manually:
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+
+const { text } = await generateText({
+  apiKey: 'sk-******',
+  baseURL: 'https://openai.com/v1/', // make sure the baseURL ends with a slash
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+  model: 'gpt-4o',
+})
+```
+
+## Providers
+
+If you don't want to specify the apiKey, baseURL and model every time, you can use the `@xsai/providers` library, which also provides partial auto-completion of the model.
+
+### Install
+
+```package-install
+npm i @xsai/providers
+```
+
+[Try with pkg-size.dev](https://pkg-size.dev/@xsai/providers)
+
+### Remote
+
+Now let's convert the above example to use `@xsai/providers`:
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { createOpenAI } from '@xsai/providers'
+
+const openai = createOpenAI({ apiKey: 'sk-******' })
+
+const { text } = await generateText({
+  ...openai.chat('gpt-4o'),
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+})
+```
+
+Other supported providers can be viewed at [References](#references).
+
+### Local
+
+If you want to use Ollama instead of OpenAI:
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { createOllama } from '@xsai/providers'
+
+const ollama = createOllama()
+
+const { text } = await generateText({
+  ...ollama.chat('llama3.2'),
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+})
+```
+
+For some local services that have default ports and don't require an apiKey, You don't need to create it.
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { ollama } from '@xsai/providers'
+
+const { text } = await generateText({
+  ...ollama.chat('llama3.2'),
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+})
+```
+
+Other supported providers can be viewed at [References](#references).
+
+## References
+
+see [`@xsai/providers`](../references/providers)

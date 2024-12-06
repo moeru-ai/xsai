@@ -3,6 +3,7 @@
   "defaultOpen": true,
   "pages": [
     "overview",
+    "providers",
     "generate-text",
     "stream-text",
     "generate-object",
