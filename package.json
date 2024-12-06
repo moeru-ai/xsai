@@ -13,7 +13,8 @@
     "docs:dev": "corepack pnpm -rF @xsai/docs dev",
     "docs:generate-files": "corepack pnpm -rF @xsai/docs generate-files",
     "lint": "eslint --flag unstable_ts_config .",
-    "lint:fix": "eslint --flag unstable_ts_config . --fix"
+    "lint:fix": "eslint --flag unstable_ts_config . --fix",
+    "test": "corepack pnpm -r --workspace-concurrency=1 test"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.9.2",
