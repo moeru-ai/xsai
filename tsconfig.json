@@ -2,8 +2,12 @@
   "references": [
     { "path": "./packages/embed/tsconfig.json" },
     { "path": "./packages/generate-object/tsconfig.json" },
+    { "path": "./packages/generate-speech/tsconfig.json" },
     { "path": "./packages/generate-text/tsconfig.json" },
+    { "path": "./packages/model/tsconfig.json" },
+    { "path": "./packages/providers/tsconfig.json" },
     { "path": "./packages/shared/tsconfig.json" },
+    { "path": "./packages/shared-chat-completion/tsconfig.json" },
     { "path": "./packages/stream-text/tsconfig.json" },
     { "path": "./packages/tool/tsconfig.json" },
     { "path": "./packages/xsai/tsconfig.json" },
