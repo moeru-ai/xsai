@@ -4,10 +4,9 @@
   "pages": [
     "overview",
     "providers",
-    "generate-text",
-    "stream-text",
-    "generate-object",
+    "generate",
     "tool",
+    "model",
     "embed"
   ]
 }

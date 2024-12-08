@@ -3,17 +3,13 @@ title: Tool Calling
 description: Connect LLMs to external data and systems.
 ---
 
----
-
-## Install
-
 ```package-install
 npm i @xsai/tool
 ```
 
-[Try with pkg-size.dev](https://pkg-size.dev/@xsai/tool)
+[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/tool)
 
-## tool
+## `tool`
 
 Define a tool.
 
@@ -37,26 +33,6 @@ const weather = await tool({
 })
 ```
 
-### Options
-
-#### name, description
-
-Used to describe this tool.
-
-Since @xsai/tool is more directly related to the actual request parameters (using an array rather than an object), you need to specify the name.
-
-#### parameters
-
-Function parameters.
-
-With [`@typeschema/main`](https://typeschema.com), you can use (almost) any type validation library you want to use.
-
-#### execute
-
-Execute the function.
-
-It accepts parameters as defined above and returns the string (other types may be allowed later).
-
 ## Examples
 
 ### Get weather
@@ -70,9 +46,7 @@ import { description, object, pipe, string } from 'valibot'
 
 import '@xsai/tool/generate-text'
 
-const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY!
-})
+const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 const weather = await tool({
   description: 'Get the weather in a location',
@@ -108,4 +82,4 @@ const { text } = await generateText({
 
 ## References
 
-see [`@xsai/tool`](../references/tool)
+- [`@xsai/tool`](../references/tool)

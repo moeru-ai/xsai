@@ -1,54 +1,22 @@
 ---
-title: Embeddings (WIP)
+title: Embeddings
 # description: 
 ---
-
----
-
-## Install
 
 ```package-install
 npm i @xsai/embed
 ```
 
-[Try with pkg-size.dev](https://pkg-size.dev/@xsai/embed)
+[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/embed)
 
-## embed
-
-### Options
-
-#### model
-
-string.
-
-#### input
-
-string.
-
-## embedMany
-
-### Options
-
-#### model
-
-string.
-
-#### input
-
-string array.
-
-## Examples
-
-### Embedding a Single Value
+## `embed`
 
 ```ts twoslash
 import { embed } from '@xsai/embed'
 import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
 
-const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY!
-})
+const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 const { embedding } = await embed({
   ...openai.embeddings('text-embedding-3-large'),
@@ -56,16 +24,14 @@ const { embedding } = await embed({
 })
 ```
 
-### Embedding Many Values
+## `embedMany`
 
 ```ts twoslash
 import { embedMany } from '@xsai/embed'
 import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
 
-const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY!
-})
+const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 const { embeddings } = await embedMany({
   ...openai.embeddings('text-embedding-3-large'),
@@ -79,4 +45,4 @@ const { embeddings } = await embedMany({
 
 ## References
 
-see [`@xsai/embed`](../references/embed)
+- [`@xsai/embed`](../references/embed)

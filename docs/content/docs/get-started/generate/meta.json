@@ -1,0 +1,9 @@
+{
+  "title": "Generating / Streaming",
+  "defaultOpen": true,
+  "pages": [
+    "text",
+    "object",
+    "speech"
+  ]
+}

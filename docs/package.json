@@ -34,6 +34,7 @@
     "@types/react-dom": "^18.3.1",
     "@xsai/embed": "workspace:^",
     "@xsai/generate-object": "workspace:^",
+    "@xsai/generate-speech": "workspace:^",
     "@xsai/generate-text": "workspace:^",
     "@xsai/model": "workspace:^",
     "@xsai/providers": "workspace:^",

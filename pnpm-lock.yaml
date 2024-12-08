@@ -123,6 +123,9 @@ importers:
       '@xsai/generate-object':
         specifier: workspace:^
         version: link:../packages/generate-object
+      '@xsai/generate-speech':
+        specifier: workspace:^
+        version: link:../packages/generate-speech
       '@xsai/generate-text':
         specifier: workspace:^
         version: link:../packages/generate-text

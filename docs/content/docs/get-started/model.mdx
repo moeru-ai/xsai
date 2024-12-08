@@ -1,0 +1,67 @@
+---
+title: Models
+# description: 
+---
+
+```package-install
+npm i @xsai/model
+```
+
+[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/model)
+
+## `listModels`
+
+```ts twoslash
+import { listModels } from '@xsai/model'
+import { createOpenAI } from '@xsai/providers'
+import { env } from 'node:process'
+
+const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
+
+// [
+//   {
+//     "id": "model-id-0",
+//     "object": "model",
+//     "created": 1686935002,
+//     "owned_by": "organization-owner"
+//   },
+//   {
+//     "id": "model-id-1",
+//     "object": "model",
+//     "created": 1686935002,
+//     "owned_by": "organization-owner",
+//   },
+//   {
+//     "id": "model-id-2",
+//     "object": "model",
+//     "created": 1686935002,
+//     "owned_by": "openai"
+//   },
+// ]
+const models = await listModels(openai.models())
+```
+
+## `retrieveModel`
+
+```ts twoslash
+import { retrieveModel } from '@xsai/model'
+import { createOpenAI } from '@xsai/providers'
+import { env } from 'node:process'
+
+const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
+
+// {
+//   "id": "gpt-4o",
+//   "object": "model",
+//   "created": 1686935002,
+//   "owned_by": "openai"
+// }
+const model = await retrieveModel({
+  ...openai.models(),
+  model: 'gpt-4o',
+})
+```
+
+## References
+
+- [`@xsai/model`](../references/model)

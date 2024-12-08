@@ -1,0 +1,86 @@
+---
+title: Text
+description: Call to LLM starts with a bundle size of about 1KB.
+---
+
+## `generateText`
+
+You can generate text using the `generateText` function.
+
+It does not support streaming, so it is suitable for non-interactive use cases.
+
+```package-install
+npm i @xsai/generate-text
+```
+
+[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text)
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { createOpenAI } from '@xsai/providers'
+import { env } from 'node:process'
+
+const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
+
+const { text } = await generateText({
+  ...openai.chat('gpt-4o'),
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+})
+```
+
+## `streamText`
+
+For chatbot or other applications that require immediacy, `streamText` is more appropriate.
+
+```package-install
+npm i @xsai/stream-text
+```
+
+[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/stream-text)
+
+```ts twoslash
+import { createOpenAI } from '@xsai/providers'
+import { streamText } from '@xsai/stream-text'
+import { env } from 'node:process'
+
+const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
+
+const { textStream } = await streamText({
+  ...openai.chat('gpt-4o'),
+  messages: [
+    {
+      content: 'You are a helpful assistant.',
+      role: 'system',
+    },
+    {
+      content: 'This is a test, so please answer'
+        + '\'The quick brown fox jumps over the lazy dog.\''
+        + 'and nothing else.',
+      role: 'user',
+    },
+  ],
+})
+
+const text: string[] = []
+
+for await (const textPart of textStream) {
+  text.push(textPart)
+}
+
+// "The quick brown fox jumps over the lazy dog."
+console.log(text)
+```
+
+## References
+
+- [`@xsai/generate-text`](../../references/generate-text)
+- [`@xsai/stream-text`](../../references/stream-text)
