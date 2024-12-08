@@ -95,7 +95,7 @@ Read the [documentation](https://xsai.js.org/docs) to get started.
 
 ### Examples
 
-###### Streaming Text [(see above)](#xsai)
+###### Generating Text [(see above)](#xsai)
 
 ###### Streaming Text
 
@@ -132,7 +132,7 @@ for await (const textPart of textStream) {
 console.log(text)
 ```
 
-###### Tool Calling
+###### Generating Text w/ Tool Calling
 
 ```ts
 import { generateText } from '@xsai/generate-text'
