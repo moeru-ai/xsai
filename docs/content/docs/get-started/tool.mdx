@@ -71,7 +71,7 @@ import { description, object, pipe, string } from 'valibot'
 import '@xsai/tool/generate-text'
 
 const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY
+  apiKey: env.OPENAI_API_KEY!
 })
 
 const weather = await tool({

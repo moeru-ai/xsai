@@ -25,7 +25,7 @@ import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
 
 const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY
+  apiKey: env.OPENAI_API_KEY!
 })
 
 const { text } = await generateText({
