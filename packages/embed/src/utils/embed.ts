@@ -29,7 +29,7 @@ export interface EmbedResult {
 }
 
 export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
-  await fetch(new URL('embeddings', options.baseURL), {
+  await (options.fetch ?? globalThis.fetch)(new URL('embeddings', options.baseURL), {
     body: requestBody(options),
     headers: requestHeaders({
       'Content-Type': 'application/json',

@@ -5,7 +5,7 @@ import type { Model } from '../types/model'
 export interface RetrieveModelOptions extends CommonRequestOptions {}
 
 export const retrieveModel = async (options: RetrieveModelOptions): Promise<Model> =>
-  await fetch(new URL(`models/${options.model}`, options.baseURL), {
+  await (options.fetch ?? globalThis.fetch)(new URL(`models/${options.model}`, options.baseURL), {
     headers: requestHeaders({
       'Content-Type': 'application/json',
       ...options.headers,

@@ -6,5 +6,6 @@ export const requestBody = (body: Record<string, unknown>) => JSON.stringify(obj
   abortSignal: undefined,
   apiKey: undefined,
   baseURL: undefined,
+  fetch: undefined,
   headers: undefined,
 })))

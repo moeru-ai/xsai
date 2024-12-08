@@ -11,17 +11,18 @@ The options of the xsAI utils are based on the `CommonRequestOptions` interface 
 
 ```ts twoslash
 interface CommonRequestOptions {
-    abortSignal?: AbortSignal;
-    apiKey?: string;
+    abortSignal?: AbortSignal
+    apiKey?: string
     /**
      * @example `https://openai.com/v1/`
      * @remarks make sure the baseURL ends with a slash.
      */
-    baseURL: string | URL;
+    baseURL: string | URL
+    fetch?: typeof globalThis.fetch
     /** @default `undefined` */
-    headers?: Headers | Record<string, string>;
+    headers?: Headers | Record<string, string>
     /** @example `gpt-4o` */
-    model: string;
+    model: string
 }
 ```
 

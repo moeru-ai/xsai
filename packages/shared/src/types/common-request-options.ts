@@ -6,6 +6,7 @@ export interface CommonRequestOptions {
    * @remarks make sure the baseURL ends with a slash.
    */
   baseURL: string | URL
+  fetch?: typeof globalThis.fetch
   /** @default `undefined` */
   headers?: Headers | Record<string, string>
   /** @example `gpt-4o` */
