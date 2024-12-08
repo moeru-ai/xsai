@@ -46,7 +46,7 @@ console.log(text)
 
 xsAI uses a variety of methods to make itself smaller.
 
-It's just a wrapper for [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), introducing additional dependencies only when absolutely necessary and ESM Only.
+It's just a wrapper for [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), adding additional dependencies only when absolutely necessary and ESM Only.
 
 How xsAI small? you can [try install it with pkg-size.dev](https://pkg-size.dev/xsai):
 
