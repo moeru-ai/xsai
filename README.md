@@ -54,8 +54,6 @@ How xsAI small? you can [try install it with pkg-size.dev](https://pkg-size.dev/
 
 Notably, this contains dependencies introduced to support tool calls and structured output.
 
-At xsAI you can install only the packages you need:
-
 If you only need the basic `generateText`, `@xsai/generate-text@0.0.18` is only 12KB install size and 1.2KB bundle size (678B gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
 
 ### Runtime-agnostic
