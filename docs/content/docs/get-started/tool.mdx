@@ -3,6 +3,8 @@ title: Tool Calling
 description: Connect LLMs to external data and systems.
 ---
 
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion'
+
 ```package-install
 npm i @xsai/tool
 ```
@@ -35,7 +37,8 @@ const weather = await tool({
 
 ## Examples
 
-### Get weather
+<Accordions>
+  <Accordion title="Get weather">
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
@@ -79,6 +82,9 @@ const { text } = await generateText({
   tools: [weather],
 })
 ```
+
+  </Accordion>
+</Accordions>
 
 ## References
 
