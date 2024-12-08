@@ -6,6 +6,7 @@
   "license": "MIT",
   "homepage": "https://xsai.js.org",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
+  "keywords": ["xsai", "openai", "ai"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
