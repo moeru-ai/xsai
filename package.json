@@ -6,7 +6,6 @@
   "packageManager": "pnpm@9.14.2",
   "repository": "github:moeru-ai/xsai",
   "scripts": {
-    "automd": "corepack pnpm -r automd",
     "build": "corepack pnpm -r build",
     "build:watch": "corepack pnpm -r build:watch",
     "bump": "bumpp",
