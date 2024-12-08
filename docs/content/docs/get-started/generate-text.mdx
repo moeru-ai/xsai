@@ -21,10 +21,10 @@ It does not support streaming, so it is suitable for non-interactive use cases.
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
-import { ollama } from '@xsai/providers'
+import { openai } from '@xsai/providers'
 
 const { text } = await generateText({
-  ...ollama.chat('llama3.2'),
+  ...openai.chat('gpt-4o'),
   messages: [
     {
       content: 'You\'re a helpful assistant.',

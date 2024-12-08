@@ -63,7 +63,7 @@ It accepts parameters as defined above and returns the string (other types may b
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
-import { ollama } from '@xsai/providers'
+import { openai } from '@xsai/providers'
 import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 
@@ -85,7 +85,7 @@ const weather = await tool({
 })
 
 const { text } = await generateText({
-  ...ollama.chat('llama3.2'),
+  ...openai.chat('gpt-4o'),
   messages: [
     {
       content: 'You are a helpful assistant.',
