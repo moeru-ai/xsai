@@ -1,6 +1,6 @@
 # xsAI
 
-Extra-small AI SDK for any OpenAI-compatible API.
+extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.
 
 <!-- automd:badges name="xsai" provider="badgen" color="cyan" license bundlephobia -->
 
@@ -11,29 +11,56 @@ Extra-small AI SDK for any OpenAI-compatible API.
 
 <!-- /automd -->
 
-## Why?
+xsAI is a series of utils to help you use OpenAI or OpenAI-compatible API.
 
-I'm working on a tiny local-LLM translator - [ARPK](https://github.com/moeru-ai/arpk), which is currently (v0.2.4) 449KB, of which 26% is `ollama-js` (the other 13% is the pointless `whatwg-fetch` that comes with `ollama-js`!)
+```ts
+import { generateText } from '@xsai/generate-text'
+import { createOpenAI } from '@xsai/providers'
+import { env } from 'node:process'
 
-I wanted to make every byte count, so I started writing a lightweight library - xsAI.
+const openai = createOpenAI({
+  apiKey: env.OPENAI_API_KEY
+})
 
-It provides an interface similar to the Vercel AI SDK, ESM-only and zero dependencies for minimal installation size.
+const { text } = await generateText({
+  ...openai.chat('gpt-4o'),
+  messages: [
+    {
+      content: 'You are a helpful assistant.',
+      role: 'system',
+    },
+    {
+      content: 'This is a test, so please answer \'YES\' and nothing else.',
+      role: 'user',
+    },
+  ],
+})
 
-### Why OpenAI-compatible API?
+// YES
+console.log(text)
+```
 
-As mentioned above, I made this library mainly to make it easy to call native LLMs, which all provide more or less OpenAI-compatible APIs.
+## Features
 
-### How xsAI small?
+### <small><ruby>extra<rp>(</rp><rt>x</rt><rp>)</rp>-small<rp>(</rp><rt>s</rt><rp>)</rp></ruby></small>
 
-You can [try install it with pkg-size.dev](https://pkg-size.dev/xsai):
+xsAI uses a variety of methods to make itself smaller.
 
-`xsai@0.0.12` is 97KB install size and 8.9KB bundle size (2.3KB gzipped).
+It's just a wrapper for [Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), introducing additional dependencies only when absolutely necessary and ESM Only.
+
+How xsAI small? you can [try install it with pkg-size.dev](https://pkg-size.dev/xsai):
+
+`xsai@0.0.18` is 111KB install size and 11KB bundle size (3KB gzipped).
 
 Notably, this contains dependencies introduced to support tool calls and structured output.
 
 At xsAI you can install only the packages you need:
 
-If you only need the basic `generateText`, `@xsai/generate-text@0.0.12` is only 12KB install size and 1.1KB bundle size (606B gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
+If you only need the basic `generateText`, `@xsai/generate-text@0.0.18` is only 12KB install size and 1.2KB bundle size (678B gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
+
+### Runtime-agnostic
+
+xsAI doesn't depend on Node.js Built-in Modules, it works well in Browsers, Deno, Bun and even the Edge Runtime.
 
 ## Getting Started
 
@@ -46,3 +73,5 @@ xsAI is currently in an early stage of development and may introduce breaking ch
 ## License
 
 [MIT](LICENSE.md)
+
+Moeru AI / xsAI is not affiliated with OpenAI.
