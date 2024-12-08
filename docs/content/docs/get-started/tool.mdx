@@ -63,11 +63,16 @@ It accepts parameters as defined above and returns the string (other types may b
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
-import { openai } from '@xsai/providers'
+import { createOpenAI } from '@xsai/providers'
 import { tool } from '@xsai/tool'
+import { env } from 'node:process'
 import { description, object, pipe, string } from 'valibot'
 
 import '@xsai/tool/generate-text'
+
+const openai = createOpenAI({
+  apiKey: env.OPENAI_API_KEY
+})
 
 const weather = await tool({
   description: 'Get the weather in a location',
