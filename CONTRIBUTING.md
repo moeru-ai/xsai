@@ -2,7 +2,7 @@
 
 ## Testing
 
-One shouldn't have to connect to OpenAI's paid API for every test, so we chose some compatible local services to use for testing:
+We weren't supposed to connect to OpenAI's paid APIs while testing, so we chose some local services to use for test:
 
 ### generateText, streamText, generateObject
 
