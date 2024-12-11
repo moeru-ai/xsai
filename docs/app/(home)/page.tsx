@@ -13,7 +13,7 @@ export default () => (
         {' '}
         <span>AI SDK</span>
         <br />
-        <small>for any OpenAI-compatible API.</small>
+        <small>for Browser, Node.js, Deno, Bun or Edge Runtime.</small>
       </h1>
       {/* <p className="mt-4 font-normal text-base text-muted-foreground max-w-lg text-center mx-auto">
         lorem ipsum
