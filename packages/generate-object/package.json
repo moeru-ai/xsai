@@ -27,7 +27,9 @@
   ],
   "scripts": {
     "build": "pkgroll",
-    "build:watch": "pkgroll --watch"
+    "build:watch": "pkgroll --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@typeschema/main": "catalog:",
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "@gcornut/valibot-json-schema": "catalog:",
+    "@xsai/providers": "workspace:",
     "valibot": "catalog:"
   }
 }

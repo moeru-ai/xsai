@@ -20,8 +20,8 @@ export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTex
 export const generateObject = async <T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<T>> =>
   await generateText(clean({
     ...options,
-    responseFormat: {
-      jsonSchema: {
+    response_format: {
+      json_schema: {
         description: options.schemaDescription,
         name: options.schemaName ?? 'json_schema',
         schema: await toJSONSchema(options.schema)
