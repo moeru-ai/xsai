@@ -1,0 +1,46 @@
+{
+  "name": "@xsai/generate-transcription",
+  "version": "0.0.19",
+  "type": "module",
+  "private": true,
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
+  "keywords": [
+    "xsai",
+    "openai",
+    "ai"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/generate-transcription"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pkgroll",
+    "build:watch": "pkgroll --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@xsai/shared": "workspace:"
+  },
+  "devDependencies": {
+    "@xsai/providers": "workspace:",
+    "openai": "^4.76.1"
+  }
+}

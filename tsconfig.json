@@ -4,6 +4,7 @@
     { "path": "./packages/generate-object/tsconfig.json" },
     { "path": "./packages/generate-speech/tsconfig.json" },
     { "path": "./packages/generate-text/tsconfig.json" },
+    { "path": "./packages/generate-transcription/tsconfig.json" },
     { "path": "./packages/model/tsconfig.json" },
     { "path": "./packages/providers/tsconfig.json" },
     { "path": "./packages/shared/tsconfig.json" },
