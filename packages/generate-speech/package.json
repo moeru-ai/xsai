@@ -27,7 +27,9 @@
   ],
   "scripts": {
     "build": "pkgroll",
-    "build:watch": "pkgroll --watch"
+    "build:watch": "pkgroll --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@xsai/shared": "workspace:"
