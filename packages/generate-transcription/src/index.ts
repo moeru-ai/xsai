@@ -1,8 +1,8 @@
 import { type CommonRequestOptions, requestHeaders } from '@xsai/shared'
 
 export interface GenerateTranscriptionOptions extends CommonRequestOptions {
-  // TODO: FIXME: file type
-  file: unknown
+  file: Blob
+  fileName?: string
   language?: string
   prompt?: string
   temperature?: string
@@ -22,15 +22,11 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
   const body = new FormData()
 
   body.append('model', options.model)
-  // TODO: FIXME: file type
-  body.append('file', options.file as any)
+  body.append('file', options.file, options.fileName)
 
   return await (options.fetch ?? globalThis.fetch)(new URL('audio/transcriptions', options.baseURL), {
     body,
-    headers: requestHeaders({
-      'Content-Type': 'multipart/form-data',
-      ...options.headers,
-    }, options.apiKey),
+    headers: requestHeaders(options.headers, options.apiKey),
     method: 'POST',
     signal: options.abortSignal,
   })

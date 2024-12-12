@@ -1,16 +1,15 @@
-import { readFile } from 'node:fs/promises'
+import { openAsBlob } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 import { generateTranscription } from '../src'
 
 describe('@xsai/generate-transcription', () => {
   it('basic', async () => {
-    const audio = await readFile('./test/fixtures/basic.wav')
-
     const { text } = await generateTranscription({
       apiKey: 'a',
       baseURL: new URL('http://localhost:9010'),
-      file: new Blob([audio.buffer], { type: 'audio/wav' }),
+      file: await openAsBlob('./test/fixtures/basic.wav', { type: 'audio/wav' }),
+      fileName: 'basic.wav',
       language: 'en-US',
       model: 'ggml-large-v3-turbo-q5_0.bin',
     })
