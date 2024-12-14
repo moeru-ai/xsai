@@ -28,21 +28,25 @@ export interface GenerateTextResult {
   usage: GenerateTextResponseUsage
 }
 
-export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> =>
-  await chatCompletion({
-    ...options,
-    stream: false,
-  })
-    .then(async (res) => {
-      if (!res.ok) {
-        const error = await res.text()
-        throw new Error(`Error(${res.status}): ${error}`)
-      }
-      else {
-        return res.json() as Promise<GenerateTextResponse>
-      }
+export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
+  const maxRoundTrip = options.maxRoundTrip ?? 10
+  let roundTrip = 0
+
+  while (roundTrip < maxRoundTrip) {
+    roundTrip++
+
+    const res = await chatCompletion({
+      ...options,
+      stream: false,
     })
-    .then(async ({ choices, usage }) => {
+
+    if (!res.ok) {
+      const error = await res.text()
+      throw new Error(`Error(${res.status}): ${error}`)
+    }
+    else {
+      const data = await res.json() as GenerateTextResponse
+      const { choices, usage } = data
       const { finish_reason, message } = choices[0]
 
       if (!!message.content || !message.tool_calls) {
@@ -67,14 +71,12 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
         toolMessages.push(toolMessage)
       }
 
-      return await generateText({
-        ...options,
-        messages: [
-          ...options.messages,
-          { ...message, content: message.content! },
-          ...toolMessages,
-        ],
-      })
-    })
+      options.messages.push({ ...message, content: message.content! })
+      options.messages.push(...toolMessages)
+    }
+  }
+
+  throw new Error('Max round trip reached')
+}
 
 export default generateText
