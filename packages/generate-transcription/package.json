@@ -2,7 +2,6 @@
   "name": "@xsai/generate-transcription",
   "version": "0.0.19",
   "type": "module",
-  "private": true,
   "author": "Moeru AI",
   "license": "MIT",
   "homepage": "https://xsai.js.org",
