@@ -10,7 +10,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages/shared"
+    "directory": "packages/shared-chat-completion"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "sideEffects": false,
