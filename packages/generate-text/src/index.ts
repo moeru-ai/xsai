@@ -3,6 +3,8 @@ import { type AssistantMessageResponse, chatCompletion, type ChatCompletionOptio
 export interface GenerateTextOptions extends ChatCompletionOptions {
   /** @default 1 */
   maxSteps?: number
+  /** if you want to enable stream, use `@xsai/stream-text` */
+  stream?: never
 }
 
 interface GenerateTextResponse {

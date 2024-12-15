@@ -1,6 +1,8 @@
 import { chatCompletion, type ChatCompletionOptions, type FinishReason } from '@xsai/shared-chat-completion'
 
 export interface StreamTextOptions extends ChatCompletionOptions {
+  /** if you want to disable stream, use `@xsai/generate-text` */
+  stream?: never
   streamOptions?: {
     /**
      * Return usage.
