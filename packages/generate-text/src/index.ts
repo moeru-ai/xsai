@@ -1,7 +1,7 @@
 import { type AssistantMessageResponse, chatCompletion, type ChatCompletionOptions, type FinishReason, type Message, type Tool } from '@xsai/shared-chat-completion'
 
 export interface GenerateTextOptions extends ChatCompletionOptions {
-  maxRoundTrip?: number
+  maxSteps?: number
 }
 
 interface GenerateTextResponse {
@@ -31,11 +31,11 @@ export interface GenerateTextResult {
 }
 
 export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
-  const maxRoundTrip = options.maxRoundTrip ?? 10
-  let roundTrip = 0
+  const maxSteps = options.maxSteps ?? 10
+  let step = 0
 
-  while (roundTrip < maxRoundTrip) {
-    roundTrip++
+  while (step < maxSteps) {
+    step++
 
     const res = await chatCompletion({
       ...options,
