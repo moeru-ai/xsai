@@ -46,8 +46,7 @@ const dataHeaderPrefix = 'data: '
 const dataErrorPrefix = `{"error":`
 
 /**
- * @experimental
- * WIP, currently only returns `textStream`, does not support function calling (tools).
+ * @experimental WIP, does not support function calling (tools).
  */
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> =>
   await chatCompletion({

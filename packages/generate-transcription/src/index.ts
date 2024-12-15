@@ -16,7 +16,7 @@ export interface GenerateTranscriptionResult {
 }
 
 /**
- * WIP, test failed
+ * @experimental WIP
  */
 export const generateTranscription = async (options: GenerateTranscriptionOptions): Promise<GenerateTranscriptionResult> => {
   const body = new FormData()
