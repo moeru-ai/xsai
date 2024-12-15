@@ -35,6 +35,18 @@ const weather = await tool({
 })
 ```
 
+### with `generateText`
+
+Please refer to "Get weather" in the Examples below.
+
+In short, you need to pass the tool into `options.tools` and set `options.maxSteps` to a larger value. (It currently defaults to `1`, so it can't handle tool calls when defaulted)
+
+### with `generateObject`, `streamText`...
+
+Not supported at this time.
+
+If you are interested in contributing, feel free to open a Pull Request.
+
 ## Examples
 
 <Accordions>
