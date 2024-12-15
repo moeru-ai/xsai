@@ -1,6 +1,7 @@
 import { type AssistantMessageResponse, chatCompletion, type ChatCompletionOptions, type FinishReason, type Message, type Tool } from '@xsai/shared-chat-completion'
 
 export interface GenerateTextOptions extends ChatCompletionOptions {
+  /** @default 1 */
   maxSteps?: number
 }
 
@@ -26,19 +27,40 @@ export interface GenerateTextResponseUsage {
 
 export interface GenerateTextResult {
   finishReason: FinishReason
+  steps: StepResult[]
   text?: string
   usage: GenerateTextResponseUsage
 }
 
-export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
-  const maxSteps = options.maxSteps ?? 10
-  let step = 0
+export interface StepResult {
+  text?: string
+  // TODO: step type
+  // type: 'continue' | 'initial' | 'tool-result'
+  // TODO: toolCalls
+  // TODO: toolResults
+  usage: GenerateTextResponseUsage
+}
 
-  while (step < maxSteps) {
-    step++
+export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
+  let currentStep = 0
+
+  let finishReason: FinishReason = 'error'
+  let text
+  let usage: GenerateTextResponseUsage = {
+    completion_tokens: 0,
+    prompt_tokens: 0,
+    total_tokens: 0,
+  }
+
+  const steps: StepResult[] = []
+  const messages: Message[] = options.messages
+
+  while (currentStep < (options.maxSteps ?? 1)) {
+    currentStep += 1
 
     const res = await chatCompletion({
       ...options,
+      messages,
       stream: false,
     })
 
@@ -46,22 +68,26 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
       const error = await res.text()
       throw new Error(`Error(${res.status}): ${error}`)
     }
-    else {
-      const data = await res.json() as GenerateTextResponse
-      const { choices, usage } = data
-      const { finish_reason, message } = choices[0]
 
-      if (!!message.content || !message.tool_calls) {
-        return {
-          finishReason: finish_reason,
-          text: message.content,
-          usage,
-        }
-      }
+    const data: GenerateTextResponse = await res.json()
+    const { finish_reason, message } = data.choices[0]
 
-      const toolMessages = []
+    finishReason = finish_reason
+    text = message.content
+    usage = data.usage
 
-      for (const toolCall of message.tool_calls) {
+    steps.push({
+      text: message.content,
+      // type: 'initial',
+      usage,
+    })
+
+    // TODO: fix types
+    messages.push({ ...message, content: message.content! })
+
+    if (message.tool_calls) {
+      // execute tools
+      for (const toolCall of message.tool_calls ?? []) {
         const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
         const toolResult = await tool.execute(JSON.parse(toolCall.function.arguments))
         const toolMessage = {
@@ -70,15 +96,25 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
           tool_call_id: toolCall.id,
         } satisfies Message
 
-        toolMessages.push(toolMessage)
+        messages.push(toolMessage)
       }
-
-      options.messages.push({ ...message, content: message.content! })
-      options.messages.push(...toolMessages)
+    }
+    else {
+      return {
+        finishReason: finish_reason,
+        steps,
+        text: message.content,
+        usage,
+      }
     }
   }
 
-  throw new Error('Max round trip reached')
+  return {
+    finishReason,
+    steps,
+    text,
+    usage,
+  }
 }
 
 export default generateText
