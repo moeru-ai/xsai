@@ -37,10 +37,11 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
     schemaDescription: undefined,
     schemaName: undefined,
   }))
-    .then(({ finishReason, text, usage }) => ({
+    .then(({ finishReason, steps, text, usage }) => ({
       finishReason,
       // TODO: import { validate } from '@typeschema/main'
       object: JSON.parse(text || '{}'),
+      steps,
       usage,
     }))
 
