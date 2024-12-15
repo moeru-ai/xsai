@@ -1,6 +1,8 @@
 import { type AssistantMessageResponse, chatCompletion, type ChatCompletionOptions, type FinishReason, type Message, type Tool } from '@xsai/shared-chat-completion'
 
-export interface GenerateTextOptions extends ChatCompletionOptions {}
+export interface GenerateTextOptions extends ChatCompletionOptions {
+  maxRoundTrip?: number
+}
 
 interface GenerateTextResponse {
   choices: {
