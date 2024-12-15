@@ -1,6 +1,6 @@
 {
   "name": "@xsai/workspace",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "type": "module",
   "private": true,
   "packageManager": "pnpm@9.14.2",
