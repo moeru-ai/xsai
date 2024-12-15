@@ -60,6 +60,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
 
     const res = await chatCompletion({
       ...options,
+      maxSteps: undefined,
       messages,
       stream: false,
     })
