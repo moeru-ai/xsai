@@ -160,6 +160,7 @@ const weather = await tool({
 
 const { text } = await generateText({
   ...openai.chat('gpt-4o'),
+  maxSteps: 2,
   messages: [
     {
       content: 'You are a helpful assistant.',
