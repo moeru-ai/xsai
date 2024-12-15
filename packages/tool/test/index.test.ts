@@ -52,6 +52,7 @@ describe('@xsai/tool', () => {
 
     const { text } = await generateText({
       ...ollama.chat('mistral-nemo'),
+      maxSteps: 2,
       messages: [
         {
           content: 'You are a helpful assistant.',
