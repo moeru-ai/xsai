@@ -4,35 +4,42 @@ exports[`@xsai/generate-object > basic 1`] = `
 {
   "ingredients": [
     {
-      "amount": "But 1.5 lbs (675g) ribeye or strip loin steak, preferably at room temperature",
+      "amount": "2",
       "name": "steak",
     },
     {
-      "amount": "2 tbsp olive oil",
+      "amount": "1/4 cup",
       "name": "olive oil",
     },
     {
-      "amount": "4 cloves garlic, minced",
-      "name": "garlic",
+      "amount": "",
+      "name": "garlic powder",
     },
     {
-      "amount": "1 tsp dried thyme",
-      "name": "thyme",
+      "amount": "",
+      "name": "paprika",
     },
     {
-      "amount": "Salt and pepper",
-      "name": "salt and pepper",
+      "amount": "1 tablespoon",
+      "name": "dried thyme",
+    },
+    {
+      "amount": "1 tablespoon",
+      "name": "salt",
+    },
+    {
+      "amount": "1/2 teaspoon",
+      "name": "black pepper",
     },
   ],
-  "name": " Sous-Vide Steak with Garlic Butter ",
+  "name": "herb-crusted sous-vide steak",
   "steps": [
-    "When a vacuum sealer has been tested for temperature, heat your oven to 200  ovens",
-    "While ensuring the steak in not too close to direct rays heating and is wrapped safely within 4-quart bag or even better an unopened ziplock bag",
-    "Next season with your salt pepper mix and seal the bag making sure removing air before closing the vacuum sealer for about 20 minutes. You should end up with a sous vide steak in this temperature: around 130-135-degree Fahrenheit (the recommended internal temperature) ",
-    "In the oven, heat butter until golden brown then remove from oven but keep warm",
-    "Transfer your steak  plate and add garlic then make small incisions all over for the best air to get inside",
-    "Add some thyme rub for extra flavor and close 4-quart bags again before sealing the vacuum tighter. Cook for an additional 1-2 minutes at 130 degrees for the rest time ",
-    "Remove, place steaks on a serving platter with warm garlic butter spooned on top",
+    "{"action": "Season the steaks with garlic powder, paprika, thyme, salt, and black pepper. Rub olive oil over the steaks to keep the seasonings on surface of meat."}",
+    "Do not season the steak now,  you do this in the bag before putting steak in water bath.",
+    "{"time", "30-60 minutes"}",
+    "{"action": "Submerge the steaks in a sous-vide water bath at 130°F (54°C). Seal the bag to allow for even circulation of heat and prevent contamination."}",
+    "{"time", "6-12 hours"}",
+    "{"action": "Remove the steaks from the vacuum bag and let them come room temperature. Pat dry with paper towels before adding butter or sauce if desired. Serve immediately."}",
   ],
 }
 `;
