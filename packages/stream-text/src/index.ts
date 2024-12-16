@@ -64,10 +64,15 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
       let finishReason: string | undefined
       let usage: StreamTextResponseUsage | undefined
+      let buffer = ''
 
       const rawChunkStream = res.body.pipeThrough(new TransformStream({
         transform: (chunk, controller) => {
-          for (const line of decoder.decode(chunk).split('\n').filter(line => line)) {
+          buffer += decoder.decode(chunk)
+          const lines = buffer.split('\n\n')
+          buffer = lines.pop() || ''
+
+          for (const line of lines) {
             // Some cases:
             // - Empty chunk
             // - :ROUTER PROCESSING from OpenRouter
@@ -87,7 +92,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
               continue
             }
 
-            const data: StreamTextResponse = JSON.parse(line.slice(6))
+            const data: StreamTextResponse = JSON.parse(lineWithoutPrefix)
             controller.enqueue(data)
 
             if (data.choices[0].finish_reason) {
