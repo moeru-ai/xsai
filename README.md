@@ -179,6 +179,12 @@ const { text } = await generateText({
 console.log(text)
 ```
 
+#### Community Projects
+
+- [moeru-ai/airi](https://github.com/moeru-ai/airi)
+- [moeru-ai/arpk](https://github.com/moeru-ai/arpk)
+- [lingticio/neuri-js](https://github.com/lingticio/neuri-js)
+
 ### Status
 
 xsAI is currently in an early stage of development and may introduce breaking changes at any time.
