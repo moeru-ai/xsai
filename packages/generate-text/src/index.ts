@@ -1,4 +1,12 @@
-import { type AssistantMessageResponse, chatCompletion, type ChatCompletionOptions, type FinishReason, type Message, type Tool } from '@xsai/shared-chat'
+import {
+  type AssistantMessageResponse,
+  chatCompletion,
+  type ChatCompletionOptions,
+  ChatError,
+  type FinishReason,
+  type Message,
+  type Tool,
+} from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatCompletionOptions {
   /** @default 1 */
@@ -68,8 +76,8 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     })
 
     if (!res.ok) {
-      const error = await res.text()
-      throw new Error(`Error(${res.status}): ${error}`)
+      const error = new ChatError(`Remote sent ${res.status} response`, res)
+      error.cause = new Error(await res.text())
     }
 
     const data: GenerateTextResponse = await res.json()

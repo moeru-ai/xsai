@@ -65,4 +65,6 @@ describe('@xsai/stream-text', () => {
 
     expect(chunk).toMatchSnapshot()
   })
+
+  // TODO: error handling
 })

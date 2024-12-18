@@ -21,4 +21,6 @@ describe('@xsai/generate-text', () => {
 
     expect(text).toStrictEqual('YES')
   })
+
+  // TODO: error handling
 })
