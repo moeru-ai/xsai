@@ -55,11 +55,10 @@ const dataErrorPrefix = `{"error":`
 /**
  * @experimental WIP, does not support function calling (tools).
  */
-export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
-  const res = await chat({
-    ...options,
-    stream: true,
-  })
+export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => await chat({
+  ...options,
+  stream: true,
+}).then(async (res) => {
   if (!res.ok) {
     const error = new ChatError(`Remote sent ${res.status} response`, res)
     error.cause = new Error(await res.text())
@@ -124,6 +123,6 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   }))
 
   return { chunkStream, finishReason, textStream, usage }
-}
+})
 
 export default streamText
