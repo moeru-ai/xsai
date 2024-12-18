@@ -138,9 +138,9 @@ importers:
       '@xsai/shared':
         specifier: workspace:^
         version: link:../packages/shared
-      '@xsai/shared-chat-completion':
+      '@xsai/shared-chat':
         specifier: workspace:^
-        version: link:../packages/shared-chat-completion
+        version: link:../packages/shared-chat
       '@xsai/stream-text':
         specifier: workspace:^
         version: link:../packages/stream-text
@@ -207,9 +207,9 @@ importers:
 
   packages/generate-text:
     dependencies:
-      '@xsai/shared-chat-completion':
+      '@xsai/shared-chat':
         specifier: 'workspace:'
-        version: link:../shared-chat-completion
+        version: link:../shared-chat
     devDependencies:
       '@xsai/providers':
         specifier: 'workspace:'
@@ -246,7 +246,7 @@ importers:
 
   packages/shared: {}
 
-  packages/shared-chat-completion:
+  packages/shared-chat:
     dependencies:
       '@xsai/shared':
         specifier: 'workspace:'
@@ -254,9 +254,9 @@ importers:
 
   packages/stream-text:
     dependencies:
-      '@xsai/shared-chat-completion':
+      '@xsai/shared-chat':
         specifier: 'workspace:'
-        version: link:../shared-chat-completion
+        version: link:../shared-chat
     devDependencies:
       '@xsai/providers':
         specifier: 'workspace:'
