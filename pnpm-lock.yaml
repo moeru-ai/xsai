@@ -301,12 +301,18 @@ importers:
       '@xsai/generate-text':
         specifier: 'workspace:'
         version: link:../generate-text
+      '@xsai/generate-transcription':
+        specifier: 'workspace:'
+        version: link:../generate-transcription
       '@xsai/model':
         specifier: 'workspace:'
         version: link:../model
       '@xsai/providers':
         specifier: 'workspace:'
         version: link:../providers
+      '@xsai/shared-chat':
+        specifier: 'workspace:'
+        version: link:../shared-chat
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../stream-text

@@ -38,8 +38,10 @@
     "@xsai/generate-object": "workspace:",
     "@xsai/generate-speech": "workspace:",
     "@xsai/generate-text": "workspace:",
+    "@xsai/generate-transcription": "workspace:",
     "@xsai/model": "workspace:",
     "@xsai/providers": "workspace:",
+    "@xsai/shared-chat": "workspace:",
     "@xsai/stream-text": "workspace:",
     "@xsai/tool": "workspace:"
   }
