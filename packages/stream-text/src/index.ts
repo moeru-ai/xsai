@@ -1,7 +1,7 @@
 import {
   chatCompletion,
   type ChatCompletionOptions,
-  ChatCompletionsError,
+  ChatError,
   type FinishReason,
 } from '@xsai/shared-chat'
 
@@ -61,14 +61,14 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     stream: true,
   })
   if (!res.ok) {
-    const error = new ChatCompletionsError(`Remote sent ${res.status} response`, res)
+    const error = new ChatError(`Remote sent ${res.status} response`, res)
     error.cause = new Error(await res.text())
   }
   if (!res.body) {
-    throw new ChatCompletionsError('Response body is empty from remote server', res)
+    throw new ChatError('Response body is empty from remote server', res)
   }
   if (!(res.body instanceof ReadableStream)) {
-    const error = new ChatCompletionsError(`Expected Response body to be a ReadableStream, but got ${String(res.body)}`, res)
+    const error = new ChatError(`Expected Response body to be a ReadableStream, but got ${String(res.body)}`, res)
     error.cause = new Error(`Content-Type is ${res.headers.get('Content-Type')}`)
   }
 

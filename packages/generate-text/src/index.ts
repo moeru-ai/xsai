@@ -2,7 +2,7 @@ import {
   type AssistantMessageResponse,
   chatCompletion,
   type ChatCompletionOptions,
-  ChatCompletionsError,
+  ChatError,
   type FinishReason,
   type Message,
   type Tool,
@@ -76,7 +76,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     })
 
     if (!res.ok) {
-      const error = new ChatCompletionsError(`Remote sent ${res.status} response`, res)
+      const error = new ChatError(`Remote sent ${res.status} response`, res)
       error.cause = new Error(await res.text())
     }
 

@@ -1,9 +1,9 @@
-export class ChatCompletionsError extends Error {
+export class ChatError extends Error {
   response?: Response
 
   constructor(message: string, response?: Response) {
     super(message)
-    this.name = 'ChatCompletionsError'
+    this.name = 'ChatError'
     this.response = response
   }
 }
