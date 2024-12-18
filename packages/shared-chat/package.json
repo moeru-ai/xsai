@@ -1,5 +1,5 @@
 {
-  "name": "@xsai/shared-chat-completion",
+  "name": "@xsai/shared-chat",
   "version": "0.0.21",
   "type": "module",
   "author": "Moeru AI",
@@ -10,7 +10,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages/shared-chat-completion"
+    "directory": "packages/shared-chat"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "sideEffects": false,

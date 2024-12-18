@@ -32,7 +32,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/shared-chat-completion": "workspace:"
+    "@xsai/shared-chat": "workspace:"
   },
   "devDependencies": {
     "@xsai/providers": "workspace:"

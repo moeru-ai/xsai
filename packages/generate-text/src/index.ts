@@ -1,4 +1,4 @@
-import { type AssistantMessageResponse, chatCompletion, type ChatCompletionOptions, type FinishReason, type Message, type Tool } from '@xsai/shared-chat-completion'
+import { type AssistantMessageResponse, chatCompletion, type ChatCompletionOptions, type FinishReason, type Message, type Tool } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatCompletionOptions {
   /** @default 1 */
