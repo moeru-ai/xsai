@@ -1,4 +1,9 @@
-import { chatCompletion, type ChatCompletionOptions, type FinishReason } from '@xsai/shared-chat'
+import {
+  chatCompletion,
+  type ChatCompletionOptions,
+  ChatCompletionsError,
+  type FinishReason,
+} from '@xsai/shared-chat'
 
 export interface StreamTextOptions extends ChatCompletionOptions {
   /** if you want to disable stream, use `@xsai/generate-text` */
@@ -50,68 +55,75 @@ const dataErrorPrefix = `{"error":`
 /**
  * @experimental WIP, does not support function calling (tools).
  */
-export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> =>
-  await chatCompletion({
+export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
+  const res = await chatCompletion({
     ...options,
     stream: true,
   })
-    .then((res) => {
-      if (!res.body) {
-        return Promise.reject(res)
+  if (!res.ok) {
+    const error = new ChatCompletionsError(`Remote sent ${res.status} response`, res)
+    error.cause = new Error(await res.text())
+  }
+  if (!res.body) {
+    throw new ChatCompletionsError('Response body is empty from remote server', res)
+  }
+  if (!(res.body instanceof ReadableStream)) {
+    const error = new ChatCompletionsError(`Expected Response body to be a ReadableStream, but got ${String(res.body)}`, res)
+    error.cause = new Error(`Content-Type is ${res.headers.get('Content-Type')}`)
+  }
+
+  const decoder = new TextDecoder()
+
+  let finishReason: string | undefined
+  let usage: StreamTextResponseUsage | undefined
+  let buffer = ''
+
+  const rawChunkStream = res.body.pipeThrough(new TransformStream({
+    transform: (chunk, controller) => {
+      buffer += decoder.decode(chunk)
+      const lines = buffer.split('\n\n')
+      buffer = lines.pop() || ''
+
+      for (const line of lines) {
+        // Some cases:
+        // - Empty chunk
+        // - :ROUTER PROCESSING from OpenRouter
+        if (!line || !line.startsWith(dataHeaderPrefix)) {
+          continue
+        }
+
+        if (line.startsWith(dataErrorPrefix)) {
+          // About controller error: https://developer.mozilla.org/en-US/docs/Web/API/TransformStreamDefaultController/error
+          controller.error(new Error(`Error from server: ${line}`))
+          break
+        }
+
+        const lineWithoutPrefix = line.slice(dataHeaderPrefix.length)
+        if (lineWithoutPrefix === '[DONE]') {
+          controller.terminate()
+          break
+        }
+
+        const data: StreamTextResponse = JSON.parse(lineWithoutPrefix)
+        controller.enqueue(data)
+
+        if (data.choices[0].finish_reason) {
+          finishReason = data.choices[0].finish_reason
+        }
+        if (data.usage) {
+          usage = data.usage
+        }
       }
+    },
+  }))
 
-      const decoder = new TextDecoder()
+  const [chunkStream, rawTextStream] = rawChunkStream.tee()
 
-      let finishReason: string | undefined
-      let usage: StreamTextResponseUsage | undefined
-      let buffer = ''
+  const textStream = rawTextStream.pipeThrough(new TransformStream({
+    transform: (chunk, controller) => controller.enqueue(chunk.choices[0].delta.content),
+  }))
 
-      const rawChunkStream = res.body.pipeThrough(new TransformStream({
-        transform: (chunk, controller) => {
-          buffer += decoder.decode(chunk)
-          const lines = buffer.split('\n\n')
-          buffer = lines.pop() || ''
-
-          for (const line of lines) {
-            // Some cases:
-            // - Empty chunk
-            // - :ROUTER PROCESSING from OpenRouter
-            if (!line || !line.startsWith(dataHeaderPrefix)) {
-              continue
-            }
-
-            if (line.startsWith(dataErrorPrefix)) {
-              // About controller error: https://developer.mozilla.org/en-US/docs/Web/API/TransformStreamDefaultController/error
-              controller.error(new Error(`Error from server: ${line}`))
-              continue
-            }
-
-            const lineWithoutPrefix = line.slice(dataHeaderPrefix.length)
-            if (lineWithoutPrefix === '[DONE]') {
-              controller.terminate()
-              continue
-            }
-
-            const data: StreamTextResponse = JSON.parse(lineWithoutPrefix)
-            controller.enqueue(data)
-
-            if (data.choices[0].finish_reason) {
-              finishReason = data.choices[0].finish_reason
-            }
-            if (data.usage) {
-              usage = data.usage
-            }
-          }
-        },
-      }))
-
-      const [chunkStream, rawTextStream] = rawChunkStream.tee()
-
-      const textStream = rawTextStream.pipeThrough(new TransformStream({
-        transform: (chunk, controller) => controller.enqueue(chunk.choices[0].delta.content),
-      }))
-
-      return { chunkStream, finishReason, textStream, usage }
-    })
+  return { chunkStream, finishReason, textStream, usage }
+}
 
 export default streamText
