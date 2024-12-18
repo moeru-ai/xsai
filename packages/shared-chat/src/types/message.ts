@@ -1,5 +1,7 @@
 import type { AudioPart, ImagePart, Part, RefusalPart, TextPart } from './message-part'
 
+type Optional<T, K extends keyof T> = Omit<T, K> & Pick<Partial<T>, K>
+
 export type Message = AssistantMessage | SystemMessage | ToolMessage | UserMessage
 
 export interface CommonMessage<T extends string, P extends Part> {
@@ -27,8 +29,7 @@ export interface ToolCall {
   type: 'function'
 }
 
-export interface AssistantMessage extends Omit<CommonMessage<'assistant', AssistantMessagePart>, 'content'> {
-  content?: string
+export interface AssistantMessage extends Optional<CommonMessage<'assistant', AssistantMessagePart>, 'content'> {
   refusal?: null | string
   tool_calls?: ToolCall[]
   // TODO: audio
