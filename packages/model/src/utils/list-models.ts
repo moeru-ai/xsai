@@ -1,4 +1,4 @@
-import { type CommonRequestOptions, requestHeaders } from '@xsai/shared'
+import { type CommonRequestOptions, requestHeaders, requestURL } from '@xsai/shared'
 
 import type { Model } from '../types/model'
 
@@ -10,7 +10,7 @@ export interface ListModelsResponse {
 }
 
 export const listModels = async (options: ListModelsOptions): Promise<Model[]> =>
-  await (options.fetch ?? globalThis.fetch)(new URL('models', options.baseURL), {
+  await (options.fetch ?? globalThis.fetch)(requestURL('models', options.baseURL), {
     headers: requestHeaders({
       'Content-Type': 'application/json',
       ...options.headers,

@@ -1,10 +1,7 @@
 export interface CommonRequestOptions {
   abortSignal?: AbortSignal
   apiKey?: string
-  /**
-   * @example `https://openai.com/v1/`
-   * @remarks make sure the baseURL ends with a slash.
-   */
+  /** @example `https://openai.com/v1/` */
   baseURL: string | URL
   fetch?: typeof globalThis.fetch
   /** @default `undefined` */

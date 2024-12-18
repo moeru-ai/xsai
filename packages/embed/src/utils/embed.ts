@@ -1,4 +1,4 @@
-import { type CommonRequestOptions, requestBody, requestHeaders } from '@xsai/shared'
+import { type CommonRequestOptions, requestBody, requestHeaders, requestURL } from '@xsai/shared'
 
 export interface EmbedOptions extends CommonRequestOptions {
   [key: string]: unknown
@@ -29,7 +29,7 @@ export interface EmbedResult {
 }
 
 export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
-  await (options.fetch ?? globalThis.fetch)(new URL('embeddings', options.baseURL), {
+  await (options.fetch ?? globalThis.fetch)(requestURL('embeddings', options.baseURL), {
     body: requestBody(options),
     headers: requestHeaders({
       'Content-Type': 'application/json',
