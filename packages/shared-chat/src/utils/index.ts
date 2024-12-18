@@ -1,2 +1,2 @@
-export { chatCompletion } from './chat-completion'
+export { chat } from './chat'
 export * as message from './message'

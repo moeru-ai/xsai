@@ -1,11 +1,11 @@
 import {
-  chatCompletion,
-  type ChatCompletionOptions,
+  chat,
   ChatError,
+  type ChatOptions,
   type FinishReason,
 } from '@xsai/shared-chat'
 
-export interface StreamTextOptions extends ChatCompletionOptions {
+export interface StreamTextOptions extends ChatOptions {
   /** if you want to disable stream, use `@xsai/generate-text` */
   stream?: never
   streamOptions?: {
@@ -56,7 +56,7 @@ const dataErrorPrefix = `{"error":`
  * @experimental WIP, does not support function calling (tools).
  */
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
-  const res = await chatCompletion({
+  const res = await chat({
     ...options,
     stream: true,
   })

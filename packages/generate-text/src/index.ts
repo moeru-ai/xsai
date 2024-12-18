@@ -1,14 +1,14 @@
 import {
   type AssistantMessageResponse,
-  chatCompletion,
-  type ChatCompletionOptions,
+  chat,
   ChatError,
+  type ChatOptions,
   type FinishReason,
   type Message,
   type Tool,
 } from '@xsai/shared-chat'
 
-export interface GenerateTextOptions extends ChatCompletionOptions {
+export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
   /** if you want to enable stream, use `@xsai/stream-text` */
@@ -68,7 +68,7 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
   while (currentStep < (options.maxSteps ?? 1)) {
     currentStep += 1
 
-    const res = await chatCompletion({
+    const res = await chat({
       ...options,
       maxSteps: undefined,
       messages,
