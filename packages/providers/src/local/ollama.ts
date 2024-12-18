@@ -1,20 +1,13 @@
-import type { CommonRequestOptions } from '@xsai/shared'
-
-import type { CommonProviderOptions } from '../types/common-provider-options'
+import type { ChatProvider, EmbeddingsProvider, ModelsProvider, ProviderOptions, ProviderResult } from '../types'
 
 import { generateCRO } from '../utils/generate-cro'
 
-type OllamaChatModel = 'gemma2' | 'llama3.1' | 'llama3.2' | 'llama3.2-vision' | 'mistral-nemo' | 'mistral-small' | 'nemotron' | 'qwen2.5' | 'qwen2.5-coder' | ({} & string)
-type OllamaEmbeddingsModel = 'all-minilm' | 'mxbai-embed-large' | 'nomic-embed-text' | ({} & string)
-
-export interface OllamaProvider {
-  chat: (model: OllamaChatModel) => CommonRequestOptions
-  embeddings: (model: OllamaEmbeddingsModel) => CommonRequestOptions
-  models: () => CommonProviderOptions
-}
-
-export const createOllama = (userOptions?: Partial<CommonProviderOptions>): OllamaProvider => {
-  const options: CommonProviderOptions = {
+export const createOllama = (userOptions?: ProviderOptions<false>):
+  /** @see {@link https://ollama.com/search} */
+  ChatProvider<'gemma2' | 'llama3.1' | 'llama3.2' | 'llama3.2-vision' | 'llama3.3' | 'qwen2.5' | 'qwen2.5-coder' | 'qwq' | ({} & string)>
+  | EmbeddingsProvider<'all-minilm' | 'mxbai-embed-large' | 'nomic-embed-text' | ({} & string)>
+  | ModelsProvider => {
+  const options: ProviderResult = {
     ...userOptions,
     baseURL: userOptions?.baseURL ?? new URL('http://localhost:11434/v1/'),
   }

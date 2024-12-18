@@ -1,21 +1,13 @@
-import type { CommonRequestOptions } from '@xsai/shared'
-
-import type { CommonProviderOptions } from '../types/common-provider-options'
+import type { ChatProvider, EmbeddingsProvider, ModelsProvider, ProviderOptions, ProviderResult } from '../types'
 
 import { generateCRO } from '../utils/generate-cro'
 
-/** @see {@link https://ai.google.dev/gemini-api/docs/models/gemini#embedding} */
-type GoogleGenerativeAIChatModel = 'gemini-1.5-flash' | 'gemini-1.5-flash-8b' | 'gemini-1.5-pro' | ({} & string)
-type GoogleGenerativeAIEmbeddingsModel = 'text-embedding-004' | ({} & string)
-
-export interface GoogleGenerativeAIProvider {
-  chat: (model: GoogleGenerativeAIChatModel) => CommonRequestOptions
-  embeddings: (model: GoogleGenerativeAIEmbeddingsModel) => CommonRequestOptions
-  models: () => CommonProviderOptions
-}
-
-export const createGoogleGenerativeAI = (userOptions: Partial<Omit<CommonProviderOptions, 'apiKey'>> & Required<Pick<CommonProviderOptions, 'apiKey'>>): GoogleGenerativeAIProvider => {
-  const options: CommonProviderOptions = {
+export const createGoogleGenerativeAI = (userOptions: ProviderOptions<true>):
+  /** @see {@link https://ai.google.dev/gemini-api/docs/models/gemini} */
+  ChatProvider<'gemini-1.5-flash' | 'gemini-1.5-flash-8b' | 'gemini-1.5-pro' | 'gemini-2.0-flash-exp'>
+  | EmbeddingsProvider<'text-embedding-004'>
+  | ModelsProvider => {
+  const options: ProviderResult = {
     ...userOptions,
     baseURL: userOptions.baseURL ?? new URL('https://generativelanguage.googleapis.com/v1beta/openai/'),
   }
