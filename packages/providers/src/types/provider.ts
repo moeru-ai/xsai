@@ -3,7 +3,7 @@ import type { CommonRequestOptions } from '@xsai/shared'
 /** T: required apiKey */
 export type ProviderOptions<T extends boolean = false> =
   T extends true
-    ? Omit<ProviderResult, 'apiKey'> & Required<Pick<ProviderResult, 'apiKey'>>
+    ? Partial<Omit<ProviderResult, 'apiKey'>> & Required<Pick<ProviderResult, 'apiKey'>>
     : Partial<ProviderResult>
 
 export type ProviderResult = Omit<CommonRequestOptions, 'model'> & Partial<Pick<CommonRequestOptions, 'model'>>
