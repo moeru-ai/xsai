@@ -8,11 +8,11 @@ export type ProviderOptions<T extends boolean = false> =
 
 export type ProviderResult = Omit<CommonRequestOptions, 'model'> & Partial<Pick<CommonRequestOptions, 'model'>>
 
-export interface ChatProvider<T extends string> {
+export interface ChatProvider<T extends string = string> {
   chat: (model: ({} & string) | T) => CommonRequestOptions
 }
 
-export interface EmbeddingsProvider<T extends string> {
+export interface EmbeddingsProvider<T extends string = string> {
   embeddings: (model: ({} & string) | T) => CommonRequestOptions
 }
 
