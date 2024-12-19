@@ -19,7 +19,7 @@ import { env } from 'node:process'
 const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 const { embedding } = await embed({
-  ...openai.embeddings('text-embedding-3-large'),
+  ...openai.embed('text-embedding-3-large'),
   input: 'sunny day at the beach',
 })
 ```
@@ -34,7 +34,7 @@ import { env } from 'node:process'
 const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 const { embeddings } = await embedMany({
-  ...openai.embeddings('text-embedding-3-large'),
+  ...openai.embed('text-embedding-3-large'),
   input: [
     'sunny day at the beach',
     'rainy afternoon in the city',
