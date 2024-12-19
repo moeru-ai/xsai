@@ -19,3 +19,11 @@ export interface EmbeddingsProvider<T extends string = string> {
 export interface ModelsProvider {
   models: () => ProviderResult
 }
+
+export interface SpeechProvider<T extends string = string> {
+  speech: (model: ({} & string) | T) => CommonRequestOptions
+}
+
+export interface TranscriptionsProvider<T extends string = string> {
+  transcriptions: (model: ({} & string) | T) => CommonRequestOptions
+}
