@@ -12,10 +12,7 @@ export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTex
   object: Infer<T>
 }
 
-/**
- * @experimental WIP
- * @remarks Ollama doesn't support this, see {@link https://github.com/ollama/ollama/issues/6473}
- */
+/** @experimental WIP */
 export const generateObject = async <T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<T>> =>
   await generateText({
     ...options,
