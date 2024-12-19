@@ -12,18 +12,18 @@ export interface ChatProvider<T extends string = string> {
   chat: (model: ({} & string) | T) => CommonRequestOptions
 }
 
-export interface EmbeddingsProvider<T extends string = string> {
-  embeddings: (model: ({} & string) | T) => CommonRequestOptions
+export interface EmbedProvider<T extends string = string> {
+  embed: (model: ({} & string) | T) => CommonRequestOptions
 }
 
-export interface ModelsProvider {
-  models: () => ProviderResult
+export interface ModelProvider {
+  model: () => ProviderResult
 }
 
 export interface SpeechProvider<T extends string = string> {
   speech: (model: ({} & string) | T) => CommonRequestOptions
 }
 
-export interface TranscriptionsProvider<T extends string = string> {
-  transcriptions: (model: ({} & string) | T) => CommonRequestOptions
+export interface TranscriptionProvider<T extends string = string> {
+  transcription: (model: ({} & string) | T) => CommonRequestOptions
 }

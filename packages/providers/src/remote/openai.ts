@@ -1,14 +1,14 @@
-import type { ChatProvider, EmbeddingsProvider, ModelsProvider, ProviderOptions, ProviderResult, SpeechProvider, TranscriptionsProvider } from '../types'
+import type { ChatProvider, EmbedProvider, ModelProvider, ProviderOptions, ProviderResult, SpeechProvider, TranscriptionProvider } from '../types'
 
 import { generateCRO } from '../utils/generate-cro'
 
 export const createOpenAI = (userOptions: ProviderOptions<true>):
   /** @see {@link https://platform.openai.com/docs/models#model-endpoint-compatibility} */
   ChatProvider<'gpt-4o' | 'gpt-4o-mini' | 'o1-mini' | 'o1-preview'>
-  & EmbeddingsProvider<'text-embedding-3-large' | 'text-embedding-3-small'>
-  & ModelsProvider
+  & EmbedProvider<'text-embedding-3-large' | 'text-embedding-3-small'>
+  & ModelProvider
   & SpeechProvider<'tts-1' | 'tts-1-hd'>
-  & TranscriptionsProvider<'whisper-1'> => {
+  & TranscriptionProvider<'whisper-1'> => {
   const options: ProviderResult = {
     ...userOptions,
     baseURL: userOptions.baseURL ?? new URL('https://openai.com/v1/'),
@@ -18,9 +18,9 @@ export const createOpenAI = (userOptions: ProviderOptions<true>):
 
   return {
     chat: result,
-    embeddings: result,
-    models: () => options,
+    embed: result,
+    model: () => options,
     speech: result,
-    transcriptions: result,
+    transcription: result,
   }
 }

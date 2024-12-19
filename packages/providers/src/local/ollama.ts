@@ -1,12 +1,12 @@
-import type { ChatProvider, EmbeddingsProvider, ModelsProvider, ProviderOptions, ProviderResult } from '../types'
+import type { ChatProvider, EmbedProvider, ModelProvider, ProviderOptions, ProviderResult } from '../types'
 
 import { generateCRO } from '../utils/generate-cro'
 
 export const createOllama = (userOptions?: ProviderOptions<false>):
   /** @see {@link https://ollama.com/search} */
   ChatProvider<'gemma2' | 'llama3.1' | 'llama3.2' | 'llama3.2-vision' | 'llama3.3' | 'qwen2.5' | 'qwen2.5-coder' | 'qwq' | ({} & string)>
-  & EmbeddingsProvider<'all-minilm' | 'mxbai-embed-large' | 'nomic-embed-text' | ({} & string)>
-  & ModelsProvider => {
+  & EmbedProvider<'all-minilm' | 'mxbai-embed-large' | 'nomic-embed-text' | ({} & string)>
+  & ModelProvider => {
   const options: ProviderResult = {
     ...userOptions,
     baseURL: userOptions?.baseURL ?? new URL('http://localhost:11434/v1/'),
@@ -16,8 +16,8 @@ export const createOllama = (userOptions?: ProviderOptions<false>):
 
   return {
     chat: result,
-    embeddings: result,
-    models: () => options,
+    embed: result,
+    model: () => options,
   }
 }
 
