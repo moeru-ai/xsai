@@ -9,7 +9,7 @@ export interface UnSpeechOptions {
   voice: string
 }
 
-export const createUnSpeech = (userOptions?: ProviderOptions<false>): SpeechProvider => ({
+export const createUnSpeech = (userOptions?: ProviderOptions<true>): SpeechProvider => ({
   speech: (options: UnSpeechOptions) => ({
     ...options,
     ...generateCRO(options.model, {
