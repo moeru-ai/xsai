@@ -1,4 +1,3 @@
-export * from './local'
-export * from './remote'
+export * from './providers'
 export type * from './types'
 export * from './utils'
