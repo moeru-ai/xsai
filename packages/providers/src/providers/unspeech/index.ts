@@ -18,5 +18,3 @@ export const createUnSpeech = (userOptions?: ProviderOptions<false>): SpeechProv
     }),
   }),
 })
-
-export const unSpeech = createUnSpeech()
