@@ -20,8 +20,14 @@ export interface ModelProvider {
   model: () => ProviderResult
 }
 
-export interface SpeechProvider<T extends string = string> {
-  speech: (model: ({} & string) | T) => CommonRequestOptions
+export interface SpeechProvider<T extends {
+  model: string
+  voice: string
+} = {
+  model: string
+  voice: string
+}> {
+  speech: (options: T) => CommonRequestOptions & Omit<T, 'model'>
 }
 
 export interface TranscriptionProvider<T extends string = string> {

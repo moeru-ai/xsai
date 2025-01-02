@@ -1,4 +1,4 @@
-version: '0.2'
+version: "0.2"
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -6,9 +6,11 @@ words:
   - all-minilm
   - automd
   - bumpp
+  - elevenlabs
   - fumadocs
   - gcornut
   - importantimport
+  - koemotion
   - Moeru
   - moeru-ai
   - mxbai-embed-large
