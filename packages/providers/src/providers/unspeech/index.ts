@@ -2,6 +2,8 @@ import type { ProviderOptions, SpeechProvider } from '../../types'
 
 import { generateCRO } from '../../utils/generate-cro'
 
+export { createUnElevenLabs, type UnElevenLabsOptions } from './elevenlabs'
+
 export interface UnSpeechOptions {
   /** @experimental */
   extraBody?: Record<string, unknown>
