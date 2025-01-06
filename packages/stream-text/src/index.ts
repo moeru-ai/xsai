@@ -1,6 +1,5 @@
 import {
   chat,
-  ChatError,
   type ChatOptions,
   type FinishReason,
 } from '@xsai/shared-chat'
@@ -59,25 +58,14 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   ...options,
   stream: true,
 }).then(async (res) => {
-  if (!res.ok) {
-    const error = new ChatError(`Remote sent ${res.status} response`, res)
-    error.cause = new Error(await res.text())
-  }
-  if (!res.body) {
-    throw new ChatError('Response body is empty from remote server', res)
-  }
-  if (!(res.body instanceof ReadableStream)) {
-    const error = new ChatError(`Expected Response body to be a ReadableStream, but got ${String(res.body)}`, res)
-    error.cause = new Error(`Content-Type is ${res.headers.get('Content-Type')}`)
-  }
-
   const decoder = new TextDecoder()
 
   let finishReason: string | undefined
   let usage: StreamTextResponseUsage | undefined
   let buffer = ''
 
-  const rawChunkStream = res.body.pipeThrough(new TransformStream({
+  // null body handled by import('@xsai/shared-chat').chat()
+  const rawChunkStream = res.body!.pipeThrough(new TransformStream({
     transform: (chunk, controller) => {
       buffer += decoder.decode(chunk)
       const lines = buffer.split('\n\n')

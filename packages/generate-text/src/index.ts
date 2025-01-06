@@ -1,7 +1,6 @@
 import {
   type AssistantMessageResponse,
   chat,
-  ChatError,
   type ChatOptions,
   type FinishReason,
   type Message,
@@ -68,19 +67,13 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
   while (currentStep < (options.maxSteps ?? 1)) {
     currentStep += 1
 
-    const res = await chat({
+    const data: GenerateTextResponse = await chat({
       ...options,
       maxSteps: undefined,
       messages,
       stream: false,
-    })
+    }).then(res => res.json())
 
-    if (!res.ok) {
-      const error = new ChatError(`Remote sent ${res.status} response`, res)
-      error.cause = new Error(await res.text())
-    }
-
-    const data: GenerateTextResponse = await res.json()
     const { finish_reason, message } = data.choices[0]
 
     finishReason = finish_reason
