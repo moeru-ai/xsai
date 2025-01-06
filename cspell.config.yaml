@@ -1,4 +1,4 @@
-version: '0.2'
+version: "0.2"
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -6,6 +6,7 @@ words:
   - all-minilm
   - automd
   - bumpp
+  - changelogithub
   - elevenlabs
   - fumadocs
   - gcornut
