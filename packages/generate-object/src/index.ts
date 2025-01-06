@@ -1,4 +1,4 @@
-import { type Infer, type Schema, toJSONSchema } from '@typeschema/main'
+import { type Infer, type Schema, toJSONSchema, validate } from '@typeschema/main'
 import { generateText, type GenerateTextOptions, type GenerateTextResult } from '@xsai/generate-text'
 import { clean } from '@xsai/shared'
 
@@ -33,12 +33,23 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
     schemaDescription: undefined,
     schemaName: undefined,
   })
-    .then(({ finishReason, steps, text, usage }) => ({
-      finishReason,
-      // TODO: import { validate } from '@typeschema/main'
-      object: JSON.parse(text || '{}'),
-      steps,
-      usage,
-    }))
+    .then(async ({ finishReason, steps, text, usage }) => {
+      const result = await validate(options.schema, text)
+
+      if (result.success) {
+        return {
+          finishReason,
+          object: result.data,
+          steps,
+          usage,
+        }
+      }
+      else {
+        throw new Error([
+          'Schema validation failed:',
+          ...result.issues.map(issue => `- ${issue.message}`),
+        ].join('\n'))
+      }
+    })
 
 export default generateObject
