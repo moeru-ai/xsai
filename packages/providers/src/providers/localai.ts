@@ -4,8 +4,8 @@ import { generateCRO } from '../utils/generate-cro'
 
 export const createLocalAI = (userOptions?: ProviderOptions<false>):
   /** @see {@link https://localai.io/model-compatibility/} */
-  ChatProvider<({} & string)>
-  & EmbedProvider<({} & string)>
+  ChatProvider
+  & EmbedProvider
   & ModelProvider => {
   const options: ProviderResult = {
     ...userOptions,
