@@ -2,14 +2,13 @@ import type { ChatProvider, EmbedProvider, ModelProvider, ProviderOptions, Provi
 
 import { generateCRO } from '../utils/generate-cro'
 
-export const createLocalAI = (userOptions?: ProviderOptions<false>):
-  /** @see {@link https://localai.io/model-compatibility/} */
+export const createOpenAICompatible = (userOptions: ProviderOptions<true> & Required<Pick<ProviderOptions<true>, 'baseURL'>>):
   ChatProvider
   & EmbedProvider
   & ModelProvider => {
   const options: ProviderResult = {
     ...userOptions,
-    baseURL: userOptions?.baseURL ?? new URL('http://localhost:8080/v1/'),
+    baseURL: userOptions.baseURL,
   }
 
   const result = (model: string) => generateCRO(model, options)
@@ -20,5 +19,3 @@ export const createLocalAI = (userOptions?: ProviderOptions<false>):
     model: () => options,
   }
 }
-
-export const localAI = createLocalAI()
