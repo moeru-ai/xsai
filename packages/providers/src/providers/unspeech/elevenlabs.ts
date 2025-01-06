@@ -38,7 +38,7 @@ export interface UnElevenLabsOptions {
    *
    * @see {@link https://elevenlabs.io/docs/developer-guides/models}
    */
-  model: 'elevenlabs/eleven_english_sts_v2' | 'elevenlabs/eleven_flash_v2' | 'elevenlabs/eleven_flash_v2_5' | 'elevenlabs/eleven_multilingual_sts_v2' | 'elevenlabs/eleven_multilingual_v2' | ({} & string)
+  model: 'eleven_english_sts_v2' | 'eleven_flash_v2' | 'eleven_flash_v2_5' | 'eleven_multilingual_sts_v2' | 'eleven_multilingual_v2' | ({} & string)
   /**
    * A list of request_id of the samples that were generated before this generation. Can
    * be used to improve the flow of prosody when splitting up a large task into multiple
