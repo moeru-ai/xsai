@@ -1,4 +1,5 @@
 export * from './google-generative-ai'
 export * from './ollama'
 export * from './openai'
+export * from './openai-compatible'
 export * from './unspeech'

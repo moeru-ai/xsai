@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -22,6 +22,7 @@ words:
   - qwen
   - twoslash
   - typeschema
+  - unspeech
   - valibot
   - Vitest
   - xsai
