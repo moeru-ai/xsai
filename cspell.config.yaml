@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -11,7 +11,6 @@ words:
   - gcornut
   - importantimport
   - koemotion
-  - localai
   - Moeru
   - moeru-ai
   - mxbai-embed-large
