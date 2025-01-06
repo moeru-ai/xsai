@@ -67,14 +67,13 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
   while (currentStep < (options.maxSteps ?? 1)) {
     currentStep += 1
 
-    const res = await chat({
+    const data: GenerateTextResponse = await chat({
       ...options,
       maxSteps: undefined,
       messages,
       stream: false,
-    })
+    }).then(res => res.json())
 
-    const data: GenerateTextResponse = await res.json()
     const { finish_reason, message } = data.choices[0]
 
     finishReason = finish_reason
