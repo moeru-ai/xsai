@@ -1,4 +1,4 @@
-import { type CommonRequestOptions, requestHeaders, requestURL } from '@xsai/shared'
+import { type CommonRequestOptions, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
 import type { Model } from '../types/model'
 
@@ -12,4 +12,4 @@ export const retrieveModel = async (options: RetrieveModelOptions): Promise<Mode
     }, options.apiKey),
     signal: options.abortSignal,
   })
-    .then(res => res.json() as Promise<Model>)
+    .then(responseJSON<Model>)

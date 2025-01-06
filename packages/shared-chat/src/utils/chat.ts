@@ -1,4 +1,4 @@
-import { requestBody, requestHeaders, requestURL } from '@xsai/shared'
+import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
 import type { ChatOptions, Tool } from '../types'
 
@@ -17,4 +17,4 @@ export const chat = async <T extends ChatOptions>(options: T) =>
     }, options.apiKey),
     method: 'POST',
     signal: options.abortSignal,
-  })
+  }).then(responseCatch)

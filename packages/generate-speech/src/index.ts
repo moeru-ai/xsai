@@ -1,4 +1,4 @@
-import { type CommonRequestOptions, requestBody, requestHeaders, requestURL } from '@xsai/shared'
+import { type CommonRequestOptions, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
 export interface GenerateSpeechOptions extends CommonRequestOptions {
   [key: string]: unknown
@@ -25,7 +25,7 @@ export const generateSpeech = async (options: GenerateSpeechOptions): Promise<Ar
     method: 'POST',
     signal: options.abortSignal,
   })
-  // TODO: error handling
+    .then(responseCatch)
     .then(res => res.arrayBuffer())
 
 export default generateSpeech

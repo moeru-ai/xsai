@@ -1,4 +1,4 @@
-import { type CommonRequestOptions, requestHeaders, requestURL } from '@xsai/shared'
+import { type CommonRequestOptions, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
 import type { Model } from '../types/model'
 
@@ -17,5 +17,5 @@ export const listModels = async (options: ListModelsOptions): Promise<Model[]> =
     }, options.apiKey),
     signal: options.abortSignal,
   })
-    .then(res => res.json() as Promise<ListModelsResponse>)
+    .then(responseJSON<ListModelsResponse>)
     .then(({ data }) => data)

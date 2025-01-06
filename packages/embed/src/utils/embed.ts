@@ -1,4 +1,4 @@
-import { type CommonRequestOptions, requestBody, requestHeaders, requestURL } from '@xsai/shared'
+import { type CommonRequestOptions, requestBody, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
 export interface EmbedOptions extends CommonRequestOptions {
   [key: string]: unknown
@@ -38,7 +38,7 @@ export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
     method: 'POST',
     signal: options.abortSignal,
   })
-    .then(res => res.json() as Promise<EmbedResponse>)
+    .then(responseJSON<EmbedResponse>)
     .then(({ data, usage }) => ({
       embedding: data[0].embedding,
       input: options.input,

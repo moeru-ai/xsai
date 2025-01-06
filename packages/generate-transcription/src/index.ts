@@ -1,4 +1,4 @@
-import { type CommonRequestOptions, requestHeaders, requestURL } from '@xsai/shared'
+import { type CommonRequestOptions, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
 export interface GenerateTranscriptionOptions extends CommonRequestOptions {
   file: Blob
@@ -30,14 +30,7 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
     method: 'POST',
     signal: options.abortSignal,
   })
-    .then(async (res) => {
-      if (res.ok) {
-        return res.json() as Promise<GenerateTranscriptionResult>
-      }
-      else {
-        throw new Error(`Error(${res.status}): ${await res.text()}`)
-      }
-    })
+    .then(responseJSON<GenerateTranscriptionResult>)
     .then(({ text }) => ({ text: text.trim() }))
 }
 
