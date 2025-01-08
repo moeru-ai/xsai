@@ -39,12 +39,17 @@ export const streamObject = async <T extends Schema>(options: GenerateObjectOpti
     const [textStream, rawPartialObjectStream] = rawTextStream.tee()
 
     let partialObjectData = ''
+    let partialObject = {}
     const partialObjectStream = rawPartialObjectStream.pipeThrough(new TransformStream({
       transform: (chunk, controller) => {
         partialObjectData += chunk
         try {
           const data = parse(partialObjectData)
-          controller.enqueue(data)
+
+          if (JSON.stringify(partialObject) !== JSON.stringify(data)) {
+            partialObject = data
+            controller.enqueue(data)
+          }
         }
         // TODO: maybe handle
         catch {}

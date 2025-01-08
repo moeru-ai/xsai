@@ -1,56 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/generate-object > basic 1`] = `{}`;
-
-exports[`@xsai/generate-object > basic 2`] = `
-{
-  "": undefined,
-}
-`;
-
-exports[`@xsai/generate-object > basic 3`] = `
-{
-  "recipe": undefined,
-}
-`;
-
-exports[`@xsai/generate-object > basic 4`] = `
-{
-  "recipe": undefined,
-}
-`;
-
-exports[`@xsai/generate-object > basic 5`] = `
+exports[`@xsai/stream-object > basic 1`] = `
 {
   "recipe": {},
 }
 `;
 
-exports[`@xsai/generate-object > basic 6`] = `
-{
-  "recipe": {
-    "": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 7`] = `
-{
-  "recipe": {
-    "ingredients": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 8`] = `
-{
-  "recipe": {
-    "ingredients": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 9`] = `
+exports[`@xsai/stream-object > basic 2`] = `
 {
   "recipe": {
     "ingredients": [],
@@ -58,7 +14,7 @@ exports[`@xsai/generate-object > basic 9`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 10`] = `
+exports[`@xsai/stream-object > basic 3`] = `
 {
   "recipe": {
     "ingredients": [
@@ -68,43 +24,7 @@ exports[`@xsai/generate-object > basic 10`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 11`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 12`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 13`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 14`] = `
+exports[`@xsai/stream-object > basic 4`] = `
 {
   "recipe": {
     "ingredients": [
@@ -116,7 +36,7 @@ exports[`@xsai/generate-object > basic 14`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 15`] = `
+exports[`@xsai/stream-object > basic 5`] = `
 {
   "recipe": {
     "ingredients": [
@@ -128,58 +48,7 @@ exports[`@xsai/generate-object > basic 15`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 16`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 17`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "": undefined,
-        "amount": "2",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 18`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 19`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 20`] = `
+exports[`@xsai/stream-object > basic 6`] = `
 {
   "recipe": {
     "ingredients": [
@@ -192,7 +61,7 @@ exports[`@xsai/generate-object > basic 20`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 21`] = `
+exports[`@xsai/stream-object > basic 7`] = `
 {
   "recipe": {
     "ingredients": [
@@ -205,7 +74,7 @@ exports[`@xsai/generate-object > basic 21`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 22`] = `
+exports[`@xsai/stream-object > basic 8`] = `
 {
   "recipe": {
     "ingredients": [
@@ -218,33 +87,7 @@ exports[`@xsai/generate-object > basic 22`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 23`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 24`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 25`] = `
+exports[`@xsai/stream-object > basic 9`] = `
 {
   "recipe": {
     "ingredients": [
@@ -258,55 +101,7 @@ exports[`@xsai/generate-object > basic 25`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 26`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 27`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 28`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 29`] = `
+exports[`@xsai/stream-object > basic 10`] = `
 {
   "recipe": {
     "ingredients": [
@@ -322,7 +117,7 @@ exports[`@xsai/generate-object > basic 29`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 30`] = `
+exports[`@xsai/stream-object > basic 11`] = `
 {
   "recipe": {
     "ingredients": [
@@ -338,7 +133,7 @@ exports[`@xsai/generate-object > basic 30`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 31`] = `
+exports[`@xsai/stream-object > basic 12`] = `
 {
   "recipe": {
     "ingredients": [
@@ -354,7 +149,7 @@ exports[`@xsai/generate-object > basic 31`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 32`] = `
+exports[`@xsai/stream-object > basic 13`] = `
 {
   "recipe": {
     "ingredients": [
@@ -370,7 +165,7 @@ exports[`@xsai/generate-object > basic 32`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 33`] = `
+exports[`@xsai/stream-object > basic 14`] = `
 {
   "recipe": {
     "ingredients": [
@@ -386,57 +181,7 @@ exports[`@xsai/generate-object > basic 33`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 34`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 35`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 36`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 37`] = `
+exports[`@xsai/stream-object > basic 15`] = `
 {
   "recipe": {
     "ingredients": [
@@ -453,7 +198,7 @@ exports[`@xsai/generate-object > basic 37`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 38`] = `
+exports[`@xsai/stream-object > basic 16`] = `
 {
   "recipe": {
     "ingredients": [
@@ -470,7 +215,7 @@ exports[`@xsai/generate-object > basic 38`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 39`] = `
+exports[`@xsai/stream-object > basic 17`] = `
 {
   "recipe": {
     "ingredients": [
@@ -487,7 +232,7 @@ exports[`@xsai/generate-object > basic 39`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 40`] = `
+exports[`@xsai/stream-object > basic 18`] = `
 {
   "recipe": {
     "ingredients": [
@@ -504,41 +249,7 @@ exports[`@xsai/generate-object > basic 40`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 41`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 42`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 43`] = `
+exports[`@xsai/stream-object > basic 19`] = `
 {
   "recipe": {
     "ingredients": [
@@ -556,67 +267,7 @@ exports[`@xsai/generate-object > basic 43`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 44`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 45`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 46`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 47`] = `
+exports[`@xsai/stream-object > basic 20`] = `
 {
   "recipe": {
     "ingredients": [
@@ -636,7 +287,7 @@ exports[`@xsai/generate-object > basic 47`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 48`] = `
+exports[`@xsai/stream-object > basic 21`] = `
 {
   "recipe": {
     "ingredients": [
@@ -656,7 +307,7 @@ exports[`@xsai/generate-object > basic 48`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 49`] = `
+exports[`@xsai/stream-object > basic 22`] = `
 {
   "recipe": {
     "ingredients": [
@@ -676,7 +327,7 @@ exports[`@xsai/generate-object > basic 49`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 50`] = `
+exports[`@xsai/stream-object > basic 23`] = `
 {
   "recipe": {
     "ingredients": [
@@ -696,69 +347,7 @@ exports[`@xsai/generate-object > basic 50`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 51`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 52`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 53`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 54`] = `
+exports[`@xsai/stream-object > basic 24`] = `
 {
   "recipe": {
     "ingredients": [
@@ -779,7 +368,7 @@ exports[`@xsai/generate-object > basic 54`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 55`] = `
+exports[`@xsai/stream-object > basic 25`] = `
 {
   "recipe": {
     "ingredients": [
@@ -800,7 +389,7 @@ exports[`@xsai/generate-object > basic 55`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 56`] = `
+exports[`@xsai/stream-object > basic 26`] = `
 {
   "recipe": {
     "ingredients": [
@@ -821,7 +410,7 @@ exports[`@xsai/generate-object > basic 56`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 57`] = `
+exports[`@xsai/stream-object > basic 27`] = `
 {
   "recipe": {
     "ingredients": [
@@ -842,49 +431,7 @@ exports[`@xsai/generate-object > basic 57`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 58`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 59`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 60`] = `
+exports[`@xsai/stream-object > basic 28`] = `
 {
   "recipe": {
     "ingredients": [
@@ -906,79 +453,7 @@ exports[`@xsai/generate-object > basic 60`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 61`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 62`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 63`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 64`] = `
+exports[`@xsai/stream-object > basic 29`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1002,7 +477,7 @@ exports[`@xsai/generate-object > basic 64`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 65`] = `
+exports[`@xsai/stream-object > basic 30`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1026,7 +501,7 @@ exports[`@xsai/generate-object > basic 65`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 66`] = `
+exports[`@xsai/stream-object > basic 31`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1050,7 +525,7 @@ exports[`@xsai/generate-object > basic 66`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 67`] = `
+exports[`@xsai/stream-object > basic 32`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1074,81 +549,7 @@ exports[`@xsai/generate-object > basic 67`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 68`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 69`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 70`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 71`] = `
+exports[`@xsai/stream-object > basic 33`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1173,7 +574,7 @@ exports[`@xsai/generate-object > basic 71`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 72`] = `
+exports[`@xsai/stream-object > basic 34`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1198,7 +599,7 @@ exports[`@xsai/generate-object > basic 72`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 73`] = `
+exports[`@xsai/stream-object > basic 35`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1223,57 +624,7 @@ exports[`@xsai/generate-object > basic 73`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 74`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 75`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 76`] = `
+exports[`@xsai/stream-object > basic 36`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1299,91 +650,7 @@ exports[`@xsai/generate-object > basic 76`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 77`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 78`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 79`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 80`] = `
+exports[`@xsai/stream-object > basic 37`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1411,7 +678,7 @@ exports[`@xsai/generate-object > basic 80`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 81`] = `
+exports[`@xsai/stream-object > basic 38`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1439,35 +706,7 @@ exports[`@xsai/generate-object > basic 81`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 82`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 83`] = `
+exports[`@xsai/stream-object > basic 39`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1495,65 +734,7 @@ exports[`@xsai/generate-object > basic 83`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 84`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 85`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": undefined,
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 86`] = `
+exports[`@xsai/stream-object > basic 40`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1582,7 +763,7 @@ exports[`@xsai/generate-object > basic 86`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 87`] = `
+exports[`@xsai/stream-object > basic 41`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1611,7 +792,7 @@ exports[`@xsai/generate-object > basic 87`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 88`] = `
+exports[`@xsai/stream-object > basic 42`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1640,214 +821,7 @@ exports[`@xsai/generate-object > basic 88`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 89`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 90`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 91`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 92`] = `
-{
-  "recipe": {
-    "": undefined,
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 93`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "n": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 94`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 95`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 96`] = `
+exports[`@xsai/stream-object > basic 43`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1877,7 +851,7 @@ exports[`@xsai/generate-object > basic 96`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 97`] = `
+exports[`@xsai/stream-object > basic 44`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1907,7 +881,7 @@ exports[`@xsai/generate-object > basic 97`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 98`] = `
+exports[`@xsai/stream-object > basic 45`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1937,7 +911,7 @@ exports[`@xsai/generate-object > basic 98`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 99`] = `
+exports[`@xsai/stream-object > basic 46`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1967,7 +941,7 @@ exports[`@xsai/generate-object > basic 99`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 100`] = `
+exports[`@xsai/stream-object > basic 47`] = `
 {
   "recipe": {
     "ingredients": [
@@ -1997,7 +971,7 @@ exports[`@xsai/generate-object > basic 100`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 101`] = `
+exports[`@xsai/stream-object > basic 48`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2027,7 +1001,7 @@ exports[`@xsai/generate-object > basic 101`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 102`] = `
+exports[`@xsai/stream-object > basic 49`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2057,7 +1031,7 @@ exports[`@xsai/generate-object > basic 102`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 103`] = `
+exports[`@xsai/stream-object > basic 50`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2087,7 +1061,7 @@ exports[`@xsai/generate-object > basic 103`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 104`] = `
+exports[`@xsai/stream-object > basic 51`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2117,131 +1091,7 @@ exports[`@xsai/generate-object > basic 104`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 105`] = `
-{
-  "recipe": {
-    "": undefined,
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": " Sous-Vide Steak with Herb Butter ",
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 106`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": " Sous-Vide Steak with Herb Butter ",
-    "step": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 107`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": " Sous-Vide Steak with Herb Butter ",
-    "steps": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 108`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": " Sous-Vide Steak with Herb Butter ",
-    "steps": undefined,
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 109`] = `
+exports[`@xsai/stream-object > basic 52`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2272,7 +1122,7 @@ exports[`@xsai/generate-object > basic 109`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 110`] = `
+exports[`@xsai/stream-object > basic 53`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2305,7 +1155,7 @@ exports[`@xsai/generate-object > basic 110`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 111`] = `
+exports[`@xsai/stream-object > basic 54`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2338,7 +1188,7 @@ exports[`@xsai/generate-object > basic 111`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 112`] = `
+exports[`@xsai/stream-object > basic 55`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2371,7 +1221,7 @@ exports[`@xsai/generate-object > basic 112`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 113`] = `
+exports[`@xsai/stream-object > basic 56`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2404,7 +1254,7 @@ exports[`@xsai/generate-object > basic 113`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 114`] = `
+exports[`@xsai/stream-object > basic 57`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2437,7 +1287,7 @@ exports[`@xsai/generate-object > basic 114`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 115`] = `
+exports[`@xsai/stream-object > basic 58`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2470,7 +1320,7 @@ exports[`@xsai/generate-object > basic 115`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 116`] = `
+exports[`@xsai/stream-object > basic 59`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2503,7 +1353,7 @@ exports[`@xsai/generate-object > basic 116`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 117`] = `
+exports[`@xsai/stream-object > basic 60`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2536,7 +1386,7 @@ exports[`@xsai/generate-object > basic 117`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 118`] = `
+exports[`@xsai/stream-object > basic 61`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2569,7 +1419,7 @@ exports[`@xsai/generate-object > basic 118`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 119`] = `
+exports[`@xsai/stream-object > basic 62`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2602,7 +1452,7 @@ exports[`@xsai/generate-object > basic 119`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 120`] = `
+exports[`@xsai/stream-object > basic 63`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2635,7 +1485,7 @@ exports[`@xsai/generate-object > basic 120`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 121`] = `
+exports[`@xsai/stream-object > basic 64`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2669,7 +1519,7 @@ exports[`@xsai/generate-object > basic 121`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 122`] = `
+exports[`@xsai/stream-object > basic 65`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2703,7 +1553,7 @@ exports[`@xsai/generate-object > basic 122`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 123`] = `
+exports[`@xsai/stream-object > basic 66`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2737,7 +1587,7 @@ exports[`@xsai/generate-object > basic 123`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 124`] = `
+exports[`@xsai/stream-object > basic 67`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2771,7 +1621,7 @@ exports[`@xsai/generate-object > basic 124`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 125`] = `
+exports[`@xsai/stream-object > basic 68`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2805,7 +1655,7 @@ exports[`@xsai/generate-object > basic 125`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 126`] = `
+exports[`@xsai/stream-object > basic 69`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2839,7 +1689,7 @@ exports[`@xsai/generate-object > basic 126`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 127`] = `
+exports[`@xsai/stream-object > basic 70`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2873,7 +1723,7 @@ exports[`@xsai/generate-object > basic 127`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 128`] = `
+exports[`@xsai/stream-object > basic 71`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2907,7 +1757,7 @@ exports[`@xsai/generate-object > basic 128`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 129`] = `
+exports[`@xsai/stream-object > basic 72`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2941,7 +1791,7 @@ exports[`@xsai/generate-object > basic 129`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 130`] = `
+exports[`@xsai/stream-object > basic 73`] = `
 {
   "recipe": {
     "ingredients": [
@@ -2975,7 +1825,7 @@ exports[`@xsai/generate-object > basic 130`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 131`] = `
+exports[`@xsai/stream-object > basic 74`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3009,7 +1859,7 @@ exports[`@xsai/generate-object > basic 131`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 132`] = `
+exports[`@xsai/stream-object > basic 75`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3043,7 +1893,7 @@ exports[`@xsai/generate-object > basic 132`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 133`] = `
+exports[`@xsai/stream-object > basic 76`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3077,7 +1927,7 @@ exports[`@xsai/generate-object > basic 133`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 134`] = `
+exports[`@xsai/stream-object > basic 77`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3111,7 +1961,7 @@ exports[`@xsai/generate-object > basic 134`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 135`] = `
+exports[`@xsai/stream-object > basic 78`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3145,7 +1995,7 @@ exports[`@xsai/generate-object > basic 135`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 136`] = `
+exports[`@xsai/stream-object > basic 79`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3179,7 +2029,7 @@ exports[`@xsai/generate-object > basic 136`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 137`] = `
+exports[`@xsai/stream-object > basic 80`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3213,7 +2063,7 @@ exports[`@xsai/generate-object > basic 137`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 138`] = `
+exports[`@xsai/stream-object > basic 81`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3247,41 +2097,7 @@ exports[`@xsai/generate-object > basic 138`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 139`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": " Sous-Vide Steak with Herb Butter ",
-    "steps": [
-      "Step 1: Prepare the steak and seasoning:",
-      "PPreheat your sous-vide machine to 130°F (54°C).",
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 140`] = `
+exports[`@xsai/stream-object > basic 82`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3316,7 +2132,7 @@ exports[`@xsai/generate-object > basic 140`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 141`] = `
+exports[`@xsai/stream-object > basic 83`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3351,7 +2167,7 @@ exports[`@xsai/generate-object > basic 141`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 142`] = `
+exports[`@xsai/stream-object > basic 84`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3386,7 +2202,7 @@ exports[`@xsai/generate-object > basic 142`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 143`] = `
+exports[`@xsai/stream-object > basic 85`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3421,7 +2237,7 @@ exports[`@xsai/generate-object > basic 143`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 144`] = `
+exports[`@xsai/stream-object > basic 86`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3456,7 +2272,7 @@ exports[`@xsai/generate-object > basic 144`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 145`] = `
+exports[`@xsai/stream-object > basic 87`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3491,7 +2307,7 @@ exports[`@xsai/generate-object > basic 145`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 146`] = `
+exports[`@xsai/stream-object > basic 88`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3526,7 +2342,7 @@ exports[`@xsai/generate-object > basic 146`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 147`] = `
+exports[`@xsai/stream-object > basic 89`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3561,7 +2377,7 @@ exports[`@xsai/generate-object > basic 147`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 148`] = `
+exports[`@xsai/stream-object > basic 90`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3596,7 +2412,7 @@ exports[`@xsai/generate-object > basic 148`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 149`] = `
+exports[`@xsai/stream-object > basic 91`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3631,7 +2447,7 @@ exports[`@xsai/generate-object > basic 149`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 150`] = `
+exports[`@xsai/stream-object > basic 92`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3666,7 +2482,7 @@ exports[`@xsai/generate-object > basic 150`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 151`] = `
+exports[`@xsai/stream-object > basic 93`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3701,7 +2517,7 @@ exports[`@xsai/generate-object > basic 151`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 152`] = `
+exports[`@xsai/stream-object > basic 94`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3736,7 +2552,7 @@ exports[`@xsai/generate-object > basic 152`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 153`] = `
+exports[`@xsai/stream-object > basic 95`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3771,7 +2587,7 @@ exports[`@xsai/generate-object > basic 153`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 154`] = `
+exports[`@xsai/stream-object > basic 96`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3806,7 +2622,7 @@ exports[`@xsai/generate-object > basic 154`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 155`] = `
+exports[`@xsai/stream-object > basic 97`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3841,7 +2657,7 @@ exports[`@xsai/generate-object > basic 155`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 156`] = `
+exports[`@xsai/stream-object > basic 98`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3876,7 +2692,7 @@ exports[`@xsai/generate-object > basic 156`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 157`] = `
+exports[`@xsai/stream-object > basic 99`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3911,7 +2727,7 @@ exports[`@xsai/generate-object > basic 157`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 158`] = `
+exports[`@xsai/stream-object > basic 100`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3947,7 +2763,7 @@ exports[`@xsai/generate-object > basic 158`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 159`] = `
+exports[`@xsai/stream-object > basic 101`] = `
 {
   "recipe": {
     "ingredients": [
@@ -3983,7 +2799,7 @@ exports[`@xsai/generate-object > basic 159`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 160`] = `
+exports[`@xsai/stream-object > basic 102`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4019,7 +2835,7 @@ exports[`@xsai/generate-object > basic 160`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 161`] = `
+exports[`@xsai/stream-object > basic 103`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4055,7 +2871,7 @@ exports[`@xsai/generate-object > basic 161`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 162`] = `
+exports[`@xsai/stream-object > basic 104`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4091,7 +2907,7 @@ exports[`@xsai/generate-object > basic 162`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 163`] = `
+exports[`@xsai/stream-object > basic 105`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4127,7 +2943,7 @@ exports[`@xsai/generate-object > basic 163`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 164`] = `
+exports[`@xsai/stream-object > basic 106`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4163,7 +2979,7 @@ exports[`@xsai/generate-object > basic 164`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 165`] = `
+exports[`@xsai/stream-object > basic 107`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4199,7 +3015,7 @@ exports[`@xsai/generate-object > basic 165`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 166`] = `
+exports[`@xsai/stream-object > basic 108`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4235,7 +3051,7 @@ exports[`@xsai/generate-object > basic 166`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 167`] = `
+exports[`@xsai/stream-object > basic 109`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4271,7 +3087,7 @@ exports[`@xsai/generate-object > basic 167`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 168`] = `
+exports[`@xsai/stream-object > basic 110`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4307,7 +3123,7 @@ exports[`@xsai/generate-object > basic 168`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 169`] = `
+exports[`@xsai/stream-object > basic 111`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4343,7 +3159,7 @@ exports[`@xsai/generate-object > basic 169`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 170`] = `
+exports[`@xsai/stream-object > basic 112`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4379,7 +3195,7 @@ exports[`@xsai/generate-object > basic 170`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 171`] = `
+exports[`@xsai/stream-object > basic 113`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4415,7 +3231,7 @@ exports[`@xsai/generate-object > basic 171`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 172`] = `
+exports[`@xsai/stream-object > basic 114`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4452,7 +3268,7 @@ exports[`@xsai/generate-object > basic 172`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 173`] = `
+exports[`@xsai/stream-object > basic 115`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4489,7 +3305,7 @@ exports[`@xsai/generate-object > basic 173`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 174`] = `
+exports[`@xsai/stream-object > basic 116`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4526,7 +3342,7 @@ exports[`@xsai/generate-object > basic 174`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 175`] = `
+exports[`@xsai/stream-object > basic 117`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4563,7 +3379,7 @@ exports[`@xsai/generate-object > basic 175`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 176`] = `
+exports[`@xsai/stream-object > basic 118`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4600,7 +3416,7 @@ exports[`@xsai/generate-object > basic 176`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 177`] = `
+exports[`@xsai/stream-object > basic 119`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4637,7 +3453,7 @@ exports[`@xsai/generate-object > basic 177`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 178`] = `
+exports[`@xsai/stream-object > basic 120`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4674,7 +3490,7 @@ exports[`@xsai/generate-object > basic 178`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 179`] = `
+exports[`@xsai/stream-object > basic 121`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4711,7 +3527,7 @@ exports[`@xsai/generate-object > basic 179`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 180`] = `
+exports[`@xsai/stream-object > basic 122`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4748,7 +3564,7 @@ exports[`@xsai/generate-object > basic 180`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 181`] = `
+exports[`@xsai/stream-object > basic 123`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4785,7 +3601,7 @@ exports[`@xsai/generate-object > basic 181`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 182`] = `
+exports[`@xsai/stream-object > basic 124`] = `
 {
   "recipe": {
     "ingredients": [
@@ -4822,118 +3638,7 @@ exports[`@xsai/generate-object > basic 182`] = `
 }
 `;
 
-exports[`@xsai/generate-object > basic 183`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": " Sous-Vide Steak with Herb Butter ",
-    "steps": [
-      "Step 1: Prepare the steak and seasoning:",
-      "PPreheat your sous-vide machine to 130°F (54°C).",
-      "Iterate over your steak using kosher salt. Gently press it onto the cut.",
-      "Heat olive oil in a preheated pan for added flavor.",
-      "WWrap steaks with parchment, seasoning them accordingly.",
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 184`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": " Sous-Vide Steak with Herb Butter ",
-    "steps": [
-      "Step 1: Prepare the steak and seasoning:",
-      "PPreheat your sous-vide machine to 130°F (54°C).",
-      "Iterate over your steak using kosher salt. Gently press it onto the cut.",
-      "Heat olive oil in a preheated pan for added flavor.",
-      "WWrap steaks with parchment, seasoning them accordingly.",
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 185`] = `
-{
-  "recipe": {
-    "ingredients": [
-      {
-        "amount": "2",
-        "name": "steak",
-      },
-      {
-        "amount": "1/4 cup",
-        "name": "olive oil",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "kosher salt",
-      },
-      {
-        "amount": "> 1 tsp",
-        "name": "black pepper",
-      },
-      {
-        "amount": "2 tbsp",
-        "name": "fresh parsley",
-      },
-    ],
-    "name": " Sous-Vide Steak with Herb Butter ",
-    "steps": [
-      "Step 1: Prepare the steak and seasoning:",
-      "PPreheat your sous-vide machine to 130°F (54°C).",
-      "Iterate over your steak using kosher salt. Gently press it onto the cut.",
-      "Heat olive oil in a preheated pan for added flavor.",
-      "WWrap steaks with parchment, seasoning them accordingly.",
-    ],
-  },
-}
-`;
-
-exports[`@xsai/generate-object > basic 186`] = `
+exports[`@xsai/stream-object > basic 125`] = `
 {
   "recipe": {
     "ingredients": [
