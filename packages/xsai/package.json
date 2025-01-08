@@ -42,6 +42,7 @@
     "@xsai/model": "workspace:",
     "@xsai/providers": "workspace:",
     "@xsai/shared-chat": "workspace:",
+    "@xsai/stream-object": "workspace:",
     "@xsai/stream-text": "workspace:",
     "@xsai/tool": "workspace:"
   }

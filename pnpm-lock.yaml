@@ -341,6 +341,9 @@ importers:
       '@xsai/shared-chat':
         specifier: 'workspace:'
         version: link:../shared-chat
+      '@xsai/stream-object':
+        specifier: 'workspace:'
+        version: link:../stream-object
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../stream-text
