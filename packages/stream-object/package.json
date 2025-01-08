@@ -1,16 +1,20 @@
 {
-  "name": "xsai",
+  "name": "@xsai/stream-object",
   "version": "0.0.24",
   "type": "module",
   "author": "Moeru AI",
   "license": "MIT",
   "homepage": "https://xsai.js.org",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
-  "keywords": ["xsai", "openai", "ai"],
+  "keywords": [
+    "xsai",
+    "openai",
+    "ai"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages/xsai"
+    "directory": "packages/stream-object"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "sideEffects": false,
@@ -20,10 +24,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./providers": {
-      "types": "./dist/providers.d.ts",
-      "default": "./dist/providers.js"
     }
   },
   "files": [
@@ -31,19 +31,20 @@
   ],
   "scripts": {
     "build": "pkgroll",
-    "build:watch": "pkgroll --watch"
+    "build:watch": "pkgroll --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/embed": "workspace:",
-    "@xsai/generate-object": "workspace:",
-    "@xsai/generate-speech": "workspace:",
-    "@xsai/generate-text": "workspace:",
-    "@xsai/generate-transcription": "workspace:",
-    "@xsai/model": "workspace:",
+    "@typeschema/main": "catalog:",
+    "@xsai/shared": "workspace:",
+    "@xsai/stream-text": "workspace:"
+  },
+  "devDependencies": {
+    "@gcornut/valibot-json-schema": "catalog:",
     "@xsai/providers": "workspace:",
-    "@xsai/shared-chat": "workspace:",
-    "@xsai/stream-object": "workspace:",
-    "@xsai/stream-text": "workspace:",
-    "@xsai/tool": "workspace:"
+    "best-effort-json-parser": "^1.1.2",
+    "type-fest": "^4.31.0",
+    "valibot": "catalog:"
   }
 }

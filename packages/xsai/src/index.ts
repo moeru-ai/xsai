@@ -11,5 +11,6 @@ export { generateTranscription } from '@xsai/generate-transcription'
 export { listModels, retrieveModel } from '@xsai/model'
 // shared chat utils
 export * from '@xsai/shared-chat'
+export { streamObject } from '@xsai/stream-object'
 export { streamText } from '@xsai/stream-text'
 export { tool } from '@xsai/tool'

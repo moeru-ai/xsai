@@ -252,6 +252,34 @@ importers:
         specifier: 'workspace:'
         version: link:../shared
 
+  packages/stream-object:
+    dependencies:
+      '@typeschema/main':
+        specifier: 'catalog:'
+        version: 0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.0)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+      '@xsai/stream-text':
+        specifier: 'workspace:'
+        version: link:../stream-text
+    devDependencies:
+      '@gcornut/valibot-json-schema':
+        specifier: 'catalog:'
+        version: 0.42.0(esbuild@0.24.0)(typescript@5.6.3)
+      '@xsai/providers':
+        specifier: 'workspace:'
+        version: link:../providers
+      best-effort-json-parser:
+        specifier: ^1.1.2
+        version: 1.1.2
+      type-fest:
+        specifier: ^4.31.0
+        version: 4.31.0
+      valibot:
+        specifier: 'catalog:'
+        version: 0.42.1(typescript@5.6.3)
+
   packages/stream-text:
     dependencies:
       '@xsai/shared-chat':
@@ -313,6 +341,9 @@ importers:
       '@xsai/shared-chat':
         specifier: 'workspace:'
         version: link:../shared-chat
+      '@xsai/stream-object':
+        specifier: 'workspace:'
+        version: link:../stream-object
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../stream-text
@@ -2207,6 +2238,9 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
+  best-effort-json-parser@1.1.2:
+    resolution: {integrity: sha512-RD7tyk24pNCDwEKFACauR6Lqp5m6BHUrehwyhN/pA8V3QYWq8Y+hk9vHZvKiThZsdEFTaUqN49duVsamgCd8/g==}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -4503,6 +4537,10 @@ packages:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
 
+  type-fest@4.31.0:
+    resolution: {integrity: sha512-yCxltHW07Nkhv/1F6wWBr8kz+5BGMfP+RbRSYFnegVb0qV/UMT0G0ElBloPVerqn4M2ZV80Ir1FtCcYv1cT6vQ==}
+    engines: {node: '>=16'}
+
   typescript@5.6.3:
     resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
     engines: {node: '>=14.17'}
@@ -6395,6 +6433,8 @@ snapshots:
   bail@2.0.2: {}
 
   balanced-match@1.0.2: {}
+
+  best-effort-json-parser@1.1.2: {}
 
   binary-extensions@2.3.0: {}
 
@@ -9208,6 +9248,8 @@ snapshots:
   type-fest@0.6.0: {}
 
   type-fest@0.8.1: {}
+
+  type-fest@4.31.0: {}
 
   typescript@5.6.3: {}
 
