@@ -10,7 +10,7 @@ import {
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
-  /** if you want to enable stream, use `@xsai/stream-text` */
+  /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
 }
 

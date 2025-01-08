@@ -5,7 +5,7 @@ import {
 } from '@xsai/shared-chat'
 
 export interface StreamTextOptions extends ChatOptions {
-  /** if you want to disable stream, use `@xsai/generate-text` */
+  /** if you want to disable stream, use `@xsai/generate-{text,object}` */
   stream?: never
   streamOptions?: {
     /**
