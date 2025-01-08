@@ -34,7 +34,7 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
     schemaName: undefined,
   })
     .then(async ({ finishReason, steps, text, usage }) => {
-      const result = await validate(options.schema, text)
+      const result = await validate(options.schema, JSON.parse(text!))
 
       if (result.success) {
         return {
