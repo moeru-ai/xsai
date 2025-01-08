@@ -21,25 +21,20 @@ exports[`@xsai/generate-object > basic 1`] = `
     },
     {
       "amount": "1 tablespoon",
-      "name": "dried thyme",
+      "name": "kosher salt",
     },
     {
-      "amount": "1 tablespoon",
-      "name": "salt",
-    },
-    {
-      "amount": "1/2 teaspoon",
+      "amount": "1 teaspoon",
       "name": "black pepper",
     },
   ],
-  "name": "herb-crusted sous-vide steak",
+  "name": "sous vide steak recipe",
   "steps": [
-    "{"action": "Season the steaks with garlic powder, paprika, thyme, salt, and black pepper. Rub olive oil over the steaks to keep the seasonings on surface of meat."}",
-    "Do not season the steak now,  you do this in the bag before putting steak in water bath.",
-    "{"time", "30-60 minutes"}",
-    "{"action": "Submerge the steaks in a sous-vide water bath at 130°F (54°C). Seal the bag to allow for even circulation of heat and prevent contamination."}",
-    "{"time", "6-12 hours"}",
-    "{"action": "Remove the steaks from the vacuum bag and let them come room temperature. Pat dry with paper towels before adding butter or sauce if desired. Serve immediately."}",
+    "Step 1: Prepare your steak. Bring the steak to room temperature before cooking, about 30 minutes.",
+    "Step 2: Seasoning Mix a dry blend of garlic powder and paprika. Add salt and pepper according to taste to season. Rub this mix evenly across steak.",
+    "Step 3: Heat Sous, Seal with plastic wrap and Place Steak at desired Temperature (Between 120°F - 160 °F), Let it cook for 1 hour before searing with hot pan. You may remove the wrapping to allow juices from coming out during sear",
+    "Step 4: Pan-searing Add steak without wrapping, sauté in hot pan on high heat (with a small amount of olive oil) until desired crust.",
+    "Step 5: Final touches Remove Pan-cooked steak and immediately whisk 2 tablespoons butter and one tablespoon juice.",
   ],
 }
 `;
