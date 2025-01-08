@@ -1,0 +1,50 @@
+{
+  "name": "@xsai/stream-object",
+  "version": "0.0.24",
+  "type": "module",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
+  "keywords": [
+    "xsai",
+    "openai",
+    "ai"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/stream-object"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pkgroll",
+    "build:watch": "pkgroll --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@typeschema/main": "catalog:",
+    "@xsai/shared": "workspace:",
+    "@xsai/stream-text": "workspace:"
+  },
+  "devDependencies": {
+    "@gcornut/valibot-json-schema": "catalog:",
+    "@xsai/providers": "workspace:",
+    "best-effort-json-parser": "^1.1.2",
+    "type-fest": "^4.31.0",
+    "valibot": "catalog:"
+  }
+}
