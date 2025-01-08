@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 
 import { streamObject } from '../src'
 
-describe('@xsai/generate-object', () => {
+describe('@xsai/stream-object', () => {
   it('basic', async () => {
     const { partialObjectStream } = await streamObject({
       ...ollama.chat('llama3.2'),
