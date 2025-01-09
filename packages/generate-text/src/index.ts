@@ -14,7 +14,7 @@ export interface GenerateTextOptions extends ChatOptions {
   stream?: never
 }
 
-interface GenerateTextResponse {
+export interface GenerateTextResponse {
   choices: {
     finish_reason: FinishReason
     index: number
