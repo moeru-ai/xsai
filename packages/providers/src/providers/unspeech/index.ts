@@ -7,14 +7,15 @@ export { createUnElevenLabs, type UnElevenLabsOptions } from './elevenlabs'
 export interface UnSpeechOptions {
   /** @experimental */
   extraBody?: Record<string, unknown>
-  model: `elevenlabs/${string}` | `koemotion/${string}` | `openai/${string}` | ({} & string)
-  voice: string
 }
 
-export const createUnSpeech = (userOptions?: ProviderOptions<true>): SpeechProvider<UnSpeechOptions> => ({
-  speech: (options: UnSpeechOptions) => ({
+export const createUnSpeech = (userOptions?: ProviderOptions<true>): SpeechProvider<
+`elevenlabs/${string}` | `koemotion/${string}` | `openai/${string}`,
+  UnSpeechOptions
+> => ({
+  speech: (model, options) => ({
     ...options,
-    ...generateCRO(options.model, {
+    ...generateCRO(model, {
       ...userOptions,
       baseURL: userOptions?.baseURL ?? new URL('http://localhost:5933/v1/'),
     }),
