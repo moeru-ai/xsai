@@ -6,7 +6,7 @@ import { listModels, retrieveModel } from '../src'
 describe('@xsai/model', () => {
   it('listModels', async () => {
     const models = await listModels({
-      ...ollama.models(),
+      ...ollama.model(),
     })
 
     const llama = models.find(({ id }) => id === 'llama3.2:latest')!
@@ -18,7 +18,7 @@ describe('@xsai/model', () => {
 
   it('retrieveModel', async () => {
     const llama = await retrieveModel({
-      ...ollama.models(),
+      ...ollama.model(),
       model: 'llama3.2:latest',
     })
 
