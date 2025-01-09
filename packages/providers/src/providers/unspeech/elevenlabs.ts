@@ -20,26 +20,6 @@ export interface UnElevenLabsOptions {
    */
   languageCode?: string
   /**
-   * Identifier of the model that will be used, you can query them using GET /v1/models.
-   * The model needs to have support for text to speech, you can check this using the
-   * can_do_text_to_speech property.
-   *
-   * Selection guide based on needs
-   *
-   * - Quality: Use `elevenlabs/eleven_multilingual_v2`
-   * - Low-latency: Use `elevenlabs/eleven_flash_v2` or `elevenlabs/eleven_flash_v2_5`
-   * - Multilingual support: Use `elevenlabs/eleven_multilingual_v2` or `elevenlabs/eleven_flash_v2_5`
-   *
-   * Selection guide based on use cases
-   *
-   * - Content Creation: Use `elevenlabs/eleven_multilingual_v2`
-   * - Conversational AI: Use `elevenlabs/eleven_flash_v2_5` or `elevenlabs/eleven_flash_v2`
-   * - Voice Changer (Speech to Speech): Use `elevenlabs/eleven_multilingual_sts_v2`
-   *
-   * @see {@link https://elevenlabs.io/docs/developer-guides/models}
-   */
-  model: 'eleven_english_sts_v2' | 'eleven_flash_v2' | 'eleven_flash_v2_5' | 'eleven_multilingual_sts_v2' | 'eleven_multilingual_v2' | ({} & string)
-  /**
    * A list of request_id of the samples that were generated before this generation. Can
    * be used to improve the flow of prosody when splitting up a large task into multiple
    * requests. The results will be best when the same model is used across the generations.
