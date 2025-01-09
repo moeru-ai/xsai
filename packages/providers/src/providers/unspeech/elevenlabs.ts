@@ -83,11 +83,6 @@ export interface UnElevenLabsOptions {
    */
   seed?: number
   /**
-   * Voice ID to be used, you can use https://api.elevenlabs.io/v1/voices to list all
-   * the available voices.
-   */
-  voice: string
-  /**
    * Voice settings overriding stored setttings for the given voice. They are applied only on the given request.
    */
   voiceSettings?: {
@@ -109,8 +104,12 @@ export interface UnElevenLabsOptions {
  * @param userOptions - The provider options
  * @returns SpeechProvider
  */
-export const createUnElevenLabs = (userOptions?: ProviderOptions<false>): SpeechProvider<UnElevenLabsOptions> => {
-  const toUnSpeechOptions = ({ applyTextNormalization, languageCode, model, nextRequestIds, nextText, previousRequestIds, previousText, pronunciationDictionaryLocators, seed, voice, voiceSettings }: UnElevenLabsOptions): UnSpeechOptions => ({
+export const createUnElevenLabs = (userOptions?: ProviderOptions<false>): SpeechProvider<
+  /** @see {@link https://elevenlabs.io/docs/developer-guides/models} */
+  'eleven_english_sts_v2' | 'eleven_flash_v2' | 'eleven_flash_v2_5' | 'eleven_multilingual_sts_v2' | 'eleven_multilingual_v2',
+  UnElevenLabsOptions
+> => {
+  const toUnSpeechOptions = ({ applyTextNormalization, languageCode, nextRequestIds, nextText, previousRequestIds, previousText, pronunciationDictionaryLocators, seed, voiceSettings }: UnElevenLabsOptions): UnSpeechOptions => ({
     extraBody: objCamelToSnake({
       applyTextNormalization,
       languageCode,
@@ -126,14 +125,12 @@ export const createUnElevenLabs = (userOptions?: ProviderOptions<false>): Speech
         ? objCamelToSnake(voiceSettings)
         : undefined,
     }),
-    model: `elevenlabs/${model}`,
-    voice,
   })
 
   return {
-    speech: (options: UnElevenLabsOptions) => ({
-      ...toUnSpeechOptions(options),
-      ...generateCRO(options.model, {
+    speech: (model, options) => ({
+      ...(options ? toUnSpeechOptions(options) : {}),
+      ...generateCRO(`elevenlabs/${model}`, {
         ...userOptions,
         baseURL: userOptions?.baseURL ?? new URL('http://localhost:5933/v1/'),
       }),
