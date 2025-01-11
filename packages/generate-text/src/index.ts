@@ -34,10 +34,26 @@ export interface GenerateTextResponseUsage {
   total_tokens: number
 }
 
+export interface ToolCall {
+  args: string
+  toolCallId: string
+  toolCallType: 'function'
+  toolName: string
+}
+
+export interface ToolResult {
+  args: Record<string, unknown>
+  result: string
+  toolCallId: string
+  toolName: string
+}
+
 export interface GenerateTextResult {
   finishReason: FinishReason
   steps: StepResult[]
   text?: string
+  toolCalls: ToolCall[]
+  toolResults: ToolResult[]
   usage: GenerateTextResponseUsage
 }
 
@@ -45,8 +61,8 @@ export interface StepResult {
   text?: string
   // TODO: step type
   // type: 'continue' | 'initial' | 'tool-result'
-  // TODO: toolCalls
-  // TODO: toolResults
+  toolCalls: ToolCall[]
+  toolResults: ToolResult[]
   usage: GenerateTextResponseUsage
 }
 
@@ -63,7 +79,8 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
 
   const steps: StepResult[] = []
   const messages: Message[] = options.messages
-
+  const toolCalls: ToolCall[] = []
+  const toolResults: ToolResult[] = []
   while (currentStep < (options.maxSteps ?? 1)) {
     currentStep += 1
 
@@ -80,11 +97,13 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     text = message.content
     usage = data.usage
 
-    steps.push({
+    const stepResult: StepResult = {
       text: message.content,
+      toolCalls: [],
+      toolResults: [],
       // type: 'initial',
       usage,
-    })
+    }
 
     // TODO: fix types
     messages.push({ ...message, content: message.content! })
@@ -93,7 +112,8 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
       // execute tools
       for (const toolCall of message.tool_calls ?? []) {
         const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
-        const toolResult = await tool.execute(JSON.parse(toolCall.function.arguments))
+        const parsedArgs: Record<string, any> = JSON.parse(toolCall.function.arguments)
+        const toolResult = await tool.execute(parsedArgs)
         const toolMessage = {
           content: toolResult,
           role: 'tool',
@@ -101,13 +121,34 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
         } satisfies Message
 
         messages.push(toolMessage)
+
+        const toolCallData = {
+          args: toolCall.function.arguments,
+          toolCallId: toolCall.id,
+          toolCallType: toolCall.type,
+          toolName: toolCall.function.name,
+        }
+        toolCalls.push(toolCallData)
+        stepResult.toolCalls.push(toolCallData)
+        const toolResultData = {
+          args: parsedArgs,
+          result: toolResult,
+          toolCallId: toolCall.id,
+          toolName: toolCall.function.name,
+        }
+        toolResults.push(toolResultData)
+        stepResult.toolResults.push(toolResultData)
       }
+      steps.push(stepResult)
     }
     else {
+      steps.push(stepResult)
       return {
         finishReason: finish_reason,
         steps,
         text: message.content,
+        toolCalls,
+        toolResults,
         usage,
       }
     }
@@ -117,6 +158,8 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
     finishReason,
     steps,
     text,
+    toolCalls,
+    toolResults,
     usage,
   }
 }

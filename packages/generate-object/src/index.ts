@@ -8,7 +8,8 @@ export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOpt
   schemaName?: string
 }
 
-export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTextResult, 'text'> {
+// TODO: toolCalls
+export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTextResult, 'text' | 'toolCalls' | 'toolResults'> {
   object: Infer<T>
 }
 
