@@ -113,13 +113,8 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
       for (const toolCall of message.tool_calls) {
         const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
-        const parsedArgs: Record<string, unknown> = JSON.parse(toolCall.function.arguments)
-        const toolResult = await tool.execute(parsedArgs)
-        const toolMessage = {
-          content: toolResult,
-          role: 'tool',
-          tool_call_id: toolCall.id,
-        } satisfies Message
+        const args: Record<string, unknown> = JSON.parse(toolCall.function.arguments)
+        const result = await tool.execute(args)
 
         toolCalls.push({
           args: toolCall.function.arguments,
@@ -129,13 +124,17 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         })
 
         toolResults.push({
-          args: parsedArgs,
-          result: toolResult,
+          args,
+          result,
           toolCallId: toolCall.id,
           toolName: toolCall.function.name,
         })
 
-        messages.push(toolMessage)
+        messages.push({
+          content: result,
+          role: 'tool',
+          tool_call_id: toolCall.id,
+        })
       }
 
       steps.push({
