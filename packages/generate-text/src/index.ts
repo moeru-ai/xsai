@@ -10,6 +10,8 @@ import {
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
+  /** @internal */
+  steps?: StepResult[]
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
 }
@@ -66,53 +68,51 @@ export interface StepResult {
   usage: GenerateTextResponseUsage
 }
 
-export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
-  let currentStep = 0
+/** @internal */
+type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>) | T>
 
-  let finishReason: FinishReason = 'error'
-  let text
-  let usage: GenerateTextResponseUsage = {
-    completion_tokens: 0,
-    prompt_tokens: 0,
-    total_tokens: 0,
-  }
+/** @internal */
+type RawGenerateText = (options: GenerateTextOptions) => RawGenerateTextTrampoline<GenerateTextResult>
 
-  const steps: StepResult[] = []
-  const messages: Message[] = options.messages
-  const toolCalls: ToolCall[] = []
-  const toolResults: ToolResult[] = []
-  while (currentStep < (options.maxSteps ?? 1)) {
-    currentStep += 1
+/** @internal */
+const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
+  await chat({
+    ...options,
+    maxSteps: undefined,
+    messages: options.messages,
+    stream: false,
+  })
+    .then(res => res.json() as Promise<GenerateTextResponse>)
+    .then(async ({ choices, usage }) => {
+      const messages: Message[] = options.messages
+      const steps: StepResult[] = options.steps ?? []
+      const toolCalls: ToolCall[] = []
+      const toolResults: ToolResult[] = []
 
-    const data: GenerateTextResponse = await chat({
-      ...options,
-      maxSteps: undefined,
-      messages,
-      stream: false,
-    }).then(res => res.json())
+      const { finish_reason: finishReason, message } = choices[0]
 
-    const { finish_reason, message } = data.choices[0]
+      if (message.content || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
+        const step: StepResult = {
+          text: message.content,
+          toolCalls,
+          toolResults,
+          usage,
+        }
 
-    finishReason = finish_reason
-    text = message.content
-    usage = data.usage
+        steps.push(step)
 
-    const stepResult: StepResult = {
-      text: message.content,
-      toolCalls: [],
-      toolResults: [],
-      // type: 'initial',
-      usage,
-    }
+        return {
+          finishReason,
+          steps,
+          ...step,
+        }
+      }
 
-    // TODO: fix types
-    messages.push({ ...message, content: message.content! })
+      messages.push({ ...message, content: message.content! })
 
-    if (message.tool_calls) {
-      // execute tools
-      for (const toolCall of message.tool_calls ?? []) {
+      for (const toolCall of message.tool_calls) {
         const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
-        const parsedArgs: Record<string, any> = JSON.parse(toolCall.function.arguments)
+        const parsedArgs: Record<string, unknown> = JSON.parse(toolCall.function.arguments)
         const toolResult = await tool.execute(parsedArgs)
         const toolMessage = {
           content: toolResult,
@@ -120,48 +120,44 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
           tool_call_id: toolCall.id,
         } satisfies Message
 
-        messages.push(toolMessage)
-
-        const toolCallData = {
+        toolCalls.push({
           args: toolCall.function.arguments,
           toolCallId: toolCall.id,
           toolCallType: toolCall.type,
           toolName: toolCall.function.name,
-        }
-        toolCalls.push(toolCallData)
-        stepResult.toolCalls.push(toolCallData)
-        const toolResultData = {
+        })
+
+        toolResults.push({
           args: parsedArgs,
           result: toolResult,
           toolCallId: toolCall.id,
           toolName: toolCall.function.name,
-        }
-        toolResults.push(toolResultData)
-        stepResult.toolResults.push(toolResultData)
+        })
+
+        messages.push(toolMessage)
       }
-      steps.push(stepResult)
-    }
-    else {
-      steps.push(stepResult)
-      return {
-        finishReason: finish_reason,
-        steps,
+
+      steps.push({
         text: message.content,
         toolCalls,
         toolResults,
         usage,
-      }
-    }
-  }
+      })
 
-  return {
-    finishReason,
-    steps,
-    text,
-    toolCalls,
-    toolResults,
-    usage,
-  }
+      return async () => await rawGenerateText({
+        ...options,
+        messages,
+        steps,
+      })
+    })
+
+export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
+  let result = await rawGenerateText(options)
+
+  while (result instanceof Function)
+    result = await result()
+
+  return result
 }
 
 export default generateText
