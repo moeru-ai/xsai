@@ -50,7 +50,7 @@ describe('@xsai/tool', () => {
       }),
     })
 
-    const { text } = await generateText({
+    const { steps, text } = await generateText({
       ...ollama.chat('mistral-nemo'),
       maxSteps: 2,
       messages: [
@@ -69,5 +69,14 @@ describe('@xsai/tool', () => {
     })
 
     expect(text).toMatchSnapshot()
+
+    const { toolCalls, toolResults } = steps[0]
+
+    expect(toolCalls[0].toolName).toBe('weather')
+    expect(toolCalls[0].args).toBe('{"location":"San Francisco"}')
+
+    expect(toolCalls[0].toolName).toBe('weather')
+    expect(toolResults[0].args).toStrictEqual({ location: 'San Francisco' })
+    expect(toolResults[0].result).toBe('{"location":"San Francisco","temperature":42}')
   }, 20000)
 })
