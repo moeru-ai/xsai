@@ -5,7 +5,7 @@ import { generateText } from '../src'
 
 describe('@xsai/generate-text', () => {
   it('basic', async () => {
-    const { text } = await generateText({
+    const { finishReason, steps, text, toolCalls, toolResults } = await generateText({
       ...ollama.chat('llama3.2'),
       messages: [
         {
@@ -20,6 +20,10 @@ describe('@xsai/generate-text', () => {
     })
 
     expect(text).toStrictEqual('YES')
+    expect(finishReason).toBe('stop')
+    expect(toolCalls.length).toBe(0)
+    expect(toolResults.length).toBe(0)
+    expect(steps).toMatchSnapshot()
   })
 
   // TODO: error handling
