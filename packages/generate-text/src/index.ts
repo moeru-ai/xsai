@@ -111,29 +111,33 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
       messages.push({ ...message, content: message.content! })
 
-      for (const toolCall of message.tool_calls) {
-        const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolCall.function.name)!
-        const args: Record<string, unknown> = JSON.parse(toolCall.function.arguments)
-        const result = await tool.execute(args)
+      for (const {
+        function: { arguments: toolArgs, name: toolName },
+        id: toolCallId,
+        type: toolCallType,
+      } of message.tool_calls) {
+        const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolName)!
+        const parsedArgs: Record<string, unknown> = JSON.parse(toolArgs)
+        const result = await tool.execute(parsedArgs)
 
         toolCalls.push({
-          args: toolCall.function.arguments,
-          toolCallId: toolCall.id,
-          toolCallType: toolCall.type,
-          toolName: toolCall.function.name,
+          args: toolArgs,
+          toolCallId,
+          toolCallType,
+          toolName,
         })
 
         toolResults.push({
-          args,
+          args: parsedArgs,
           result,
-          toolCallId: toolCall.id,
-          toolName: toolCall.function.name,
+          toolCallId,
+          toolName,
         })
 
         messages.push({
           content: result,
           role: 'tool',
-          tool_call_id: toolCall.id,
+          tool_call_id: toolCallId,
         })
       }
 
