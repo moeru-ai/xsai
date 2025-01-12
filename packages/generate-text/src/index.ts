@@ -80,6 +80,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
     ...options,
     maxSteps: undefined,
     messages: options.messages,
+    steps: undefined,
     stream: false,
   })
     .then(res => res.json() as Promise<GenerateTextResponse>)
