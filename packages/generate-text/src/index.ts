@@ -10,6 +10,7 @@ import {
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
+  onStepFinish?: (step: StepResult) => Promise<void> | void
   /** @internal */
   steps?: StepResult[]
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
@@ -102,6 +103,9 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
         steps.push(step)
 
+        if (options.onStepFinish)
+          await options.onStepFinish(step)
+
         return {
           finishReason,
           steps,
@@ -141,12 +145,17 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         })
       }
 
-      steps.push({
+      const step: StepResult = {
         text: message.content,
         toolCalls,
         toolResults,
         usage,
-      })
+      }
+
+      steps.push(step)
+
+      if (options.onStepFinish)
+        await options.onStepFinish(step)
 
       return async () => await rawGenerateText({
         ...options,
