@@ -6,7 +6,7 @@ import {
 } from '@xsai/shared-chat'
 
 export interface StreamTextOptions extends ChatOptions {
-  onChunk?: (chunk: StreamTextResponse) => Promise<void> | void
+  onChunk?: (chunk: ChunkResult) => Promise<void> | void
   /** if you want to disable stream, use `@xsai/generate-{text,object}` */
   stream?: never
   streamOptions?: {
@@ -20,14 +20,14 @@ export interface StreamTextOptions extends ChatOptions {
 }
 
 export interface StreamTextResult {
-  chunkStream: ReadableStream<StreamTextResponse>
+  chunkStream: ReadableStream<ChunkResult>
   finishReason?: FinishReason
   textStream: ReadableStream<string>
   usage?: Usage
 }
 
 // TODO: improve chunk type
-export interface StreamTextResponse {
+export interface ChunkResult {
   choices: {
     delta: {
       content: string
@@ -87,7 +87,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           break
         }
 
-        const chunk: StreamTextResponse = JSON.parse(lineWithoutPrefix)
+        const chunk: ChunkResult = JSON.parse(lineWithoutPrefix)
         controller.enqueue(chunk)
 
         if (options.onChunk)
