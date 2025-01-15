@@ -5,6 +5,7 @@ import {
   type FinishReason,
   type Message,
   type Tool,
+  type Usage,
 } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
@@ -28,13 +29,7 @@ export interface GenerateTextResponse {
   model: string
   object: 'chat.completion'
   system_fingerprint: string
-  usage: GenerateTextResponseUsage
-}
-
-export interface GenerateTextResponseUsage {
-  completion_tokens: number
-  prompt_tokens: number
-  total_tokens: number
+  usage: Usage
 }
 
 export interface ToolCall {
@@ -57,7 +52,7 @@ export interface GenerateTextResult {
   text?: string
   toolCalls: ToolCall[]
   toolResults: ToolResult[]
-  usage: GenerateTextResponseUsage
+  usage: Usage
 }
 
 export interface StepResult {
@@ -66,7 +61,7 @@ export interface StepResult {
   // type: 'continue' | 'initial' | 'tool-result'
   toolCalls: ToolCall[]
   toolResults: ToolResult[]
-  usage: GenerateTextResponseUsage
+  usage: Usage
 }
 
 /** @internal */

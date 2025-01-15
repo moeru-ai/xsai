@@ -2,6 +2,7 @@ import {
   chat,
   type ChatOptions,
   type FinishReason,
+  type Usage,
 } from '@xsai/shared-chat'
 
 export interface StreamTextOptions extends ChatOptions {
@@ -18,17 +19,11 @@ export interface StreamTextOptions extends ChatOptions {
   }
 }
 
-export interface StreamTextResponseUsage {
-  completion_tokens: number
-  prompt_tokens: number
-  total_tokens: number
-}
-
 export interface StreamTextResult {
   chunkStream: ReadableStream<StreamTextResponse>
   finishReason?: FinishReason
   textStream: ReadableStream<string>
-  usage?: StreamTextResponseUsage
+  usage?: Usage
 }
 
 // TODO: improve chunk type
@@ -46,7 +41,7 @@ export interface StreamTextResponse {
   model: string
   object: 'chat.completion.chunk'
   system_fingerprint: string
-  usage?: StreamTextResponseUsage
+  usage?: Usage
 }
 
 const chunkHeaderPrefix = 'data: '
@@ -62,7 +57,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const decoder = new TextDecoder()
 
   let finishReason: string | undefined
-  let usage: StreamTextResponseUsage | undefined
+  let usage: undefined | Usage
   let buffer = ''
 
   // null body handled by import('@xsai/shared-chat').chat()
