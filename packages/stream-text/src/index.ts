@@ -2,10 +2,11 @@ import {
   chat,
   type ChatOptions,
   type FinishReason,
+  type Usage,
 } from '@xsai/shared-chat'
 
 export interface StreamTextOptions extends ChatOptions {
-  onChunk?: (chunk: StreamTextResponse) => Promise<void> | void
+  onChunk?: (chunk: ChunkResult) => Promise<void> | void
   /** if you want to disable stream, use `@xsai/generate-{text,object}` */
   stream?: never
   streamOptions?: {
@@ -18,21 +19,15 @@ export interface StreamTextOptions extends ChatOptions {
   }
 }
 
-export interface StreamTextResponseUsage {
-  completion_tokens: number
-  prompt_tokens: number
-  total_tokens: number
-}
-
 export interface StreamTextResult {
-  chunkStream: ReadableStream<StreamTextResponse>
+  chunkStream: ReadableStream<ChunkResult>
   finishReason?: FinishReason
   textStream: ReadableStream<string>
-  usage?: StreamTextResponseUsage
+  usage?: Usage
 }
 
 // TODO: improve chunk type
-export interface StreamTextResponse {
+export interface ChunkResult {
   choices: {
     delta: {
       content: string
@@ -46,7 +41,7 @@ export interface StreamTextResponse {
   model: string
   object: 'chat.completion.chunk'
   system_fingerprint: string
-  usage?: StreamTextResponseUsage
+  usage?: Usage
 }
 
 const chunkHeaderPrefix = 'data: '
@@ -62,7 +57,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const decoder = new TextDecoder()
 
   let finishReason: string | undefined
-  let usage: StreamTextResponseUsage | undefined
+  let usage: undefined | Usage
   let buffer = ''
 
   // null body handled by import('@xsai/shared-chat').chat()
@@ -92,7 +87,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           break
         }
 
-        const chunk: StreamTextResponse = JSON.parse(lineWithoutPrefix)
+        const chunk: ChunkResult = JSON.parse(lineWithoutPrefix)
         controller.enqueue(chunk)
 
         if (options.onChunk)
