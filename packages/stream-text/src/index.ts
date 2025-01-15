@@ -5,6 +5,7 @@ import {
 } from '@xsai/shared-chat'
 
 export interface StreamTextOptions extends ChatOptions {
+  onChunk?: (chunk: StreamTextResponse) => Promise<void> | void
   /** if you want to disable stream, use `@xsai/generate-{text,object}` */
   stream?: never
   streamOptions?: {
@@ -48,8 +49,8 @@ export interface StreamTextResponse {
   usage?: StreamTextResponseUsage
 }
 
-const dataHeaderPrefix = 'data: '
-const dataErrorPrefix = `{"error":`
+const chunkHeaderPrefix = 'data: '
+const chunkErrorPrefix = `{"error":`
 
 /**
  * @experimental WIP, does not support function calling (tools).
@@ -66,7 +67,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
   // null body handled by import('@xsai/shared-chat').chat()
   const rawChunkStream = res.body!.pipeThrough(new TransformStream({
-    transform: (chunk, controller) => {
+    transform: async (chunk, controller) => {
       buffer += decoder.decode(chunk)
       const lines = buffer.split('\n\n')
       buffer = lines.pop() || ''
@@ -75,30 +76,33 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         // Some cases:
         // - Empty chunk
         // - :ROUTER PROCESSING from OpenRouter
-        if (!line || !line.startsWith(dataHeaderPrefix)) {
+        if (!line || !line.startsWith(chunkHeaderPrefix)) {
           continue
         }
 
-        if (line.startsWith(dataErrorPrefix)) {
+        if (line.startsWith(chunkErrorPrefix)) {
           // About controller error: https://developer.mozilla.org/en-US/docs/Web/API/TransformStreamDefaultController/error
           controller.error(new Error(`Error from server: ${line}`))
           break
         }
 
-        const lineWithoutPrefix = line.slice(dataHeaderPrefix.length)
+        const lineWithoutPrefix = line.slice(chunkHeaderPrefix.length)
         if (lineWithoutPrefix === '[DONE]') {
           controller.terminate()
           break
         }
 
-        const data: StreamTextResponse = JSON.parse(lineWithoutPrefix)
-        controller.enqueue(data)
+        const chunk: StreamTextResponse = JSON.parse(lineWithoutPrefix)
+        controller.enqueue(chunk)
 
-        if (data.choices[0].finish_reason) {
-          finishReason = data.choices[0].finish_reason
+        if (options.onChunk)
+          await options.onChunk(chunk)
+
+        if (chunk.choices[0].finish_reason) {
+          finishReason = chunk.choices[0].finish_reason
         }
-        if (data.usage) {
-          usage = data.usage
+        if (chunk.usage) {
+          usage = chunk.usage
         }
       }
     },

@@ -31,6 +31,9 @@ describe('@xsai/stream-text', () => {
   })
 
   it('the-quick-brown-fox', async () => {
+    let onChunkCount = 0
+    let chunkCount = 0
+
     const { chunkStream, textStream } = await streamText({
       ...ollama.chat('llama3.2'),
       messages: [
@@ -43,6 +46,7 @@ describe('@xsai/stream-text', () => {
           role: 'user',
         },
       ],
+      onChunk: () => { onChunkCount++ },
     })
 
     const chunk: StreamTextResponse[] = []
@@ -54,6 +58,7 @@ describe('@xsai/stream-text', () => {
         created: undefined,
         id: undefined,
       }))
+      chunkCount++
     }
 
     for await (const textPart of textStream) {
@@ -62,8 +67,9 @@ describe('@xsai/stream-text', () => {
 
     expect(text.join('')).toBe('The quick brown fox jumps over the lazy dog.')
     expect(text).toMatchSnapshot()
-
     expect(chunk).toMatchSnapshot()
+
+    expect(onChunkCount).toMatchSnapshot(chunkCount)
   })
 
   // TODO: error handling

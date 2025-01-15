@@ -185,3 +185,5 @@ exports[`@xsai/stream-text > the-quick-brown-fox 2`] = `
   },
 ]
 `;
+
+exports[`@xsai/stream-text > the-quick-brown-fox 3`] = `11`;
