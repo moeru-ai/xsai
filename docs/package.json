@@ -36,6 +36,8 @@
     "@xsai/generate-object": "workspace:^",
     "@xsai/generate-speech": "workspace:^",
     "@xsai/generate-text": "workspace:^",
+    "@xsai/generate-transcription": "workspace:^",
+    "@xsai/stream-object": "workspace:^",
     "@xsai/model": "workspace:^",
     "@xsai/providers": "workspace:^",
     "@xsai/shared": "workspace:^",
