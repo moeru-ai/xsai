@@ -1,9 +1,9 @@
 import type { Config } from 'tailwindcss'
 
 import { createPreset } from 'fumadocs-ui/tailwind-plugin'
+import animate from 'tailwindcss-animate'
 // @ts-expect-error missing types
 import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette'
-import animate from 'tailwindcss-animate'
 
 function addVariablesForColors({ addBase, theme }: any) {
   const allColors = flattenColorPalette(theme('colors'))

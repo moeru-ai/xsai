@@ -12,7 +12,7 @@ export interface EmbedResponse {
     object: 'embedding'
   }[]
   model: string
-  object: 'list' | ({} & string)
+  object: 'list' | (string & {})
   system_fingerprint?: string
   usage: EmbedResponseUsage
 }

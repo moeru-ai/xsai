@@ -11,22 +11,22 @@
     "bump": "bumpp",
     "docs:dev": "corepack pnpm -rF @xsai/docs dev",
     "docs:generate-files": "corepack pnpm -rF @xsai/docs generate-files",
-    "lint": "eslint --flag unstable_ts_config .",
-    "lint:fix": "eslint --flag unstable_ts_config . --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "corepack pnpm -r --workspace-concurrency=1 test"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.9.2",
-    "@importantimport/eslint-config": "1.0.0-alpha.2",
+    "@antfu/eslint-config": "^3.14.0",
+    "@importantimport/eslint-config": "^1.0.0-alpha.3",
     "@importantimport/tsconfig": "^0.1.1",
     "@types/eslint": "^9.6.1",
-    "@types/node": "^22.9.1",
+    "@types/node": "^22.10.7",
     "automd": "^0.3.12",
-    "bumpp": "^9.8.1",
-    "eslint": "^9.15.0",
-    "jiti": "^2.4.0",
-    "pkgroll": "^2.5.1",
+    "bumpp": "^9.10.1",
+    "eslint": "^9.18.0",
+    "jiti": "^2.4.2",
+    "pkgroll": "^2.6.1",
     "tsx": "^4.19.2",
-    "vitest": "^2.1.5"
+    "vitest": "^2.1.8"
   }
 }

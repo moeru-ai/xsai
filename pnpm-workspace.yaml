@@ -1,9 +1,7 @@
 packages:
   - docs
   - packages/*
-
 catalog:
-  '@typeschema/main': ^0.14.1
-
   '@gcornut/valibot-json-schema': ^0.42.0
+  '@typeschema/main': ^0.14.1
   valibot: ^0.42.1

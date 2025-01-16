@@ -1,8 +1,14 @@
-export type Part =
-  | AudioPart
-  | ImagePart
-  | RefusalPart
-  | TextPart
+export interface AudioBase64 {
+  /**
+   * Base64 encoded audio data.
+   */
+  data: string
+  format: 'mp3' | 'wav'
+}
+
+export interface AudioPart extends CommonPart<'input_audio'> {
+  input_audio: AudioBase64
+}
 
 export interface CommonPart<T extends string> {
   type: T
@@ -24,17 +30,11 @@ export interface ImageURLorBase64 {
   url: string
 }
 
-export interface AudioPart extends CommonPart<'input_audio'> {
-  input_audio: AudioBase64
-}
-
-export interface AudioBase64 {
-  /**
-   * Base64 encoded audio data.
-   */
-  data: string
-  format: 'mp3' | 'wav'
-}
+export type Part =
+  | AudioPart
+  | ImagePart
+  | RefusalPart
+  | TextPart
 
 export interface RefusalPart extends CommonPart<'refusal'> {
   refusal: string
