@@ -32,20 +32,6 @@ export interface GenerateTextResponse {
   usage: Usage
 }
 
-export interface ToolCall {
-  args: string
-  toolCallId: string
-  toolCallType: 'function'
-  toolName: string
-}
-
-export interface ToolResult {
-  args: Record<string, unknown>
-  result: string
-  toolCallId: string
-  toolName: string
-}
-
 export interface GenerateTextResult {
   finishReason: FinishReason
   steps: StepResult[]
@@ -64,11 +50,25 @@ export interface StepResult {
   usage: Usage
 }
 
-/** @internal */
-type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>) | T>
+export interface ToolCall {
+  args: string
+  toolCallId: string
+  toolCallType: 'function'
+  toolName: string
+}
+
+export interface ToolResult {
+  args: Record<string, unknown>
+  result: string
+  toolCallId: string
+  toolName: string
+}
 
 /** @internal */
 type RawGenerateText = (options: GenerateTextOptions) => RawGenerateTextTrampoline<GenerateTextResult>
+
+/** @internal */
+type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>) | T>
 
 /** @internal */
 const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>

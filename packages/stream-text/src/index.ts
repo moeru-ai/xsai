@@ -5,6 +5,24 @@ import {
   type Usage,
 } from '@xsai/shared-chat'
 
+// TODO: improve chunk type
+export interface ChunkResult {
+  choices: {
+    delta: {
+      content: string
+      role: 'assistant'
+    }
+    finish_reason?: FinishReason
+    index: number
+  }[]
+  created: number
+  id: string
+  model: string
+  object: 'chat.completion.chunk'
+  system_fingerprint: string
+  usage?: Usage
+}
+
 export interface StreamTextOptions extends ChatOptions {
   onChunk?: (chunk: ChunkResult) => Promise<void> | void
   /** if you want to disable stream, use `@xsai/generate-{text,object}` */
@@ -23,24 +41,6 @@ export interface StreamTextResult {
   chunkStream: ReadableStream<ChunkResult>
   finishReason?: FinishReason
   textStream: ReadableStream<string>
-  usage?: Usage
-}
-
-// TODO: improve chunk type
-export interface ChunkResult {
-  choices: {
-    delta: {
-      content: string
-      role: 'assistant'
-    }
-    finish_reason?: FinishReason
-    index: number
-  }[]
-  created: number
-  id: string
-  model: string
-  object: 'chat.completion.chunk'
-  system_fingerprint: string
   usage?: Usage
 }
 
