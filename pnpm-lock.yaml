@@ -129,6 +129,9 @@ importers:
       '@xsai/generate-text':
         specifier: workspace:^
         version: link:../packages/generate-text
+      '@xsai/generate-transcription':
+        specifier: workspace:^
+        version: link:../packages/generate-transcription
       '@xsai/model':
         specifier: workspace:^
         version: link:../packages/model
@@ -141,6 +144,9 @@ importers:
       '@xsai/shared-chat':
         specifier: workspace:^
         version: link:../packages/shared-chat
+      '@xsai/stream-object':
+        specifier: workspace:^
+        version: link:../packages/stream-object
       '@xsai/stream-text':
         specifier: workspace:^
         version: link:../packages/stream-text
