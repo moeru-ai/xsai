@@ -75,13 +75,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           continue
         }
 
-        if (line.startsWith(chunkErrorPrefix)) {
+        const lineWithoutPrefix = line.slice(chunkHeaderPrefix.length)
+        if (lineWithoutPrefix.startsWith(chunkErrorPrefix)) {
           // About controller error: https://developer.mozilla.org/en-US/docs/Web/API/TransformStreamDefaultController/error
-          controller.error(new Error(`Error from server: ${line}`))
+          controller.error(new Error(`Error from server: ${lineWithoutPrefix}`))
           break
         }
 
-        const lineWithoutPrefix = line.slice(chunkHeaderPrefix.length)
         if (lineWithoutPrefix === '[DONE]') {
           controller.terminate()
           break
