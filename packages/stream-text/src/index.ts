@@ -107,36 +107,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     }
   }
 
-  let lastCharWasCarriageReturn = false
   let buffer = ''
 
   const rawChunkStream = res.body!.pipeThrough(new TransformStream({
     transform: async (chunk, controller) => {
       const text = decoder.decode(chunk, { stream: true })
-
-      // Handle \r at the end of previous chunk
-      if (lastCharWasCarriageReturn) {
-        if (text.startsWith('\n')) {
-          // It's a CRLF, remove the trailing \r from buffer
-          buffer = buffer.slice(0, -1)
-          // Skip the \n
-          buffer += text.slice(1)
-        }
-        else {
-          // Standalone \r, keep as is
-          buffer += text
-        }
-        lastCharWasCarriageReturn = false
-      }
-      else {
-        buffer += text
-      }
-
-      // Check if current chunk ends with \r
-      if (buffer.endsWith('\r')) {
-        lastCharWasCarriageReturn = true
-      }
-      const lines = buffer.split(/\r\n|\r|\n/)
+      buffer += text
+      const lines = buffer.split('\n')
       buffer = lines.pop() || ''
 
       // Process complete lines
