@@ -103,6 +103,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
   let buffer = ''
 
+  // null body handled by import('@xsai/shared-chat').chat()
   const rawChunkStream = res.body!.pipeThrough(new TransformStream({
     transform: async (chunk, controller) => {
       const text = decoder.decode(chunk, { stream: true })
