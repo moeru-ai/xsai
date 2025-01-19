@@ -66,13 +66,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
    */
   const processLine = async (line: string, controller: TransformStreamDefaultController<ChunkResult>) => {
   // Skip empty lines
-    if (!line)
-      return
-    // Skip comments
-    if (line.startsWith(':'))
-      return
-    // Skip lines that don't start with "data:"
-    if (!line.startsWith(chunkHeaderPrefix))
+    if (!line || !line.startsWith(chunkHeaderPrefix))
       return
 
     // Extract content after "data:" prefix
