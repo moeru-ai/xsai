@@ -118,8 +118,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
       // Process complete lines
       for (const line of lines) {
-        const shouldBreak = await processLine(line, controller)
-        if (shouldBreak)
+        if (await processLine(line, controller))
           break
       }
     },
