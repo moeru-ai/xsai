@@ -20,9 +20,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./generate-text": {
-      "types": "./dist/generate-text.d.ts"
     }
   },
   "files": [

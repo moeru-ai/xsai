@@ -13,4 +13,4 @@ export { listModels, type ListModelsOptions, type ListModelsResponse, type Model
 export * from '@xsai/shared-chat'
 export { streamObject, type StreamObjectOptions, type StreamObjectResult } from '@xsai/stream-object'
 export { type ChunkResult, streamText, type StreamTextOptions, type StreamTextResult } from '@xsai/stream-text'
-export { tool, type ToolOptions, type ToolResult } from '@xsai/tool'
+export { tool, type Tool, type ToolCall, type ToolOptions } from '@xsai/tool'

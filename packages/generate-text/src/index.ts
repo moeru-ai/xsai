@@ -1,12 +1,13 @@
-import {
-  type AssistantMessageResponse,
-  chat,
-  type ChatOptions,
-  type FinishReason,
-  type Message,
-  type Tool,
-  type Usage,
+import type {
+  AssistantMessageResponse,
+  ChatOptions,
+  FinishReason,
+  Message,
+  Usage,
 } from '@xsai/shared-chat'
+import type { ToolCall } from '@xsai/tool'
+
+import { chat } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
@@ -37,7 +38,6 @@ export interface GenerateTextResult {
   steps: StepResult[]
   text?: string
   toolCalls: ToolCall[]
-  toolResults: ToolResult[]
   usage: Usage
 }
 
@@ -46,22 +46,7 @@ export interface StepResult {
   // TODO: step type
   // type: 'continue' | 'initial' | 'tool-result'
   toolCalls: ToolCall[]
-  toolResults: ToolResult[]
   usage: Usage
-}
-
-export interface ToolCall {
-  args: string
-  toolCallId: string
-  toolCallType: 'function'
-  toolName: string
-}
-
-export interface ToolResult {
-  args: Record<string, unknown>
-  result: string
-  toolCallId: string
-  toolName: string
 }
 
 /** @internal */
@@ -84,7 +69,6 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       const messages: Message[] = options.messages
       const steps: StepResult[] = options.steps ?? []
       const toolCalls: ToolCall[] = []
-      const toolResults: ToolResult[] = []
 
       const { finish_reason: finishReason, message } = choices[0]
 
@@ -92,7 +76,6 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         const step: StepResult = {
           text: message.content,
           toolCalls,
-          toolResults,
           usage,
         }
 
@@ -115,22 +98,21 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         id: toolCallId,
         type: toolCallType,
       } of message.tool_calls) {
-        const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolName)!
+        const tool = options.tools?.find(tool => tool.function.name === toolName)
+        if (!tool) {
+          continue
+        }
+
         const parsedArgs: Record<string, unknown> = JSON.parse(toolArgs)
-        const result = await tool.execute(parsedArgs)
+        const result = await tool.execute(parsedArgs as never)
 
         toolCalls.push({
-          args: toolArgs,
-          toolCallId,
-          toolCallType,
-          toolName,
-        })
-
-        toolResults.push({
-          args: parsedArgs,
+          id: toolCallId,
+          name: toolName,
+          parameters: toolArgs,
+          parsedParameters: parsedArgs,
           result,
-          toolCallId,
-          toolName,
+          type: toolCallType,
         })
 
         messages.push({
@@ -143,7 +125,6 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       const step: StepResult = {
         text: message.content,
         toolCalls,
-        toolResults,
         usage,
       }
 
