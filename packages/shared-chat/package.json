@@ -30,6 +30,7 @@
     "build:watch": "pkgroll --watch"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:"
+    "@xsai/shared": "workspace:",
+    "@xsai/tool": "workspace:"
   }
 }

@@ -216,6 +216,9 @@ importers:
       '@xsai/shared-chat':
         specifier: 'workspace:'
         version: link:../shared-chat
+      '@xsai/tool':
+        specifier: 'workspace:'
+        version: link:../tool
     devDependencies:
       '@xsai/providers':
         specifier: 'workspace:'
@@ -257,6 +260,9 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
+      '@xsai/tool':
+        specifier: 'workspace:'
+        version: link:../tool
 
   packages/stream-object:
     dependencies:

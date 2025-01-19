@@ -1,12 +1,12 @@
 import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
-import type { ChatOptions, Tool } from '../types'
+import type { ChatOptions } from '../types'
 
 export const chat = async <T extends ChatOptions>(options: T) =>
   await (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
     body: requestBody({
       ...options,
-      tools: (options.tools as Tool[] | undefined)?.map(tool => ({
+      tools: options.tools?.map(tool => ({
         function: tool.function,
         type: 'function',
       })),
