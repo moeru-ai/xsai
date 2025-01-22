@@ -1,5 +1,4 @@
-import type { AssistantMessage, AssistantMessagePart, Message, SystemMessage, SystemMessagePart, ToolCall, ToolMessage, ToolMessagePart, UserMessage, UserMessagePart } from '@xsai/shared-chat'
-import type { ImagePart, TextPart } from '@xsai/shared-chat'
+import type { AssistantMessage, AssistantMessagePart, ImagePart, Message, SystemMessage, SystemMessagePart, TextPart, ToolCall, ToolMessage, ToolMessagePart, UserMessage, UserMessagePart } from '@xsai/shared-chat'
 
 export const messages = (...messages: Message[]): Message[] => messages
 
