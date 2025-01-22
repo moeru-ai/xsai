@@ -1,7 +1,7 @@
 {
   "name": "@xsai/workspace",
-  "version": "0.0.29",
   "type": "module",
+  "version": "0.0.29",
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "repository": "github:moeru-ai/xsai",
@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.14.0",
-    "@importantimport/eslint-config": "^1.0.0-alpha.3",
-    "@importantimport/tsconfig": "^0.1.1",
+    "@importantimport/eslint-config": "^1.0.0-beta.0",
+    "@importantimport/tsconfig": "^1.0.0-beta.0",
     "@types/eslint": "^9.6.1",
     "@types/node": "^22.10.7",
     "automd": "^0.3.12",
