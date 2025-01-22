@@ -12,7 +12,6 @@
     "docs:dev": "corepack pnpm -rF @xsai/docs dev",
     "docs:generate-files": "corepack pnpm -rF @xsai/docs generate-files",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "test": "corepack pnpm -r --workspace-concurrency=1 test"
   },
   "devDependencies": {
