@@ -1,27 +1,27 @@
 {
   "name": "@xsai/providers",
-  "version": "0.0.29",
   "type": "module",
+  "version": "0.0.29",
+  "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
   "author": "Moeru AI",
   "license": "MIT",
   "homepage": "https://xsai.js.org",
-  "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
-  "keywords": ["xsai", "openai", "ai"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
     "directory": "packages/providers"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": ["xsai", "openai", "ai"],
   "sideEffects": false,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],

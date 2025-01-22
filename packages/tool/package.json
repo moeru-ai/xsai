@@ -1,21 +1,19 @@
 {
   "name": "@xsai/tool",
-  "version": "0.0.29",
   "type": "module",
+  "version": "0.0.29",
+  "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
   "author": "Moeru AI",
   "license": "MIT",
   "homepage": "https://xsai.js.org",
-  "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
-  "keywords": ["xsai", "openai", "ai"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
     "directory": "packages/tool"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": ["xsai", "openai", "ai"],
   "sideEffects": false,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -25,6 +23,8 @@
       "types": "./dist/generate-text.d.ts"
     }
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -33,6 +33,14 @@
     "build:watch": "pkgroll --watch",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "@xsai/generate-text": "workspace:"
+  },
+  "peerDependenciesMeta": {
+    "@xsai/generate-text": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@typeschema/main": "catalog:",
@@ -43,13 +51,5 @@
     "@xsai/generate-text": "workspace:",
     "@xsai/providers": "workspace:",
     "valibot": "catalog:"
-  },
-  "peerDependencies": {
-    "@xsai/generate-text": "workspace:"
-  },
-  "peerDependenciesMeta": {
-    "@xsai/generate-text": {
-      "optional": true
-    }
   }
 }

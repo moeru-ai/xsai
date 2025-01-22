@@ -24,7 +24,7 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
   body.append('model', options.model)
   body.append('file', options.file, options.fileName)
 
-  return await (options.fetch ?? globalThis.fetch)(requestURL('audio/transcriptions', options.baseURL), {
+  return (options.fetch ?? globalThis.fetch)(requestURL('audio/transcriptions', options.baseURL), {
     body,
     headers: requestHeaders(options.headers, options.apiKey),
     method: 'POST',

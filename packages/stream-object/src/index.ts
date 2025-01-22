@@ -17,7 +17,7 @@ export interface StreamObjectResult<T extends Schema> extends StreamTextResult {
 
 /** @experimental WIP */
 export const streamObject = async <T extends Schema>(options: StreamObjectOptions<T>): Promise<StreamObjectResult<T>> =>
-  await streamText({
+  streamText({
     ...options,
     response_format: {
       json_schema: {

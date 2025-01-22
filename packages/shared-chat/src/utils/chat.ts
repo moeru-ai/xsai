@@ -3,7 +3,7 @@ import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/sh
 import type { ChatOptions, Tool } from '../types'
 
 export const chat = async <T extends ChatOptions>(options: T) =>
-  await (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
+  (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
     body: requestBody({
       ...options,
       tools: (options.tools as Tool[] | undefined)?.map(tool => ({

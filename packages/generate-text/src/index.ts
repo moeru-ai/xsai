@@ -72,14 +72,14 @@ type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>)
 
 /** @internal */
 const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
-  await chat({
+  chat({
     ...options,
     maxSteps: undefined,
     messages: options.messages,
     steps: undefined,
     stream: false,
   })
-    .then(res => res.json() as Promise<GenerateTextResponse>)
+    .then(async res => res.json() as Promise<GenerateTextResponse>)
     .then(async ({ choices, usage }) => {
       const messages: Message[] = options.messages
       const steps: StepResult[] = options.steps ?? []
@@ -152,7 +152,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       if (options.onStepFinish)
         await options.onStepFinish(step)
 
-      return async () => await rawGenerateText({
+      return async () => rawGenerateText({
         ...options,
         messages,
         steps,
@@ -162,7 +162,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
   let result = await rawGenerateText(options)
 
-  while (result instanceof Function)
+  while (typeof result === 'function')
     result = await result()
 
   return result

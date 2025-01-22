@@ -49,7 +49,7 @@ const chunkHeaderPrefix = 'data:'
 /**
  * @experimental WIP, does not support function calling (tools).
  */
-export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => await chat({
+export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => chat({
   ...options,
   stream: true,
 }).then(async (res) => {
