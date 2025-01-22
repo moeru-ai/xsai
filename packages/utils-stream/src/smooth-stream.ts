@@ -1,12 +1,9 @@
+import { sleep } from './_sleep'
+
 export interface SmoothStreamOptions {
   chunking?: 'line' | 'word' | RegExp
   delay?: number
 }
-
-const sleep = async (delay: number) => delay === 0
-  ? Promise.resolve()
-  // eslint-disable-next-line @masknet/no-timer, @masknet/prefer-timer-id
-  : new Promise(resolve => setTimeout(resolve, delay))
 
 const CHUNKING_REGEXPS = {
   // eslint-disable-next-line sonarjs/slow-regex
