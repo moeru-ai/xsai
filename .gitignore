@@ -6,6 +6,7 @@ pnpm-debug.log*
 node_modules
 dist
 *.local
+.eslintcache
 
 # Editor directories and files
 .idea

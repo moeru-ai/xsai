@@ -1,4 +1,4 @@
-version: '0.2'
+version: "0.2"
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -8,6 +8,7 @@ words:
   - bumpp
   - changelogithub
   - elevenlabs
+  - eslintcache
   - fumadocs
   - gcornut
   - importantimport

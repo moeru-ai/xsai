@@ -11,7 +11,7 @@
     "bump": "bumpp",
     "docs:dev": "corepack pnpm -rF @xsai/docs dev",
     "docs:generate-files": "corepack pnpm -rF @xsai/docs generate-files",
-    "lint": "eslint .",
+    "lint": "eslint --cache .",
     "test": "corepack pnpm -r --workspace-concurrency=1 test"
   },
   "devDependencies": {
