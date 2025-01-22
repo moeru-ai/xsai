@@ -13,7 +13,6 @@ declare global {
   }
 }
 
-// eslint-disable-next-line @masknet/no-top-level
 describe('@xsai/stream-object', () => {
   it('basic', async () => {
     const { partialObjectStream } = await streamObject({

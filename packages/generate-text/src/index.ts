@@ -72,7 +72,6 @@ type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>)
 
 /** @internal */
 const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
-  // eslint-disable-next-line @masknet/no-then
   chat({
     ...options,
     maxSteps: undefined,

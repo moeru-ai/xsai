@@ -1,3 +1,4 @@
+// eslint-disable-next-line @masknet/no-top-level
 'use client'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
@@ -86,10 +87,12 @@ const SVG = ({
           strokeLinecap="round"
           strokeWidth="2.3"
           transition={{
+            // eslint-disable-next-line sonarjs/pseudo-random
             delay: Math.floor(Math.random() * 10),
-            duration: svgOptions?.duration || 10,
+            duration: svgOptions?.duration ?? 10,
             ease: 'linear',
             repeat: Infinity,
+            // eslint-disable-next-line sonarjs/pseudo-random
             repeatDelay: Math.floor(Math.random() * 10 + 2),
             repeatType: 'loop',
           }}
@@ -108,10 +111,12 @@ const SVG = ({
           strokeLinecap="round"
           strokeWidth="2.3"
           transition={{
+            // eslint-disable-next-line sonarjs/pseudo-random
             delay: Math.floor(Math.random() * 10),
-            duration: svgOptions?.duration || 10,
+            duration: svgOptions?.duration ?? 10,
             ease: 'linear',
             repeat: Infinity,
+            // eslint-disable-next-line sonarjs/pseudo-random
             repeatDelay: Math.floor(Math.random() * 10 + 2),
             repeatType: 'loop',
           }}

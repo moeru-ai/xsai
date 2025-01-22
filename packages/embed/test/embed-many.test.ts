@@ -6,7 +6,7 @@ import { embedMany } from '../src'
 describe('@xsai/embed', () => {
   it('array', async () => {
     const { embeddings, usage } = await embedMany({
-      ...ollama.embeddings('nomic-embed-text'),
+      ...ollama.embed('nomic-embed-text'),
       input: ['why is the sky blue?', 'why is the grass green?'],
     })
 

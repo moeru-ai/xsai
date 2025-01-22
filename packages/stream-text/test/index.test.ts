@@ -13,7 +13,6 @@ declare global {
   }
 }
 
-// eslint-disable-next-line @masknet/no-top-level
 describe('@xsai/stream-text', () => {
   it('basic', async () => {
     const { textStream } = await streamText({

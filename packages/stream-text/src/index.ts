@@ -50,7 +50,6 @@ const chunkHeaderPrefix = 'data:'
 /**
  * @experimental WIP, does not support function calling (tools).
  */
-// eslint-disable-next-line @masknet/no-then
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => chat({
   ...options,
   stream: true,

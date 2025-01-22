@@ -6,12 +6,15 @@ import animate from 'tailwindcss-animate'
 import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette'
 
 function addVariablesForColors({ addBase, theme }: any) {
+  // eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call
   const allColors = flattenColorPalette(theme('colors'))
   const newVars = Object.fromEntries(
+    // eslint-disable-next-line ts/no-unsafe-argument
     Object.entries(allColors)
       .map(([key, val]) => [`--${key}`, val]),
   )
 
+  // eslint-disable-next-line ts/no-unsafe-call
   addBase({
     ':root': newVars,
   })

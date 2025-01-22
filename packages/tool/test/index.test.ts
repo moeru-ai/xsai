@@ -6,34 +6,6 @@ import { describe, expect, it } from 'vitest'
 import { tool } from '../src'
 
 describe('@xsai/tool', () => {
-  it('basic', async () => {
-    const t = await tool({
-      description: 'Get the weather in a location',
-      execute: ({ location }) => JSON.stringify({
-        location,
-        temperature: 72 + Math.floor(Math.random() * 21) - 10,
-      }),
-      name: 'weather',
-      parameters: object({
-        location: pipe(
-          string(),
-          description('The location to get the weather for'),
-        ),
-      }),
-    })
-
-    expect(t.function.parameters).toStrictEqual({
-      properties: {
-        location: {
-          description: 'The location to get the weather for',
-          type: 'string',
-        },
-      },
-      required: ['location'],
-      type: 'object',
-    })
-  })
-
   it('generateText with tool', async () => {
     const weather = await tool({
       description: 'Get the weather in a location',

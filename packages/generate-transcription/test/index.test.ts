@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest'
 
 import { generateTranscription } from '../src'
 
-// eslint-disable-next-line @masknet/no-top-level
 describe('@xsai/generate-transcription', () => {
   it('basic', async () => {
     const { text } = await generateTranscription({

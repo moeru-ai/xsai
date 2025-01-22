@@ -14,7 +14,6 @@ export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTex
 
 /** @experimental WIP */
 export const generateObject = async <T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<T>> =>
-  // eslint-disable-next-line @masknet/no-then
   generateText({
     ...options,
     response_format: {

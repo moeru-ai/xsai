@@ -6,7 +6,7 @@ import { embed } from '../src'
 describe('@xsai/embed', () => {
   it('embed', async () => {
     const { embedding, usage } = await embed({
-      ...ollama.embeddings('nomic-embed-text'),
+      ...ollama.embed('nomic-embed-text'),
       input: 'sunny day at the beach',
     })
 

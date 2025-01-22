@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -14,13 +14,13 @@ words:
   - importantimport
   - koemotion
   - masknet
-  - Moeru
+  - moeru
   - moeru-ai
   - mxbai-embed-large
   - nemo
   - nemotron
   - nomic-embed-text
-  - Ollama
+  - ollama
   - pkgroll
   - qwen
   - sonarjs
@@ -28,7 +28,7 @@ words:
   - typeschema
   - unspeech
   - valibot
-  - Vitest
+  - vitest
   - xsai
 ignoreWords: []
 import: []

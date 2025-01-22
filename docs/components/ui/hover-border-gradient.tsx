@@ -1,3 +1,4 @@
+// eslint-disable-next-line @masknet/no-top-level
 'use client'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
@@ -49,9 +50,11 @@ export function HoverBorderGradient({
   useEffect(() => {
     if (hovered)
       return
+    // eslint-disable-next-line @masknet/no-timer
     const interval = setInterval(() => {
       setDirection(prevState => rotateDirection(prevState))
     }, duration * 1000)
+    // eslint-disable-next-line @masknet/no-timer
     return () => clearInterval(interval)
   }, [hovered])
   return (

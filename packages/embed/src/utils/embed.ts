@@ -12,6 +12,7 @@ export interface EmbedResponse {
     object: 'embedding'
   }[]
   model: string
+  // eslint-disable-next-line sonarjs/no-useless-intersection
   object: 'list' | (string & {})
   system_fingerprint?: string
   usage: EmbedResponseUsage

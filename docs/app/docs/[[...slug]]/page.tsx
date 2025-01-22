@@ -12,6 +12,24 @@ import {
 } from 'fumadocs-ui/page'
 import { notFound } from 'next/navigation'
 
+export const generateStaticParams = async () =>
+  source.generateParams()
+
+export const generateMetadata = async (props: {
+  params: Promise<{ slug?: string[] }>
+}) => {
+  const params = await props.params
+  const page = source.getPage(params.slug)
+  if (!page)
+    notFound()
+
+  return metadataImage.withImage(page.slugs, {
+    description: page.data.description,
+    metadataBase: new URL('https://xsai.js.org'),
+    title: page.data.title,
+  })
+}
+
 export default async (props: {
   params: Promise<{ slug?: string[] }>
 }) => {
@@ -53,22 +71,4 @@ export default async (props: {
       </DocsBody>
     </DocsPage>
   )
-}
-
-export const generateStaticParams = async () =>
-  source.generateParams()
-
-export const generateMetadata = async (props: {
-  params: Promise<{ slug?: string[] }>
-}) => {
-  const params = await props.params
-  const page = source.getPage(params.slug)
-  if (!page)
-    notFound()
-
-  return metadataImage.withImage(page.slugs, {
-    description: page.data.description,
-    metadataBase: new URL('https://xsai.js.org'),
-    title: page.data.title,
-  })
 }

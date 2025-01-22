@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest'
 
 import { listModels, retrieveModel } from '../src'
 
-// eslint-disable-next-line @masknet/no-top-level
 describe('@xsai/model', () => {
   it('listModels', async () => {
     const models = await listModels({

@@ -1,6 +1,7 @@
 import { generateFiles } from 'fumadocs-typescript'
 import * as path from 'node:path'
 
+// eslint-disable-next-line @masknet/no-top-level
 void generateFiles({
   input: ['./content/docs/**/*.model.mdx'],
   // Rename x.model.mdx to x.mdx

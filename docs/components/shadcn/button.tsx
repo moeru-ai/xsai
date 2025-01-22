@@ -50,6 +50,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     )
   },
 )
+// eslint-disable-next-line @masknet/no-top-level
 Button.displayName = 'Button'
 
 export { Button, buttonVariants }

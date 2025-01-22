@@ -18,9 +18,7 @@ import { generateText } from '@xsai/generate-text'
 import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
 
-const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY
-})
+const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 const { text } = await generateText({
   ...openai.chat('gpt-4o'),

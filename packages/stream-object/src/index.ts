@@ -16,7 +16,6 @@ export interface StreamObjectResult<T extends Schema> extends StreamTextResult {
 
 /** @experimental WIP */
 export const streamObject = async <T extends Schema>(options: StreamObjectOptions<T>): Promise<StreamObjectResult<T>> =>
-// eslint-disable-next-line @masknet/no-then
   streamText({
     ...options,
     response_format: {
