@@ -24,6 +24,7 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
   body.append('model', options.model)
   body.append('file', options.file, options.fileName)
 
+  // eslint-disable-next-line @masknet/no-then
   return (options.fetch ?? globalThis.fetch)(requestURL('audio/transcriptions', options.baseURL), {
     body,
     headers: requestHeaders(options.headers, options.apiKey),

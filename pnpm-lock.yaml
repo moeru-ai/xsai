@@ -187,9 +187,6 @@ importers:
       '@xsai/generate-text':
         specifier: 'workspace:'
         version: link:../generate-text
-      '@xsai/shared':
-        specifier: 'workspace:'
-        version: link:../shared
     devDependencies:
       '@gcornut/valibot-json-schema':
         specifier: 'catalog:'
@@ -263,9 +260,6 @@ importers:
       '@typeschema/main':
         specifier: 'catalog:'
         version: 0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.2)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))
-      '@xsai/shared':
-        specifier: 'workspace:'
-        version: link:../shared
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../stream-text
@@ -8421,7 +8415,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.13':
     dependencies:
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.26.5
       '@vue/shared': 3.5.13
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -8434,7 +8428,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.5.13':
     dependencies:
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.26.5
       '@vue/compiler-core': 3.5.13
       '@vue/compiler-dom': 3.5.13
       '@vue/compiler-ssr': 3.5.13

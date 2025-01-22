@@ -33,8 +33,7 @@
   },
   "dependencies": {
     "@typeschema/main": "catalog:",
-    "@xsai/generate-text": "workspace:",
-    "@xsai/shared": "workspace:"
+    "@xsai/generate-text": "workspace:"
   },
   "devDependencies": {
     "@gcornut/valibot-json-schema": "catalog:",

@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "@typeschema/main": "catalog:",
-    "@xsai/shared": "workspace:",
     "@xsai/stream-text": "workspace:"
   },
   "devDependencies": {

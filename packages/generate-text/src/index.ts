@@ -72,6 +72,7 @@ type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>)
 
 /** @internal */
 const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
+  // eslint-disable-next-line @masknet/no-then
   chat({
     ...options,
     maxSteps: undefined,
@@ -88,7 +89,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
       const { finish_reason: finishReason, message } = choices[0]
 
-      if (message.content || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
+      if (message.content !== undefined || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
         const step: StepResult = {
           text: message.content,
           toolCalls,
@@ -116,7 +117,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         type: toolCallType,
       } of message.tool_calls) {
         const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolName)!
-        const parsedArgs: Record<string, unknown> = JSON.parse(toolArgs)
+        const parsedArgs = JSON.parse(toolArgs) as Record<string, unknown>
         const result = await tool.execute(parsedArgs)
 
         toolCalls.push({

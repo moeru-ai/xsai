@@ -2,8 +2,18 @@ import { ollama } from '@xsai/providers'
 import { clean } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
-import { streamText, type StreamTextResponse } from '../src'
+import { type ChunkResult, streamText } from '../src'
 
+// make TS happy
+// https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
+declare global {
+  interface ReadableStream<R = any> {
+    // eslint-disable-next-line ts/method-signature-style
+    [Symbol.asyncIterator](): AsyncIterableIterator<R>
+  }
+}
+
+// eslint-disable-next-line @masknet/no-top-level
 describe('@xsai/stream-text', () => {
   it('basic', async () => {
     const { textStream } = await streamText({
@@ -49,7 +59,7 @@ describe('@xsai/stream-text', () => {
       onChunk: () => { onChunkCount++ },
     })
 
-    const chunk: StreamTextResponse[] = []
+    const chunk: ChunkResult[] = []
     const text: string[] = []
 
     for await (const chunkPart of chunkStream) {
@@ -71,6 +81,4 @@ describe('@xsai/stream-text', () => {
 
     expect(onChunkCount).toMatchSnapshot(chunkCount)
   })
-
-  // TODO: error handling
 })

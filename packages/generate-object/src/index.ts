@@ -1,6 +1,5 @@
 import { type Infer, type Schema, toJSONSchema, validate } from '@typeschema/main'
 import { generateText, type GenerateTextOptions, type GenerateTextResult } from '@xsai/generate-text'
-import { clean } from '@xsai/shared'
 
 export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOptions {
   schema: T
@@ -15,17 +14,14 @@ export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTex
 
 /** @experimental WIP */
 export const generateObject = async <T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<T>> =>
+  // eslint-disable-next-line @masknet/no-then
   generateText({
     ...options,
     response_format: {
       json_schema: {
         description: options.schemaDescription,
         name: options.schemaName ?? 'json_schema',
-        schema: await toJSONSchema(options.schema)
-          .then(json => clean({
-            ...json,
-            $schema: undefined,
-          })),
+        schema: await toJSONSchema(options.schema),
         strict: true,
       },
       type: 'json_schema',

@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 
 import { generateObject } from '../src'
 
+// eslint-disable-next-line @masknet/no-top-level
 describe('@xsai/generate-object', () => {
   it('basic', async () => {
     const { object } = await generateObject({

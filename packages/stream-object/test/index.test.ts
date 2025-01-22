@@ -4,6 +4,16 @@ import { describe, expect, it } from 'vitest'
 
 import { streamObject } from '../src'
 
+// make TS happy
+// https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
+declare global {
+  interface ReadableStream<R = any> {
+    // eslint-disable-next-line ts/method-signature-style
+    [Symbol.asyncIterator](): AsyncIterableIterator<R>
+  }
+}
+
+// eslint-disable-next-line @masknet/no-top-level
 describe('@xsai/stream-object', () => {
   it('basic', async () => {
     const { partialObjectStream } = await streamObject({

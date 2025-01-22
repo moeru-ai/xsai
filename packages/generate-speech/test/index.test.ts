@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 import { generateSpeech } from '../src'
 
+// eslint-disable-next-line @masknet/no-top-level
 describe('@xsai/generate-speech', () => {
   it('basic', async () => {
     const speech = await generateSpeech({
@@ -17,6 +18,7 @@ describe('@xsai/generate-speech', () => {
   it('chinese', async () => {
     const speech = await generateSpeech({
       baseURL: new URL('http://localhost:5050'),
+      // eslint-disable-next-line @masknet/unicode-specific-set
       input: '我能吞下玻璃而不伤身体。',
       model: 'tts-1',
       voice: 'zh-CN-XiaoyiNeural',

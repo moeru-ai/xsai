@@ -8,10 +8,10 @@ import { generateCRO } from '../../utils/generate-cro'
 /** @see {@link https://elevenlabs.io/docs/api-reference/text-to-speech/convert#request} */
 export interface UnElevenLabsOptions {
   /**
-   * This parameter controls text normalization with three modes: ‘auto’, ‘on’, and ‘off’. When set to ‘auto’,
+   * This parameter controls text normalization with three modes: 'auto', 'on', and 'off'. When set to 'auto',
    * the system will automatically decide whether to apply text normalization (e.g., spelling out numbers).
-   * With ‘on’, text normalization will always be applied, while with ‘off’, it will be skipped. Cannot be
-   * turned on for ‘eleven_turbo_v2_5’ model.
+   * With 'on', text normalization will always be applied, while with 'off', it will be skipped. Cannot be
+   * turned on for 'eleven_turbo_v2_5' model.
    */
   applyTextNormalization?: 'auto' | 'off' | 'on'
   /**
@@ -63,7 +63,7 @@ export interface UnElevenLabsOptions {
    */
   seed?: number
   /**
-   * Voice settings overriding stored setttings for the given voice. They are applied only on the given request.
+   * Voice settings overriding stored settings for the given voice. They are applied only on the given request.
    */
   voiceSettings?: {
     similarityBoost?: number

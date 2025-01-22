@@ -1,4 +1,4 @@
-version: '0.2'
+version: "0.2"
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -13,6 +13,7 @@ words:
   - gcornut
   - importantimport
   - koemotion
+  - masknet
   - Moeru
   - moeru-ai
   - mxbai-embed-large
@@ -22,6 +23,7 @@ words:
   - Ollama
   - pkgroll
   - qwen
+  - sonarjs
   - twoslash
   - typeschema
   - unspeech

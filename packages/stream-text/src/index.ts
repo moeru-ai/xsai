@@ -44,11 +44,13 @@ export interface StreamTextResult {
   usage?: Usage
 }
 
+// eslint-disable-next-line @masknet/string-no-data-url
 const chunkHeaderPrefix = 'data:'
 
 /**
  * @experimental WIP, does not support function calling (tools).
  */
+// eslint-disable-next-line @masknet/no-then
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => chat({
   ...options,
   stream: true,
@@ -87,16 +89,16 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     }
 
     // Process normal chunk
-    const chunk: ChunkResult = JSON.parse(data)
+    const chunk = JSON.parse(data) as ChunkResult
     controller.enqueue(chunk)
 
     if (options.onChunk)
       await options.onChunk(chunk)
 
-    if (chunk.choices[0].finish_reason) {
+    if (chunk.choices[0].finish_reason !== undefined) {
       finishReason = chunk.choices[0].finish_reason
     }
-    if (chunk.usage) {
+    if (chunk.usage !== undefined) {
       usage = chunk.usage
     }
   }
@@ -105,11 +107,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
   // null body handled by import('@xsai/shared-chat').chat()
   const rawChunkStream = res.body!.pipeThrough(new TransformStream({
-    transform: async (chunk, controller) => {
+    transform: async (chunk, controller: TransformStreamDefaultController<ChunkResult>) => {
       const text = decoder.decode(chunk, { stream: true })
       buffer += text
       const lines = buffer.split('\n')
-      buffer = lines.pop() || ''
+      buffer = lines.pop() ?? ''
 
       // Process complete lines
       for (const line of lines) {
