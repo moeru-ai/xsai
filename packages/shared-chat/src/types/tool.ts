@@ -1,5 +1,7 @@
+import type { Message } from './message'
+
 export interface Tool {
-  execute: (input: unknown) => Promise<string> | string
+  execute: (input: unknown, options: ToolExecuteOptions) => Promise<string> | string
   function: {
     description?: string
     name: string
@@ -7,4 +9,10 @@ export interface Tool {
     strict?: boolean
   }
   type: 'function'
+}
+
+interface ToolExecuteOptions {
+  abortSignal?: AbortSignal
+  messages: Message[]
+  toolCallId: string
 }
