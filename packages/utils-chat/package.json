@@ -1,0 +1,35 @@
+{
+  "name": "@xsai/utils-chat",
+  "type": "module",
+  "version": "0.0.29",
+  "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/utils-chat"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": ["xsai", "openai", "ai"],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pkgroll",
+    "build:watch": "pkgroll --watch"
+  },
+  "dependencies": {
+    "@xsai/shared-chat": "workspace:"
+  }
+}
