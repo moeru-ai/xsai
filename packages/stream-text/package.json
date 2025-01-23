@@ -4,7 +4,7 @@
   "version": "0.0.29",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
   "author": "Moeru AI",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "homepage": "https://xsai.js.org",
   "repository": {
     "type": "git",

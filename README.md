@@ -189,6 +189,12 @@ xsAI is currently in an early stage of development and may introduce breaking ch
 
 ## License
 
-[MIT](LICENSE.md)
+[Apache-2.0](LICENSE)
 
-Moeru AI / xsAI is not affiliated with OpenAI.
+### Third Party Licenses
+
+This project partially copies code from the following projects:
+
+| Project | License |
+|---|---|
+| [vercel/ai](https://github.com/vercel/ai) | [Apache-2.0](https://github.com/vercel/ai/blob/main/LICENSE) |
