@@ -1,6 +1,7 @@
 // License for this File only:
 //
 // Copyright Vercel, Inc. (https://vercel.com)
+// Copyright Moeru AI (https://github.com/moeru-ai)
 // SPDX-License-Identifier: Apache-2.0
 
 import { sleep } from './_sleep'
