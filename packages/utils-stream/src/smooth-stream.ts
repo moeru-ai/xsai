@@ -1,3 +1,8 @@
+// License for this File only:
+//
+// Copyright Vercel, Inc. (https://vercel.com)
+// SPDX-License-Identifier: Apache-2.0
+
 import { sleep } from './_sleep'
 
 export interface SmoothStreamOptions {
