@@ -2,7 +2,6 @@
   "name": "@xsai/utils-chat",
   "type": "module",
   "version": "0.0.29",
-  "private": true,
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
   "author": "Moeru AI",
   "license": "Apache-2.0",
