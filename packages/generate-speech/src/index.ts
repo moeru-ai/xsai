@@ -1,4 +1,6 @@
-import { type CommonRequestOptions, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import type { CommonRequestOptions } from '@xsai/shared'
+
+import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
 export interface GenerateSpeechOptions extends CommonRequestOptions {
   [key: string]: unknown

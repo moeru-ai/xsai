@@ -1,4 +1,6 @@
-import { type CommonRequestOptions, requestBody, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
+import type { CommonRequestOptions } from '@xsai/shared'
+
+import { requestBody, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
 export interface EmbedOptions extends CommonRequestOptions {
   [key: string]: unknown

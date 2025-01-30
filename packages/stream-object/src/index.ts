@@ -1,7 +1,9 @@
+import type { Infer, Schema } from '@typeschema/main'
+import type { StreamTextOptions, StreamTextResult } from '@xsai/stream-text'
 import type { PartialDeep } from 'type-fest'
 
-import { type Infer, type Schema, toJSONSchema } from '@typeschema/main'
-import { streamText, type StreamTextOptions, type StreamTextResult } from '@xsai/stream-text'
+import { toJSONSchema } from '@typeschema/main'
+import { streamText } from '@xsai/stream-text'
 import { parse } from 'best-effort-json-parser'
 
 export interface StreamObjectOptions<T extends Schema> extends StreamTextOptions {

@@ -1,4 +1,6 @@
-import { type CommonRequestOptions, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
+import type { CommonRequestOptions } from '@xsai/shared'
+
+import { requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
 export interface GenerateTranscriptionOptions extends CommonRequestOptions {
   file: Blob
