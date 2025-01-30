@@ -15,5 +15,5 @@ jobs:
   deploy:
     uses: importantimport/.github/.github/workflows/pnpm-gh-pages-artifact.yml@main
     with:
-      build: pnpm -r --parallel build
+      build: pnpm -r build
       path: docs/dist
