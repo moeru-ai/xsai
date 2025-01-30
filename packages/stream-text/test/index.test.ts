@@ -2,7 +2,9 @@ import { ollama } from '@xsai/providers'
 import { clean } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
-import { type ChunkResult, streamText } from '../src'
+import type { ChunkResult } from '../src'
+
+import { streamText } from '../src'
 
 // make TS happy
 // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility

@@ -1,7 +1,9 @@
 import { ollama } from '@xsai/providers'
 import { describe, expect, it } from 'vitest'
 
-import { generateText, type StepResult } from '../src'
+import type { StepResult } from '../src'
+
+import { generateText } from '../src'
 
 describe('@xsai/generate-text', () => {
   it('basic', async () => {

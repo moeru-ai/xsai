@@ -1,8 +1,8 @@
+import type { ChatOptions, FinishReason, Usage } from '@xsai/shared-chat'
+
 import {
   chat,
-  type ChatOptions,
-  type FinishReason,
-  type Usage,
+
 } from '@xsai/shared-chat'
 
 // TODO: improve chunk type
