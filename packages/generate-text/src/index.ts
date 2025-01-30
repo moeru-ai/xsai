@@ -1,12 +1,6 @@
-import {
-  type AssistantMessageResponse,
-  chat,
-  type ChatOptions,
-  type FinishReason,
-  type Message,
-  type Tool,
-  type Usage,
-} from '@xsai/shared-chat'
+import type { AssistantMessageResponse, ChatOptions, FinishReason, Message, Tool, Usage } from '@xsai/shared-chat'
+
+import { chat } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
@@ -43,9 +37,9 @@ export interface GenerateTextResult {
 }
 
 export interface StepResult {
+  finishReason: FinishReason
+  stepType: 'continue' | 'initial' | 'tool-result'
   text?: string
-  // TODO: step type
-  // type: 'continue' | 'initial' | 'tool-result'
   toolCalls: ToolCall[]
   toolResults: ToolResult[]
   usage: Usage
@@ -91,8 +85,17 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
       messages.push({ ...message, content: message.content! })
 
+      const stepType = steps.length === 0
+        ? 'initial'
+        // eslint-disable-next-line sonarjs/no-nested-conditional
+        : steps.at(-1)?.finishReason === 'tool-calls'
+          ? 'tool-result'
+          : 'continue'
+
       if (message.content !== undefined || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
         const step: StepResult = {
+          finishReason,
+          stepType,
           text: message.content,
           toolCalls,
           toolResults,
@@ -108,7 +111,10 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
           finishReason,
           messages,
           steps,
-          ...step,
+          text: message.content,
+          toolCalls,
+          toolResults,
+          usage,
         }
       }
 
@@ -143,6 +149,8 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       }
 
       const step: StepResult = {
+        finishReason,
+        stepType,
         text: message.content,
         toolCalls,
         toolResults,
