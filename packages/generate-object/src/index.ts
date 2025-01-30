@@ -1,5 +1,8 @@
-import { type Infer, type Schema, toJSONSchema, validate } from '@typeschema/main'
-import { generateText, type GenerateTextOptions, type GenerateTextResult } from '@xsai/generate-text'
+import type { Infer, Schema } from '@typeschema/main'
+import type { GenerateTextOptions, GenerateTextResult } from '@xsai/generate-text'
+
+import { toJSONSchema, validate } from '@typeschema/main'
+import { generateText } from '@xsai/generate-text'
 
 export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOptions {
   schema: T
@@ -7,8 +10,7 @@ export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOpt
   schemaName?: string
 }
 
-// TODO: toolCalls, toolResults
-export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTextResult, 'text' | 'toolCalls' | 'toolResults'> {
+export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTextResult, 'text'> {
   object: Infer<T>
 }
 
@@ -29,7 +31,7 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
     schemaDescription: undefined,
     schemaName: undefined,
   })
-    .then(async ({ finishReason, messages, steps, text, usage }) => {
+    .then(async ({ finishReason, messages, steps, text, toolCalls, toolResults, usage }) => {
       const result = await validate(options.schema, JSON.parse(text!))
 
       if (result.success) {
@@ -38,6 +40,8 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
           messages,
           object: result.data,
           steps,
+          toolCalls,
+          toolResults,
           usage,
         }
       }
