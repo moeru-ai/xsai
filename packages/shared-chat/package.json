@@ -12,7 +12,11 @@
     "directory": "packages/shared-chat"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
-  "keywords": ["xsai", "openai", "ai"],
+  "keywords": [
+    "xsai",
+    "openai",
+    "ai"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {

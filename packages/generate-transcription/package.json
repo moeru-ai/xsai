@@ -40,6 +40,6 @@
   },
   "devDependencies": {
     "@xsai/providers": "workspace:",
-    "openai": "^4.78.1"
+    "openai": "^4.81.0"
   }
 }

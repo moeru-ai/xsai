@@ -1,6 +1,6 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 
-import { version } from '../package.json' with { type: 'json' }
+import pkg from '../package.json' with { type: 'json' }
 
 /**
  * Shared layout configurations
@@ -24,7 +24,7 @@ export const baseOptions: BaseLayoutProps = {
         <img className="size-6 mb-0 -mr-1" src="https://github.com/moeru-ai.png" />
         <span>xsAI</span>
         <code className="py-0 px-1">
-          {version}
+          {pkg.version}
         </code>
       </div>
     ),

@@ -43,7 +43,7 @@
     "@gcornut/valibot-json-schema": "catalog:",
     "@xsai/providers": "workspace:",
     "best-effort-json-parser": "^1.1.2",
-    "type-fest": "^4.32.0",
+    "type-fest": "^4.33.0",
     "valibot": "catalog:"
   }
 }

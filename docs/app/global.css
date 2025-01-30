@@ -1,4 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-  
+@import "tailwindcss";
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+ 
+/* relative to the CSS file, make sure it's correct for your app */
+@source '../node_modules/fumadocs-ui/dist/**/*.js';
