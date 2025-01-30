@@ -34,6 +34,7 @@ export interface GenerateTextResponse {
 
 export interface GenerateTextResult {
   finishReason: FinishReason
+  messages: Message[]
   steps: StepResult[]
   text?: string
   toolCalls: ToolCall[]
@@ -88,6 +89,8 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
       const { finish_reason: finishReason, message } = choices[0]
 
+      messages.push({ ...message, content: message.content! })
+
       if (message.content !== undefined || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
         const step: StepResult = {
           text: message.content,
@@ -103,12 +106,11 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
         return {
           finishReason,
+          messages,
           steps,
           ...step,
         }
       }
-
-      messages.push({ ...message, content: message.content! })
 
       for (const {
         function: { arguments: toolArgs, name: toolName },
