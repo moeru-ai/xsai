@@ -15,6 +15,5 @@ jobs:
   deploy:
     uses: importantimport/.github/.github/workflows/pnpm-gh-pages-artifact.yml@main
     with:
-      node-version: 22 # https://github.com/fuma-nama/fumadocs/issues/1021
-      build: pnpm -r build
+      build: pnpm -r --parallel build
       path: docs/dist
