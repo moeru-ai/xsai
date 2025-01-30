@@ -29,12 +29,14 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
     schemaDescription: undefined,
     schemaName: undefined,
   })
-    .then(async ({ finishReason, steps, text, usage }) => {
+    .then(async ({ finishReason, messages, steps, text, usage }) => {
       const result = await validate(options.schema, JSON.parse(text!))
 
       if (result.success) {
         return {
           finishReason,
+          // eslint-disable-next-line ts/no-unsafe-assignment
+          messages,
           object: result.data,
           steps,
           usage,
