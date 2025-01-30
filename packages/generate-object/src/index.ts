@@ -35,7 +35,6 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
       if (result.success) {
         return {
           finishReason,
-          // eslint-disable-next-line ts/no-unsafe-assignment
           messages,
           object: result.data,
           steps,
