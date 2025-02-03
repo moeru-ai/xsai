@@ -1,7 +1,7 @@
-import type { InferIn, Schema } from '@typeschema/main'
+import type { InferIn, Schema } from 'xsschema'
 
-import { toJSONSchema } from '@typeschema/main'
 import { clean } from '@xsai/shared'
+import { toJSONSchema } from 'xsschema'
 
 export interface ToolOptions<T extends Schema> {
   description?: string

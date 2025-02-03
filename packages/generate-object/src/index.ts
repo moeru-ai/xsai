@@ -1,8 +1,8 @@
-import type { Infer, Schema } from '@typeschema/main'
 import type { GenerateTextOptions, GenerateTextResult } from '@xsai/generate-text'
+import type { Infer, Schema } from 'xsschema'
 
-import { toJSONSchema, validate } from '@typeschema/main'
 import { generateText } from '@xsai/generate-text'
+import { toJSONSchema, validate } from 'xsschema'
 
 export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOptions {
   schema: T

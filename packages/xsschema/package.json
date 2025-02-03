@@ -35,7 +35,7 @@
     "build:watch": "pkgroll --watch"
   },
   "peerDependencies": {
-    "@valibot/to-json-schema": "1.0.0-beta.5",
+    "@valibot/to-json-schema": "catalog:",
     "zod-to-json-schema": "^3.24.1"
   },
   "peerDependenciesMeta": {
@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@types/json-schema": "^7.0.15",
-    "@valibot/to-json-schema": "1.0.0-beta.5",
+    "@valibot/to-json-schema": "catalog:",
     "zod-to-json-schema": "^3.24.1"
   }
 }

@@ -6,15 +6,12 @@ settings:
 
 catalogs:
   default:
-    '@gcornut/valibot-json-schema':
-      specifier: ^0.42.0
-      version: 0.42.0
-    '@typeschema/main':
-      specifier: ^0.14.1
-      version: 0.14.1
+    '@valibot/to-json-schema':
+      specifier: ^1.0.0-beta.5
+      version: 1.0.0-beta.5
     valibot:
-      specifier: ^0.42.1
-      version: 0.42.1
+      specifier: ^1.0.0-beta.14
+      version: 1.0.0-beta.14
 
 importers:
 
@@ -161,7 +158,7 @@ importers:
         version: 4.0.1
       valibot:
         specifier: 'catalog:'
-        version: 0.42.1(typescript@5.6.3)
+        version: 1.0.0-beta.14(typescript@5.6.3)
       xsai:
         specifier: workspace:^
         version: link:../packages/xsai
@@ -178,22 +175,22 @@ importers:
 
   packages/generate-object:
     dependencies:
-      '@typeschema/main':
-        specifier: 'catalog:'
-        version: 0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.2)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))
       '@xsai/generate-text':
         specifier: 'workspace:'
         version: link:../generate-text
+      xsschema:
+        specifier: 'workspace:'
+        version: link:../xsschema
     devDependencies:
-      '@gcornut/valibot-json-schema':
+      '@valibot/to-json-schema':
         specifier: 'catalog:'
-        version: 0.42.0(esbuild@0.24.2)(typescript@5.6.3)
+        version: 1.0.0-beta.5(valibot@1.0.0-beta.14(typescript@5.6.3))
       '@xsai/providers':
         specifier: 'workspace:'
         version: link:../providers
       valibot:
         specifier: 'catalog:'
-        version: 0.42.1(typescript@5.6.3)
+        version: 1.0.0-beta.14(typescript@5.6.3)
 
   packages/generate-speech:
     dependencies:
@@ -254,16 +251,16 @@ importers:
 
   packages/stream-object:
     dependencies:
-      '@typeschema/main':
-        specifier: 'catalog:'
-        version: 0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.2)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../stream-text
+      xsschema:
+        specifier: 'workspace:'
+        version: link:../xsschema
     devDependencies:
-      '@gcornut/valibot-json-schema':
+      '@valibot/to-json-schema':
         specifier: 'catalog:'
-        version: 0.42.0(esbuild@0.24.2)(typescript@5.6.3)
+        version: 1.0.0-beta.5(valibot@1.0.0-beta.14(typescript@5.6.3))
       '@xsai/providers':
         specifier: 'workspace:'
         version: link:../providers
@@ -275,7 +272,7 @@ importers:
         version: 4.33.0
       valibot:
         specifier: 'catalog:'
-        version: 0.42.1(typescript@5.6.3)
+        version: 1.0.0-beta.14(typescript@5.6.3)
 
   packages/stream-text:
     dependencies:
@@ -292,16 +289,16 @@ importers:
 
   packages/tool:
     dependencies:
-      '@typeschema/main':
-        specifier: 'catalog:'
-        version: 0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.2)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
+      xsschema:
+        specifier: 'workspace:'
+        version: link:../xsschema
     devDependencies:
-      '@gcornut/valibot-json-schema':
+      '@valibot/to-json-schema':
         specifier: 'catalog:'
-        version: 0.42.0(esbuild@0.24.2)(typescript@5.6.3)
+        version: 1.0.0-beta.5(valibot@1.0.0-beta.14(typescript@5.6.3))
       '@xsai/generate-text':
         specifier: 'workspace:'
         version: link:../generate-text
@@ -310,7 +307,7 @@ importers:
         version: link:../providers
       valibot:
         specifier: 'catalog:'
-        version: 0.42.1(typescript@5.6.3)
+        version: 1.0.0-beta.14(typescript@5.6.3)
 
   packages/utils-chat:
     dependencies:
@@ -366,8 +363,8 @@ importers:
         specifier: ^7.0.15
         version: 7.0.15
       '@valibot/to-json-schema':
-        specifier: 1.0.0-beta.5
-        version: 1.0.0-beta.5(valibot@0.42.1(typescript@5.6.3))
+        specifier: 'catalog:'
+        version: 1.0.0-beta.5(valibot@1.0.0-beta.14(typescript@5.6.3))
       zod-to-json-schema:
         specifier: ^3.24.1
         version: 3.24.1(zod@3.24.1)
@@ -1533,10 +1530,6 @@ packages:
   '@formatjs/intl-localematcher@0.5.10':
     resolution: {integrity: sha512-af3qATX+m4Rnd9+wHcjJ4w2ijq+rAVP3CCinJQvFv1kgSu1W6jypUmvleJxcewdxmutM8dmIRZFxO/IQBZmP2Q==}
 
-  '@gcornut/valibot-json-schema@0.42.0':
-    resolution: {integrity: sha512-4Et4AN6wmqeA0PfU5Clkv/IS27wiefsWf6TemAZrb75uzkClYEFavim7SboeKwbll9Nbsn2Iv0LT/HS5H7orZg==}
-    hasBin: true
-
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
     engines: {node: '>=18.18.0'}
@@ -2602,87 +2595,6 @@ packages:
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
 
-  '@typeschema/core@0.14.0':
-    resolution: {integrity: sha512-Ia6PtZHcL3KqsAWXjMi5xIyZ7XMH4aSnOQes8mfMLx+wGFGtGRNlwe6Y7cYvX+WfNK67OL0/HSe9t8QDygV0/w==}
-    peerDependencies:
-      '@types/json-schema': ^7.0.15
-    peerDependenciesMeta:
-      '@types/json-schema':
-        optional: true
-
-  '@typeschema/main@0.14.1':
-    resolution: {integrity: sha512-ReYIFVmMawLn3rq6+fBhiDFH1LrolQd+kKcuglCgnMip20ou2h2YEuIcDoLJ1tQ/RQnBTPyfvs+BwEytW9YVDg==}
-    peerDependencies:
-      '@typeschema/arktype': 0.14.0
-      '@typeschema/class-validator': 0.3.0
-      '@typeschema/deepkit': 0.14.0
-      '@typeschema/effect': 0.14.0
-      '@typeschema/fastest-validator': 0.2.0
-      '@typeschema/function': 0.14.0
-      '@typeschema/io-ts': 0.14.0
-      '@typeschema/joi': 0.14.0
-      '@typeschema/json': 0.14.0
-      '@typeschema/ow': 0.14.0
-      '@typeschema/runtypes': 0.14.0
-      '@typeschema/superstruct': 0.14.0
-      '@typeschema/suretype': 0.2.0
-      '@typeschema/typebox': 0.14.0
-      '@typeschema/valibot': 0.14.0
-      '@typeschema/valita': 0.2.0
-      '@typeschema/vine': 0.2.0
-      '@typeschema/yup': 0.14.0
-      '@typeschema/zod': 0.14.0
-    peerDependenciesMeta:
-      '@typeschema/arktype':
-        optional: true
-      '@typeschema/class-validator':
-        optional: true
-      '@typeschema/deepkit':
-        optional: true
-      '@typeschema/effect':
-        optional: true
-      '@typeschema/fastest-validator':
-        optional: true
-      '@typeschema/function':
-        optional: true
-      '@typeschema/io-ts':
-        optional: true
-      '@typeschema/joi':
-        optional: true
-      '@typeschema/json':
-        optional: true
-      '@typeschema/ow':
-        optional: true
-      '@typeschema/runtypes':
-        optional: true
-      '@typeschema/superstruct':
-        optional: true
-      '@typeschema/suretype':
-        optional: true
-      '@typeschema/typebox':
-        optional: true
-      '@typeschema/valibot':
-        optional: true
-      '@typeschema/valita':
-        optional: true
-      '@typeschema/vine':
-        optional: true
-      '@typeschema/yup':
-        optional: true
-      '@typeschema/zod':
-        optional: true
-
-  '@typeschema/valibot@0.14.0':
-    resolution: {integrity: sha512-Q2HTTSfXoEgo+55Nx0iprlpGolXgDbnGss6avLlXNtjvTNx606VDnLkpSyA6u/MS2mOIUO7GVGdCF6LLbLcqlg==}
-    peerDependencies:
-      '@gcornut/valibot-json-schema': ^0.37.0
-      valibot: ^0.39.0
-    peerDependenciesMeta:
-      '@gcornut/valibot-json-schema':
-        optional: true
-      valibot:
-        optional: true
-
   '@typescript-eslint/eslint-plugin@8.22.0':
     resolution: {integrity: sha512-4Uta6REnz/xEJMvwf72wdUnC3rr4jAQf5jnTkeRQ9b6soxLxhDEbS/pfMPoJLDfFPNVRdryqWUIV/2GZzDJFZw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -3304,12 +3216,6 @@ packages:
 
   esast-util-from-js@2.0.1:
     resolution: {integrity: sha512-8Ja+rNJ0Lt56Pcf3TAmpBZjmx8ZcK5Ts4cAzIOjsjevg9oSXJnl6SUQ2EevU8tv3h6ZLWmoKL5H4fgWvdvfETw==}
-
-  esbuild-runner@2.2.2:
-    resolution: {integrity: sha512-fRFVXcmYVmSmtYm2mL8RlUASt2TDkGh3uRcvHFOKNr/T58VrfVeKD9uT9nlgxk96u0LS0ehS/GY7Da/bXWKkhw==}
-    hasBin: true
-    peerDependencies:
-      esbuild: '*'
 
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
@@ -5418,9 +5324,6 @@ packages:
   ts-morph@25.0.0:
     resolution: {integrity: sha512-ERPTUVO5qF8cEGJgAejGOsCVlbk8d0SDyiJsucKQT5XgqoZslv0Qml+gnui6Yy6o+uQqw5SestyW2HvlVtT/Sg==}
 
-  tslib@2.4.0:
-    resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
-
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -5568,8 +5471,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  valibot@0.42.1:
-    resolution: {integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==}
+  valibot@1.0.0-beta.14:
+    resolution: {integrity: sha512-tLyV2rE5QL6U29MFy3xt4AqMrn+/HErcp2ZThASnQvPMwfSozjV1uBGKIGiegtZIGjinJqn0SlBdannf18wENA==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -6897,16 +6800,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.2)(typescript@5.6.3)':
-    dependencies:
-      valibot: 0.42.1(typescript@5.6.3)
-    optionalDependencies:
-      '@types/json-schema': 7.0.15
-      esbuild-runner: 2.2.2(esbuild@0.24.2)
-    transitivePeerDependencies:
-      - esbuild
-      - typescript
-
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -7872,28 +7765,6 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@typeschema/core@0.14.0(@types/json-schema@7.0.15)':
-    optionalDependencies:
-      '@types/json-schema': 7.0.15
-
-  '@typeschema/main@0.14.1(@types/json-schema@7.0.15)(@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.2)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3)))':
-    dependencies:
-      '@typeschema/core': 0.14.0(@types/json-schema@7.0.15)
-    optionalDependencies:
-      '@typeschema/valibot': 0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.2)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3))
-    transitivePeerDependencies:
-      - '@types/json-schema'
-
-  '@typeschema/valibot@0.14.0(@gcornut/valibot-json-schema@0.42.0(esbuild@0.24.2)(typescript@5.6.3))(@types/json-schema@7.0.15)(valibot@0.42.1(typescript@5.6.3))':
-    dependencies:
-      '@typeschema/core': 0.14.0(@types/json-schema@7.0.15)
-    optionalDependencies:
-      '@gcornut/valibot-json-schema': 0.42.0(esbuild@0.24.2)(typescript@5.6.3)
-      valibot: 0.42.1(typescript@5.6.3)
-    transitivePeerDependencies:
-      - '@types/json-schema'
-    optional: true
-
   '@typescript-eslint/eslint-plugin@8.22.0(@typescript-eslint/parser@8.22.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.6.3))(eslint@9.19.0(jiti@2.4.2))(typescript@5.6.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.1
@@ -8017,9 +7888,9 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@valibot/to-json-schema@1.0.0-beta.5(valibot@0.42.1(typescript@5.6.3))':
+  '@valibot/to-json-schema@1.0.0-beta.5(valibot@1.0.0-beta.14(typescript@5.6.3))':
     dependencies:
-      valibot: 0.42.1(typescript@5.6.3)
+      valibot: 1.0.0-beta.14(typescript@5.6.3)
 
   '@vitest/eslint-plugin@1.1.25(@typescript-eslint/utils@8.22.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.6.3))(eslint@9.19.0(jiti@2.4.2))(typescript@5.6.3)(vitest@3.0.4(@types/debug@4.1.12)(@types/node@22.12.0)(lightningcss@1.29.1)(sass-embedded@1.81.0)(terser@5.36.0))':
     dependencies:
@@ -8657,13 +8528,6 @@ snapshots:
       acorn: 8.14.0
       esast-util-from-estree: 2.0.0
       vfile-message: 4.0.2
-
-  esbuild-runner@2.2.2(esbuild@0.24.2):
-    dependencies:
-      esbuild: 0.24.2
-      source-map-support: 0.5.21
-      tslib: 2.4.0
-    optional: true
 
   esbuild@0.21.5:
     optionalDependencies:
@@ -11383,9 +11247,6 @@ snapshots:
       '@ts-morph/common': 0.26.0
       code-block-writer: 13.0.3
 
-  tslib@2.4.0:
-    optional: true
-
   tslib@2.8.1: {}
 
   tsx@4.19.2:
@@ -11554,7 +11415,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  valibot@0.42.1(typescript@5.6.3):
+  valibot@1.0.0-beta.14(typescript@5.6.3):
     optionalDependencies:
       typescript: 5.6.3
 

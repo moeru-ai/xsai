@@ -2,6 +2,5 @@ packages:
   - docs
   - packages/*
 catalog:
-  '@gcornut/valibot-json-schema': ^0.42.0
-  '@typeschema/main': ^0.14.1
-  valibot: ^0.42.1
+  '@valibot/to-json-schema': ^1.0.0-beta.5
+  valibot: ^1.0.0-beta.14

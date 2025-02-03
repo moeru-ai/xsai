@@ -36,11 +36,11 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@typeschema/main": "catalog:",
-    "@xsai/stream-text": "workspace:"
+    "@xsai/stream-text": "workspace:",
+    "xsschema": "workspace:"
   },
   "devDependencies": {
-    "@gcornut/valibot-json-schema": "catalog:",
+    "@valibot/to-json-schema": "catalog:",
     "@xsai/providers": "workspace:",
     "best-effort-json-parser": "^1.1.2",
     "type-fest": "^4.33.0",
