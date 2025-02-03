@@ -1,0 +1,56 @@
+{
+  "name": "xsschema",
+  "type": "module",
+  "version": "0.0.31",
+  "private": true,
+  "description": "extra-small, Standard Schema-based alternative to typeschema.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/xsschema"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "standard-schema",
+    "typeschema"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pkgroll",
+    "build:watch": "pkgroll --watch"
+  },
+  "peerDependencies": {
+    "@valibot/to-json-schema": "1.0.0-beta.5",
+    "zod-to-json-schema": "^3.24.1"
+  },
+  "peerDependenciesMeta": {
+    "@valibot/to-json-schema": {
+      "optional": true
+    },
+    "zod-to-json-schema": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@standard-schema/spec": "^1.0.0"
+  },
+  "devDependencies": {
+    "@valibot/to-json-schema": "1.0.0-beta.5",
+    "zod-to-json-schema": "^3.24.1"
+  }
+}
