@@ -362,11 +362,10 @@ importers:
   packages/xsfetch: {}
 
   packages/xsschema:
-    dependencies:
+    devDependencies:
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
-    devDependencies:
       '@types/json-schema':
         specifier: ^7.0.15
         version: 7.0.15
