@@ -1,3 +1,5 @@
+import { sleep } from '../../utils-stream/src/_sleep'
+
 interface CreateFetchOptions {
   retry: number
   /** @internal */
@@ -21,6 +23,8 @@ export const createFetch = (userOptions: Partial<CreateFetchOptions>) => {
     const res = await fetch(input, init)
 
     if (!res.ok && options.retryStatusCodes.includes(res.status) && options.retry < options.retryCount) {
+      await sleep(options.retryDelay)
+
       return async () => xsfetch(input, init, {
         ...options,
         retryCount: options.retryCount + 1,
