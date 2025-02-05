@@ -35,5 +35,3 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
     .then(responseJSON<GenerateTranscriptionResult>)
     .then(({ text }) => ({ text: text.trim() }))
 }
-
-export default generateTranscription

@@ -29,5 +29,3 @@ export const generateSpeech = async (options: GenerateSpeechOptions): Promise<Ar
   })
     .then(responseCatch)
     .then(async res => res.arrayBuffer())
-
-export default generateSpeech

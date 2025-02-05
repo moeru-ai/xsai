@@ -177,5 +177,3 @@ export const generateText = async (options: GenerateTextOptions): Promise<Genera
 
   return result
 }
-
-export default generateText

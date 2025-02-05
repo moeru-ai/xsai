@@ -60,5 +60,3 @@ export const streamObject = async <T extends Schema>(options: StreamObjectOption
       usage,
     }
   })
-
-export default streamObject

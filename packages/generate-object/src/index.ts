@@ -44,5 +44,3 @@ export const generateObject = async <T extends Schema>(options: GenerateObjectOp
         usage,
       }
     })
-
-export default generateObject

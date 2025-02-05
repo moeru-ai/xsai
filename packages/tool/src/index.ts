@@ -36,5 +36,3 @@ export const tool = async <T extends Schema>(options: ToolOptions<T>): Promise<T
   },
   type: 'function',
 })
-
-export default tool

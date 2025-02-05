@@ -128,5 +128,3 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
   return { chunkStream, finishReason, textStream, usage }
 })
-
-export default streamText
