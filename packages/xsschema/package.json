@@ -2,7 +2,6 @@
   "name": "xsschema",
   "type": "module",
   "version": "0.0.31",
-  "private": true,
   "description": "extra-small, Standard Schema-based alternative to typeschema.",
   "author": "Moeru AI",
   "license": "MIT",
