@@ -5,9 +5,9 @@ import { chat } from '@xsai/shared-chat'
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
-  onStepFinish?: (step: StepResult) => Promise<void> | void
+  onStepFinish?: (step: GenerateTextStepResult) => Promise<void> | void
   /** @internal */
-  steps?: StepResult[]
+  steps?: GenerateTextStepResult[]
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
 }
@@ -29,30 +29,30 @@ export interface GenerateTextResponse {
 export interface GenerateTextResult {
   finishReason: FinishReason
   messages: Message[]
-  steps: StepResult[]
+  steps: GenerateTextStepResult[]
   text?: string
-  toolCalls: ToolCall[]
-  toolResults: ToolResult[]
+  toolCalls: GenerateTextToolCall[]
+  toolResults: GenerateTextToolResult[]
   usage: Usage
 }
 
-export interface StepResult {
+export interface GenerateTextStepResult {
   finishReason: FinishReason
   stepType: 'continue' | 'initial' | 'tool-result'
   text?: string
-  toolCalls: ToolCall[]
-  toolResults: ToolResult[]
+  toolCalls: GenerateTextToolCall[]
+  toolResults: GenerateTextToolResult[]
   usage: Usage
 }
 
-export interface ToolCall {
+export interface GenerateTextToolCall {
   args: string
   toolCallId: string
   toolCallType: 'function'
   toolName: string
 }
 
-export interface ToolResult {
+export interface GenerateTextToolResult {
   args: Record<string, unknown>
   result: string
   toolCallId: string
@@ -77,9 +77,9 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
     .then(async res => res.json() as Promise<GenerateTextResponse>)
     .then(async ({ choices, usage }) => {
       const messages: Message[] = options.messages
-      const steps: StepResult[] = options.steps ?? []
-      const toolCalls: ToolCall[] = []
-      const toolResults: ToolResult[] = []
+      const steps: GenerateTextStepResult[] = options.steps ?? []
+      const toolCalls: GenerateTextToolCall[] = []
+      const toolResults: GenerateTextToolResult[] = []
 
       const { finish_reason: finishReason, message } = choices[0]
 
@@ -93,7 +93,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
           : 'continue'
 
       if ((message.content !== undefined && message.content.length > 0) || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
-        const step: StepResult = {
+        const step: GenerateTextStepResult = {
           finishReason,
           stepType,
           text: message.content,
@@ -148,7 +148,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         })
       }
 
-      const step: StepResult = {
+      const step: GenerateTextStepResult = {
         finishReason,
         stepType,
         text: message.content,
