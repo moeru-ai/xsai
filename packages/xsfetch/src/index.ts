@@ -1,6 +1,6 @@
 import { sleep } from '../../utils-stream/src/_sleep'
 
-interface CreateFetchOptions {
+export interface CreateFetchOptions {
   retry: number
   /** @internal */
   retryCount: number
