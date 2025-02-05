@@ -14,20 +14,16 @@ describe('@xsai/generate-object', () => {
           role: 'system',
         },
         {
-          content: 'Generate a sous-vide steak recipe.',
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
           role: 'user',
         },
       ],
       schema: v.object({
-        recipe: v.object({
-          ingredients: v.array(v.object({ amount: v.string(), name: v.string() })),
-          name: v.string(),
-          steps: v.array(v.string()),
-        }),
+        answer: v.string(),
       }),
       seed: 39,
     })
 
-    expect(object.recipe).toMatchSnapshot()
+    expect(object.answer).toBe('YES')
   }, 60000)
 })
