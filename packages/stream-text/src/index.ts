@@ -1,12 +1,9 @@
 import type { ChatOptions, FinishReason, Usage } from '@xsai/shared-chat'
 
-import {
-  chat,
-
-} from '@xsai/shared-chat'
+import { chat } from '@xsai/shared-chat'
 
 // TODO: improve chunk type
-export interface ChunkResult {
+export interface StreamTextChunkResult {
   choices: {
     delta: {
       content: string
@@ -24,7 +21,7 @@ export interface ChunkResult {
 }
 
 export interface StreamTextOptions extends ChatOptions {
-  onChunk?: (chunk: ChunkResult) => Promise<void> | void
+  onChunk?: (chunk: StreamTextChunkResult) => Promise<void> | void
   /** if you want to disable stream, use `@xsai/generate-{text,object}` */
   stream?: never
   streamOptions?: {
@@ -38,7 +35,7 @@ export interface StreamTextOptions extends ChatOptions {
 }
 
 export interface StreamTextResult {
-  chunkStream: ReadableStream<ChunkResult>
+  chunkStream: ReadableStream<StreamTextChunkResult>
   finishReason?: FinishReason
   textStream: ReadableStream<string>
   usage?: Usage
@@ -65,7 +62,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
    * @param controller The transform stream controller
    * @returns true if processing should stop (e.g. [DONE] or error)
    */
-  const processLine = async (line: string, controller: TransformStreamDefaultController<ChunkResult>) => {
+  const processLine = async (line: string, controller: TransformStreamDefaultController<StreamTextChunkResult>) => {
   // Skip empty lines
     if (!line || !line.startsWith(chunkHeaderPrefix))
       return
@@ -88,7 +85,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     }
 
     // Process normal chunk
-    const chunk = JSON.parse(data) as ChunkResult
+    const chunk = JSON.parse(data) as StreamTextChunkResult
     controller.enqueue(chunk)
 
     if (options.onChunk)
@@ -106,7 +103,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
   // null body handled by import('@xsai/shared-chat').chat()
   const rawChunkStream = res.body!.pipeThrough(new TransformStream({
-    transform: async (chunk, controller: TransformStreamDefaultController<ChunkResult>) => {
+    transform: async (chunk, controller: TransformStreamDefaultController<StreamTextChunkResult>) => {
       const text = decoder.decode(chunk, { stream: true })
       buffer += text
       const lines = buffer.split('\n')
