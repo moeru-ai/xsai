@@ -13,6 +13,8 @@ declare global {
   }
 }
 
+type ExtractReadableStream<T> = T extends ReadableStream<infer U> ? U : never
+
 describe('@xsai/stream-object', () => {
   it('basic', async () => {
     const { partialObjectStream } = await streamObject({
@@ -23,22 +25,23 @@ describe('@xsai/stream-object', () => {
           role: 'system',
         },
         {
-          content: 'Generate a sous-vide steak recipe.',
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
           role: 'user',
         },
       ],
       schema: v.object({
-        recipe: v.object({
-          ingredients: v.array(v.object({ amount: v.string(), name: v.string() })),
-          name: v.string(),
-          steps: v.array(v.string()),
-        }),
+        answer: v.string(),
       }),
       seed: 39,
     })
 
+    const objects: ExtractReadableStream<typeof partialObjectStream>[] = []
+
     for await (const partialObject of partialObjectStream) {
+      objects.push(partialObject)
       expect(partialObject).toMatchSnapshot()
     }
+
+    expect(objects.at(-1)!.answer).toBe('YES')
   }, 60000)
 })
