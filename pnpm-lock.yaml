@@ -352,6 +352,12 @@ importers:
       '@xsai/tool':
         specifier: 'workspace:'
         version: link:../tool
+      '@xsai/utils-chat':
+        specifier: 'workspace:'
+        version: link:../utils-chat
+      '@xsai/utils-stream':
+        specifier: 'workspace:'
+        version: link:../utils-stream
 
   packages/xsfetch: {}
 
