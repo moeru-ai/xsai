@@ -1,9 +1,9 @@
-import type { InferIn, Schema } from '@typeschema/main'
+import type { InferIn, Schema } from 'xsschema'
 
-import { toJSONSchema } from '@typeschema/main'
 import { clean } from '@xsai/shared'
+import { toJSONSchema } from 'xsschema'
 
-export interface ToolOptions<T extends Schema> {
+export interface ToolOptions<T extends Schema = Schema> {
   description?: string
   execute: (input: InferIn<T>) => Promise<string> | string
   name: string
@@ -11,8 +11,8 @@ export interface ToolOptions<T extends Schema> {
   strict?: boolean
 }
 
-export interface ToolResult<T extends Schema> {
-  execute: (input: InferIn<T>) => Promise<string> | string
+export interface ToolResult {
+  execute: (input: unknown) => Promise<string> | string
   function: {
     description?: string
     name: string
@@ -22,7 +22,7 @@ export interface ToolResult<T extends Schema> {
   type: 'function'
 }
 
-export const tool = async <T extends Schema>(options: ToolOptions<T>): Promise<ToolResult<T>> => ({
+export const tool = async <T extends Schema>(options: ToolOptions<T>): Promise<ToolResult> => ({
   execute: options.execute,
   function: {
     description: options.description,

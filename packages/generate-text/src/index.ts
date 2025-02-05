@@ -92,7 +92,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
           ? 'tool-result'
           : 'continue'
 
-      if (message.content !== undefined || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
+      if ((message.content !== undefined && message.content.length > 0) || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
         const step: StepResult = {
           finishReason,
           stepType,

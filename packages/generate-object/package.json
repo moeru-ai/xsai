@@ -36,11 +36,11 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@typeschema/main": "catalog:",
-    "@xsai/generate-text": "workspace:"
+    "@xsai/generate-text": "workspace:",
+    "xsschema": "workspace:"
   },
   "devDependencies": {
-    "@gcornut/valibot-json-schema": "catalog:",
+    "@valibot/to-json-schema": "catalog:",
     "@xsai/providers": "workspace:",
     "valibot": "catalog:"
   }

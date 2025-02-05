@@ -10,7 +10,6 @@ words:
   - elevenlabs
   - eslintcache
   - fumadocs
-  - gcornut
   - importantimport
   - koemotion
   - masknet
@@ -30,5 +29,6 @@ words:
   - valibot
   - vitest
   - xsai
+  - xsschema
 ignoreWords: []
 import: []
