@@ -1,0 +1,35 @@
+{
+  "name": "xsfetch",
+  "type": "module",
+  "version": "0.0.31",
+  "description": "extra-small Fetch API with auto retry.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/xsfetch"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "fetch"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pkgroll",
+    "build:watch": "pkgroll --watch"
+  }
+}

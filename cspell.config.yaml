@@ -1,4 +1,4 @@
-version: '0.2'
+version: "0.2"
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -29,6 +29,7 @@ words:
   - valibot
   - vitest
   - xsai
+  - xsfetch
   - xsschema
 ignoreWords: []
 import: []

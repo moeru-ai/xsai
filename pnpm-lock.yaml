@@ -353,6 +353,8 @@ importers:
         specifier: 'workspace:'
         version: link:../tool
 
+  packages/xsfetch: {}
+
   packages/xsschema:
     dependencies:
       '@standard-schema/spec':
