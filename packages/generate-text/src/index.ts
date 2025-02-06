@@ -76,8 +76,8 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
   })
     .then(async res => res.json() as Promise<GenerateTextResponse>)
     .then(async ({ choices, usage }) => {
-      const messages: Message[] = options.messages
-      const steps: GenerateTextStepResult[] = options.steps ?? []
+      const messages: Message[] = structuredClone(options.messages)
+      const steps: GenerateTextStepResult[] = options.steps ? structuredClone(options.steps) : []
       const toolCalls: GenerateTextToolCall[] = []
       const toolResults: GenerateTextToolResult[] = []
 
