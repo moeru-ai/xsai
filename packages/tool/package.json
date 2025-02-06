@@ -22,9 +22,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./generate-text": {
-      "types": "./dist/generate-text.d.ts"
     }
   },
   "main": "./dist/index.js",
@@ -48,6 +45,7 @@
   },
   "dependencies": {
     "@xsai/shared": "workspace:",
+    "@xsai/shared-chat": "workspace:",
     "xsschema": "workspace:"
   },
   "devDependencies": {

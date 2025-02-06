@@ -11,7 +11,7 @@ export interface Tool {
   type: 'function'
 }
 
-interface ToolExecuteOptions {
+export interface ToolExecuteOptions {
   abortSignal?: AbortSignal
   messages: Message[]
   toolCallId: string
