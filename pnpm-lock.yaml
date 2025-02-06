@@ -292,6 +292,9 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
+      '@xsai/shared-chat':
+        specifier: 'workspace:'
+        version: link:../shared-chat
       xsschema:
         specifier: 'workspace:'
         version: link:../xsschema

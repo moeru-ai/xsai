@@ -1,6 +1,3 @@
-// @xsai/tool extend types
-import '@xsai/tool/generate-text'
-
 // @xsai/providers
 export * as providers from './providers'
 
