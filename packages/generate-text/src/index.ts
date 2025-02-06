@@ -10,6 +10,7 @@ export interface GenerateTextOptions extends ChatOptions {
   steps?: GenerateTextStepResult[]
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
+  tools?: Tool[]
 }
 
 export interface GenerateTextResponse {
@@ -123,7 +124,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         id: toolCallId,
         type: toolCallType,
       } of message.tool_calls) {
-        const tool = (options.tools as Tool[]).find(tool => tool.function.name === toolName)!
+        const tool = options.tools!.find(tool => tool.function.name === toolName)!
         const parsedArgs = JSON.parse(toolArgs) as Record<string, unknown>
         const result = await tool.execute(parsedArgs, { abortSignal: options.abortSignal, messages, toolCallId })
 
