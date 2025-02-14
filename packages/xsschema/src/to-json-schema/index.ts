@@ -4,11 +4,9 @@ import type { JSONSchema7 } from 'json-schema'
 export const toJsonSchema = async (schema: StandardSchemaV1): Promise<JSONSchema7> => {
   switch (schema['~standard'].vendor) {
     case 'valibot':
-      // eslint-disable-next-line ts/no-unsafe-argument
-      return (await ((await import('./valibot')).toJsonSchema()))(schema as any)
+      return (await ((await import('./valibot')).toJsonSchema()))(schema)
     case 'zod':
-      // eslint-disable-next-line ts/no-unsafe-argument, @masknet/type-prefer-return-type-annotation
-      return (await ((await import('./zod')).toJsonSchema()))(schema as any) as JSONSchema7
+      return (await ((await import('./zod')).toJsonSchema()))(schema)
     default:
       throw new Error(`xsschema: Unsupported schema vendor ${schema['~standard'].vendor}`)
   }
