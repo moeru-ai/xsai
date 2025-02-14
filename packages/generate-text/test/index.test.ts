@@ -1,13 +1,13 @@
 import { ollama } from '@xsai/providers'
 import { describe, expect, it } from 'vitest'
 
-import type { StepResult } from '../src'
+import type { GenerateTextStepResult } from '../src'
 
 import { generateText } from '../src'
 
 describe('@xsai/generate-text', () => {
   it('basic', async () => {
-    let step: StepResult | undefined
+    let step: GenerateTextStepResult | undefined
 
     const { finishReason, steps, text, toolCalls, toolResults } = await generateText({
       ...ollama.chat('llama3.2'),
@@ -34,6 +34,4 @@ describe('@xsai/generate-text', () => {
 
     expect(steps[0]).toStrictEqual(step)
   })
-
-  // TODO: error handling
 })

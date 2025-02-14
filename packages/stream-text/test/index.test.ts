@@ -2,7 +2,7 @@ import { ollama } from '@xsai/providers'
 import { clean } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
-import type { ChunkResult } from '../src'
+import type { StreamTextChunkResult } from '../src'
 
 import { streamText } from '../src'
 
@@ -60,7 +60,7 @@ describe('@xsai/stream-text', () => {
       onChunk: () => { onChunkCount++ },
     })
 
-    const chunk: ChunkResult[] = []
+    const chunk: StreamTextChunkResult[] = []
     const text: string[] = []
 
     for await (const chunkPart of chunkStream) {
