@@ -8,6 +8,6 @@ export const toJsonSchema = async (schema: StandardSchemaV1): Promise<JSONSchema
     case 'zod':
       return (await ((await import('./zod')).toJsonSchema()))(schema)
     default:
-      throw new Error(`xsschema: Unsupported schema vendor ${schema['~standard'].vendor}`)
+      throw new Error(`xsschema: Unsupported schema vendor "${schema['~standard'].vendor}"`)
   }
 }
