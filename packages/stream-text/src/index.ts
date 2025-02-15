@@ -2,7 +2,7 @@ import type { ChatOptions, Tool } from '@xsai/shared-chat'
 
 import { chat } from '@xsai/shared-chat'
 
-import type { ChoiceState, Step, StreamTextChunkResult } from './const'
+import type { StreamTextChoice, StreamTextChoiceState, StreamTextChunkResult, StreamTextStep, StreamTextToolCall } from './const'
 
 import { parseChunk } from './helper'
 
@@ -20,19 +20,19 @@ export interface StreamTextOptions extends ChatOptions {
    * Callback function that is called with each chunk of the stream.
    * @param chunk - The current chunk of the stream.
    */
-  onChunk?: (chunk: StreamTextChunkResult) => Promise<void> | void
+  onChunk?: (chunk: StreamTextChunkResult) => Promise<unknown> | unknown
 
   /**
    * Callback function that is called when the stream is finished.
    * @param result - The final result of the stream.
    */
-  onFinish?: (steps: Step[]) => Promise<void> | void
+  onFinish?: (steps: StreamTextStep[]) => Promise<unknown> | unknown
 
   /**
    * Callback function that is called when a step in the stream is finished.
    * @param step - The result of the finished step.
    */
-  onStepFinish?: (step: Step) => Promise<void> | void
+  onStepFinish?: (step: StreamTextStep) => Promise<unknown> | unknown
 
   /**
    * If you want to disable stream, use `@xsai/generate-{text,object}`.
@@ -59,14 +59,14 @@ export interface StreamTextOptions extends ChatOptions {
 
 export interface StreamTextResult {
   chunkStream: ReadableStream<StreamTextChunkResult>
-  stepStream: ReadableStream<Step>
+  stepStream: ReadableStream<StreamTextStep>
   textStream: ReadableStream<string>
 }
 
-export const streamText = (options: StreamTextOptions): StreamTextResult => {
+export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
   // output
   let chunkCtrl: ReadableStreamDefaultController<StreamTextChunkResult> | undefined
-  let stepCtrl: ReadableStreamDefaultController<Step> | undefined
+  let stepCtrl: ReadableStreamDefaultController<StreamTextStep> | undefined
   let textCtrl: ReadableStreamDefaultController<string> | undefined
 
   // constraints
@@ -76,19 +76,19 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
   const decoder = new TextDecoder()
 
   // state
-  const steps: Step[] = []
+  const steps: StreamTextStep[] = []
 
-  void (async () => {
+  const main = async () => {
     const stepOne = async (options: StreamTextOptions): Promise<(() => Promise<void>) | void> => {
-      const step: Step = {
+      const step: StreamTextStep = {
         choices: [],
         messages: structuredClone(options.messages),
       }
-      const choiceState: Record<string, ChoiceState> = {}
+      const choiceState: Record<string, StreamTextChoiceState> = {}
       let buffer = ''
       let shouldOutputText: boolean = true
 
-      const endToolCall = (state: ChoiceState, id: string) => {
+      const endToolCall = (state: StreamTextChoiceState, id: string) => {
         if (state.endedToolCallIDs.has(id)) {
           return
         }
@@ -135,7 +135,6 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
         },
       })).pipeTo(new WritableStream({
         write: async (chunk) => {
-          // eslint-disable-next-line ts/no-floating-promises
           options.onChunk?.(chunk)
 
           const choice = chunk.choices[0]
@@ -146,12 +145,10 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
           }
 
           const { delta, finish_reason, index, ...rest } = choice
-          const choiceSnapshot: Step.Choice = step.choices[index] ??= {
+          const choiceSnapshot: StreamTextChoice = step.choices[index] ??= {
             finish_reason,
             index,
             message: {
-              content: null,
-              refusal: null,
               role: 'assistant',
             },
           }
@@ -193,7 +190,7 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
                 arguments: '',
                 name: fn.name,
               },
-            } as Step.Choice.Message.ToolCall
+            } as StreamTextToolCall
             toolCall.id = id
             toolCall.type = type
             toolCall.function.arguments += fn.arguments
@@ -274,7 +271,7 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
 
       steps.push(step)
       stepCtrl?.enqueue(step)
-      // eslint-disable-next-line ts/no-floating-promises
+
       options.onStepFinish?.(step)
 
       if (shouldOutputText) {
@@ -292,14 +289,15 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
       void 0
     }
 
-    // eslint-disable-next-line ts/no-floating-promises
     options.onFinish?.(steps)
     chunkCtrl?.close()
     stepCtrl?.close()
     textCtrl?.close()
-  })()
+  }
 
-  return new Proxy(new Object(null) as StreamTextResult, {
+  void main()
+
+  return Promise.resolve(new Proxy(new Object(null) as StreamTextResult, {
     get: (_, prop) => {
       if (prop === 'chunkStream') {
         return new ReadableStream<StreamTextChunkResult>({
@@ -309,7 +307,7 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
         })
       }
       if (prop === 'stepStream') {
-        return new ReadableStream<Step>({
+        return new ReadableStream<StreamTextStep>({
           start(controller) {
             stepCtrl = controller
           },
@@ -323,5 +321,5 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
         })
       }
     },
-  })
+  }))
 }

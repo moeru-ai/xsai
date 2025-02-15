@@ -19,7 +19,7 @@ declare global {
 
 describe('@xsai/stream-text', () => {
   it('basic', async () => {
-    const { textStream } = streamText({
+    const { textStream } = await streamText({
       ...ollama.chat('llama3.2'),
       messages: [
         {
@@ -47,7 +47,7 @@ describe('@xsai/stream-text', () => {
     let onChunkCount = 0
     let chunkCount = 0
 
-    const { chunkStream, textStream } = streamText({
+    const { chunkStream, textStream } = await streamText({
       ...ollama.chat('llama3.2'),
       messages: [
         {
@@ -106,7 +106,7 @@ describe('@xsai/stream-text', () => {
     })
 
     it('stream chunk', async () => {
-      const { chunkStream } = streamText({
+      const { chunkStream } = await streamText({
         ...ollama.chat('mistral-nemo'),
         maxSteps: 2,
         messages: [
@@ -133,7 +133,7 @@ describe('@xsai/stream-text', () => {
     }, 20000)
 
     it('stream step', async () => {
-      const { stepStream } = streamText({
+      const { stepStream } = await streamText({
         ...ollama.chat('mistral-nemo'),
         maxSteps: 2,
         messages: [
@@ -160,7 +160,7 @@ describe('@xsai/stream-text', () => {
     }, 20000)
 
     it('stream text', async () => {
-      const { textStream } = streamText({
+      const { textStream } = await streamText({
         ...ollama.chat('mistral-nemo'),
         maxSteps: 2,
         messages: [
@@ -189,7 +189,7 @@ describe('@xsai/stream-text', () => {
     it('onChunk', async () => {
       const chunks = []
 
-      const { textStream } = streamText({
+      const { textStream } = await streamText({
         ...ollama.chat('mistral-nemo'),
         maxSteps: 2,
         messages: [
@@ -210,9 +210,7 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
-      for await (const _ of textStream) {
-
-      }
+      for await (const _ of textStream) { ; }
 
       expect(chunks.length).greaterThan(0)
     }, 20000)
@@ -220,7 +218,7 @@ describe('@xsai/stream-text', () => {
     it('onStepFinish', async () => {
       const steps = []
 
-      const { textStream } = streamText({
+      const { textStream } = await streamText({
         ...ollama.chat('mistral-nemo'),
         maxSteps: 2,
         messages: [
@@ -241,9 +239,7 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
-      for await (const _ of textStream) {
-
-      }
+      for await (const _ of textStream) { ; }
 
       expect(steps.length).greaterThan(0)
     }, 20000)
@@ -251,7 +247,7 @@ describe('@xsai/stream-text', () => {
     it('onFinsh', async () => {
       let steps = []
 
-      const { textStream } = streamText({
+      const { textStream } = await streamText({
         ...ollama.chat('mistral-nemo'),
         maxSteps: 2,
         messages: [
@@ -272,9 +268,7 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
-      for await (const _ of textStream) {
-
-      }
+      for await (const _ of textStream) { ; }
 
       expect(steps.length).greaterThan(0)
     }, 20000)
