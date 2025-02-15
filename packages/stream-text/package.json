@@ -40,6 +40,8 @@
   },
   "devDependencies": {
     "@xsai/providers": "workspace:",
-    "@xsai/shared": "workspace:"
+    "@xsai/shared": "workspace:",
+    "@xsai/tool": "workspace:",
+    "valibot": "catalog:"
   }
 }
