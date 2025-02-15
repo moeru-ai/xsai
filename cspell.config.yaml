@@ -1,4 +1,4 @@
-version: '0.2'
+version: "0.2"
 ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
@@ -20,6 +20,7 @@ words:
   - nemotron
   - nomic-embed-text
   - ollama
+  - openrouter
   - pkgroll
   - qwen
   - sonarjs
