@@ -141,6 +141,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
         const choice = chunk.choices[0]
 
+        // not likely to happen, but just in case
+        // eslint-disable-next-line ts/strict-boolean-expressions
+        if (!choice)
+          throw new XSAIError('no choice found')
+
         // mark this time as non-text output if is has toolcalls
         if (choice.delta.tool_calls) {
           shouldOutputText = false
@@ -231,8 +236,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     )
 
     shouldOutputText && step.messages.push({
-      content: step.choices[0].message.content ?? '',
-      refusal: step.choices[0].message.refusal,
+      content: step.choices[0]?.message.content ?? '',
+      refusal: step.choices[0]?.message.refusal,
       role: 'assistant',
     } satisfies StreamTextMessage)
 
