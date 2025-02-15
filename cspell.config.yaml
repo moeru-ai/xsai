@@ -20,6 +20,7 @@ words:
   - nemotron
   - nomic-embed-text
   - ollama
+  - openrouter
   - pkgroll
   - qwen
   - sonarjs

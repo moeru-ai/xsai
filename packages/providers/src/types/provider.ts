@@ -1,8 +1,11 @@
 import type { CommonRequestOptions } from '@xsai/shared'
 
-export interface ChatProvider<T extends string = string> {
+export interface ChatProvider<T extends string = string, T2 = undefined> {
+  chat: T2 extends undefined
   // eslint-disable-next-line sonarjs/no-useless-intersection
-  chat: (model: (string & {}) | T) => CommonRequestOptions
+    ? (model: (string & {}) | T) => CommonRequestOptions
+  // eslint-disable-next-line sonarjs/no-useless-intersection
+    : (model: (string & {}) | T, extraOptions?: T2) => CommonRequestOptions & T2
 }
 
 export interface EmbedProvider<T extends string = string> {
