@@ -198,7 +198,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         if (!choice)
           throw new XSAIError('no choice found')
 
-        // mark this time as non-text output if is has toolcalls
+        // mark this time as non-text output if is has tool calls
         if (choice.delta.tool_calls) {
           shouldOutputText = false
         }
@@ -257,7 +257,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
 
         /**
-         * check if toolcall is ended
+         * check if tool call is ended
          */
         const state = choiceState[index] ??= {
           calledToolCallIDs: new Set(),
@@ -269,13 +269,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
         // eslint-disable-next-line ts/strict-boolean-expressions
         if (finish_reason) {
-          // end choice will end the current toolcall too
+          // end choice will end the current tool call too
           if (state.currentToolID !== null) {
             endToolCall(state, state.currentToolID)
           }
         }
         for (const toolCall of delta.tool_calls || []) {
-          // new toolcall
+          // new tool call
           if (state.currentToolID !== null && state.currentToolID !== toolCall.id) {
             endToolCall(state, state.currentToolID)
           }
@@ -293,7 +293,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       role: 'assistant',
     } satisfies StreamTextMessage)
 
-    // make actual toolcall and wait
+    // make actual tool call and wait
     await Promise.allSettled(step.choices.map(async (choice) => {
       const state = choiceState[choice.index]
 
