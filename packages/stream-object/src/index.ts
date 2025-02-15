@@ -32,7 +32,7 @@ export const streamObject = async <T extends Schema>(options: StreamObjectOption
     schema: undefined,
     schemaDescription: undefined,
     schemaName: undefined,
-  }).then(({ chunkStream, finishReason, textStream: rawTextStream, usage }) => {
+  }).then(({ chunkStream, stepStream, textStream: rawTextStream }) => {
     const [textStream, rawPartialObjectStream] = rawTextStream.tee()
 
     let partialObjectData = ''
@@ -54,9 +54,8 @@ export const streamObject = async <T extends Schema>(options: StreamObjectOption
 
     return {
       chunkStream,
-      finishReason,
       partialObjectStream,
+      stepStream,
       textStream,
-      usage,
     }
   })
