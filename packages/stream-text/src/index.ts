@@ -232,7 +232,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       content: step.choices[0].message.content ?? '',
       refusal: step.choices[0].message.refusal,
       role: 'assistant',
-    })
+    } satisfies AssistantMessage)
 
     // make actual toolcall and wait
     await Promise.allSettled(step.choices.map(async (choice) => {
