@@ -208,6 +208,7 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
+      // eslint-disable-next-line sonarjs/no-unused-vars
       for await (const _ of textStream) { ; }
 
       expect(chunks.length).greaterThan(0)
@@ -235,12 +236,13 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
+      // eslint-disable-next-line sonarjs/no-unused-vars
       for await (const _ of textStream) { ; }
 
       expect(steps.length).greaterThan(0)
     }, 20000)
 
-    it('onFinsh', async () => {
+    it('onFinish', async () => {
       let steps = []
 
       const { textStream } = await streamText({
@@ -262,6 +264,7 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
+      // eslint-disable-next-line sonarjs/no-unused-vars
       for await (const _ of textStream) { ; }
 
       expect(steps.length).greaterThan(0)
