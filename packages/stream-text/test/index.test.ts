@@ -202,9 +202,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
-        onChunk: (chunk) => {
-          chunks.push(chunk)
-        },
+        onChunk: chunk => chunks.push(chunk),
         seed: 42,
         toolChoice: 'required',
         tools: [weather],
@@ -231,9 +229,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
-        onStepFinish: (step) => {
-          steps.push(step)
-        },
+        onStepFinish: step => steps.push(step),
         seed: 42,
         toolChoice: 'required',
         tools: [weather],
@@ -260,9 +256,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
-        onFinish: (s) => {
-          steps = s
-        },
+        onFinish: s => (steps = s),
         seed: 42,
         toolChoice: 'required',
         tools: [weather],
