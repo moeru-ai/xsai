@@ -283,7 +283,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     return async () => stepOne({ ...options, messages: step.messages })
   }
 
-  const main = async () => {
+  const invokeFunctionCalls = async () => {
     for (
       let i = 1, ret = await stepOne(options);
       typeof ret === 'function' && i < maxSteps;
