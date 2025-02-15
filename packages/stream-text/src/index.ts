@@ -259,7 +259,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
               content: ret,
               role: 'tool',
               tool_call_id: id,
-            })
+            } satisfies ToolMessage)
           }
           catch (error) {
             state.toolCallErrors[id] = error as Error
