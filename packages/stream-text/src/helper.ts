@@ -1,4 +1,4 @@
-import type { StreamTextChunkResult } from './const'
+import type { StreamTextChunkResult } from '.'
 
 /** @internal */
 // eslint-disable-next-line @masknet/string-no-data-url

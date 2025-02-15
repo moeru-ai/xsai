@@ -1,13 +1,28 @@
-import type { ChatOptions, Tool, ToolMessage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, FinishReason, Message, Tool, ToolCall, ToolMessage, Usage } from '@xsai/shared-chat'
 
 import { XSAIError } from '@xsai/shared'
 import { chat } from '@xsai/shared-chat'
 
-import type { StreamTextChoice, StreamTextChoiceState, StreamTextChunkResult, StreamTextMessage, StreamTextStep, StreamTextToolCall } from './const'
-
 import { parseChunk } from './helper'
 
-export * from './const'
+export interface StreamTextChunkResult {
+  choices: {
+    delta: {
+      content?: string
+      refusal?: string
+      role: 'assistant'
+      tool_calls?: ToolCall[]
+    }
+    finish_reason?: FinishReason
+    index: number
+  }[]
+  created: number
+  id: string
+  model: string
+  object: 'chat.completion.chunk'
+  system_fingerprint: string
+  usage?: Usage
+}
 
 /**
  * Options for configuring the StreamText functionality.
@@ -64,7 +79,44 @@ export interface StreamTextResult {
   textStream: ReadableStream<string>
 }
 
+export interface StreamTextStep {
+  choices: StreamTextChoice[]
+  messages: Message[]
+  usage?: Usage
+}
+
+/** @internal */
 type RecursivePromise<T> = Promise<(() => RecursivePromise<T>) | T>
+
+/** @internal */
+interface StreamTextChoice {
+  finish_reason?: FinishReason | null
+  index: number
+  message: StreamTextMessage
+}
+
+/** @internal */
+interface StreamTextChoiceState {
+  calledToolCallIDs: Set<string>
+  currentToolID: null | string
+  endedToolCallIDs: Set<string>
+  index: number
+  toolCallErrors: { [id: string]: Error }
+  toolCallResults: { [id: string]: string }
+}
+
+/** @internal */
+interface StreamTextMessage extends Omit<AssistantMessage, 'tool_calls'> {
+  content?: string
+  tool_calls?: { [id: string]: StreamTextToolCall }
+}
+
+/** @internal */
+interface StreamTextToolCall extends ToolCall {
+  function: ToolCall['function'] & {
+    parsed_arguments: Record<string, unknown>
+  }
+}
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
   // output
