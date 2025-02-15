@@ -1,8 +1,5 @@
 import type { AssistantMessage, FinishReason, Message, ToolCall, Usage } from '@xsai/shared-chat'
 
-// eslint-disable-next-line @masknet/string-no-data-url
-export const chunkHeaderPrefix = 'data:'
-
 export interface StreamTextChoice {
   finish_reason?: FinishReason | null
   index: number
