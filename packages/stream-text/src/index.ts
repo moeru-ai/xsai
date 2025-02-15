@@ -1,8 +1,9 @@
-import type { ChatOptions, Tool } from '@xsai/shared-chat'
+import type { ChatOptions, Tool, ToolMessage } from '@xsai/shared-chat'
 
+import { XSAIError } from '@xsai/shared'
 import { chat } from '@xsai/shared-chat'
 
-import type { StreamTextChoice, StreamTextChoiceState, StreamTextChunkResult, StreamTextStep, StreamTextToolCall } from './const'
+import type { StreamTextChoice, StreamTextChoiceState, StreamTextChunkResult, StreamTextMessage, StreamTextStep, StreamTextToolCall } from './const'
 
 import { parseChunk } from './helper'
 
@@ -158,11 +159,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           choiceSnapshot.finish_reason = finish_reason
 
           if (finish_reason === 'length') {
-            throw new Error('length exceeded')
+            throw new XSAIError('length exceeded')
           }
 
           if (finish_reason === 'content_filter') {
-            throw new Error('content filter')
+            throw new XSAIError('content filter')
           }
         }
 
@@ -190,10 +191,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             function: {
               arguments: '',
               name: fn.name,
+              parsed_arguments: {},
             },
+            id,
+            type,
           } satisfies StreamTextToolCall
-          toolCall.id = id
-          toolCall.type = type
           toolCall.function.arguments += fn.arguments
         }
 
@@ -232,7 +234,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       content: step.choices[0].message.content ?? '',
       refusal: step.choices[0].message.refusal,
       role: 'assistant',
-    } satisfies AssistantMessage)
+    } satisfies StreamTextMessage)
 
     // make actual toolcall and wait
     await Promise.allSettled(step.choices.map(async (choice) => {
@@ -266,7 +268,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           }
         }
         else {
-          state.toolCallErrors[id] = new Error(`tool ${toolCall.function.name} not found`)
+          state.toolCallErrors[id] = new XSAIError(`tool ${toolCall.function.name} not found`)
         }
       }))
     }))
@@ -298,7 +300,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     textCtrl?.close()
   }
 
-  void main()
+  void invokeFunctionCalls()
 
   return Promise.resolve(new Proxy(new Object(null) as StreamTextResult, {
     get: (_, prop) => {
