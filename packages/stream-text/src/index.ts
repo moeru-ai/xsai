@@ -191,7 +191,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
               arguments: '',
               name: fn.name,
             },
-          } as StreamTextToolCall
+          } satisfies StreamTextToolCall
           toolCall.id = id
           toolCall.type = type
           toolCall.function.arguments += fn.arguments
