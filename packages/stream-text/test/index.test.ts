@@ -85,6 +85,30 @@ describe('@xsai/stream-text', () => {
     expect(onChunkCount).toMatchSnapshot(chunkCount)
   })
 
+  it('long text', async () => {
+    const { textStream } = await streamText({
+      ...ollama.chat('llama3.2'),
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, please reply some dummy long text.',
+          role: 'user',
+        },
+      ],
+    })
+
+    const result: string[] = []
+
+    for await (const textPart of textStream) {
+      result.push(textPart)
+    }
+
+    expect(result.length).greaterThan(1)
+  })
+
   describe('with tool', () => {
     let weather: Awaited<ReturnType<typeof tool>>
 
