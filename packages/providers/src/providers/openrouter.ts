@@ -1,3 +1,5 @@
+import { objCamelToSnake } from '@xsai/shared'
+
 import type { ChatProvider, ModelProvider, ProviderOptions, ProviderResult } from '../types'
 
 import { generateCRO } from '../utils/generate-cro'
@@ -36,14 +38,14 @@ export interface OpenRouterOptions {
      * @default true
      * @example false
      */
-    allow_fallbacks?: boolean
+    allowFallbacks?: boolean
     /**
      * Control whether to use providers that may store data.
      *
      * @see {@link https://openrouter.ai/docs/features/provider-routing#requiring-providers-to-comply-with-data-policies}
      * @default 'allow'
      */
-    data_collection?: 'allow' | 'deny'
+    dataCollection?: 'allow' | 'deny'
     /**
      * List of provider names to skip for this request.
      *
@@ -69,7 +71,7 @@ export interface OpenRouterOptions {
      *
      * @see {@link https://openrouter.ai/docs/features/provider-routing#requiring-providers-to-support-all-parameters-beta}
      */
-    require_parameters?: boolean
+    requireParameters?: boolean
     /**
      * Sort providers by price or throughput. (e.g. "price" or "throughput").
      *
@@ -103,15 +105,22 @@ export const createOpenRouter = (userOptions: ProviderOptions<true>):
     chat: (model, openRouterOptions) => {
       const requestOptions = generateCRO(model, options)
 
-      if (openRouterOptions != null) {
+      const toOpenRouterOptions = ({ extraHeaders, models, provider }: OpenRouterOptions): Record<string, unknown> => {
+        if (extraHeaders == null)
+          return {}
+
         requestOptions.headers ??= {}
-        Object.assign(requestOptions.headers, openRouterOptions.extraHeaders)
-        delete openRouterOptions.extraHeaders
+        Object.assign(requestOptions.headers, extraHeaders)
+
+        return objCamelToSnake({
+          models,
+          provider,
+        })
       }
 
       return {
+        ...(openRouterOptions ? toOpenRouterOptions(openRouterOptions) : {}),
         ...requestOptions,
-        ...openRouterOptions,
       }
     },
     model: () => options,
