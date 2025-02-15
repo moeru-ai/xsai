@@ -106,15 +106,19 @@ export const createOpenRouter = (userOptions: ProviderOptions<true>):
       const requestOptions = generateCRO(model, options)
 
       const toOpenRouterOptions = ({ extraHeaders, models, provider }: OpenRouterOptions): Record<string, unknown> => {
-        if (extraHeaders == null)
-          return {}
+        if (extraHeaders != null) {
+          requestOptions.headers ??= {}
+          Object.assign(requestOptions.headers, extraHeaders)
+        }
 
-        requestOptions.headers ??= {}
-        Object.assign(requestOptions.headers, extraHeaders)
+        let transformedProvider: Record<string, unknown> | undefined
+        if (provider != null) {
+          transformedProvider = objCamelToSnake(provider)
+        }
 
         return objCamelToSnake({
           models,
-          provider,
+          provider: transformedProvider,
         })
       }
 
