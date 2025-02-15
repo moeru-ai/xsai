@@ -54,6 +54,4 @@ export interface StreamTextToolCall extends ToolCall {
     name: string
     parsed_arguments: Record<string, unknown>
   }
-  id: string
-  type: 'function'
 }
