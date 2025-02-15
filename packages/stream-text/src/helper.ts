@@ -4,7 +4,7 @@ import type { StreamTextChunkResult } from './const'
 // eslint-disable-next-line @masknet/string-no-data-url
 const CHUNK_HEADER_PREFIX = 'data:'
 
-export const parseChunk = (text: string): [StreamTextChunkResult | undefined, boolean] | never => {
+export const parseChunk = (text: string): [StreamTextChunkResult | undefined, boolean] => {
   if (!text || !text.startsWith(CHUNK_HEADER_PREFIX))
     return [undefined, false]
 
