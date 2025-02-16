@@ -3,28 +3,43 @@ ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
 words:
+  - AIDC
   - all-minilm
   - automd
+  - BAAI
   - bumpp
   - changelogithub
+  - chatglm
   - deepseek
   - elevenlabs
   - eslintcache
+  - fishaudio
   - fumadocs
+  - genmo
   - importantimport
+  - internlm
   - koemotion
+  - Lightricks
   - masknet
+  - mochi
   - moeru
   - moeru-ai
   - mxbai-embed-large
   - nemo
   - nemotron
+  - netease
   - nomic-embed-text
   - ollama
   - openrouter
   - pkgroll
   - qwen
+  - reranker
+  - siliconflow
   - sonarjs
+  - SoVITS
+  - TeleAI
+  - TeleChat2
+  - THUDM
   - twoslash
   - typeschema
   - unspeech
@@ -33,5 +48,6 @@ words:
   - xsai
   - xsfetch
   - xsschema
+  - youdao
 ignoreWords: []
 import: []
