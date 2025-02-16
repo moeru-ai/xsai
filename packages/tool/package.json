@@ -35,14 +35,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "peerDependencies": {
-    "@xsai/generate-text": "workspace:"
-  },
-  "peerDependenciesMeta": {
-    "@xsai/generate-text": {
-      "optional": true
-    }
-  },
   "dependencies": {
     "@xsai/shared": "workspace:",
     "@xsai/shared-chat": "workspace:",
