@@ -41,8 +41,6 @@
     "xsschema": "workspace:"
   },
   "devDependencies": {
-    "@valibot/to-json-schema": "catalog:",
-    "@xsai/generate-text": "workspace:",
     "@xsai/providers": "workspace:",
     "valibot": "catalog:"
   }

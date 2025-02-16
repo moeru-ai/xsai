@@ -211,6 +211,12 @@ importers:
       '@xsai/providers':
         specifier: 'workspace:'
         version: link:../providers
+      '@xsai/tool':
+        specifier: 'workspace:'
+        version: link:../tool
+      valibot:
+        specifier: 'catalog:'
+        version: 1.0.0-beta.14(typescript@5.6.3)
 
   packages/generate-transcription:
     dependencies:
@@ -305,12 +311,6 @@ importers:
         specifier: 'workspace:'
         version: link:../xsschema
     devDependencies:
-      '@valibot/to-json-schema':
-        specifier: 'catalog:'
-        version: 1.0.0-beta.5(valibot@1.0.0-beta.14(typescript@5.6.3))
-      '@xsai/generate-text':
-        specifier: 'workspace:'
-        version: link:../generate-text
       '@xsai/providers':
         specifier: 'workspace:'
         version: link:../providers

@@ -39,6 +39,8 @@
     "@xsai/shared-chat": "workspace:"
   },
   "devDependencies": {
-    "@xsai/providers": "workspace:"
+    "@xsai/providers": "workspace:",
+    "@xsai/tool": "workspace:",
+    "valibot": "catalog:"
   }
 }

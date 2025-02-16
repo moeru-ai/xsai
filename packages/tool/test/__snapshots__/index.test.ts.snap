@@ -1,3 +1,0 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`@xsai/tool > generateText with tool 1`] = `"Right now, it's 42°F (6°C) partly cloudy in San Francisco."`;
