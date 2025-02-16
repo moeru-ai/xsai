@@ -27,6 +27,7 @@ describe('@xsai/tool', () => {
     expect(weather.function.name).toBe(name)
     expect(weather.function.description).toBe(desc)
     expect(weather.function.parameters).toStrictEqual({
+      $schema: 'http://json-schema.org/draft-07/schema#',
       properties: {
         location: {
           description: 'The location to get the weather for',

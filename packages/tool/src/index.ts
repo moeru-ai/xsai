@@ -1,7 +1,6 @@
 import type { Tool, ToolExecuteOptions } from '@xsai/shared-chat'
 import type { InferIn, Schema } from 'xsschema'
 
-import { clean } from '@xsai/shared'
 import { toJSONSchema } from 'xsschema'
 
 export interface ToolOptions<T extends Schema = Schema> {
@@ -19,11 +18,7 @@ export const tool = async <T extends Schema>(options: ToolOptions<T>): Promise<T
   function: {
     description: options.description,
     name: options.name,
-    parameters: await toJSONSchema(options.parameters)
-      .then(json => clean({
-        ...json,
-        $schema: undefined,
-      })),
+    parameters: await toJSONSchema(options.parameters) as Record<string, unknown>,
     strict: options.strict,
   },
   type: 'function',
