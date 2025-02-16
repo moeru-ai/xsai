@@ -8,6 +8,7 @@ words:
   - BAAI
   - bumpp
   - changelogithub
+  - cognitivecomputations
   - deepseek
   - elevenlabs
   - eslintcache
@@ -16,6 +17,8 @@ words:
   - importantimport
   - koemotion
   - masknet
+  - mistralai
+  - mixtral
   - moeru
   - moeru-ai
   - mxbai-embed-large
@@ -23,6 +26,7 @@ words:
   - nemotron
   - netease
   - nomic-embed-text
+  - Novita
   - ollama
   - openrouter
   - pkgroll
@@ -36,6 +40,7 @@ words:
   - unspeech
   - valibot
   - vitest
+  - wizardlm
   - xsai
   - xsfetch
   - xsschema
