@@ -1,3 +1,4 @@
+export * from './cloudflare-workers-ai'
 export * from './deepseek'
 export * from './google-generative-ai'
 export * from './novita'
