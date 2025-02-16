@@ -5,11 +5,13 @@ dictionaries: []
 words:
   - all-minilm
   - automd
+  - BAAI
   - bumpp
   - changelogithub
   - deepseek
   - elevenlabs
   - eslintcache
+  - fishaudio
   - fumadocs
   - importantimport
   - koemotion
@@ -19,12 +21,16 @@ words:
   - mxbai-embed-large
   - nemo
   - nemotron
+  - netease
   - nomic-embed-text
   - ollama
   - openrouter
   - pkgroll
   - qwen
+  - reranker
+  - siliconflow
   - sonarjs
+  - SoVITS
   - twoslash
   - typeschema
   - unspeech
@@ -33,5 +39,6 @@ words:
   - xsai
   - xsfetch
   - xsschema
+  - youdao
 ignoreWords: []
 import: []
