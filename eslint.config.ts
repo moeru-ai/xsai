@@ -23,3 +23,9 @@ export default antfu({ typescript: { tsconfigPath: './tsconfig.json' } })
       '@masknet/unicode-specific-set': 'off',
     },
   })
+  .append({
+    ignores: [
+      'cspell.config.yaml',
+      'cspell.config.yml',
+    ],
+  })
