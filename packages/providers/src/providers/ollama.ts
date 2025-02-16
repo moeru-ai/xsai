@@ -21,4 +21,4 @@ export const createOllama = (userOptions?: ProviderOptions<false>):
   }
 }
 
-export const ollama = createOllama()
+export const ollama = /* @__PURE__ */ createOllama()

@@ -4,6 +4,8 @@ import { generateCRO } from '../../utils/generate-cro'
 
 export { createUnElevenLabs, type UnElevenLabsOptions } from './elevenlabs'
 
+export { unspeechProviders } from './providers'
+
 export interface UnSpeechOptions {
   /** @experimental */
   extraBody?: Record<string, unknown>
