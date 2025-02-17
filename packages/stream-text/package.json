@@ -32,13 +32,14 @@
   "scripts": {
     "build": "pkgroll",
     "build:watch": "pkgroll --watch",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "test:watch": "vitest"
   },
   "dependencies": {
     "@xsai/shared-chat": "workspace:"
   },
   "devDependencies": {
+    "@vitest/coverage-istanbul": "3.0.4",
     "@xsai/providers": "workspace:",
     "@xsai/shared": "workspace:",
     "@xsai/tool": "workspace:",
