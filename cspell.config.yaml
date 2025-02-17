@@ -14,6 +14,7 @@ words:
   - eslintcache
   - fishaudio
   - fumadocs
+  - Groq
   - importantimport
   - koemotion
   - masknet
@@ -35,6 +36,7 @@ words:
   - siliconflow
   - sonarjs
   - SoVITS
+  - specdec
   - twoslash
   - typeschema
   - unspeech
