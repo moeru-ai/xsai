@@ -4,6 +4,8 @@ import { generateCRO } from '../utils/generate-cro'
 
 /**
  * Zhipu provider
+ *
+ * @see {@link https://open.bigmodel.cn/dev/api/normal-model/glm-4}
  */
 export const createZhipu = (userOptions: ProviderOptions<true>):
   /** @see {@link https://open.bigmodel.cn/dev/api/thirdparty-frame/openai-sdk} */
