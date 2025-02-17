@@ -35,8 +35,5 @@
   },
   "dependencies": {
     "@xsai/shared": "workspace:"
-  },
-  "devDependencies": {
-    "@xsai/model": "workspace:0.1.0-beta.5"
   }
 }

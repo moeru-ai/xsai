@@ -246,10 +246,6 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
-    devDependencies:
-      '@xsai/model':
-        specifier: workspace:0.1.0-beta.5
-        version: link:../model
 
   packages/shared: {}
 
