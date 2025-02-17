@@ -1,4 +1,5 @@
 export * from './deepseek'
+export * from './fireworks-ai'
 export * from './google-generative-ai'
 export * from './groq'
 export * from './novita'
