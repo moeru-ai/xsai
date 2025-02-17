@@ -120,9 +120,25 @@ interface StreamTextToolCall extends ToolCall {
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
   // output
-  let chunkCtrl: ReadableStreamDefaultController<StreamTextChunkResult> | undefined
-  let stepCtrl: ReadableStreamDefaultController<StreamTextStep> | undefined
-  let textCtrl: ReadableStreamDefaultController<string> | undefined
+  let chunkCtrl: ReadableStreamDefaultController<StreamTextChunkResult>
+  let stepCtrl: ReadableStreamDefaultController<StreamTextStep>
+  let textCtrl: ReadableStreamDefaultController<string>
+
+  const chunkStream = new ReadableStream<StreamTextChunkResult>({
+    start(controller) {
+      chunkCtrl = controller
+    },
+  })
+  const stepStream = new ReadableStream<StreamTextStep>({
+    start(controller) {
+      stepCtrl = controller
+    },
+  })
+  const textStream = new ReadableStream<string>({
+    start(controller) {
+      textCtrl = controller
+    },
+  })
 
   // constraints
   const maxSteps = options.maxSteps ?? 1
@@ -177,19 +193,23 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
             if (chunk) {
               controller.enqueue(chunk)
-              chunkCtrl?.enqueue(chunk)
             }
           }
           catch (error) {
             controller.error(error)
-            chunkCtrl?.error(error)
           }
         }
       },
     })).pipeTo(new WritableStream({
+      abort: (reason) => {
+        chunkCtrl.error(reason)
+        stepCtrl.error(reason)
+        textCtrl.error(reason)
+      },
       // eslint-disable-next-line sonarjs/cognitive-complexity
       write: async (chunk) => {
         options.onChunk?.(chunk)
+        chunkCtrl.enqueue(chunk)
 
         const choice = chunk.choices[0]
 
@@ -331,7 +351,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     }))
 
     steps.push(step)
-    stepCtrl?.enqueue(step)
+    stepCtrl.enqueue(step)
 
     options.onStepFinish?.(step)
 
@@ -347,41 +367,23 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       let i = 1, ret = await stepOne(options);
       typeof ret === 'function' && i < maxSteps;
       ret = await ret(), i += 1
-    ) {
-      void 0
-    }
+    ) { ; }
 
     options.onFinish?.(steps)
-    chunkCtrl?.close()
-    stepCtrl?.close()
-    textCtrl?.close()
+    chunkCtrl.close()
+    stepCtrl.close()
+    textCtrl.close()
   }
 
-  void invokeFunctionCalls()
+  void invokeFunctionCalls().catch((error) => {
+    chunkCtrl.error(error)
+    stepCtrl.error(error)
+    textCtrl.error(error)
+  })
 
-  return Promise.resolve(new Proxy(new Object(null) as StreamTextResult, {
-    get: (_, prop) => {
-      if (prop === 'chunkStream') {
-        return new ReadableStream<StreamTextChunkResult>({
-          start(controller) {
-            chunkCtrl = controller
-          },
-        })
-      }
-      if (prop === 'stepStream') {
-        return new ReadableStream<StreamTextStep>({
-          start(controller) {
-            stepCtrl = controller
-          },
-        })
-      }
-      if (prop === 'textStream') {
-        return new ReadableStream<string>({
-          start(controller) {
-            textCtrl = controller
-          },
-        })
-      }
-    },
-  }))
+  return Promise.resolve({
+    chunkStream,
+    stepStream,
+    textStream,
+  })
 }
