@@ -2,9 +2,8 @@ import { ollama } from '@xsai/providers'
 import { clean } from '@xsai/shared'
 import * as sharedChat from '@xsai/shared-chat'
 import { tool } from '@xsai/tool'
-import { text } from 'node:stream/consumers'
 import { description, object, pipe, string } from 'valibot'
-import { afterEach, assert, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import type { StreamTextChunkResult } from '../src'
 
