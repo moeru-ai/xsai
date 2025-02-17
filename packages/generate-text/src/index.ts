@@ -124,7 +124,12 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         id: toolCallId,
         type: toolCallType,
       } of message.tool_calls) {
-        const tool = options.tools!.find(tool => tool.function.name === toolName)!
+        const tool = options.tools!.find(tool => tool.function.name === toolName)
+
+        if (!tool) {
+          throw new Error(`Tool ${toolName} not found`)
+        }
+
         const parsedArgs = JSON.parse(toolArgs) as Record<string, unknown>
         const result = await tool.execute(parsedArgs, { abortSignal: options.abortSignal, messages, toolCallId })
 
