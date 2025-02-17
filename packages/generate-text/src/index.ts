@@ -134,7 +134,6 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
           throw new Error(`Model tried to call unavailable tool '${toolName}. ${availableToolsErrorMsg}.`)
         }
 
-
         const parsedArgs = JSON.parse(toolArgs) as Record<string, unknown>
         const result = await tool.execute(parsedArgs, { abortSignal: options.abortSignal, messages, toolCallId })
 
