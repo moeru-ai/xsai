@@ -1,5 +1,6 @@
 export * from './deepseek'
 export * from './google-generative-ai'
+export * from './groq'
 export * from './novita'
 export * from './ollama'
 export * from './openai'
