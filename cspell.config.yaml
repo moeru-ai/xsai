@@ -53,5 +53,6 @@ words:
   - xsfetch
   - xsschema
   - youdao
+  - Zhipu
 ignoreWords: []
 import: []
