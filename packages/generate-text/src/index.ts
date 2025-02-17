@@ -124,7 +124,16 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         id: toolCallId,
         type: toolCallType,
       } of message.tool_calls) {
-        const tool = options.tools!.find(tool => tool.function.name === toolName)!
+        const tool = options.tools?.find(tool => tool.function.name === toolName)
+
+        if (!tool) {
+          const availableTools = options.tools?.map(tool => tool.function.name)
+          const availableToolsErrorMsg = availableTools === undefined
+            ? 'No tools are available.'
+            : `Available tools: ${availableTools.join(', ')}.`
+          throw new Error(`Model tried to call unavailable tool '${toolName}. ${availableToolsErrorMsg}.`)
+        }
+
         const parsedArgs = JSON.parse(toolArgs) as Record<string, unknown>
         const result = await tool.execute(parsedArgs, { abortSignal: options.abortSignal, messages, toolCallId })
 
