@@ -32,7 +32,7 @@
   "scripts": {
     "build": "pkgroll",
     "build:watch": "pkgroll --watch",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "test:watch": "vitest"
   },
   "dependencies": {
