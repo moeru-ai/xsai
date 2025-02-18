@@ -1,8 +1,7 @@
 import { ollama } from '@xsai/providers'
-import { clean, requestURL } from '@xsai/shared'
+import { clean } from '@xsai/shared'
 import * as sharedChat from '@xsai/shared-chat'
 import { tool } from '@xsai/tool'
-import exp from 'node:constants'
 import { description, object, pipe, string } from 'valibot'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
