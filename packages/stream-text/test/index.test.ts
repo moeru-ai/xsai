@@ -110,6 +110,37 @@ describe('@xsai/stream-text', () => {
     expect(result.length).greaterThan(1)
   }, 20000)
 
+  it('stream without deconstruct', async () => {
+    const stream = await streamText({
+      ...ollama.chat('mistral-nemo'),
+      maxSteps: 2,
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, so please repeat \'YES\' 10 times and nothing else.',
+          role: 'user',
+        },
+      ],
+      seed: 42,
+    })
+
+    const chunkResult = []
+    for await (const chunk of stream.chunkStream) {
+      chunkResult.push(chunk)
+    }
+
+    const textResult = []
+    for await (const text of stream.textStream) {
+      textResult.push(text)
+    }
+
+    expect(chunkResult.length).toBeGreaterThan (0)
+    expect(textResult.join('').length).toBeGreaterThan(0)
+  }, 20000)
+
   describe('with tool', () => {
     let weather: Awaited<ReturnType<typeof tool>>
 
@@ -129,39 +160,6 @@ describe('@xsai/stream-text', () => {
         }),
       })
     })
-
-    it('stream chunk without deconstruct', async () => {
-      const stream = await streamText({
-        ...ollama.chat('mistral-nemo'),
-        maxSteps: 2,
-        messages: [
-          {
-            content: 'You are a helpful assistant.',
-            role: 'system',
-          },
-          {
-            content: 'What is the weather in San Francisco? do not answer anything else.',
-            role: 'user',
-          },
-        ],
-        seed: 42,
-        toolChoice: 'required',
-        tools: [weather],
-      })
-
-      const chunkResult = []
-      for await (const chunk of stream.chunkStream) {
-        chunkResult.push(chunk)
-      }
-
-      const textResult = []
-      for await (const text of stream.textStream) {
-        textResult.push(text)
-      }
-
-      expect(chunkResult.length).toBeGreaterThan (0)
-      expect(textResult.join('').length).toBeGreaterThan(0)
-    }, 20000)
 
     it('stream chunk', async () => {
       const { chunkStream } = await streamText({
