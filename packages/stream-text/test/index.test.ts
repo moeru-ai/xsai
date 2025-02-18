@@ -1,7 +1,8 @@
 import { ollama } from '@xsai/providers'
-import { clean } from '@xsai/shared'
+import { clean, requestURL } from '@xsai/shared'
 import * as sharedChat from '@xsai/shared-chat'
 import { tool } from '@xsai/tool'
+import exp from 'node:constants'
 import { description, object, pipe, string } from 'valibot'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
@@ -322,7 +323,52 @@ describe('@xsai/stream-text', () => {
 
       expect(steps.length).toBeGreaterThan(0)
     }, 20000)
-  })
+
+    it('tool result', async () => {
+      const date = await tool({
+        description: 'Get the date in a location',
+        execute: () => {
+          throw new Error('Not implemented')
+        },
+        name: 'date',
+        parameters: object({
+          location: pipe(
+            string(),
+            description('The location to get the date for'),
+          ),
+        }),
+      })
+
+      const { stepStream } = await streamText({
+        ...ollama.chat('mistral-nemo'),
+        maxSteps: 2,
+        messages: [
+          {
+            content: 'You are a helpful assistant.',
+            role: 'system',
+          },
+          {
+            content: 'What is the weather and date in San Francisco? do not answer anything else.',
+            role: 'user',
+          },
+        ],
+        seed: 42,
+        toolChoice: 'required',
+        tools: [weather, date],
+      })
+
+      const result = []
+      for await (const step of stepStream) {
+        result.push(step)
+      }
+
+      expect(result).toHaveLength(2)
+      expect(result[0].toolResult).toBeDefined()
+      expect(result[0].toolResult?.called).toHaveLength(2)
+      expect(Object.keys(result[0].toolResult!.errors)).toHaveLength(1)
+      expect(Object.keys(result[0].toolResult!.results)).toHaveLength(1)
+    })
+  }, 20_000)
 
   describe('with tool error', () => {
     let weather: Awaited<ReturnType<typeof tool>>

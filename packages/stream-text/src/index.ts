@@ -82,7 +82,14 @@ export interface StreamTextResult {
 export interface StreamTextStep {
   choices: StreamTextChoice[]
   messages: Message[]
+  toolResult?: StreamTextToolResult
   usage?: Usage
+}
+
+export interface StreamTextToolResult {
+  called: string[]
+  errors: { [id: string]: Error }
+  results: { [id: string]: string }
 }
 
 /** @internal */
@@ -307,7 +314,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     })),
     )
 
-    shouldOutputText && step.messages.push({
+    // if the chat has tool calls, then content probably will be empty
+    // but we still push it anyway
+    step.messages.push({
       content: step.choices[0]?.message.content ?? '',
       refusal: step.choices[0]?.message.refusal,
       role: 'assistant',
@@ -316,10 +325,20 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     // make actual tool call and wait
     await Promise.allSettled(step.choices.map(async (choice) => {
       const state = choiceState[choice.index]
+      const toolResults = step.toolResult ??= {
+        called: [...state.calledToolCallIDs.keys()],
+        errors: {},
+        results: {},
+      }
 
       return Promise.allSettled([...state.endedToolCallIDs].map(async (id) => {
         // eslint-disable-next-line ts/strict-boolean-expressions
         if (state.toolCallErrors[id]) {
+          toolResults.errors[id] = state.toolCallErrors[id]
+          return
+        }
+
+        if (state.toolCallResults[id]) {
           return
         }
 
@@ -333,7 +352,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
               messages: options.messages,
               toolCallId: id,
             })
-            state.toolCallResults[id] = ret
+            toolResults.results[id] = state.toolCallResults[id] = ret
             step.messages.push({
               content: ret,
               role: 'tool',
@@ -341,11 +360,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             } satisfies ToolMessage)
           }
           catch (error) {
-            state.toolCallErrors[id] = error as Error
+            toolResults.errors[id] = state.toolCallErrors[id] = error as Error
           }
         }
         else {
-          state.toolCallErrors[id] = new XSAIError(`tool ${toolCall.function.name} not found`)
+          toolResults.errors[id] = state.toolCallErrors[id] = new XSAIError(`tool ${toolCall.function.name} not found`)
         }
       }))
     }))
