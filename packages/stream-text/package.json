@@ -39,7 +39,6 @@
     "@xsai/shared-chat": "workspace:"
   },
   "devDependencies": {
-    "@vitest/coverage-istanbul": "3.0.4",
     "@xsai/providers": "workspace:",
     "@xsai/shared": "workspace:",
     "@xsai/tool": "workspace:",
