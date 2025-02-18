@@ -89,14 +89,19 @@ export interface StreamTextStep {
 /**
  * Represents the result of executing stream text tools.
  * @interface StreamTextToolResult
- *
- * @property {string[]} called - Array of tool IDs that were called during execution
- * @property {{ [id: string]: Error }} errors - Object mapping tool IDs to their corresponding errors, if any occurred
- * @property {{ [id: string]: string }} results - Object mapping tool IDs to their execution results as strings
  */
 export interface StreamTextToolResult {
+  /**
+   * @property {string[]} called - Array of tool IDs that were called during execution
+   */
   called: string[]
+  /**
+   * @property {{ [id: string]: Error }} errors - Object mapping tool IDs to their corresponding errors, if any occurred
+   */
   errors: { [id: string]: Error }
+  /**
+   * @property {{ [id: string]: string }} results - Object mapping tool IDs to their execution results as strings
+   */
   results: { [id: string]: string }
 }
 
