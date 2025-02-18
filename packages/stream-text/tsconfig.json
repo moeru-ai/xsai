@@ -1,5 +1,4 @@
 {
-  "extends": "@importantimport/tsconfig/app.json",
-  "files": ["vitest.config.ts"],
+  "extends": "../../tsconfig.node.json",
   "include": ["src", "test"]
 }
