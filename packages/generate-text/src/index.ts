@@ -1,4 +1,4 @@
-import type { AssistantMessageResponse, ChatOptions, FinishReason, Message, Tool, Usage } from '@xsai/shared-chat'
+import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, Usage } from '@xsai/shared-chat'
 
 import { chat } from '@xsai/shared-chat'
 
@@ -32,8 +32,8 @@ export interface GenerateTextResult {
   messages: Message[]
   steps: GenerateTextStepResult[]
   text?: string
-  toolCalls: GenerateTextToolCall[]
-  toolResults: GenerateTextToolResult[]
+  toolCalls: CompletionToolCall[]
+  toolResults: CompletionToolResult[]
   usage: Usage
 }
 
@@ -41,23 +41,9 @@ export interface GenerateTextStepResult {
   finishReason: FinishReason
   stepType: 'continue' | 'initial' | 'tool-result'
   text?: string
-  toolCalls: GenerateTextToolCall[]
-  toolResults: GenerateTextToolResult[]
+  toolCalls: CompletionToolCall[]
+  toolResults: CompletionToolResult[]
   usage: Usage
-}
-
-export interface GenerateTextToolCall {
-  args: string
-  toolCallId: string
-  toolCallType: 'function'
-  toolName: string
-}
-
-export interface GenerateTextToolResult {
-  args: Record<string, unknown>
-  result: string
-  toolCallId: string
-  toolName: string
 }
 
 /** @internal */
@@ -79,8 +65,8 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
     .then(async ({ choices, usage }) => {
       const messages: Message[] = structuredClone(options.messages)
       const steps: GenerateTextStepResult[] = options.steps ? structuredClone(options.steps) : []
-      const toolCalls: GenerateTextToolCall[] = []
-      const toolResults: GenerateTextToolResult[] = []
+      const toolCalls: CompletionToolCall[] = []
+      const toolResults: CompletionToolResult[] = []
 
       const { finish_reason: finishReason, message } = choices[0]
 

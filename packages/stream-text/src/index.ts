@@ -1,4 +1,4 @@
-import type { AssistantMessage, ChatOptions, FinishReason, Message, Tool, ToolCall, ToolMessage, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessage, Usage } from '@xsai/shared-chat'
 
 import { XSAIError } from '@xsai/shared'
 import { chat } from '@xsai/shared-chat'
@@ -82,27 +82,9 @@ export interface StreamTextResult {
 export interface StreamTextStep {
   choices: StreamTextChoice[]
   messages: Message[]
-  toolResult?: StreamTextToolResult
+  toolCalls: CompletionToolCall[]
+  toolResults: CompletionToolResult[]
   usage?: Usage
-}
-
-/**
- * Represents the result of executing stream text tools.
- * @interface StreamTextToolResult
- */
-export interface StreamTextToolResult {
-  /**
-   * @property {string[]} called - Array of tool IDs that were called during execution
-   */
-  called: string[]
-  /**
-   * @property {{ [id: string]: Error }} errors - Object mapping tool IDs to their corresponding errors, if any occurred
-   */
-  errors: { [id: string]: Error }
-  /**
-   * @property {{ [id: string]: string }} results - Object mapping tool IDs to their execution results as strings
-   */
-  results: { [id: string]: string }
 }
 
 /** @internal */
@@ -172,6 +154,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     const step: StreamTextStep = {
       choices: [],
       messages: structuredClone(options.messages),
+      toolCalls: [],
+      toolResults: [],
     }
     const choiceState: Record<string, StreamTextChoiceState> = {}
     let buffer = ''
@@ -338,24 +322,20 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     // make actual tool call and wait
     await Promise.allSettled(step.choices.map(async (choice) => {
       const state = choiceState[choice.index]
-      const toolResults = step.toolResult ??= {
-        called: [...state.calledToolCallIDs.keys()],
-        errors: {},
-        results: {},
-      }
 
       return Promise.allSettled([...state.endedToolCallIDs].map(async (id) => {
-        // eslint-disable-next-line ts/strict-boolean-expressions
-        if (state.toolCallErrors[id]) {
-          toolResults.errors[id] = state.toolCallErrors[id]
-          return
-        }
+        const toolCall = choice.message.tool_calls![id]
+        step.toolCalls.push({
+          args: toolCall.function.arguments,
+          toolCallId: id,
+          toolCallType: 'function',
+          toolName: toolCall.function.name,
+        })
 
         if (state.toolCallResults[id]) {
           return
         }
 
-        const toolCall = choice.message.tool_calls![id]
         // eslint-disable-next-line sonarjs/no-nested-functions
         const tool = options.tools?.find(tool => tool.function.name === toolCall.function.name)
         if (tool) {
@@ -365,19 +345,25 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
               messages: options.messages,
               toolCallId: id,
             })
-            toolResults.results[id] = state.toolCallResults[id] = ret
+            state.toolCallResults[id] = ret
             step.messages.push({
               content: ret,
               role: 'tool',
               tool_call_id: id,
             } satisfies ToolMessage)
+            step.toolResults.push({
+              args: toolCall.function.parsed_arguments,
+              result: ret,
+              toolCallId: id,
+              toolName: toolCall.function.name,
+            })
           }
           catch (error) {
-            toolResults.errors[id] = state.toolCallErrors[id] = error as Error
+            state.toolCallErrors[id] = error as Error
           }
         }
         else {
-          toolResults.errors[id] = state.toolCallErrors[id] = new XSAIError(`tool ${toolCall.function.name} not found`)
+          state.toolCallErrors[id] = new XSAIError(`tool ${toolCall.function.name} not found`)
         }
       }))
     }))
