@@ -1,5 +1,19 @@
 import type { Message } from './message'
 
+export interface CompletionToolCall {
+  args: string
+  toolCallId: string
+  toolCallType: 'function'
+  toolName: string
+}
+
+export interface CompletionToolResult {
+  args: Record<string, unknown>
+  result: string
+  toolCallId: string
+  toolName: string
+}
+
 export interface Tool {
   execute: (input: unknown, options: ToolExecuteOptions) => Promise<string> | string
   function: {
