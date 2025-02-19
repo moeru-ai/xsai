@@ -36,7 +36,7 @@ export const createQwen = (userOptions: ProviderOptions<true>):
   & ModelProvider => {
   const options: ProviderResult = {
     ...userOptions,
-    baseURL: userOptions.baseURL ?? new URL('https://openai.com/v1/'),
+    baseURL: userOptions.baseURL ?? new URL('https://dashscope.aliyuncs.com/compatible-mode/v1/'),
   }
 
   const result = (model: string) => generateCRO(model, options)
