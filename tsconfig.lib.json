@@ -3,6 +3,6 @@
   "include": [
     "packages/**/src",
     "packages/**/test",
-    "packages/providers-core/src"
+    "packages-ext/providers-core/src"
   ]
 }
