@@ -52,6 +52,6 @@
     "@standard-schema/spec": "^1.0.0",
     "@types/json-schema": "^7.0.15",
     "@valibot/to-json-schema": "catalog:",
-    "zod-to-json-schema": "^3.24.1"
+    "zod-to-json-schema": "^3.24.2"
   }
 }
