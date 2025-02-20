@@ -7,7 +7,8 @@
     "build": "next build",
     "dev": "next dev --turbo",
     "postinstall": "fumadocs-mdx",
-    "start": "next start"
+    "start": "next start",
+    "update-references": "tsx scripts/update-references.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.2",

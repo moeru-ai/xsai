@@ -6,12 +6,11 @@
   "packageManager": "pnpm@10.0.0",
   "repository": "github:moeru-ai/xsai",
   "scripts": {
-    "build": "corepack pnpm -r build",
+    "build": "pnpm -r build",
     "bump": "bumpp",
-    "docs:dev": "corepack pnpm -rF @xsai/docs dev",
-    "docs:generate-files": "corepack pnpm -rF @xsai/docs generate-files",
+    "docs:dev": "pnpm -rF @xsai/docs dev",
     "lint": "eslint --cache .",
-    "test": "corepack pnpm -r --workspace-concurrency=1 test"
+    "test": "pnpm -r --workspace-concurrency=1 test"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.3.0",
