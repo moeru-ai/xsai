@@ -42,7 +42,13 @@
     "@xsai/stream-text": "workspace:^",
     "@xsai/tool": "workspace:^",
     "autoprefixer": "^10.4.20",
+    "fast-glob": "^3.3.3",
+    "gray-matter": "^4.0.3",
     "postcss": "^8.5.3",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-mdx": "^3.1.0",
+    "remark-stringify": "^11.0.0",
     "tailwindcss": "^4.0.7",
     "valibot": "catalog:",
     "xsai": "workspace:^"
