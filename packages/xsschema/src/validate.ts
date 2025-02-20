@@ -9,5 +9,6 @@ export const validate = async <T extends StandardSchemaV1>(schema: T, input: Sta
     throw new Error(JSON.stringify(result.issues, null, 2))
   }
 
-  return result.value
+  // eslint-disable-next-line @masknet/type-prefer-return-type-annotation
+  return result.value as StandardSchemaV1.InferOutput<T>
 }
