@@ -42,7 +42,6 @@
     "@xsai/shared": "workspace:"
   },
   "devDependencies": {
-    "@xsai/providers": "workspace:",
-    "openai": "^4.85.2"
+    "@xsai/providers": "workspace:"
   }
 }
