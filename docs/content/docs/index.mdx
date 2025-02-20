@@ -10,26 +10,3 @@ description: extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.
 xsAI has a similar interface to the Vercel AI SDK, but is significantly smaller.
 
 This makes it ideal for a variety of scenarios that require smaller bundle size, such as web applications, cli running through npx, and so on.
-
-## `llms.txt`
-
-You can access the entire xsAI documentation in Markdown format at https://xsai.js.org/llms.txt.
-
-This can be used to ask any LLM (assuming it has a big enough context window)
-
-questions about the xsAI based on the most up-to-date documentation.
-
-### Example Usage
-
-For instance, to prompt an LLM with questions about the xsAI:
-
-1. Copy the documentation contents from https://xsai.js.org/llms.txt
-2. Use the following prompt format:
-
-```
-Documentation:
-{paste documentation here}
----
-Based on the above documentation, answer the following:
-{your question}
-```
