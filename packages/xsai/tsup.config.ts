@@ -1,11 +1,11 @@
 import { defineConfig } from 'tsup'
 
-import { default as defaults } from '../../tsup.config'
+import defaults from '../../tsup.config'
 
 export default defineConfig({
   ...defaults,
   entry: [
     'src/index.ts',
-    'src/providers.ts'
+    'src/providers.ts',
   ],
 })
