@@ -40,16 +40,9 @@ export const createTogetherAI = (userOptions: ProviderOptions<true>):
     model: () => {
       return {
         ...options,
-        fetch: async (...args) => {
-          return fetch(...args)
-            .then(async res => res.json() as Promise<any[]>)
-            .then(models => Response.json(
-              {
-                data: models,
-                object: 'list',
-              },
-            ))
-        },
+        fetch: async (...args: Parameters<typeof globalThis.fetch>) => globalThis.fetch(...args)
+          .then(async res => res.json() as Promise<unknown[]>)
+          .then(data => Response.json({ data, object: 'list' })),
       }
     },
   }

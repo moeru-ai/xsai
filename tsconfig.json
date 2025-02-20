@@ -1,21 +1,7 @@
 {
   "references": [
-    { "path": "./packages/embed/tsconfig.json" },
-    { "path": "./packages/generate-object/tsconfig.json" },
-    { "path": "./packages/generate-speech/tsconfig.json" },
-    { "path": "./packages/generate-text/tsconfig.json" },
-    { "path": "./packages/generate-transcription/tsconfig.json" },
-    { "path": "./packages/model/tsconfig.json" },
-    { "path": "./packages/providers/tsconfig.json" },
-    { "path": "./packages/shared/tsconfig.json" },
-    { "path": "./packages/shared-chat/tsconfig.json" },
-    { "path": "./packages/stream-object/tsconfig.json" },
-    { "path": "./packages/stream-text/tsconfig.json" },
-    { "path": "./packages/tool/tsconfig.json" },
-    { "path": "./packages/utils-stream/tsconfig.json" },
-    { "path": "./packages/xsai/tsconfig.json" },
-    { "path": "./packages/xsfetch/tsconfig.json" },
-    { "path": "./packages/xsschema/tsconfig.json" },
+    { "path": "./docs/tsconfig.json" },
+    { "path": "./tsconfig.lib.json" },
     { "path": "./tsconfig.node.json" }
   ],
   "files": []
