@@ -19,23 +19,31 @@
   ],
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./providers": {
-      "types": "./dist/providers.d.ts",
-      "default": "./dist/providers.js"
-    }
+    ".": "./src/index.ts",
+    "./provider": "./src/provider.ts"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./providers": {
+        "types": "./dist/providers.d.ts",
+        "default": "./dist/providers.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
   "scripts": {
-    "build": "pkgroll",
-    "build:watch": "pkgroll --watch"
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@xsai/embed": "workspace:",
