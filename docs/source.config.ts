@@ -12,6 +12,10 @@ export default defineConfig({
   mdxOptions: {
     rehypeCodeOptions: {
       inline: 'tailing-curly-colon',
+      themes: {
+        dark: 'one-dark-pro',
+        light: 'one-light',
+      },
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
         transformerTwoslash(),
