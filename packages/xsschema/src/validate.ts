@@ -1,5 +1,6 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 
+/** @see {@link https://github.com/standard-schema/standard-schema#how-do-i-accept-standard-schemas-in-my-library} */
 export const validate = async <T extends StandardSchemaV1>(schema: T, input: StandardSchemaV1.InferInput<T>): Promise<StandardSchemaV1.InferOutput<T>> => {
   let result = schema['~standard'].validate(input)
   if (result instanceof Promise)
@@ -9,6 +10,5 @@ export const validate = async <T extends StandardSchemaV1>(schema: T, input: Sta
     throw new Error(JSON.stringify(result.issues, null, 2))
   }
 
-  // eslint-disable-next-line @masknet/type-prefer-return-type-annotation
-  return result.value as StandardSchemaV1.InferOutput<T>
+  return (result as StandardSchemaV1.SuccessResult<T>).value
 }
