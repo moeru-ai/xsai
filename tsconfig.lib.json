@@ -1,4 +1,8 @@
 {
   "extends": "@importantimport/tsconfig/app.json",
-  "include": ["packages/**/src", "packages/**/test"]
+  "include": [
+    "packages/**/src",
+    "packages/**/test",
+    "packages/providers-core/src"
+  ]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@xsai/stream-object",
+  "name": "@xsai-ext/providers-core",
   "type": "module",
   "version": "0.1.0-beta.5",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
@@ -9,14 +9,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages/stream-object"
+    "directory": "packages-ext/providers-core"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
-  "keywords": [
-    "xsai",
-    "openai",
-    "ai"
-  ],
+  "keywords": ["xsai", "openai", "ai"],
   "sideEffects": false,
   "exports": "./src/index.ts",
   "files": [
@@ -34,19 +30,12 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "tsup",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "build": "tsup"
   },
   "dependencies": {
-    "@xsai/stream-text": "workspace:",
-    "xsschema": "workspace:"
+    "@xsai/shared": "workspace:"
   },
   "devDependencies": {
-    "@valibot/to-json-schema": "catalog:",
-    "@xsai/providers": "workspace:",
-    "best-effort-json-parser": "^1.1.3",
-    "type-fest": "catalog:",
-    "valibot": "catalog:"
+    "type-fest": "catalog:"
   }
 }

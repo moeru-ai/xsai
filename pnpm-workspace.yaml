@@ -1,6 +1,9 @@
 packages:
   - docs
   - packages/*
+  - packages-ext/*
 catalog:
   '@valibot/to-json-schema': ^1.0.0-rc.0
   valibot: ^1.0.0-rc.1
+  
+  type-fest: ^4.35.0
