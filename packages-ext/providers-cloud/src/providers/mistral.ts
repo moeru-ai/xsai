@@ -6,7 +6,7 @@ import {
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://docs.mistral.ai} */
-export const createMistralAI = (apiKey: string, baseURL = 'https://api.mistral.ai/v1/') => merge(
+export const createMistral = (apiKey: string, baseURL = 'https://api.mistral.ai/v1/') => merge(
   createChatProvider<
     | 'codestral-latest'
     | 'codestral-mamba-latest'

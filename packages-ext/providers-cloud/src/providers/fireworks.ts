@@ -6,7 +6,7 @@ import {
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://docs.fireworks.ai/getting-started/introduction} */
-export const createFireworksAI = (apiKey: string, baseURL = 'https://api.fireworks.ai/inference/v1/') => merge(
+export const createFireworks = (apiKey: string, baseURL = 'https://api.fireworks.ai/inference/v1/') => merge(
   createChatProvider<
     | 'accounts/fireworks/models/deepseek-r1'
     | 'accounts/fireworks/models/deepseek-v3'
