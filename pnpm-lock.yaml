@@ -162,6 +162,9 @@ importers:
       '@xsai-ext/shared-providers':
         specifier: 'workspace:'
         version: link:../shared-providers
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../../packages/shared
 
   packages-ext/shared-providers:
     dependencies:

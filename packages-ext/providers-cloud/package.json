@@ -33,6 +33,7 @@
     "build": "tsup"
   },
   "dependencies": {
-    "@xsai-ext/shared-providers": "workspace:"
+    "@xsai-ext/shared-providers": "workspace:",
+    "@xsai/shared": "workspace:"
   }
 }

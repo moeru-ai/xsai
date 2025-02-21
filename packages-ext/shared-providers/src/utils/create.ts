@@ -1,8 +1,12 @@
 import type { CreateProviderOptions } from '../types/create-provider-options'
-import type { ChatProvider, EmbedProvider, ModelProvider, SpeechProvider, SpeechProviderWithExtraOptions, TranscriptionProvider } from '../types/providers'
+import type { ChatProvider, ChatProviderWithExtraOptions, EmbedProvider, ModelProvider, SpeechProvider, SpeechProviderWithExtraOptions, TranscriptionProvider } from '../types/providers'
 
 export const createChatProvider = <T extends string = string>(options: CreateProviderOptions): ChatProvider<T> => ({
   chat: model => Object.assign(options, { model }),
+})
+
+export const createChatProviderWithExtraOptions = <T extends string = string, T2 = undefined>(options: CreateProviderOptions): ChatProviderWithExtraOptions<T, T2> => ({
+  chat: (model, extraOptions) => Object.assign(options, { model }, extraOptions),
 })
 
 export const createEmbedProvider = <T extends string = string>(options: CreateProviderOptions): EmbedProvider<T> => ({
