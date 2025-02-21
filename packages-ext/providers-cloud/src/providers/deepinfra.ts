@@ -7,9 +7,6 @@ import { createChatProvider, createEmbedProvider, createModelProvider, merge } f
  */
 export const createDeepInfra = (apiKey: string, baseURL = 'https://api.deepinfra.com/v1/openai/') => merge(
   createChatProvider<
-    | '01-ai/Yi-34B-Chat'
-    | 'cognitivecomputations/dolphin-2.6-mixtral-8x7b'
-    | 'cognitivecomputations/dolphin-2.9.1-llama-3-70b'
     | 'deepseek-ai/DeepSeek-R1'
     | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B'
     | 'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B'
