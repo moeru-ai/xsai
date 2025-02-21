@@ -1,3 +1,4 @@
+export { createCerebras } from './cerebras'
 export { createDeepSeek } from './deepseek'
 export { createFireworks } from './fireworks'
 export { createGoogleGenerativeAI } from './google-generative-ai'
