@@ -3,7 +3,7 @@ import { createChatProvider, createEmbedProvider, createModelProvider, merge } f
 /**
  * [DeepInfra](https://deepinfra.com/) provider
  *
- * @see {@link https://deepinfra.com/pricing} and {@link https://deepinfra.com/docs/openai_api}
+ * @see {@link https://deepinfra.com/pricing}
  */
 export const createDeepInfra = (apiKey: string, baseURL = 'https://api.deepinfra.com/v1/openai/') => merge(
   createChatProvider<
