@@ -1,7 +1,7 @@
 {
   "name": "@xsai/stream-object",
   "type": "module",
-  "version": "0.1.0-beta.5",
+  "version": "0.1.0-beta.6",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
   "author": "Moeru AI",
   "license": "MIT",
