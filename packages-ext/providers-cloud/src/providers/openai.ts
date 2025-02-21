@@ -7,9 +7,7 @@ import {
   merge,
 } from '@xsai-ext/shared-providers'
 
-const baseURL = 'https://openai.com/v1'
-
-export const createOpenAI = (apiKey: string) => merge(
+export const createOpenAI = (apiKey: string, baseURL = 'https://openai.com/v1/') => merge(
   createChatProvider<'gpt-4o' | 'gpt-4o-mini' | 'o1-mini' | 'o1-preview'>({ apiKey, baseURL }),
   createEmbedProvider<'text-embedding-3-large' | 'text-embedding-3-small'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
