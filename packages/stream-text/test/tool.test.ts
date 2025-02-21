@@ -1,4 +1,3 @@
-import { ollama } from '@xsai/providers'
 import * as sharedChat from '@xsai/shared-chat'
 import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
@@ -38,7 +37,7 @@ describe('@xsai/stream-text', () => {
 
     it('stream chunk', async () => {
       const { chunkStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 2,
         messages: [
           {
@@ -50,6 +49,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         seed: 42,
         toolChoice: 'required',
         tools: [weather],
@@ -65,7 +65,7 @@ describe('@xsai/stream-text', () => {
 
     it('stream step', async () => {
       const { stepStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 2,
         messages: [
           {
@@ -77,6 +77,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         seed: 42,
         toolChoice: 'required',
         tools: [weather],
@@ -92,7 +93,7 @@ describe('@xsai/stream-text', () => {
 
     it('stream text', async () => {
       const { textStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 2,
         messages: [
           {
@@ -104,6 +105,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         seed: 42,
         toolChoice: 'required',
         tools: [weather],
@@ -121,7 +123,7 @@ describe('@xsai/stream-text', () => {
       const chunks = []
 
       const { textStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 2,
         messages: [
           {
@@ -133,6 +135,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         onChunk: chunk => chunks.push(chunk),
         seed: 42,
         toolChoice: 'required',
@@ -148,7 +151,7 @@ describe('@xsai/stream-text', () => {
       const steps = []
 
       const { textStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 2,
         messages: [
           {
@@ -160,6 +163,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         onStepFinish: step => steps.push(step),
         seed: 42,
         toolChoice: 'required',
@@ -175,7 +179,7 @@ describe('@xsai/stream-text', () => {
       let steps = []
 
       const { textStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 2,
         messages: [
           {
@@ -187,6 +191,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         onFinish: s => (steps = s),
         seed: 42,
         toolChoice: 'required',
@@ -217,7 +222,7 @@ describe('@xsai/stream-text', () => {
       })
 
       const { stepStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 2,
         messages: [
           {
@@ -229,6 +234,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         seed: 42,
         toolChoice: 'required',
         tools: [weather, date],
@@ -282,7 +288,7 @@ describe('@xsai/stream-text', () => {
         .mockImplementation(async () => { throw new Error('Network error') })
 
       const { textStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 2,
         messages: [
           {
@@ -294,6 +300,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         seed: 42,
         toolChoice: 'required',
         tools: [weather],
@@ -306,7 +313,7 @@ describe('@xsai/stream-text', () => {
 
     it('should output empty text stream when max steps reached', async () => {
       const { chunkStream, stepStream, textStream } = await streamText({
-        ...ollama.chat('mistral-nemo'),
+        baseURL: 'http://localhost:11434/v1/',
         maxSteps: 1, // Set very low max steps
         messages: [
           {
@@ -318,6 +325,7 @@ describe('@xsai/stream-text', () => {
             role: 'user',
           },
         ],
+        model: 'mistral-nemo',
         seed: 42,
         toolChoice: 'required',
         tools: [weather],

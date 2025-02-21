@@ -15,13 +15,11 @@ xsAI is a series of utils to help you use OpenAI or OpenAI-compatible API.
 
 ```ts
 import { generateText } from '@xsai/generate-text'
-import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
 
-const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
-
 const { text } = await generateText({
-  ...openai.chat('gpt-4o'),
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -32,6 +30,7 @@ const { text } = await generateText({
       role: 'user',
     },
   ],
+  model: 'gpt-4o',
 })
 
 // "YES"
@@ -96,16 +95,12 @@ Read the [documentation](https://xsai.js.org/docs) to get started.
 ###### Streaming Text
 
 ```ts
-import { createOpenAI } from '@xsai/providers'
 import { streamText } from '@xsai/stream-text'
 import { env } from 'node:process'
 
-const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY,
-})
-
 const { textStream } = await streamText({
-  ...openai.chat('gpt-4o'),
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -116,6 +111,7 @@ const { textStream } = await streamText({
       role: 'user',
     },
   ],
+  model: 'gpt-4o',
 })
 
 const text: string[] = []
@@ -132,14 +128,9 @@ console.log(text)
 
 ```ts
 import { generateText } from '@xsai/generate-text'
-import { createOpenAI } from '@xsai/providers'
 import { tool } from '@xsai/tool'
 import { env } from 'node:process'
 import { description, object, pipe, string } from 'valibot'
-
-const openai = createOpenAI({
-  apiKey: env.OPENAI_API_KEY,
-})
 
 const weather = await tool({
   description: 'Get the weather in a location',
@@ -157,7 +148,8 @@ const weather = await tool({
 })
 
 const { text } = await generateText({
-  ...openai.chat('gpt-4o'),
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
   maxSteps: 2,
   messages: [
     {
@@ -169,6 +161,7 @@ const { text } = await generateText({
       role: 'user',
     },
   ],
+  model: 'gpt-4o',
   toolChoice: 'required',
   tools: [weather],
 })

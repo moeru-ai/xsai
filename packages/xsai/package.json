@@ -19,8 +19,7 @@
   ],
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts",
-    "./provider": "./src/provider.ts"
+    ".": "./src/index.ts"
   },
   "files": [
     "dist"
@@ -30,10 +29,6 @@
       ".": {
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
-      },
-      "./providers": {
-        "types": "./dist/providers.d.ts",
-        "default": "./dist/providers.js"
       },
       "./package.json": "./package.json"
     },
@@ -52,7 +47,6 @@
     "@xsai/generate-text": "workspace:",
     "@xsai/generate-transcription": "workspace:",
     "@xsai/model": "workspace:",
-    "@xsai/providers": "workspace:",
     "@xsai/shared-chat": "workspace:",
     "@xsai/stream-object": "workspace:",
     "@xsai/stream-text": "workspace:",

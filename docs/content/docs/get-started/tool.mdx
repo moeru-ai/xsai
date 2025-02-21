@@ -54,12 +54,9 @@ If you are interested in contributing, feel free to open a Pull Request.
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
-import { createOpenAI } from '@xsai/providers'
 import { tool } from '@xsai/tool'
 import { env } from 'node:process'
 import { description, object, pipe, string } from 'valibot'
-
-const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 const weather = await tool({
   description: 'Get the weather in a location',
@@ -77,7 +74,8 @@ const weather = await tool({
 })
 
 const { text } = await generateText({
-  ...openai.chat('gpt-4o'),
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
   maxSteps: 2, // [!code highlight]
   messages: [
     {
@@ -89,6 +87,7 @@ const { text } = await generateText({
       role: 'user',
     },
   ],
+  model: 'gpt-4o',
   tools: [weather], // [!code highlight]
 })
 ```

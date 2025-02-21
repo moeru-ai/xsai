@@ -6,18 +6,17 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --turbo",
-    "postinstall": "fumadocs-mdx",
+    "postinstall": "fumadocs-mdx && pnpm update-references",
     "start": "next start",
     "update-references": "tsx scripts/update-references.ts"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.1.2",
     "fumadocs-core": "^15.0.10",
     "fumadocs-docgen": "^1.3.7",
     "fumadocs-mdx": "^11.5.6",
     "fumadocs-twoslash": "^3.0.0",
     "fumadocs-ui": "^15.0.10",
-    "next": "15.0.3",
+    "next": "^15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -32,7 +31,6 @@
     "@xsai/generate-text": "workspace:^",
     "@xsai/generate-transcription": "workspace:^",
     "@xsai/model": "workspace:^",
-    "@xsai/providers": "workspace:^",
     "@xsai/shared": "workspace:^",
     "@xsai/shared-chat": "workspace:^",
     "@xsai/stream-object": "workspace:^",

@@ -44,7 +44,6 @@
     "xsschema": "workspace:"
   },
   "devDependencies": {
-    "@xsai/providers": "workspace:",
     "valibot": "catalog:"
   }
 }
