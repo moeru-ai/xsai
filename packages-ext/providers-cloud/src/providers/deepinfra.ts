@@ -19,7 +19,6 @@ export const createDeepInfra = (apiKey: string, baseURL = 'https://api.deepinfra
     | 'mistralai/Mixtral-8x22B-Instruct-v0.1'
     | 'mistralai/Mixtral-8x22B-v0.1'
     | 'Qwen/QVQ-72B-Preview'
-    | 'Qwen/Qwen2.5-7B-Instruct'
     | 'Qwen/Qwen2.5-72B-Instruct'
     | 'Qwen/Qwen2.5-Coder-32B-Instruct'
     | 'Qwen/QwQ-32B-Preview'
