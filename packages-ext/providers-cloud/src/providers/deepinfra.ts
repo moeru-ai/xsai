@@ -11,7 +11,6 @@ export const createDeepInfra = (apiKey: string, baseURL = 'https://api.deepinfra
     | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B'
     | 'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B'
     | 'deepseek-ai/DeepSeek-V3'
-    | 'google/gemma-2-9b-it'
     | 'google/gemma-2-27b-it'
     | 'meta-llama/Llama-3.3-70B-Instruct'
     | 'meta-llama/Llama-3.3-70B-Instruct-Turbo'
