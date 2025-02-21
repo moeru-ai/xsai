@@ -157,7 +157,13 @@ importers:
         specifier: workspace:^
         version: link:../packages/xsai
 
-  packages-ext/providers-core:
+  packages-ext/providers-cloud:
+    dependencies:
+      '@xsai-ext/shared-providers':
+        specifier: 'workspace:'
+        version: link:../shared-providers
+
+  packages-ext/shared-providers:
     dependencies:
       '@xsai/shared':
         specifier: 'workspace:'

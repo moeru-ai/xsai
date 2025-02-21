@@ -3,6 +3,7 @@
   "include": [
     "packages/**/src",
     "packages/**/test",
-    "packages-ext/providers-core/src"
+    "packages-ext/providers-cloud/src",
+    "packages-ext/shared-providers/src"
   ]
 }

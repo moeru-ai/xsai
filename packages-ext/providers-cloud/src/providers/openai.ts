@@ -1,5 +1,11 @@
-import { createChatProvider, createEmbedProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider } from '../utils/create'
-import { merge } from '../utils/merge'
+import {
+  createChatProvider,
+  createEmbedProvider,
+  createModelProvider,
+  createSpeechProvider,
+  createTranscriptionProvider,
+  merge,
+} from '@xsai-ext/shared-providers'
 
 const baseURL = 'https://openai.com/v1'
 

@@ -1,4 +1,3 @@
-export * from './providers/openai'
 export type * from './types/provider'
 export type * from './types/provider-options'
 export * from './utils/create'

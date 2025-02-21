@@ -1,5 +1,5 @@
 {
-  "name": "@xsai-ext/providers-core",
+  "name": "@xsai-ext/providers-cloud",
   "type": "module",
   "version": "0.1.0-beta.5",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages-ext/providers-core"
+    "directory": "packages-ext/providers-cloud"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "keywords": ["xsai", "openai", "ai"],
@@ -33,9 +33,6 @@
     "build": "tsup"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:"
-  },
-  "devDependencies": {
-    "type-fest": "catalog:"
+    "@xsai-ext/shared-providers": "workspace:"
   }
 }
