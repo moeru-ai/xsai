@@ -13,10 +13,7 @@ npm i @xsai/model
 
 ```ts twoslash
 import { listModels } from '@xsai/model'
-import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
-
-const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 // [
 //   {
@@ -38,17 +35,17 @@ const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 //     "owned_by": "openai"
 //   },
 // ]
-const models = await listModels(openai.model())
+const models = await listModels({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
+})
 ```
 
 ## `retrieveModel`
 
 ```ts twoslash
 import { retrieveModel } from '@xsai/model'
-import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
-
-const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 
 // {
 //   "id": "gpt-4o",
@@ -57,7 +54,8 @@ const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
 //   "owned_by": "openai"
 // }
 const model = await retrieveModel({
-  ...openai.model(),
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
   model: 'gpt-4o',
 })
 ```

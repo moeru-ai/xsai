@@ -1,4 +1,3 @@
-import { ollama } from '@xsai/providers'
 import { clean } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
@@ -18,7 +17,7 @@ declare global {
 describe('@xsai/stream-text', () => {
   it('basic', async () => {
     const { textStream } = await streamText({
-      ...ollama.chat('llama3.2'),
+      baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -29,6 +28,7 @@ describe('@xsai/stream-text', () => {
           role: 'user',
         },
       ],
+      model: 'llama3.2',
       // streamOptions: { usage: true },
     })
 
@@ -46,7 +46,7 @@ describe('@xsai/stream-text', () => {
     let chunkCount = 0
 
     const { chunkStream, textStream } = await streamText({
-      ...ollama.chat('llama3.2'),
+      baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -57,6 +57,7 @@ describe('@xsai/stream-text', () => {
           role: 'user',
         },
       ],
+      model: 'llama3.2',
       onChunk: () => { onChunkCount++ },
     })
 
@@ -85,7 +86,7 @@ describe('@xsai/stream-text', () => {
 
   it('long text', async () => {
     const { textStream } = await streamText({
-      ...ollama.chat('llama3.2'),
+      baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -96,6 +97,7 @@ describe('@xsai/stream-text', () => {
           role: 'user',
         },
       ],
+      model: 'llama3.2',
     })
 
     const result: string[] = []
@@ -109,7 +111,7 @@ describe('@xsai/stream-text', () => {
 
   it('stream without deconstruct', async () => {
     const stream = await streamText({
-      ...ollama.chat('mistral-nemo'),
+      baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
       messages: [
         {
@@ -121,6 +123,7 @@ describe('@xsai/stream-text', () => {
           role: 'user',
         },
       ],
+      model: 'mistral-nemo',
       seed: 42,
     })
 

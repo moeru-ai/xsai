@@ -1,7 +1,3 @@
-// @xsai/providers
-export * as providers from './providers'
-
-// xsai core utils
 export * from '@xsai/embed'
 export * from '@xsai/generate-object'
 export * from '@xsai/generate-speech'

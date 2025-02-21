@@ -1,4 +1,3 @@
-import { ollama } from '@xsai/providers'
 import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
@@ -12,7 +11,7 @@ describe('@xsai/generate-text', () => {
     let step: GenerateTextStepResult | undefined
 
     const { finishReason, steps, text, toolCalls, toolResults } = await generateText({
-      ...ollama.chat('llama3.2'),
+      baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -23,6 +22,7 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
+      model: 'llama3.2',
       onStepFinish: (result) => {
         step = result
       },
@@ -54,7 +54,7 @@ describe('@xsai/generate-text', () => {
     })
 
     const { steps, text } = await generateText({
-      ...ollama.chat('mistral-nemo'),
+      baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
       messages: [
         {
@@ -66,6 +66,7 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
+      model: 'mistral-nemo',
       seed: 42,
       toolChoice: 'required',
       tools: [weather],

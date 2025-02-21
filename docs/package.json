@@ -32,7 +32,6 @@
     "@xsai/generate-text": "workspace:^",
     "@xsai/generate-transcription": "workspace:^",
     "@xsai/model": "workspace:^",
-    "@xsai/providers": "workspace:^",
     "@xsai/shared": "workspace:^",
     "@xsai/shared-chat": "workspace:^",
     "@xsai/stream-object": "workspace:^",

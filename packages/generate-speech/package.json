@@ -40,8 +40,5 @@
   },
   "dependencies": {
     "@xsai/shared": "workspace:"
-  },
-  "devDependencies": {
-    "@xsai/providers": "workspace:"
   }
 }

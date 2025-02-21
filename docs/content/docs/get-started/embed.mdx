@@ -13,14 +13,13 @@ npm i @xsai/embed
 
 ```ts twoslash
 import { embed } from '@xsai/embed'
-import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
 
-const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
-
 const { embedding } = await embed({
-  ...openai.embed('text-embedding-3-large'),
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
   input: 'sunny day at the beach',
+  model: 'text-embedding-3-large',
 })
 ```
 
@@ -28,18 +27,17 @@ const { embedding } = await embed({
 
 ```ts twoslash
 import { embedMany } from '@xsai/embed'
-import { createOpenAI } from '@xsai/providers'
 import { env } from 'node:process'
 
-const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY! })
-
 const { embeddings } = await embedMany({
-  ...openai.embed('text-embedding-3-large'),
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
   input: [
     'sunny day at the beach',
     'rainy afternoon in the city',
     'snowy night in the mountains',
   ],
+  model: 'text-embedding-3-large'
 })
 ```
 

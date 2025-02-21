@@ -123,9 +123,6 @@ importers:
       '@xsai/model':
         specifier: workspace:^
         version: link:../packages/model
-      '@xsai/providers':
-        specifier: workspace:^
-        version: link:../packages/providers
       '@xsai/shared':
         specifier: workspace:^
         version: link:../packages/shared
@@ -190,10 +187,6 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
-    devDependencies:
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
 
   packages/generate-object:
     dependencies:
@@ -207,9 +200,6 @@ importers:
       '@valibot/to-json-schema':
         specifier: 'catalog:'
         version: 1.0.0-rc.0(valibot@1.0.0-rc.1(typescript@5.6.3))
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
       valibot:
         specifier: 'catalog:'
         version: 1.0.0-rc.1(typescript@5.6.3)
@@ -219,10 +209,6 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
-    devDependencies:
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
 
   packages/generate-text:
     dependencies:
@@ -230,9 +216,6 @@ importers:
         specifier: 'workspace:'
         version: link:../shared-chat
     devDependencies:
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
       '@xsai/tool':
         specifier: 'workspace:'
         version: link:../tool
@@ -245,22 +228,8 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
-    devDependencies:
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
 
   packages/model:
-    dependencies:
-      '@xsai/shared':
-        specifier: 'workspace:'
-        version: link:../shared
-    devDependencies:
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
-
-  packages/providers:
     dependencies:
       '@xsai/shared':
         specifier: 'workspace:'
@@ -286,9 +255,6 @@ importers:
       '@valibot/to-json-schema':
         specifier: 'catalog:'
         version: 1.0.0-rc.0(valibot@1.0.0-rc.1(typescript@5.6.3))
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
       best-effort-json-parser:
         specifier: ^1.1.3
         version: 1.1.3
@@ -305,9 +271,6 @@ importers:
         specifier: 'workspace:'
         version: link:../shared-chat
     devDependencies:
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
@@ -330,9 +293,6 @@ importers:
         specifier: 'workspace:'
         version: link:../xsschema
     devDependencies:
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
       valibot:
         specifier: 'catalog:'
         version: 1.0.0-rc.1(typescript@5.6.3)
@@ -365,9 +325,6 @@ importers:
       '@xsai/model':
         specifier: 'workspace:'
         version: link:../model
-      '@xsai/providers':
-        specifier: 'workspace:'
-        version: link:../providers
       '@xsai/shared-chat':
         specifier: 'workspace:'
         version: link:../shared-chat
