@@ -6,7 +6,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --turbo",
-    "postinstall": "fumadocs-mdx",
+    "postinstall": "fumadocs-mdx && pnpm update-references",
     "start": "next start",
     "update-references": "tsx scripts/update-references.ts"
   },
