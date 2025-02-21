@@ -1,3 +1,4 @@
+export { createCerebras } from './cerebras'
 export { createDeepInfra } from './deepinfra'
 export { createDeepSeek } from './deepseek'
 export { createFireworks } from './fireworks'
