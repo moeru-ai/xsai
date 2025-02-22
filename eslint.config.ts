@@ -10,6 +10,11 @@ import { ii } from '@importantimport/eslint-config'
 export default antfu({ typescript: { tsconfigPath: './tsconfig.json' } })
   .append(ii({ typescript: { tsconfigPath: './tsconfig.json' } }))
   .append({
+    ignores: [
+      'docs/components/ui/**/*.tsx',
+    ],
+  })
+  .append({
     rules: {
       '@masknet/no-default-error': 'off',
       '@masknet/no-then': 'off',
