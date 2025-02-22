@@ -1,3 +1,4 @@
+import { remarkMermaid } from '@theguild/remark-mermaid'
 import { rehypeCodeDefaultOptions } from 'fumadocs-core/mdx-plugins'
 import { remarkInstall } from 'fumadocs-docgen'
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config'
@@ -23,6 +24,7 @@ export default defineConfig({
     },
     remarkPlugins: [
       [remarkInstall, { persist: { id: 'package-manager' } }],
+      remarkMermaid,
     ],
   },
 })
