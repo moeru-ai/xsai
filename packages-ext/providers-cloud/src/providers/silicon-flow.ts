@@ -1,14 +1,16 @@
 import {
   createChatProvider,
   createEmbedProvider,
+  createMetadata,
   createModelProvider,
   createSpeechProvider,
   createTranscriptionProvider,
-  merge,
+  defineProvider,
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://siliconflow.com/en/pricing} */
-export const createSiliconFlow = (apiKey: string, baseURL = 'https://api.siliconflow.cn/v1/') => merge(
+export const createSiliconFlow = (apiKey: string, baseURL = 'https://api.siliconflow.cn/v1/') => defineProvider(
+  createMetadata('silicon-flow'),
   createChatProvider<
     | 'deepseek-ai/DeepSeek-R1'
     | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B'

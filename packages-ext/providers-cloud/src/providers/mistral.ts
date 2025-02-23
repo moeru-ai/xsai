@@ -1,12 +1,14 @@
 import {
   createChatProvider,
   createEmbedProvider,
+  createMetadata,
   createModelProvider,
-  merge,
+  defineProvider,
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://docs.mistral.ai} */
-export const createMistral = (apiKey: string, baseURL = 'https://api.mistral.ai/v1/') => merge(
+export const createMistral = (apiKey: string, baseURL = 'https://api.mistral.ai/v1/') => defineProvider(
+  createMetadata('mistral'),
   createChatProvider<
     | 'codestral-latest'
     | 'codestral-mamba-latest'

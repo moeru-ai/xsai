@@ -1,13 +1,15 @@
 import {
   createChatProvider,
+  createMetadata,
   createModelProvider,
   createSpeechProvider,
   createTranscriptionProvider,
-  merge,
+  defineProvider,
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://www.stepfun.com} */
-export const createStepfun = (apiKey: string, baseURL = 'https://api.stepfun.com/v1/') => merge(
+export const createStepfun = (apiKey: string, baseURL = 'https://api.stepfun.com/v1/') => defineProvider(
+  createMetadata('stepfun'),
   createChatProvider<
     | 'step-1-8k'
     | 'step-1-32k'

@@ -1,5 +1,6 @@
 import type { SpeechProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 
+import { createMetadata, defineProvider } from '@xsai-ext/shared-providers'
 import { objCamelToSnake } from '@xsai/shared'
 
 import type { UnSpeechOptions } from '.'
@@ -84,11 +85,7 @@ export interface UnElevenLabsOptions {
  * @param baseURL - UnSpeech Instance URL
  * @returns SpeechProviderWithExtraOptions
  */
-export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5933/v1/'): SpeechProviderWithExtraOptions<
-  /** @see {@link https://elevenlabs.io/docs/developer-guides/models} */
-  'eleven_english_sts_v2' | 'eleven_flash_v2' | 'eleven_flash_v2_5' | 'eleven_multilingual_sts_v2' | 'eleven_multilingual_v2',
-  UnElevenLabsOptions
-> => {
+export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5933/v1/') => {
   const toUnSpeechOptions = ({
     applyTextNormalization,
     languageCode,
@@ -117,7 +114,11 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
     }),
   })
 
-  return {
+  const speech: SpeechProviderWithExtraOptions<
+    /** @see {@link https://elevenlabs.io/docs/developer-guides/models} */
+    'eleven_english_sts_v2' | 'eleven_flash_v2' | 'eleven_flash_v2_5' | 'eleven_multilingual_sts_v2' | 'eleven_multilingual_v2',
+    UnElevenLabsOptions
+  > = {
     speech: (model, options) => ({
       ...(options ? toUnSpeechOptions(options) : {}),
       apiKey,
@@ -125,4 +126,9 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
       model: `elevenlabs/${model}`,
     }),
   }
+
+  return defineProvider(
+    createMetadata('unspeech'),
+    speech,
+  )
 }

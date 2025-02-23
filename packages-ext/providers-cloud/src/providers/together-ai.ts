@@ -1,12 +1,14 @@
 import {
   createChatProvider,
   createEmbedProvider,
+  createMetadata,
   createModelProvider,
-  merge,
+  defineProvider,
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://api.together.ai/models} */
-export const createTogetherAI = (apiKey: string, baseURL = 'https://api.together.xyz/v1/') => merge(
+export const createTogetherAI = (apiKey: string, baseURL = 'https://api.together.xyz/v1/') => defineProvider(
+  createMetadata('together-ai'),
   createChatProvider<
     | 'deepseek-ai/DeepSeek-R1'
     | 'deepseek-ai/DeepSeek-V3'
