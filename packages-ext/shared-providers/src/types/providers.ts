@@ -1,5 +1,7 @@
 import type { CommonRequestOptions } from '@xsai/shared'
 
+import type { ProviderMetadata } from './metadata'
+
 export interface ChatProvider<T = string> {
   // eslint-disable-next-line sonarjs/no-useless-intersection
   chat: (model: (string & {}) | T) => CommonRequestOptions
@@ -13,6 +15,10 @@ export interface ChatProviderWithExtraOptions<T = string, T2 = undefined> {
 export interface EmbedProvider<T = string> {
   // eslint-disable-next-line sonarjs/no-useless-intersection
   embed: (model: (string & {}) | T) => CommonRequestOptions
+}
+
+export interface MetadataProviders {
+  metadata: ProviderMetadata
 }
 
 export interface ModelProvider {

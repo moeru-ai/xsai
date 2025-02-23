@@ -1,12 +1,14 @@
 import {
   createChatProvider,
   createEmbedProvider,
+  createMetadataProvider,
   createModelProvider,
   merge,
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://chat.qwenlm.ai/} */
 export const createQwen = (apiKey: string, baseURL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/') => merge(
+  createMetadataProvider('qwen'),
   /** @see {@link https://help.aliyun.com/zh/model-studio/getting-started/models} */
   createChatProvider<
     | 'qwen2.5-32b-instruct'
