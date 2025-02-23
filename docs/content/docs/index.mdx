@@ -3,6 +3,8 @@ title: Introduction
 description: extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.
 ---
 
+import { PkgSizeChart } from '@/components/pkg-size-chart'
+
 ---
 
 ## Why use the xsAI?
@@ -10,3 +12,23 @@ description: extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.
 xsAI has a similar interface to the Vercel AI SDK, but is significantly smaller.
 
 This makes it ideal for a variety of scenarios that require smaller bundle size, such as web applications, cli running through npx, and so on.
+
+### So how small is xsAI?
+
+Without further ado, let's look at the results from https://pkg-size.dev:
+
+<PkgSizeChart data={[
+  { bundled: 15, gzipped: 5.4, installed: 80, name: 'xsai@0.1.0-beta.6' },
+  { bundled: 158, gzipped: 42, installed: 9424, name: 'ai@4.1.45' },
+]} />
+
+xsAI reduces the installation size 100x and the bundle size 10x.
+
+And it could be smaller!
+
+If you only need basic text generation, you can just install the `@xsai/generate-text` package:
+
+<PkgSizeChart data={[
+  { bundled: 2.7, gzipped: 1.3, installed: 18, name: '@xsai/generate-text@0.1.0-beta.6' },
+  { bundled: 15, gzipped: 5.4, installed: 80, name: 'xsai@0.1.0-beta.6' },
+]} />
