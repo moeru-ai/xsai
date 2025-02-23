@@ -3,6 +3,8 @@ import type { JSONSchema7 } from 'json-schema'
 
 export const toJsonSchema = async (schema: StandardSchemaV1): Promise<JSONSchema7> => {
   switch (schema['~standard'].vendor) {
+    case 'arktype':
+      return (await ((await import('./arktype')).toJsonSchema()))(schema)
     case 'valibot':
       return (await ((await import('./valibot')).toJsonSchema()))(schema)
     case 'zod':

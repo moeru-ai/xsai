@@ -34,14 +34,20 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "peerDependencies": {
     "@valibot/to-json-schema": "catalog:",
+    "arktype": "^2.0.4",
     "zod-to-json-schema": "^3.24.1"
   },
   "peerDependenciesMeta": {
     "@valibot/to-json-schema": {
+      "optional": true
+    },
+    "arktype": {
       "optional": true
     },
     "zod-to-json-schema": {
@@ -52,6 +58,7 @@
     "@standard-schema/spec": "^1.0.0",
     "@types/json-schema": "^7.0.15",
     "@valibot/to-json-schema": "catalog:",
+    "arktype": "^2.0.4",
     "zod-to-json-schema": "^3.24.2"
   }
 }
