@@ -1,8 +1,8 @@
-import { createChatProvider, createEmbedProvider, createMetadata, defineProvider } from '@xsai-ext/shared-providers'
+import { createChatProvider, createEmbedProvider, createMetadataProvider, defineProvider } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://cloud.tencent.com/document/product/1729} */
 export const createTencentHunyuan = (apiKey: string, baseURL = 'https://api.hunyuan.cloud.tencent.com/v1/') => defineProvider(
-  createMetadata('tencent-hunyuan'),
+  createMetadataProvider('tencent-hunyuan'),
   /** @see {@link https://cloud.tencent.com/document/product/1729/111007} */
   createChatProvider<
     | 'hunyuan-code'

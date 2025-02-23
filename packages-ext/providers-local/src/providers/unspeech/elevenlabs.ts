@@ -1,6 +1,6 @@
 import type { SpeechProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 
-import { createMetadata, defineProvider } from '@xsai-ext/shared-providers'
+import { createMetadataProvider, defineProvider } from '@xsai-ext/shared-providers'
 import { objCamelToSnake } from '@xsai/shared'
 
 import type { UnSpeechOptions } from '.'
@@ -128,7 +128,7 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
   }
 
   return defineProvider(
-    createMetadata('unspeech'),
+    createMetadataProvider('unspeech/elevenlabs'),
     speech,
   )
 }

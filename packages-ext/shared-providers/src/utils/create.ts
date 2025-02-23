@@ -1,6 +1,6 @@
 import type { CreateProviderOptions } from '../types/create-provider-options'
-import type { ChatProvider, ChatProviderWithExtraOptions, EmbedProvider, ModelProvider, SpeechProvider, SpeechProviderWithExtraOptions, TranscriptionProvider } from '../types/feature-providers'
-import type { Metadata } from '../types/metadata'
+import type { ProviderMetadata } from '../types/metadata'
+import type { ChatProvider, ChatProviderWithExtraOptions, EmbedProvider, ModelProvider, SpeechProvider, SpeechProviderWithExtraOptions, TranscriptionProvider } from '../types/providers'
 
 export const createChatProvider = <T extends string = string>(options: CreateProviderOptions): ChatProvider<T> => ({
   chat: model => Object.assign(options, { model }),
@@ -30,16 +30,7 @@ export const createTranscriptionProvider = <T extends string = string>(options: 
   transcription: model => Object.assign(options, { model }),
 })
 
-export const createMetadata = <
-  ID extends string,
->(
-  ...parameters:
-    | [id: Metadata<ID>['id'], metadata: Omit<Metadata<ID>, 'id'>]
-    | [id: Metadata<ID>['id']]
-): Metadata<ID> =>
-  typeof parameters[0] === 'string'
-    ? {
-        id: parameters[0],
-        ...parameters[1],
-      }
-    : parameters[0]
+export const createMetadataProvider = (id: string, otherMeta?: Omit<ProviderMetadata, 'id'>): ProviderMetadata => ({
+  id,
+  ...otherMeta,
+})

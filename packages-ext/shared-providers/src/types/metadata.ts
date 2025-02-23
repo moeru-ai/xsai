@@ -1,3 +1,3 @@
-export interface Metadata<ID extends string = string> {
-  id: ID
+export interface ProviderMetadata {
+  id: string
 }

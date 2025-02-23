@@ -1,6 +1,6 @@
 import {
   createChatProvider,
-  createMetadata,
+  createMetadataProvider,
   createModelProvider,
   createSpeechProvider,
   createTranscriptionProvider,
@@ -9,7 +9,7 @@ import {
 
 /** @see {@link https://www.stepfun.com} */
 export const createStepfun = (apiKey: string, baseURL = 'https://api.stepfun.com/v1/') => defineProvider(
-  createMetadata('stepfun'),
+  createMetadataProvider('stepfun'),
   createChatProvider<
     | 'step-1-8k'
     | 'step-1-32k'

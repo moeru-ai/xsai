@@ -1,5 +1,6 @@
 import type { UnionToIntersection } from 'type-fest'
 
+import type { ProviderMetadata } from './metadata'
 import type {
   ChatProvider,
   ChatProviderWithExtraOptions,
@@ -8,10 +9,9 @@ import type {
   SpeechProvider,
   SpeechProviderWithExtraOptions,
   TranscriptionProvider,
-} from './feature-providers'
-import type { Metadata } from './metadata'
+} from './providers'
 
-export type DefineProvider = <ID extends string, Features extends object[]> (metadata: Metadata<ID>, ...features: Features) => Provider<ID, Features>
+export type DefineProvider = <Features extends object[]> (metadata: ProviderMetadata, ...features: Features) => Provider<Features>
 
 export type FeatureProvider =
   | ChatProvider
@@ -22,4 +22,4 @@ export type FeatureProvider =
   | SpeechProviderWithExtraOptions
   | TranscriptionProvider
 
-export type Provider<ID extends string, Features extends object[]> = UnionToIntersection<Features[number]> & { metadata: Metadata<ID> }
+export type Provider<Features extends object[]> = UnionToIntersection<Features[number]> & { metadata: ProviderMetadata }

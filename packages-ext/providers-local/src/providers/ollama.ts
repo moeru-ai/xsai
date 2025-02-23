@@ -1,14 +1,14 @@
 import {
   createChatProvider,
   createEmbedProvider,
-  createMetadata,
+  createMetadataProvider,
   createModelProvider,
   defineProvider,
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://ollama.com/} */
 export const createOllama = (baseURL = 'http://localhost:11434/v1/') => defineProvider(
-  createMetadata('ollama'),
+  createMetadataProvider('ollama'),
   /** @see {@link https://ollama.com/models} */
   createChatProvider<
     | 'gemma2'
