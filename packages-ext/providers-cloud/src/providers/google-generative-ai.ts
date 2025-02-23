@@ -3,10 +3,10 @@ import {
   createEmbedProvider,
   createMetadataProvider,
   createModelProvider,
-  defineProvider,
+  merge,
 } from '@xsai-ext/shared-providers'
 
-export const createGoogleGenerativeAI = (apiKey: string, baseURL = 'https://generativelanguage.googleapis.com/v1beta/openai/') => defineProvider(
+export const createGoogleGenerativeAI = (apiKey: string, baseURL = 'https://generativelanguage.googleapis.com/v1beta/openai/') => merge(
   createMetadataProvider('google-generative-ai'),
   /** @see {@link https://aistudio.google.com/u/1/prompts/new_chat} */
   createChatProvider<

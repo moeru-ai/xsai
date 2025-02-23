@@ -1,6 +1,6 @@
 import type { SpeechProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 
-import { createMetadataProvider, defineProvider } from '@xsai-ext/shared-providers'
+import { createMetadataProvider, merge } from '@xsai-ext/shared-providers'
 import { objCamelToSnake } from '@xsai/shared'
 
 import type { UnSpeechOptions } from '.'
@@ -114,7 +114,7 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
     }),
   })
 
-  const speech: SpeechProviderWithExtraOptions<
+  const speechProvider: SpeechProviderWithExtraOptions<
     /** @see {@link https://elevenlabs.io/docs/developer-guides/models} */
     'eleven_english_sts_v2' | 'eleven_flash_v2' | 'eleven_flash_v2_5' | 'eleven_multilingual_sts_v2' | 'eleven_multilingual_v2',
     UnElevenLabsOptions
@@ -127,8 +127,8 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
     }),
   }
 
-  return defineProvider(
+  return merge(
     createMetadataProvider('unspeech/elevenlabs'),
-    speech,
+    speechProvider,
   )
 }

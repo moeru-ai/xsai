@@ -1,11 +1,11 @@
-import { createChatProvider, createEmbedProvider, createMetadataProvider, createModelProvider, defineProvider } from '@xsai-ext/shared-providers'
+import { createChatProvider, createEmbedProvider, createMetadataProvider, createModelProvider, merge } from '@xsai-ext/shared-providers'
 
 /**
  * [DeepInfra](https://deepinfra.com/) provider
  *
  * @see {@link https://deepinfra.com/pricing}
  */
-export const createDeepInfra = (apiKey: string, baseURL = 'https://api.deepinfra.com/v1/openai/') => defineProvider(
+export const createDeepInfra = (apiKey: string, baseURL = 'https://api.deepinfra.com/v1/openai/') => merge(
   createMetadataProvider('deepinfra'),
   createChatProvider<
     | 'deepseek-ai/DeepSeek-R1'

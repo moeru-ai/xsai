@@ -1,7 +1,7 @@
 import type { ChatProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { createMetadataProvider, defineProvider } from '@xsai-ext/shared-providers'
+import { createMetadataProvider, merge } from '@xsai-ext/shared-providers'
 import { objCamelToSnake } from '@xsai/shared'
 
 export interface OpenRouterOptions {
@@ -92,7 +92,7 @@ export interface OpenRouterOptions {
   transforms?: string[]
 }
 
-export const createOpenRouter = (apiKey: string, baseURL = '') => defineProvider(
+export const createOpenRouter = (apiKey: string, baseURL = '') => merge(
   createMetadataProvider('openrouter'),
   {
     chat: (model: string, openRouterOptions?: OpenRouterOptions) => {

@@ -1,4 +1,4 @@
-import { createMetadataProvider, createSpeechProviderWithExtraOptions, defineProvider } from '@xsai-ext/shared-providers'
+import { createMetadataProvider, createSpeechProviderWithExtraOptions, merge } from '@xsai-ext/shared-providers'
 
 export interface UnSpeechOptions {
   /** @experimental */
@@ -6,7 +6,7 @@ export interface UnSpeechOptions {
 }
 
 /** @see {@link https://github.com/moeru-ai/unspeech} */
-export const createUnSpeech = (apiKey: string, baseURL = 'http://localhost:5933/v1/') => defineProvider(
+export const createUnSpeech = (apiKey: string, baseURL = 'http://localhost:5933/v1/') => merge(
   createMetadataProvider('unspeech'),
   createSpeechProviderWithExtraOptions<
     | `elevenlabs/${string}`
