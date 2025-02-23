@@ -25,3 +25,54 @@ exports[`toJsonSchema > arktype 1`] = `
   "type": "object",
 }
 `;
+
+exports[`toJsonSchema > valibot 1`] = `
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "My neat object schema",
+  "properties": {
+    "myString": {
+      "type": "string",
+    },
+    "myUnion": {
+      "anyOf": [
+        {
+          "type": "number",
+        },
+        {
+          "type": "boolean",
+        },
+      ],
+    },
+  },
+  "required": [
+    "myString",
+    "myUnion",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toJsonSchema > zod 1`] = `
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "description": "My neat object schema",
+  "properties": {
+    "myString": {
+      "type": "string",
+    },
+    "myUnion": {
+      "type": [
+        "number",
+        "boolean",
+      ],
+    },
+  },
+  "required": [
+    "myString",
+    "myUnion",
+  ],
+  "type": "object",
+}
+`;
