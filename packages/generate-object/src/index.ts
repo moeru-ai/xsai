@@ -4,43 +4,73 @@ import type { Infer, InferIn, Schema } from 'xsschema'
 import { generateText } from '@xsai/generate-text'
 import { toJSONSchema, validate } from 'xsschema'
 
+import { wrapArray, wrapObject } from './jsonSchema'
+
 export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOptions {
   schema: T
   schemaDescription?: string
   schemaName?: string
 }
 
-export interface GenerateObjectResult<T extends Schema> extends Omit<GenerateTextResult, 'text'> {
-  object: Infer<T>
-}
+type GenerateResult<O> = GenerateTextResult & { object: O }
 
-/** @experimental WIP */
-export const generateObject = async <T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<T>> =>
-  generateText({
+type OptionOutput = 'array' | 'object'
+
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'array' }): Promise<GenerateResult<Array<Infer<T>>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'object' }): Promise<GenerateResult<Infer<T>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateResult<Infer<T>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output?: OptionOutput }) {
+  const { schema: schemaValidator } = options
+
+  let schema = await toJSONSchema(schemaValidator)
+  if (options.output === 'array') {
+    schema = wrapObject(wrapArray(schema), 'elements')
+  }
+
+  return generateText({
     ...options,
     response_format: {
       json_schema: {
         description: options.schemaDescription,
         name: options.schemaName ?? 'json_schema',
-        schema: await toJSONSchema(options.schema),
+        schema,
         strict: true,
       },
       type: 'json_schema',
     },
-    schema: undefined,
-    schemaDescription: undefined,
-    schemaName: undefined,
-  })
-    .then(async ({ finishReason, messages, steps, text, toolCalls, toolResults, usage }) => {
-      const object = await validate(options.schema, JSON.parse(text!) as InferIn<T>)
+    schema: undefined, // Remove schema from options
+    schemaDescription: undefined, // Remove schemaDescription from options
+    schemaName: undefined, // Remove schemaName from options
+  }).then(async ({ finishReason, messages, steps, text, toolCalls, toolResults, usage }) => {
+    const object = JSON.parse(text!) as Infer<T>
+
+    if (options.output === 'array') {
+      const elements = (object as { elements: Array<Infer<T>> }).elements
+      for (const element of elements) {
+        await validate(schemaValidator, element as InferIn<T>)
+      }
 
       return {
         finishReason,
         messages,
-        object,
+        object: elements,
         steps,
+        text,
         toolCalls,
         toolResults,
         usage,
       }
-    })
+    }
+
+    return {
+      finishReason,
+      messages,
+      object,
+      steps,
+      text,
+      toolCalls,
+      toolResults,
+      usage,
+    }
+  })
+}
