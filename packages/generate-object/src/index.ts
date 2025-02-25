@@ -12,14 +12,14 @@ export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOpt
   schemaName?: string
 }
 
-type GenerateResult<O> = GenerateTextResult & { object: O }
+export type GenerateObjectResult<O> = GenerateTextResult & { object: O }
 
-type OptionOutput = 'array' | 'object'
+type GenerateObjectOutputOption = 'array' | 'object'
 
-export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'array' }): Promise<GenerateResult<Array<Infer<T>>>>
-export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'object' }): Promise<GenerateResult<Infer<T>>>
-export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateResult<Infer<T>>>
-export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output?: OptionOutput }) {
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'array' }): Promise<GenerateObjectResult<Array<Infer<T>>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'object' }): Promise<GenerateObjectResult<Infer<T>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<Infer<T>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output?: GenerateObjectOutputOption }) {
   const { schema: schemaValidator } = options
 
   let schema = await toJSONSchema(schemaValidator)
