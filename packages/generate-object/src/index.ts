@@ -41,18 +41,15 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
     schemaDescription: undefined, // Remove schemaDescription from options
     schemaName: undefined, // Remove schemaName from options
   }).then(async ({ finishReason, messages, steps, text, toolCalls, toolResults, usage }) => {
-    const object = JSON.parse(text!) as Infer<T>
+    const json: unknown = JSON.parse(text!)
 
     if (options.output === 'array') {
-      const elements = (object as { elements: Array<Infer<T>> }).elements
-      for (const element of elements) {
-        await validate(schemaValidator, element as InferIn<T>)
-      }
-
       return {
         finishReason,
         messages,
-        object: elements,
+        object: await Promise.all((json as { elements: InferIn<T>[] })
+          .elements
+          .map(async element => validate(schemaValidator, element))),
         steps,
         text,
         toolCalls,
@@ -60,16 +57,17 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
         usage,
       }
     }
-
-    return {
-      finishReason,
-      messages,
-      object,
-      steps,
-      text,
-      toolCalls,
-      toolResults,
-      usage,
+    else {
+      return {
+        finishReason,
+        messages,
+        object: await validate(options.schema, json as InferIn<T>),
+        steps,
+        text,
+        toolCalls,
+        toolResults,
+        usage,
+      }
     }
   })
 }
