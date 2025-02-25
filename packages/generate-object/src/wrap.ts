@@ -1,6 +1,6 @@
 import type { JSONSchema } from 'xsschema'
 
-export const wrap = (schema: JSONSchema): JSONSchema => ({
+export const wrap = ({ $schema, ...schema }: JSONSchema): JSONSchema => ({
   properties: {
     elements: {
       items: schema,
