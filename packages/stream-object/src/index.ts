@@ -34,7 +34,7 @@ export interface StreamObjectOnFinishResult<T extends Schema> {
 }
 
 interface StreamObjectExtraOptions<T extends Schema> {
-  onFinish?: (result: OnFinishResult<T>) => unknown
+  onFinish?: (result: StreamObjectOnFinishResult<T>) => unknown
 }
 
 /** @experimental WIP */
