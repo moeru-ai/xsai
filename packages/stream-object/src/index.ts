@@ -29,11 +29,19 @@ export interface StreamObjectResult<T extends Schema> extends StreamTextResult {
   partialObjectStream: ReadableStream<PartialDeep<Infer<T>>>
 }
 
+interface OnFinishResult<T extends Schema> {
+  object?: Infer<T>
+}
+
+interface StreamObjectExtraOptions<T extends Schema> {
+  onFinish?: (result: OnFinishResult<T>) => unknown
+}
+
 /** @experimental WIP */
-export async function streamObject<T extends Schema>(options: StreamObjectOptions<T> & { output: 'array' }): Promise<StreamObjectResult<T> & { elementStream: ReadableStream<Infer<T>> }>
-export async function streamObject<T extends Schema>(options: StreamObjectOptions<T> & { output: 'object' }): Promise<StreamObjectResult<T>>
-export async function streamObject<T extends Schema>(options: StreamObjectOptions<T>): Promise<StreamObjectResult<T>>
-export async function streamObject<T extends Schema>(options: StreamObjectOptions<T> & { output?: 'array' | 'object' }): Promise<StreamObjectResult<T>> {
+export async function streamObject<T extends Schema>(options: StreamObjectExtraOptions<T> & StreamObjectOptions<T> & { output: 'array' }): Promise<StreamObjectResult<T> & { elementStream: ReadableStream<Infer<T>> }>
+export async function streamObject<T extends Schema>(options: StreamObjectExtraOptions<T> & StreamObjectOptions<T> & { output: 'object' }): Promise<StreamObjectResult<T>>
+export async function streamObject<T extends Schema>(options: StreamObjectExtraOptions<T> & StreamObjectOptions<T>): Promise<StreamObjectResult<T>>
+export async function streamObject<T extends Schema>(options: StreamObjectExtraOptions<T> & StreamObjectOptions<T> & { output?: 'array' | 'object' }): Promise<StreamObjectResult<T>> {
   const { schema: schemaValidator } = options
 
   let schema = await toJSONSchema(schemaValidator)
@@ -68,6 +76,7 @@ export async function streamObject<T extends Schema>(options: StreamObjectOption
         flush: (controller) => {
           const data = parse(partialData) as PartialDeep<Infer<T>>
           controller.enqueue((data as { elements: Infer<T>[] }).elements.at(-1))
+          options.onFinish?.({ object: (data as { elements: Infer<T>[] }).elements })
         },
         transform: (chunk, controller) => {
           partialData += chunk

@@ -1,5 +1,5 @@
 import * as v from 'valibot'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { streamObject } from '../src'
 
@@ -137,7 +137,7 @@ describe('@xsai/stream-object', () => {
 
   it('object array', async () => {
     const schema = v.object({
-      answer: v.string(),
+      fruit: v.string(),
     })
     const { elementStream } = await streamObject({
       baseURL: 'http://localhost:11434/v1/',
@@ -147,7 +147,7 @@ describe('@xsai/stream-object', () => {
           role: 'system',
         },
         {
-          content: 'give me 5 objects',
+          content: 'give me 5 fruits',
           role: 'user',
         },
       ],
@@ -157,14 +157,48 @@ describe('@xsai/stream-object', () => {
       seed: 39,
     })
 
-    const objects: { answer: string }[] = []
+    const objects: { fruit: string }[] = []
     for await (const element of elementStream) {
+      objects.push(element)
+      expect(() => v.parse(schema, element)).not.throw()
+    }
+
+    expect(objects).toHaveLength(5)
+  }, 60000)
+
+  it('object array with onFinish', async () => {
+    const schema = v.object({
+      fruit: v.string(),
+    })
+    const onFinish = vi.fn()
+    const { elementStream } = await streamObject({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'give me 5 fruits',
+          role: 'user',
+        },
+      ],
+      model: 'llama3.2',
+      onFinish,
+      output: 'array',
+      schema,
+      seed: 39,
+    })
+
+    const objects: { fruit: string }[] = []
+    for await (const element of elementStream) {
+      expect(() => v.parse(schema, element)).not.throw()
       objects.push(element)
     }
 
     expect(objects).toHaveLength(5)
-    for (const object of objects) {
-      expect(() => v.parse(schema, object)).not.throw()
-    }
-  }, 60000)
+
+    expect(onFinish).toBeCalled()
+    expect(onFinish).toBeCalledWith({ object: objects })
+  })
 })
