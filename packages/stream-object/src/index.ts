@@ -29,7 +29,7 @@ export interface StreamObjectResult<T extends Schema> extends StreamTextResult {
   partialObjectStream: ReadableStream<PartialDeep<Infer<T>>>
 }
 
-interface OnFinishResult<T extends Schema> {
+export interface StreamObjectOnFinishResult<T extends Schema> {
   object?: Infer<T>
 }
 
