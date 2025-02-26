@@ -67,8 +67,7 @@ export async function streamObject<T extends Schema>(options: StreamObjectExtraO
     let index = 0
 
     if (options.output === 'array') {
-      let textStream
-      ;[textStream, rawTextStream] = rawTextStream.tee()
+      let [textStream, rawTextStream] = rawTextStream.tee()
 
       let partialData = ''
       elementStream = textStream.pipeThrough(new TransformStream({
