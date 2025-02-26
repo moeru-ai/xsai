@@ -45,9 +45,8 @@ export async function streamObject<T extends Schema>(options: StreamObjectExtraO
   const { schema: schemaValidator } = options
 
   let schema = await toJSONSchema(schemaValidator)
-  if (options.output === 'array') {
+  if (options.output === 'array')
     schema = wrap(schema)
-  }
 
   return streamText({
     ...options,
