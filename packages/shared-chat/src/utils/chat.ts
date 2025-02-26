@@ -1,6 +1,14 @@
+import type { CommonRequestOptions } from '@xsai/shared'
+
 import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
-import type { ChatOptions, Tool } from '../types'
+import type { Message, Tool, ToolChoice } from '../types'
+
+export interface ChatOptions extends CommonRequestOptions {
+  [key: string]: unknown
+  messages: Message[]
+  toolChoice?: ToolChoice
+}
 
 export const chat = async <T extends ChatOptions>(options: T) =>
   (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {

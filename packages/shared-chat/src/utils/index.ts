@@ -1,1 +1,1 @@
-export { chat } from './chat'
+export { chat, type ChatOptions } from './chat'

@@ -1,4 +1,3 @@
-export type * from './chat-options'
 export type * from './finish-reason'
 export type * from './message'
 export type * from './message-part'
