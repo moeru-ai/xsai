@@ -1,7 +1,7 @@
 {
   "name": "@xsai-ext/providers-local",
   "type": "module",
-  "version": "0.1.0-beta.8",
+  "version": "0.1.0-beta.9",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
   "author": "Moeru AI",
   "license": "MIT",
