@@ -9,12 +9,17 @@ export interface ChatProvider<T = string> {
 
 export interface ChatProviderWithExtraOptions<T = string, T2 = undefined> {
   // eslint-disable-next-line sonarjs/no-useless-intersection
-  chat: (model: (string & {}) | T, extraOptions?: T2) => CommonRequestOptions & T2
+  chat: (model: (string & {}) | T, extraOptions?: T2) => CommonRequestOptions & Partial<T2>
 }
 
 export interface EmbedProvider<T = string> {
   // eslint-disable-next-line sonarjs/no-useless-intersection
   embed: (model: (string & {}) | T) => CommonRequestOptions
+}
+
+export interface EmbedProviderWithExtraOptions<T = string, T2 = undefined> {
+  // eslint-disable-next-line sonarjs/no-useless-intersection
+  embed: (model: (string & {}) | T, extraOptions?: T2) => CommonRequestOptions & Partial<T2>
 }
 
 export interface MetadataProviders {
@@ -23,6 +28,10 @@ export interface MetadataProviders {
 
 export interface ModelProvider {
   model: () => Omit<CommonRequestOptions, 'model'>
+}
+
+export interface ModelProviderWithExtraOptions<T = undefined> {
+  model: (options?: T) => Omit<CommonRequestOptions, 'model'> & Partial<T>
 }
 
 export interface SpeechProvider<T = string> {
@@ -38,4 +47,9 @@ export interface SpeechProviderWithExtraOptions<T = string, T2 = undefined> {
 export interface TranscriptionProvider<T = string> {
   // eslint-disable-next-line sonarjs/no-useless-intersection
   transcription: (model: (string & {}) | T) => CommonRequestOptions
+}
+
+export interface TranscriptionProviderWithExtraOptions<T = string, T2 = undefined> {
+  // eslint-disable-next-line sonarjs/no-useless-intersection
+  transcription: (model: (string & {}) | T, extraOptions?: T2) => CommonRequestOptions & Partial<T2>
 }
