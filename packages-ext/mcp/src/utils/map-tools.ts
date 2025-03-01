@@ -1,16 +1,14 @@
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import type { Tool } from '@xsai/shared-chat'
 
-export const mapTools = async (client: Client, serverName: string): Promise<Tool[]> => {
-  const result: Tool[] = []
-
-  const { tools } = await client.listTools()
-
-  for (const { description, inputSchema, name } of tools) {
-    result.push({
+export const mapTools = async (client: Client, serverName: string): Promise<Tool[]> =>
+  client
+    .listTools()
+    .then(({ tools }) => tools.map(({ description, inputSchema, name }) => ({
       execute: async args => client.callTool({
         arguments: args as Record<string, unknown>,
         name,
+        // eslint-disable-next-line sonarjs/no-nested-functions
       }).then(res => JSON.stringify(res)),
       function: {
         description,
@@ -19,8 +17,4 @@ export const mapTools = async (client: Client, serverName: string): Promise<Tool
         strict: true,
       },
       type: 'function',
-    })
-  }
-
-  return result
-}
+    })))
