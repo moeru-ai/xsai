@@ -5,7 +5,7 @@ import { chat } from '@xsai/shared-chat'
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
-  onStepFinish?: (step: GenerateTextStepResult) => Promise<void> | void
+  onStepFinish?: (step: GenerateTextStepResult) => Promise<unknown> | unknown
   /** @internal */
   steps?: GenerateTextStepResult[]
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
