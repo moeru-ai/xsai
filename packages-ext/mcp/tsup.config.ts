@@ -6,6 +6,7 @@ export default defineConfig({
   ...defaults,
   entry: [
     'src/index.ts',
+    'src/sse.ts',
     'src/stdio.ts',
   ],
 })
