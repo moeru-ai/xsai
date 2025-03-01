@@ -13,6 +13,7 @@ export interface GetSSEServerToolsOptions {
   }>
 }
 
+/** @experimental */
 export const getSSEServerTools = async ({ mcpServers }: GetSSEServerToolsOptions): Promise<Tool[]> => {
   const result: Tool[] = []
 

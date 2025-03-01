@@ -11,6 +11,7 @@ export interface GetStdioServerToolsOptions {
   mcpServers: Record<string, StdioServerParameters>
 }
 
+/** @experimental */
 export const getStdioServerTools = async ({ mcpServers }: GetStdioServerToolsOptions): Promise<Tool[]> => {
   const result: Tool[] = []
 
