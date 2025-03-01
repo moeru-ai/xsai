@@ -23,9 +23,7 @@ describe('@xsai/generate-text', () => {
         },
       ],
       model: 'llama3.2',
-      onStepFinish: (result) => {
-        step = result
-      },
+      onStepFinish: result => (step = result),
     })
 
     expect(text).toStrictEqual('YES')
