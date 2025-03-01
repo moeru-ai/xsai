@@ -7,12 +7,10 @@ import { stderr } from 'node:process'
 
 import { mapTools } from './utils/map-tools'
 
-export interface GetStdioServerToolsOptions {
-  mcpServers: Record<string, StdioServerParameters>
-}
+export type GetStdioServerToolsOptions = Record<string, StdioServerParameters>
 
 /** @experimental */
-export const getStdioServerTools = async ({ mcpServers }: GetStdioServerToolsOptions): Promise<Tool[]> => {
+export const getStdioServerTools = async (mcpServers: GetStdioServerToolsOptions): Promise<Tool[]> => {
   const result: Tool[] = []
 
   /** @see {@link https://github.com/vercel/ai/issues/3891#issuecomment-2561348224} */
