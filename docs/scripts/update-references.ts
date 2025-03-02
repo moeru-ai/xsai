@@ -25,7 +25,7 @@ for await (const pkg of packages) {
 const json = JSON.stringify({
   defaultOpen: false,
   pages: pages.toReversed(),
-  title: 'References',
+  title: 'Packages',
 }, null, 2)
 
 await writeFile(resolve(import.meta.dirname, '../content/docs/references/meta.json'), `${json}\n`)

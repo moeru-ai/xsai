@@ -1,6 +1,6 @@
 {
   "title": "Top-level",
-  "defaultOpen": true,
+  "defaultOpen": false,
   "pages": [
     "xsai",
     "xsfetch",

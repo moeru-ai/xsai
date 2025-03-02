@@ -60,16 +60,22 @@ export const PkgSizeChart = ({ data }: { data: PkgSizeData[] }) => (
           <ChartTooltip content={(
             <ChartTooltipContent
               formatter={(value, name) => (
-                <div className="flex min-w-[130px] items-center text-xs text-muted-foreground">
-                  {chartConfig[name as keyof typeof chartConfig]?.label
-                    || name}
-                  <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
-                    {value}
-                    <span className="font-normal text-muted-foreground">
-                      KB
-                    </span>
+                <>
+                  <div
+                    className="h-2.5 w-2.5 shrink-0 rounded-xs"
+                    style={{ backgroundColor: `var(--color-${name})` }}
+                  />
+                  <div className="flex min-w-[130px] items-center text-xs text-muted-foreground">
+                    {chartConfig[name as keyof typeof chartConfig]?.label
+                      || name}
+                    <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
+                      {value}
+                      <span className="font-normal text-muted-foreground">
+                        KB
+                      </span>
+                    </div>
                   </div>
-                </div>
+                </>
               )}
               hideLabel
             />
