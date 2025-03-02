@@ -12,11 +12,6 @@ export interface GenerateSpeechOptions extends CommonRequestOptions {
   voice: string
 }
 
-/**
- * @experimental WIP
- * @param options generate speech options.
- * @returns audio array buffer
- */
 export const generateSpeech = async (options: GenerateSpeechOptions): Promise<ArrayBuffer> =>
   (options.fetch ?? globalThis.fetch)(requestURL('audio/speech', options.baseURL), {
     body: requestBody(options),

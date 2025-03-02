@@ -8,7 +8,6 @@ export interface CreateFetchOptions {
   retryStatusCodes: number[]
 }
 
-/** @experimental WIP */
 export const createFetch = (userOptions: Partial<CreateFetchOptions>): typeof globalThis.fetch => {
   const options: CreateFetchOptions = {
     retry: 3,
