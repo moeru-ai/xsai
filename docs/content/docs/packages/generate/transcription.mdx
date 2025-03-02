@@ -1,6 +1,6 @@
 ---
 title: Transcription (WIP)
-# description: 
+description: Transcribes audio into the input language.
 ---
 
 import { PkgSizeBadge } from '@/components/pkg-size-badge'
@@ -9,4 +9,20 @@ import { PkgSizeBadge } from '@/components/pkg-size-badge'
 
 ```package-install
 npm i @xsai/generate-transcription
+```
+
+## Examples
+
+```ts twoslash
+import { generateTranscription } from '@xsai/generate-transcription'
+import { openAsBlob } from 'node:fs'
+
+const { text } = await generateTranscription({
+  apiKey: '',
+  baseURL: 'http://localhost:9010',
+  file: await openAsBlob('./test/fixtures/basic.wav', { type: 'audio/wav' }),
+  fileName: 'basic.wav',
+  language: 'en-US',
+  model: 'ggml-large-v3-turbo-q5_0.bin',
+})
 ```
