@@ -45,7 +45,7 @@ interface PkgSizeData {
 export const PkgSizeChart = ({ data }: { data: PkgSizeData[] }) => (
   <Card>
     <CardHeader>
-      <CardTitle>Package size (KB)</CardTitle>
+      <CardTitle>Package size</CardTitle>
     </CardHeader>
     <CardContent>
       <ChartContainer config={chartConfig}>
@@ -57,7 +57,24 @@ export const PkgSizeChart = ({ data }: { data: PkgSizeData[] }) => (
             tickLine={false}
             tickMargin={10}
           />
-          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+          <ChartTooltip content={(
+            <ChartTooltipContent
+              formatter={(value, name) => (
+                <div className="flex min-w-[130px] items-center text-xs text-muted-foreground">
+                  {chartConfig[name as keyof typeof chartConfig]?.label
+                    || name}
+                  <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
+                    {value}
+                    <span className="font-normal text-muted-foreground">
+                      KB
+                    </span>
+                  </div>
+                </div>
+              )}
+              hideLabel
+            />
+          )}
+          />
           <ChartLegend content={<ChartLegendContent />} />
           <Bar
             dataKey="gzipped"
