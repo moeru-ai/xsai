@@ -17,6 +17,11 @@ export const baseOptions: BaseLayoutProps = {
       text: 'Documentation',
       url: '/docs',
     },
+    {
+      active: 'none',
+      text: 'Blog',
+      url: 'https://blog.moeru.ai',
+    },
   ],
   nav: {
     title: (
