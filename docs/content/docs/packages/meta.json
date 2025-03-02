@@ -2,10 +2,12 @@
   "title": "Packages",
   "defaultOpen": true,
   "pages": [
+    "overview",
     "generate",
     "stream",
     "tool",
     "model",
-    "embed"
+    "embed",
+    "top-level"
   ]
 }

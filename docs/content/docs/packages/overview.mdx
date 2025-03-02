@@ -1,0 +1,28 @@
+---
+title: Overview
+description: List and describe the various models available in the API.
+---
+
+## FAQ
+
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion'
+ 
+<Accordions>
+  <Accordion title="There are too many packages for xsAI, how do I manage the versions?">
+    If you are using pnpm, you can use [pnpm catalogs](https://pnpm.io/catalogs) with [yaml anchors](https://yaml.org/spec/1.2.2/#3222-anchors-and-aliases):
+
+    ```yaml
+    # pnpm-workspace.yaml
+    catalog:
+      '@xsai/embed': &xsai ^0.1.0
+      '@xsai/generate-text': *xsai
+      '@xsai/shared': *xsai
+      '@xsai/shared-chat': *xsai
+    ```
+  </Accordion>
+  <Accordion title="👆 Is there a simpler / workspace-less way?">
+    Yes, you can install the `xsai` package, which contains all the core utils.
+
+    See [xsai](./top-level/xsai) for more information.
+  </Accordion>
+</Accordions>

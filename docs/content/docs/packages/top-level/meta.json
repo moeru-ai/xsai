@@ -1,0 +1,9 @@
+{
+  "title": "Top-level",
+  "defaultOpen": true,
+  "pages": [
+    "xsai",
+    "xsfetch",
+    "xsschema"
+  ]
+}

@@ -1,0 +1,55 @@
+---
+title: xsfetch
+description: extra-small Fetch API with auto retry.
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="xsfetch" />
+
+```package-install
+npm i xsfetch
+```
+
+## Usage
+
+### createFetch
+
+```ts twoslash
+import { createFetch } from 'xsfetch'
+
+const fetch = createFetch({
+  retry: 3,
+  retryDelay: 1000,
+})
+```
+
+### createFetch with generateText
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process'
+import { createFetch } from 'xsfetch'
+
+const fetch = createFetch({
+  retry: 3,
+  retryDelay: 1000,
+})
+
+const { text } = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
+  fetch, // [!code highlight]
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+  model: 'gpt-4o',
+})
+```

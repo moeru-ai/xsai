@@ -1,0 +1,21 @@
+---
+title: xsai
+description: A package containing all the core xsAI tools.
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="xsai" />
+
+```package-install
+npm i xsai
+```
+
+## Usage
+
+Simply change any import where the scope is `@xsai` to import from `xsai`.
+
+```ts
+import { generateText } from '@xsai/generate-text' // [!code --]
+import { generateText } from 'xsai' // [!code ++]
+```
