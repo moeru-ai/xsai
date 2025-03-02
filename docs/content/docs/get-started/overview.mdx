@@ -19,9 +19,9 @@ npm i xsai
 
 Update the import of the sub-package to an integrated package:
 
-```diff
-- import { generateText } from '@xsai/generate-text'
-+ import { generateText } from 'xsai'
+```ts
+import { generateText } from '@xsai/generate-text' // [!code --]
+import { generateText } from 'xsai' // [!code ++]
 ```
 
 ## Steps
