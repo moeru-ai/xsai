@@ -9,7 +9,7 @@ export interface CreateFetchOptions {
 }
 
 /** @experimental WIP */
-export const createFetch = (userOptions: Partial<CreateFetchOptions>) => {
+export const createFetch = (userOptions: Partial<CreateFetchOptions>): typeof globalThis.fetch => {
   const options: CreateFetchOptions = {
     retry: 3,
     retryCount: 0,
@@ -19,24 +19,24 @@ export const createFetch = (userOptions: Partial<CreateFetchOptions>) => {
     ...userOptions,
   }
 
-  const xsfetch = async (input: Request | string | URL, init: RequestInit, options: CreateFetchOptions) => {
+  const xsfetch = async (options: CreateFetchOptions, input: Request | string | URL, init?: RequestInit) => {
     const res = await fetch(input, init)
 
     if (!res.ok && options.retryStatusCodes.includes(res.status) && options.retry < options.retryCount) {
       await sleep(options.retryDelay)
 
-      return async () => xsfetch(input, init, {
+      return async () => xsfetch({
         ...options,
         retryCount: options.retryCount + 1,
-      })
+      }, input, init)
     }
     else {
       return res
     }
   }
 
-  return async (input: Request | string | URL, init: RequestInit) => {
-    let res = await xsfetch(input, init, options)
+  return async (input: Request | string | URL, init?: RequestInit) => {
+    let res = await xsfetch(options, input, init)
 
     while (typeof res === 'function')
       res = await res()
