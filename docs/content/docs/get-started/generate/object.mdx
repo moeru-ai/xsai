@@ -1,7 +1,17 @@
 ---
-title: Structured Data (WIP)
-# description: 
+title: Structured Data
+description: Ensure responses adhere to a JSON schema.
 ---
+
+<Callout>
+
+  For convenience, we use `valibot` as an example.
+
+  But this package uses `xsschema` internally, so it supports any schema library that xsschema supports: e.g. zod, valibot, arktype, etc.
+
+  {/* See [xsschema](#) for more information. */}
+
+</Callout>
 
 ## `generateObject`
 
@@ -10,6 +20,68 @@ npm i @xsai/generate-object
 ```
 
 [Try install with pkg-size.dev](https://pkg-size.dev/@xsai/generate-object)
+
+### Object
+
+```ts twoslash
+import { generateObject } from '@xsai/generate-object'
+import { env } from 'node:process'
+import * as v from 'valibot'
+
+const { object } = await generateObject({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
+  messages: [
+    {
+      content: 'Extract the event information.',
+      role: 'system'
+    },
+    {
+      content: 'Alice and Bob are going to a science fair on Friday.',
+      role: 'user'
+    }
+  ],
+  model: 'gpt-4o',
+  schema: v.object({
+    name: v.string(),
+    date: v.string(),
+    participants: v.array(v.string()),
+  })
+})
+```
+
+### Array
+
+```ts twoslash
+import { generateObject } from '@xsai/generate-object'
+import { env } from 'node:process'
+import * as v from 'valibot'
+
+const { object: objects } = await generateObject({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
+  messages: [
+    {
+      content: 'Generate 3 hero descriptions for a fantasy role playing game.',
+      role: 'user'
+    }
+  ],
+  model: 'gpt-4o',
+  output: 'array', // [!code highlight]
+  schema: v.object({
+    name: v.string(),
+    class: v.pipe(
+      v.string(),
+      v.description('Character class, e.g. warrior, mage, or thief.'),
+    ),
+    description: v.string(),
+  })
+})
+
+for (const object of objects) { // [!code highlight]
+  console.log(object)
+}
+```
 
 ## `streamObject`
 
@@ -20,6 +92,73 @@ npm i @xsai/stream-object
 ```
 
 [Try install with pkg-size.dev](https://pkg-size.dev/@xsai/stream-object)
+
+
+### Object
+
+```ts twoslash
+import { streamObject } from '@xsai/stream-object'
+import { env } from 'node:process'
+import * as v from 'valibot'
+
+const { partialObjectStream } = await streamObject({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
+  messages: [
+    {
+      content: 'Extract the event information.',
+      role: 'system'
+    },
+    {
+      content: 'Alice and Bob are going to a science fair on Friday.',
+      role: 'user'
+    }
+  ],
+  model: 'gpt-4o',
+  schema: v.object({
+    name: v.string(),
+    date: v.string(),
+    participants: v.array(v.string()),
+  })
+})
+
+for await (const partialObject of partialObjectStream) { // [!code highlight]
+  console.log(partialObject)
+}
+```
+
+### Array
+
+```ts twoslash
+import { streamObject } from '@xsai/stream-object'
+import { env } from 'node:process'
+import * as v from 'valibot'
+
+const { elementStream } = await streamObject({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
+  messages: [
+    {
+      content: 'Generate 3 hero descriptions for a fantasy role playing game.',
+      role: 'user'
+    }
+  ],
+  model: 'gpt-4o',
+  output: 'array', // [!code highlight]
+  schema: v.object({
+    name: v.string(),
+    class: v.pipe(
+      v.string(),
+      v.description('Character class, e.g. warrior, mage, or thief.'),
+    ),
+    description: v.string(),
+  })
+})
+
+for await (const element of elementStream) { // [!code highlight]
+  console.log(element)
+}
+```
 
 ## References
 
