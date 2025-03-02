@@ -1,15 +1,20 @@
 ---
 title: Models
-# description: 
+description: List and describe the various models available in the API.
 ---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/model" />
+
 
 ```package-install
 npm i @xsai/model
 ```
 
-[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/model)
+## Examples
 
-## `listModels`
+### listModels
 
 ```ts twoslash
 import { listModels } from '@xsai/model'
@@ -41,7 +46,7 @@ const models = await listModels({
 })
 ```
 
-## `retrieveModel`
+### retrieveModel
 
 ```ts twoslash
 import { retrieveModel } from '@xsai/model'
@@ -59,7 +64,3 @@ const model = await retrieveModel({
   model: 'gpt-4o',
 })
 ```
-
-## References
-
-- [`@xsai/model`](https://tsdocs.dev/search/docs/@xsai/model)

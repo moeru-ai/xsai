@@ -23,7 +23,7 @@ for await (const pkg of packages) {
 }
 
 const json = JSON.stringify({
-  defaultOpen: true,
+  defaultOpen: false,
   pages: pages.toReversed(),
   title: 'References',
 }, null, 2)

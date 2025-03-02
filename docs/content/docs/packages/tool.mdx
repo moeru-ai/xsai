@@ -3,21 +3,21 @@ title: Tool Calling
 description: Connect LLMs to external data and systems.
 ---
 
-import { Accordion, Accordions } from 'fumadocs-ui/components/accordion'
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/tool" />
 
 ```package-install
 npm i @xsai/tool
 ```
 
-[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/tool)
+## Examples
 
-## `tool`
-
-Define a tool.
+### tool
 
 ```ts twoslash
 import { tool } from '@xsai/tool'
-import { description, object, pipe, string } from 'valibot'
+import * as v from 'valibot'
 
 const weather = await tool({
   description: 'Get the weather in a location',
@@ -26,37 +26,22 @@ const weather = await tool({
     temperature: 42,
   }),
   name: 'weather',
-  parameters: object({
-    location: pipe(
-      string(),
-      description('The location to get the weather for'),
+  parameters: v.object({
+    location: v.pipe(
+      v.string(),
+      v.description('The location to get the weather for'),
     ),
   }),
 })
 ```
 
-### with `generateText`
-
-Please refer to "Get weather" in the Examples below.
-
-In short, you need to pass the tool into `options.tools` and set `options.maxSteps` to a larger value. (It currently defaults to `1`, so it can't handle tool calls when defaulted)
-
-### with `generateObject`, `streamText`...
-
-Not supported at this time.
-
-If you are interested in contributing, feel free to open a Pull Request.
-
-## Examples
-
-<Accordions>
-  <Accordion title="Get weather">
+### with generateText
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
 import { tool } from '@xsai/tool'
 import { env } from 'node:process'
-import { description, object, pipe, string } from 'valibot'
+import * as v from 'valibot'
 
 const weather = await tool({
   description: 'Get the weather in a location',
@@ -65,10 +50,10 @@ const weather = await tool({
     temperature: 42,
   }),
   name: 'weather',
-  parameters: object({
-    location: pipe(
-      string(),
-      description('The location to get the weather for'),
+  parameters: v.object({
+    location: v.pipe(
+      v.string(),
+      v.description('The location to get the weather for'),
     ),
   }),
 })
@@ -91,10 +76,3 @@ const { text } = await generateText({
   tools: [weather], // [!code highlight]
 })
 ```
-
-  </Accordion>
-</Accordions>
-
-## References
-
-- [`@xsai/tool`](https://tsdocs.dev/search/docs/@xsai/tool)

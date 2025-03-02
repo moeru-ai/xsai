@@ -1,9 +1,10 @@
 {
-  "title": "Generating & Streaming",
+  "title": "Generating",
   "defaultOpen": true,
   "pages": [
     "text",
     "object",
-    "speech"
+    "speech",
+    "transcription"
   ]
 }

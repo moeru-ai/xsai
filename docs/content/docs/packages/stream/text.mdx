@@ -1,0 +1,44 @@
+---
+title: Text
+description: Streams text from a given prompt.
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/stream-text" />
+
+```package-install
+npm i @xsai/stream-text
+```
+
+```ts twoslash
+import { streamText } from '@xsai/stream-text'
+import { env } from 'node:process'
+
+const { textStream } = await streamText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
+  messages: [
+    {
+      content: 'You are a helpful assistant.',
+      role: 'system',
+    },
+    {
+      content: 'This is a test, so please answer'
+        + '\'The quick brown fox jumps over the lazy dog.\''
+        + 'and nothing else.',
+      role: 'user',
+    },
+  ],
+  model: 'gpt-4o',
+})
+
+const text: string[] = []
+
+for await (const textPart of textStream) {
+  text.push(textPart)
+}
+
+// "The quick brown fox jumps over the lazy dog."
+console.log(text)
+```

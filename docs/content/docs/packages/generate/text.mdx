@@ -1,0 +1,33 @@
+---
+title: Text
+description: Generates text for a given prompt.
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/generate-text" />
+
+```package-install
+npm i @xsai/generate-text
+```
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process'
+
+const { text } = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://openai.com/v1/',
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+  model: 'gpt-4o',
+})
+```

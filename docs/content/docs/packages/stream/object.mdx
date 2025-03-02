@@ -13,86 +13,15 @@ description: Ensure responses adhere to a JSON schema.
 
 </Callout>
 
-## `generateObject`
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
 
-```package-install
-npm i @xsai/generate-object
-```
-
-[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/generate-object)
-
-### Object
-
-```ts twoslash
-import { generateObject } from '@xsai/generate-object'
-import { env } from 'node:process'
-import * as v from 'valibot'
-
-const { object } = await generateObject({
-  apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
-  messages: [
-    {
-      content: 'Extract the event information.',
-      role: 'system'
-    },
-    {
-      content: 'Alice and Bob are going to a science fair on Friday.',
-      role: 'user'
-    }
-  ],
-  model: 'gpt-4o',
-  schema: v.object({
-    name: v.string(),
-    date: v.string(),
-    participants: v.array(v.string()),
-  })
-})
-```
-
-### Array
-
-```ts twoslash
-import { generateObject } from '@xsai/generate-object'
-import { env } from 'node:process'
-import * as v from 'valibot'
-
-const { object: objects } = await generateObject({
-  apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
-  messages: [
-    {
-      content: 'Generate 3 hero descriptions for a fantasy role playing game.',
-      role: 'user'
-    }
-  ],
-  model: 'gpt-4o',
-  output: 'array', // [!code highlight]
-  schema: v.object({
-    name: v.string(),
-    class: v.pipe(
-      v.string(),
-      v.description('Character class, e.g. warrior, mage, or thief.'),
-    ),
-    description: v.string(),
-  })
-})
-
-for (const object of objects) { // [!code highlight]
-  console.log(object)
-}
-```
-
-## `streamObject`
-
-Parses json as streaming as possible with `best-effort-json-parser`.
+<PkgSizeBadge pkg="@xsai/stream-object" />
 
 ```package-install
 npm i @xsai/stream-object
 ```
 
-[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/stream-object)
-
+## Examples
 
 ### Object
 
@@ -159,8 +88,3 @@ for await (const element of elementStream) { // [!code highlight]
   console.log(element)
 }
 ```
-
-## References
-
-- [`@xsai/generate-object`](https://tsdocs.dev/search/docs/@xsai/generate-object)
-- [`@xsai/stream-object`](https://tsdocs.dev/search/docs/@xsai/stream-object)

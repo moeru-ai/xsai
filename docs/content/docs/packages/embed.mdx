@@ -1,15 +1,19 @@
 ---
 title: Embeddings
-# description: 
+description: Get a vector representation of a given input.
 ---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/embed" />
 
 ```package-install
 npm i @xsai/embed
 ```
 
-[Try install with pkg-size.dev](https://pkg-size.dev/@xsai/embed)
+## Examples
 
-## `embed`
+### embed
 
 ```ts twoslash
 import { embed } from '@xsai/embed'
@@ -23,7 +27,7 @@ const { embedding } = await embed({
 })
 ```
 
-## `embedMany`
+### embedMany
 
 ```ts twoslash
 import { embedMany } from '@xsai/embed'
@@ -40,7 +44,3 @@ const { embeddings } = await embedMany({
   model: 'text-embedding-3-large'
 })
 ```
-
-## References
-
-- [`@xsai/embed`](https://tsdocs.dev/search/docs/@xsai/embed)

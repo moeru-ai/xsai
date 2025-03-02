@@ -1,10 +1,9 @@
 {
-  "title": "Getting Started",
+  "title": "Packages",
   "defaultOpen": true,
   "pages": [
-    "overview",
-    "providers",
     "generate",
+    "stream",
     "tool",
     "model",
     "embed"
