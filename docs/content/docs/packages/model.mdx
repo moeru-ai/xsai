@@ -41,7 +41,7 @@ import { env } from 'node:process'
 // ]
 const models = await listModels({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
 })
 ```
 
@@ -59,7 +59,7 @@ import { env } from 'node:process'
 // }
 const model = await retrieveModel({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   model: 'gpt-4o',
 })
 ```

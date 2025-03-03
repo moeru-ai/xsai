@@ -21,7 +21,7 @@ import { env } from 'node:process'
 
 const { embedding } = await embed({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   input: 'sunny day at the beach',
   model: 'text-embedding-3-large',
 })
@@ -35,7 +35,7 @@ import { env } from 'node:process'
 
 const { embeddings } = await embedMany({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   input: [
     'sunny day at the beach',
     'rainy afternoon in the city',

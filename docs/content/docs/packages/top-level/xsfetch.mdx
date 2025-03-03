@@ -38,7 +38,7 @@ const fetch = createFetch({
 
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   fetch, // [!code highlight]
   messages: [
     {

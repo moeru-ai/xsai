@@ -19,7 +19,7 @@ import { env } from 'node:process'
 
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -100,7 +100,7 @@ import { env } from 'node:process'
 
 const { textStream } = await streamText({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -149,7 +149,7 @@ const weather = await tool({
 
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   maxSteps: 2,
   messages: [
     {

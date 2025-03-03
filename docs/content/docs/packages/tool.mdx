@@ -68,7 +68,7 @@ const weather = await tool({
 
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   maxSteps: 2, // [!code highlight]
   messages: [
     {

@@ -19,7 +19,7 @@ import { env } from 'node:process'
 
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://openai.com/v1/',
+  baseURL: 'https://api.openai.com/v1/',
   messages: [
     {
       content: 'You\'re a helpful assistant.',
