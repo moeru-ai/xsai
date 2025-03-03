@@ -4,8 +4,8 @@ import './global.css'
 
 import type { PropsWithChildren } from 'react'
 
-// import Link from 'fumadocs-core/link'
-// import { Banner } from 'fumadocs-ui/components/banner'
+import Link from 'fumadocs-core/link'
+import { Banner } from 'fumadocs-ui/components/banner'
 import { RootProvider } from 'fumadocs-ui/provider'
 import { Inter } from 'next/font/google'
 
@@ -20,9 +20,9 @@ export default ({ children }: PropsWithChildren) => (
     </head>
     <body className="flex flex-col min-h-screen">
       <RootProvider search={{ options: { type: 'static' } }}>
-        {/* <Banner id="xsai-0-1" variant="rainbow">
-          <Link href="https://blog.moeru.ai/posts/xsai-0.1">xsAI 0.1 is now available!</Link>
-        </Banner> */}
+        <Banner id="introducing-xsai" variant="rainbow">
+          <Link href="https://blog.moeru.ai/introducing-xsai/">xsAI v0.1 is now available! Read Announcement</Link>
+        </Banner>
         {children}
       </RootProvider>
     </body>
