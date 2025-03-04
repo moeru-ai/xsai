@@ -21,15 +21,12 @@ export const createFetch = (userOptions: Partial<CreateFetchOptions> = {}): type
   const xsfetch = async (retriesLeft: number, input: Request | string | URL, init?: RequestInit) => {
     const res = await fetch(input, init)
 
-    if (!res.ok && retriesLeft > 0 && options.retryStatusCodes.includes(res.status)) {
-      options.debug && console.warn('[xsfetch] Failed, retrying... Times left:', retriesLeft)
-      await sleep(options.retryDelay)
-
-      return async () => xsfetch(retriesLeft - 1, input, init)
-    }
-    else {
+    if (res.ok || retriesLeft === 0 || !options.retryStatusCodes.includes(res.status))
       return res
-    }
+
+    options.debug && console.warn('[xsfetch] Failed, retrying... Times left:', retriesLeft)
+    await sleep(options.retryDelay)
+    return async () => xsfetch(retriesLeft - 1, input, init)
   }
 
   return async (input: Request | string | URL, init?: RequestInit) => {
