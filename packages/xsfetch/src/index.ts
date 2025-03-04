@@ -1,33 +1,34 @@
 import { sleep } from '../../utils-stream/src/_sleep'
 
 export interface CreateFetchOptions {
+  debug: boolean
   retry: number
-  /** @internal */
-  retryCount: number
   retryDelay: number
   retryStatusCodes: number[]
 }
 
+export const defaultCreateFetchOptions: CreateFetchOptions = {
+  debug: false,
+  retry: 3,
+  retryDelay: 500,
+  // https://github.com/unjs/ofetch#%EF%B8%8F-auto-retry
+  retryStatusCodes: [408, 409, 425, 429, 500, 502, 503, 504],
+}
+
 export const createFetch = (userOptions: Partial<CreateFetchOptions>): typeof globalThis.fetch => {
-  const options: CreateFetchOptions = {
-    retry: 3,
-    retryCount: 0,
-    retryDelay: 500,
-    // https://github.com/unjs/ofetch#%EF%B8%8F-auto-retry
-    retryStatusCodes: [408, 409, 425, 429, 500, 502, 503, 504],
+  const options: Readonly<CreateFetchOptions> = {
+    ...defaultCreateFetchOptions,
     ...userOptions,
   }
 
-  const xsfetch = async (options: CreateFetchOptions, input: Request | string | URL, init?: RequestInit) => {
+  const xsfetch = async (retriesLeft: number, input: Request | string | URL, init?: RequestInit) => {
     const res = await fetch(input, init)
 
-    if (!res.ok && options.retryStatusCodes.includes(res.status) && options.retry < options.retryCount) {
+    if (!res.ok && retriesLeft > 0 && options.retryStatusCodes.includes(res.status)) {
+      options.debug && console.warn('[xsfetch] Failed, retrying... Times left:', retriesLeft)
       await sleep(options.retryDelay)
 
-      return async () => xsfetch({
-        ...options,
-        retryCount: options.retryCount + 1,
-      }, input, init)
+      return async () => xsfetch(retriesLeft - 1, input, init)
     }
     else {
       return res
@@ -35,7 +36,7 @@ export const createFetch = (userOptions: Partial<CreateFetchOptions>): typeof gl
   }
 
   return async (input: Request | string | URL, init?: RequestInit) => {
-    let res = await xsfetch(options, input, init)
+    let res = await xsfetch(options.retry, input, init)
 
     while (typeof res === 'function')
       res = await res()
