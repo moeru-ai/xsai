@@ -7,7 +7,7 @@ export interface CreateFetchOptions {
   retryStatusCodes: number[]
 }
 
-export const defaultCreateFetchOptions: CreateFetchOptions = {
+const defaults: CreateFetchOptions = {
   debug: false,
   retry: 3,
   retryDelay: 500,
@@ -15,11 +15,8 @@ export const defaultCreateFetchOptions: CreateFetchOptions = {
   retryStatusCodes: [408, 409, 425, 429, 500, 502, 503, 504],
 }
 
-export const createFetch = (userOptions: Partial<CreateFetchOptions>): typeof globalThis.fetch => {
-  const options: Readonly<CreateFetchOptions> = {
-    ...defaultCreateFetchOptions,
-    ...userOptions,
-  }
+export const createFetch = (userOptions: Partial<CreateFetchOptions> = {}): typeof globalThis.fetch => {
+  const options: Readonly<CreateFetchOptions> = Object.assign(defaults, userOptions)
 
   const xsfetch = async (retriesLeft: number, input: Request | string | URL, init?: RequestInit) => {
     const res = await fetch(input, init)
