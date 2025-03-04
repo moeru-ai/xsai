@@ -1,18 +1,18 @@
 import { sleep } from '../../utils-stream/src/_sleep'
 
 export interface CreateFetchOptions {
+  debug: boolean
   retry: number
   retryDelay: number
   retryStatusCodes: number[]
-  debug: boolean
 }
 
 export const defaultCreateFetchOptions: CreateFetchOptions = {
+  debug: false,
   retry: 3,
   retryDelay: 500,
   // https://github.com/unjs/ofetch#%EF%B8%8F-auto-retry
   retryStatusCodes: [408, 409, 425, 429, 500, 502, 503, 504],
-  debug: false,
 }
 
 export const createFetch = (userOptions: Partial<CreateFetchOptions>): typeof globalThis.fetch => {
@@ -28,7 +28,7 @@ export const createFetch = (userOptions: Partial<CreateFetchOptions>): typeof gl
       options.debug && console.warn('[xsfetch] Failed, retrying... Times left:', retriesLeft)
       await sleep(options.retryDelay)
 
-      return () => xsfetch(retriesLeft - 1, input, init)
+      return async () => xsfetch(retriesLeft - 1, input, init)
     }
     else {
       return res
