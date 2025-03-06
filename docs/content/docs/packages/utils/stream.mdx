@@ -1,0 +1,73 @@
+---
+title: Stream
+# description:
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/utils-stream" />
+
+```package-install
+npm i @xsai/utils-stream
+```
+
+## Examples
+
+### simulateReadableStream
+
+```ts twoslash
+import { simulateReadableStream } from '@xsai/utils-stream'
+
+const stream = simulateReadableStream<number>({
+  chunks: [1, 2, 3],
+  chunkDelay: 100,
+  initialDelay: 0,
+})
+```
+
+### smoothStream
+
+```ts twoslash
+import { streamText } from '@xsai/stream-text'
+import { smoothStream } from '@xsai/utils-stream'
+import { env } from 'node:process'
+
+const { textStream } = await streamText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  messages: [
+    {
+      content: 'You are a helpful assistant.',
+      role: 'system',
+    },
+    {
+      content: 'This is a test, so please answer'
+        + '\'The quick brown fox jumps over the lazy dog.\''
+        + 'and nothing else.',
+      role: 'user',
+    },
+  ],
+  model: 'gpt-4o',
+})
+
+const smoothTextStream = textStream.pipeThrough(smoothStream({
+  delay: 20,
+  chunking: 'line',
+}))
+```
+
+### toAsyncIterator
+
+Simple polyfill for Safari. (see https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility)
+
+```ts twoslash
+import { simulateReadableStream, toAsyncIterator } from '@xsai/utils-stream'
+
+const stream = simulateReadableStream<number>({
+  chunks: [1, 2, 3],
+  chunkDelay: 100,
+  initialDelay: 0,
+})
+
+const iterableStream = toAsyncIterator(stream)
+```

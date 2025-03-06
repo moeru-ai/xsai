@@ -1,0 +1,42 @@
+---
+title: Chat
+# description:
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/utils-chat" />
+
+```package-install
+npm i @xsai/utils-chat
+```
+
+## Examples
+
+### messages
+
+util to easy create messages.
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { message } from '@xsai/utils-chat' // [!code ++]
+import { env } from 'node:process'
+
+const { text } = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  messages: [
+    { // [!code --]
+      content: 'You\'re a helpful assistant.', // [!code --]
+      role: 'system' // [!code --]
+    }, // [!code --]
+    message.system('You\'re a helpful assistant.'), // [!code ++]
+    { // [!code --]
+      content: 'Why is the sky blue?', // [!code --]
+      role: 'user' // [!code --]
+    }, // [!code --]
+    message.user('Why is the sky blue?'), // [!code ++]
+  ],
+  model: 'gpt-4o',
+})
+```
