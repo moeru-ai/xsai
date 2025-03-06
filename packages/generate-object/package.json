@@ -1,7 +1,7 @@
 {
   "name": "@xsai/generate-object",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
   "author": "Moeru AI",
   "license": "MIT",
