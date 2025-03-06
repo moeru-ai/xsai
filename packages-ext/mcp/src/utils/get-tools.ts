@@ -1,7 +1,8 @@
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import type { Tool } from '@xsai/shared-chat'
 
-export const mapTools = async (client: Client, serverName: string): Promise<Tool[]> =>
+/** @internal */
+const getAllToolsFromClient = async (serverName: string, client: Client): Promise<Tool[]> =>
   client
     .listTools()
     .then(({ tools }) => tools.map(({ description, inputSchema, name }) => ({
@@ -18,3 +19,10 @@ export const mapTools = async (client: Client, serverName: string): Promise<Tool
       },
       type: 'function',
     })))
+
+/** @experimental */
+export const getAllTools = async (mcpServers: Record<string, Client>): Promise<Tool[]> =>
+  Promise.all(
+    Object.entries(mcpServers)
+      .map(async ([serverName, client]) => getAllToolsFromClient(serverName, client)),
+  ).then(tools => tools.flat())
