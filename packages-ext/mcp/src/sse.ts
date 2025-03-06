@@ -6,8 +6,7 @@ import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 
 import { mapTools } from './utils/map-tools'
 
-export type GetSSEServerToolsOptions = Record<string, {
-  options?: SSEClientTransportOptions
+export type GetSSEServerToolsOptions = Record<string, SSEClientTransportOptions & {
   url: URL
 }>
 
@@ -15,7 +14,7 @@ export type GetSSEServerToolsOptions = Record<string, {
 export const getSSEServerTools = async (mcpServers: GetSSEServerToolsOptions): Promise<Tool[]> => {
   const result: Tool[] = []
 
-  for (const [serverName, { options, url }] of Object.entries(mcpServers)) {
+  for (const [serverName, { url, ...options }] of Object.entries(mcpServers)) {
     const transport = new SSEClientTransport(url, options)
     const client = new Client({ name: serverName, version: '1.0.0' })
     await client.connect(transport)
