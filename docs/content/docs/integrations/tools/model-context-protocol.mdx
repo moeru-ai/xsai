@@ -1,0 +1,51 @@
+---
+title: Model Context Protocol
+description: Model Context Protocol adapter for xsAI.
+---
+
+> This code is untested, feel free to test it yourself and provide feedback.
+
+```package-install
+npm i @modelcontextprotocol/sdk @xsai/tool
+```
+
+```ts
+import type { Client } from '@modelcontextprotocol/sdk'
+import { tool } from '@xsai/tool'
+
+export const getTools = async (mcpServers: Record<string, Client>) =>
+  Promise.all(
+    Object.entries(mcpServers)
+      .map(async ([serverName, client]) => client
+        .listTools()
+        .then(({ tools }) => tools.map(({ description, inputSchema, name }) => ({
+        execute: async args => client.callTool({
+          arguments: args as Record<string, unknown>,
+          name,
+        }).then(res => JSON.stringify(res)),
+        function: {
+          description,
+          name: name === serverName ? name : `${serverName}_${name}`,
+          parameters: inputSchema,
+          strict: true,
+        },
+        type: 'function',
+      })))),
+  ).then(tools => tools.flat())
+```
+
+## Examples
+
+```ts
+import { Client } from '@modelcontextprotocol/sdk/client/index.js'
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
+
+import { getTools } from './utils/get-tools'
+
+const transport = new StdioClientTransport({ command: 'node', args: ['server.js'] })
+const client = new Client({ name: 'example-client', version: '1.0.0' })
+
+await client.connect(transport)
+
+const tools = await getTools({ example: client })
+```
