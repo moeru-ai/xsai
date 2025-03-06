@@ -49,8 +49,13 @@
   "scripts": {
     "build": "tsup"
   },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": "catalog:"
+  },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.6.1",
     "@xsai/shared-chat": "workspace:"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "catalog:"
   }
 }

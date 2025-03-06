@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@modelcontextprotocol/sdk':
+      specifier: ^1.6.1
+      version: 1.6.1
     '@valibot/to-json-schema':
       specifier: ^1.0.0-rc.0
       version: 1.0.0-rc.0
@@ -195,12 +198,13 @@ importers:
 
   packages-ext/mcp:
     dependencies:
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.6.1
-        version: 1.6.1
       '@xsai/shared-chat':
         specifier: 'workspace:'
         version: link:../../packages/shared-chat
+    devDependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: 'catalog:'
+        version: 1.6.1
 
   packages-ext/providers-cloud:
     dependencies:
