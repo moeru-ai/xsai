@@ -12,5 +12,3 @@ catalog:
   zod-to-json-schema: ^3.24.3
 
   type-fest: ^4.35.0
-
-  '@modelcontextprotocol/sdk': ^1.6.1
