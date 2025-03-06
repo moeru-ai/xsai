@@ -1,0 +1,64 @@
+---
+title: Agentic
+description: Agentic adapter for xsAI.
+---
+
+> This code is untested, feel free to test it yourself and provide feedback.
+
+```package-install
+npm i @agentic/core @xsai/tool
+```
+
+```ts
+import { type AIFunctionLike, AIFunctionSet } from '@agentic/core'
+import { tool } from '@xsai/tool'
+
+export const createTools = (...aiFunctionLikeTools: AIFunctionLike[]) =>
+  Promise.all(new AIFunctionSet(aiFunctionLikeTools)
+    .map(fn => await tool({
+      name: fn.spec.name,
+      description: fn.spec.description,
+      parameters: fn.inputSchema,
+      execute: fn.impl
+    })))
+```
+
+## Examples
+
+```ts
+import 'dotenv/config'
+
+import { WeatherClient } from '@agentic/weather'
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process'
+
+import { createTools } from './utils/create-tools'
+
+async function main() {
+  const weather = new WeatherClient()
+
+  const result = await generateText({
+    apiKey: env.OPENAI_API_KEY!,
+    baseURL: 'https://api.openai.com/v1/',
+    maxSteps: 5,
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a helpful assistant. Be as concise as possible.',
+      },
+      {
+        role: 'user',
+        content: 'What is the weather in San Francisco?'
+      },
+    ],
+    model: 'gpt-4o-mini',
+    tools: createTools(weather),
+    toolChoice: 'required',
+    temperature: 0,
+  })
+
+  console.log(result.toolResults[0])
+}
+
+await main()
+```

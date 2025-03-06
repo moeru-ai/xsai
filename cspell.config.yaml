@@ -3,6 +3,7 @@ ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
 words:
+  - agentic
   - all-minilm
   - arktype
   - automd
@@ -12,6 +13,7 @@ words:
   - changelogithub
   - codestral
   - cognitivecomputations
+  - composio
   - deepinfra
   - deepseek
   - elevenlabs

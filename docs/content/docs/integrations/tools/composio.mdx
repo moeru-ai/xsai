@@ -1,0 +1,166 @@
+---
+title: Composio
+description: Composio adapter for xsAI.
+---
+
+> This code is untested, feel free to test it yourself and provide feedback.
+
+```package-install
+npm i composio-core zod @xsai/shared-chat @xsai/tool
+```
+
+```ts
+import type { Tool } from '@xsai/shared-chat'
+
+import { tool } from '@xsai/tool'
+import { ComposioToolSet, RawActionData } from 'composio-core'
+import { z } from 'zod'
+
+type Optional<T> = T | null
+
+const ZExecuteToolCallParams = z.object({
+  actions: z.array(z.string()).optional(),
+  apps: z.array(z.string()).optional(),
+  params: z.record(z.any()).optional(),
+  entityId: z.string().optional(),
+  useCase: z.string().optional(),
+  useCaseLimit: z.number().optional(),
+  connectedAccountId: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  filterByAvailableApps: z.boolean().optional().default(false),
+})
+
+export class XSAIToolSet extends ComposioToolSet {
+  fileName: string = 'js/src/frameworks/xsai.ts'
+
+  constructor(
+    config: {
+      apiKey?: Optional<string>
+      baseUrl?: Optional<string>
+      entityId?: string
+      connectedAccountIds?: Record<string, string>
+      allowTracing?: boolean
+    } = {}
+  ) {
+    super({
+      apiKey: config.apiKey || null,
+      baseUrl: config.baseUrl || null,
+      runtime: null,
+      entityId: config.entityId || "default",
+      connectedAccountIds: config.connectedAccountIds,
+      allowTracing: config.allowTracing || false,
+    });
+  }
+
+  private async generateTool(
+    schema: RawActionData,
+    entityId: Optional<string> = null
+  ) {
+    return tool({
+      name: schema.name
+      description: schema.description,
+      parameters: schema.parameters,
+      execute: async (params) => await this.executeToolCall(
+        {
+          name: schema.name,
+          arguments: JSON.stringify(params),
+        },
+        entityId || this.entityId
+      )
+    })
+  }
+
+  async getTools(
+    filters: {
+      actions?: Array<string>;
+      apps?: Array<string>;
+      tags?: Optional<Array<string>>;
+      useCase?: Optional<string>;
+      useCaseLimit?: Optional<number>;
+      filterByAvailableApps?: Optional<boolean>;
+      integrationId?: Optional<string>;
+    },
+    entityId: Optional<string> = null
+  ): Promise<Record<string, Tool>> {
+    const {
+      apps,
+      tags,
+      useCase,
+      useCaseLimit,
+      filterByAvailableApps,
+      actions,
+    } = ZExecuteToolCallParams.parse(filters)
+
+    const actionsList = await this.getToolsSchema(
+      {
+        apps,
+        actions,
+        tags,
+        useCase,
+        useCaseLimit,
+        filterByAvailableApps,
+      },
+      entityId,
+      filters.integrationId
+    )
+
+    const tools: Record<string, Tool> = {}
+    actionsList.forEach((actionSchema) => {
+      tools[actionSchema.name!] = await this.generateTool(
+        actionSchema,
+        entityId
+      )
+    })
+
+    return tools
+  }
+
+  async executeToolCall(
+    tool: { name: string; arguments: unknown },
+    entityId: Optional<string> = null
+  ): Promise<string> {
+    const toolSchema = await this.getToolsSchema({ actions: [tool.name] })
+    const appName = toolSchema[0]?.appName?.toLowerCase()
+    const connectedAccountId = appName && this.connectedAccountIds?.[appName]
+
+    return JSON.stringify(
+      await this.executeAction({
+        action: tool.name,
+        params:
+          typeof tool.arguments === "string"
+            ? JSON.parse(tool.arguments)
+            : tool.arguments,
+        entityId: entityId || this.entityId,
+        connectedAccountId: connectedAccountId,
+      })
+    );
+  }
+}
+```
+
+## Examples
+
+```ts
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process'
+
+import { XSAIToolSet } from './utils/xsai-tool-set'
+
+const toolset = new XSAIToolSet()
+
+const tools = await toolset.getTools({ apps: ["github"] })
+
+const output = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  maxSteps: 5,
+  model: 'gpt-4o-mini',
+  tools,
+  messages: [{
+    role: 'user',
+    prompt: 'Star the repository "moeru-ai/xsai"',
+  }]
+})
+
+console.log(output.text)
+```
