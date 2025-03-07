@@ -11,15 +11,17 @@ const workspaceDir = await findWorkspaceDir(cwd())
 const packagesExt = glob(`${workspaceDir}/packages-ext/**/package.json`)
 
 for await (const pkg of packagesExt) {
-  const { name } = JSON.parse(await readFile(pkg, 'utf8')) as { name: string }
-  pages.push(`[${name}](https://tsdocs.dev/search/docs/${name})`)
+  const { name, private: priv } = JSON.parse(await readFile(pkg, 'utf8')) as { name: string, private?: boolean }
+  if (priv !== true)
+    pages.push(`[${name}](https://tsdocs.dev/search/docs/${name})`)
 }
 
 const packages = glob(`${workspaceDir}/packages/**/package.json`)
 
 for await (const pkg of packages) {
-  const { name } = JSON.parse(await readFile(pkg, 'utf8')) as { name: string }
-  pages.push(`[${name}](https://tsdocs.dev/search/docs/${name})`)
+  const { name, private: priv } = JSON.parse(await readFile(pkg, 'utf8')) as { name: string, private?: boolean }
+  if (priv !== true)
+    pages.push(`[${name}](https://tsdocs.dev/search/docs/${name})`)
 }
 
 const json = JSON.stringify({
