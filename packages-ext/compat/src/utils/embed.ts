@@ -23,3 +23,8 @@ export const embedMany = async (options: EmbedManyOptions) => xsaiEmbedMany({
   ...options.model,
   input: options.values,
 })
+
+export type {
+  EmbedManyResult,
+  EmbedResult,
+} from 'xsai'
