@@ -37,7 +37,7 @@ export interface ToolMessage extends Omit<CommonMessage<'tool', ToolMessagePart>
   tool_call_id: string
 }
 
-export type ToolMessagePart = TextPart
+export type ToolMessagePart = AudioPart | ImagePart | TextPart
 
 export interface UserMessage extends CommonMessage<'user', UserMessagePart> { }
 

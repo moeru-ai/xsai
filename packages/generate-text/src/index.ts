@@ -1,6 +1,6 @@
 import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, Usage } from '@xsai/shared-chat'
 
-import { chat } from '@xsai/shared-chat'
+import { chat, wrapToolResult } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
@@ -121,7 +121,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         }
 
         const parsedArgs = JSON.parse(toolArgs) as Record<string, unknown>
-        const result = await tool.execute(parsedArgs, { abortSignal: options.abortSignal, messages, toolCallId })
+        const result = wrapToolResult(await tool.execute(parsedArgs, { abortSignal: options.abortSignal, messages, toolCallId }))
 
         toolCalls.push({
           args: toolArgs,
