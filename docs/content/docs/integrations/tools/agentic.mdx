@@ -3,17 +3,15 @@ title: Agentic
 description: Agentic adapter for xsAI.
 ---
 
-> This code is untested, feel free to test it yourself and provide feedback.
-
 ```package-install
-npm i @agentic/core @xsai/tool
+npm i zod @agentic/core @xsai/tool
 ```
 
 ```ts
 import { type AIFunctionLike, AIFunctionSet } from '@agentic/core'
 import { tool } from '@xsai/tool'
 
-export const createTools = (...aiFunctionLikeTools: AIFunctionLike[]) =>
+export const createTools = async (...aiFunctionLikeTools: AIFunctionLike[]) =>
   Promise.all(new AIFunctionSet(aiFunctionLikeTools)
     .map(fn => await tool({
       name: fn.spec.name,
@@ -52,7 +50,7 @@ async function main() {
       },
     ],
     model: 'gpt-4o-mini',
-    tools: createTools(weather),
+    tools: await createTools(weather),
     toolChoice: 'required',
     temperature: 0,
   })
