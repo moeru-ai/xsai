@@ -1,4 +1,4 @@
-import type { Message } from './message'
+import type { Message, ToolMessagePart } from './message'
 
 export interface CompletionToolCall {
   args: string
@@ -9,13 +9,13 @@ export interface CompletionToolCall {
 
 export interface CompletionToolResult {
   args: Record<string, unknown>
-  result: string
+  result: string | ToolMessagePart[]
   toolCallId: string
   toolName: string
 }
 
 export interface Tool {
-  execute: (input: unknown, options: ToolExecuteOptions) => Promise<string> | string
+  execute: (input: unknown, options: ToolExecuteOptions) => (object | string | unknown[]) | Promise<object | string | unknown[]>
   function: {
     description?: string
     name: string
