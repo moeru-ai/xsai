@@ -1,7 +1,7 @@
-import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessage, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessage, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
 import { XSAIError } from '@xsai/shared'
-import { chat } from '@xsai/shared-chat'
+import { chat, wrapToolResult } from '@xsai/shared-chat'
 
 import { parseChunk } from './helper'
 
@@ -104,7 +104,7 @@ interface StreamTextChoiceState {
   endedToolCallIDs: Set<string>
   index: number
   toolCallErrors: { [id: string]: Error }
-  toolCallResults: { [id: string]: string }
+  toolCallResults: { [id: string]: string | ToolMessagePart[] }
 }
 
 /** @internal */
@@ -332,6 +332,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           toolName: toolCall.function.name,
         })
 
+        // eslint-disable-next-line ts/strict-boolean-expressions
         if (state.toolCallResults[id]) {
           return
         }
@@ -340,11 +341,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         const tool = options.tools?.find(tool => tool.function.name === toolCall.function.name)
         if (tool) {
           try {
-            const ret = await tool.execute(toolCall.function.parsed_arguments, {
+            const ret = wrapToolResult(await tool.execute(toolCall.function.parsed_arguments, {
               abortSignal: options.abortSignal,
               messages: options.messages,
               toolCallId: id,
-            })
+            }))
             state.toolCallResults[id] = ret
             step.messages.push({
               content: ret,
