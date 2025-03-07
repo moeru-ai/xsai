@@ -376,6 +376,9 @@ importers:
       '@xsai/model':
         specifier: 'workspace:'
         version: link:../model
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
       '@xsai/shared-chat':
         specifier: 'workspace:'
         version: link:../shared-chat
