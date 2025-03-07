@@ -2,17 +2,14 @@ import type { CommonRequestOptions, EmbedManyOptions as XSAIEmbedManyOptions, Em
 
 import { embed as xsaiEmbed, embedMany as xsaiEmbedMany } from 'xsai'
 
-// @ts-expect-error unused generics
-// eslint-disable-next-line unused-imports/no-unused-vars
-export interface EmbeddingModel<T = string> extends CommonRequestOptions {}
-export type { EmbeddingModel as EmbeddingModelV1 }
+import type { EmbeddingModel } from '../types'
 
-export interface EmbedManyOptions extends Omit<XSAIEmbedManyOptions, 'input' | 'model'> {
+interface EmbedManyOptions extends Omit<XSAIEmbedManyOptions, 'input' | keyof CommonRequestOptions> {
   model: EmbeddingModel
   values: XSAIEmbedManyOptions['input']
 }
 
-export interface EmbedOptions extends Omit<XSAIEmbedOptions, 'input' | 'model'> {
+interface EmbedOptions extends Omit<XSAIEmbedOptions, 'input' | keyof CommonRequestOptions> {
   model: EmbeddingModel
   value: XSAIEmbedOptions['input']
 }
