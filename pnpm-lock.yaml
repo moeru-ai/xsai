@@ -199,6 +199,12 @@ importers:
         specifier: 'catalog:'
         version: 3.24.2
 
+  packages-ext/compat:
+    dependencies:
+      xsai:
+        specifier: 'workspace:'
+        version: link:../../packages/xsai
+
   packages-ext/providers-cloud:
     dependencies:
       '@xsai-ext/shared-providers':
