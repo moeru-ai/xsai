@@ -34,31 +34,22 @@ import { env } from 'node:process'
 
 import { createTools } from './utils/create-tools'
 
-async function main() {
-  const weather = new WeatherClient()
+const weather = new WeatherClient()
 
-  const result = await generateText({
-    apiKey: env.OPENAI_API_KEY!,
-    baseURL: 'https://api.openai.com/v1/',
-    maxSteps: 5,
-    messages: [
-      {
-        role: 'system',
-        content: 'You are a helpful assistant. Be as concise as possible.',
-      },
-      {
-        role: 'user',
-        content: 'What is the weather in San Francisco?'
-      },
-    ],
-    model: 'gpt-4o-mini',
-    tools: await createTools(weather),
-    toolChoice: 'required',
-    temperature: 0,
-  })
+const result = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  maxSteps: 5,
+  messages: [{
+    role: 'user',
+    content: 'What is the weather in San Francisco?'
+  }],
+  model: 'gpt-4o-mini',
+  tools: await createTools(weather),
+  toolChoice: 'required',
+  temperature: 0,
+})
 
-  console.log(result.toolResults[0])
-}
-
-await main()
+console.log(result.steps)
+console.log(result.text)
 ```

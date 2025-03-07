@@ -154,12 +154,15 @@ const result = await generateText({
   baseURL: 'https://api.openai.com/v1/',
   maxSteps: 5,
   model: 'gpt-4o-mini',
-  tools,
   messages: [{
     role: 'user',
     content: 'Star the repository "moeru-ai/xsai"',
-  }]
+  }],
+  tools,
+  toolChoice: 'required',
+  temperature: 0,
 })
 
+console.log(result.steps)
 console.log(result.text)
 ```
