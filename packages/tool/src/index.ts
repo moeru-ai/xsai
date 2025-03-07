@@ -5,7 +5,7 @@ import { toJSONSchema } from 'xsschema'
 
 export interface ToolOptions<T extends Schema = Schema> {
   description?: string
-  execute: (input: InferIn<T>, options: ToolExecuteOptions) => Promise<string> | string
+  execute: (input: InferIn<T>, options: ToolExecuteOptions) => (object | string | unknown[]) | Promise<object | string | unknown[]>
   name: string
   parameters: T
   strict?: boolean
