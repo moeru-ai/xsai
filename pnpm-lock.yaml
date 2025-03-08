@@ -204,6 +204,9 @@ importers:
       xsai:
         specifier: 'workspace:'
         version: link:../../packages/xsai
+      xsschema:
+        specifier: 'workspace:'
+        version: link:../../packages/xsschema
 
   packages-ext/providers-cloud:
     dependencies:

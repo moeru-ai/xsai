@@ -34,6 +34,7 @@
     "build": "tsup"
   },
   "dependencies": {
-    "xsai": "workspace:"
+    "xsai": "workspace:",
+    "xsschema": "workspace:"
   }
 }
