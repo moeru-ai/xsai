@@ -1,7 +1,29 @@
-import type { Tool as XSAITool } from 'xsai'
+import type { Tool as XSAITool, ToolOptions as XSAIToolOptions } from 'xsai'
 
-export const convertTools = async (tools: Record<string, () => Promise<XSAITool>>): Promise<XSAITool[]> =>
-  Promise.all(Object.entries(tools).map(async ([name, toolFn]) => ({
-    ...await toolFn(),
-    name,
-  })))
+import { tool as xsaiTool } from 'xsai'
+
+export const convertTools = async (tools: Record<string, ((() => Promise<XSAITool> | XSAITool) | XSAITool)>): Promise<XSAITool[]> =>
+  Promise.all(Object.entries(tools).map(async ([name, tool]) => {
+    let result: unknown = tool
+
+    if (typeof result === 'function')
+      // eslint-disable-next-line ts/no-unsafe-call
+      result = result()
+
+    if (result instanceof Promise)
+      result = await result
+
+    // handle mastra-ai
+    if (!(result as Partial<XSAITool>).function) {
+      return xsaiTool({
+        ...result as XSAIToolOptions,
+        name,
+      })
+    }
+    else {
+      return {
+        ...result as XSAITool,
+        name,
+      }
+    }
+  }))
