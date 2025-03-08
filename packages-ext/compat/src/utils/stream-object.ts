@@ -1,4 +1,4 @@
-import type { CommonRequestOptions, StreamTextOptions as XSAIStreamTextOptions, Tool as XSAITool } from 'xsai'
+import type { CommonRequestOptions, StreamObjectResult as XSAIStreamObjectResult, StreamTextOptions as XSAIStreamTextOptions, Tool as XSAITool } from 'xsai'
 import type { Schema } from 'xsschema'
 
 import { streamObject as xsaiStreamObject } from 'xsai'
@@ -17,7 +17,7 @@ type StreamObjectOptions<T extends Schema> = MessagesOrPrompts & Omit<XSAIStream
   tools?: Record<string, () => Promise<XSAITool>>
 }
 
-export const streamObject = async <T extends Schema>(options: StreamObjectOptions<T>) => xsaiStreamObject({
+export const streamObject = async <T extends Schema>(options: StreamObjectOptions<T>): Promise<XSAIStreamObjectResult<T>> => xsaiStreamObject({
   ...options,
   ...options.model,
   messages: options.messages ?? convertPrompts(options.prompt!, options.system),
