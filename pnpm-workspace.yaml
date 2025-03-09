@@ -1,7 +1,9 @@
 packages:
   - docs
+  - examples/*
   - packages/*
   - packages-ext/*
+
 catalog:
   '@valibot/to-json-schema': ^1.0.0-rc.0
   valibot: ^1.0.0-rc.3

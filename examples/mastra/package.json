@@ -1,0 +1,11 @@
+{
+  "name": "@xsai/example-mastra",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "tsx src/index.tsx"
+  },
+  "dependencies": {
+    "@xsai-ext/providers-local": "workspace:^"
+  }
+}
