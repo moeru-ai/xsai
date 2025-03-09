@@ -16,7 +16,7 @@ export const createFireworks = (apiKey: string, baseURL = 'https://api.fireworks
     | 'accounts/fireworks/models/phi-3-vision-128k-instruct'
     | 'accounts/fireworks/models/qwen2p5-72b-instruct'
     | 'accounts/fireworks/models/qwen2p5-coder-32b-instruct'
-    | 'accounts/fireworks/models/qwen-qwq-32b-preview'
+    | 'accounts/fireworks/models/qwen-qwq-32b'
   >({ apiKey, baseURL }),
   createEmbedProvider<'nomic-ai/nomic-embed-text-v1.5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),

@@ -19,7 +19,7 @@ export const createTogetherAI = (apiKey: string, baseURL = 'https://api.together
     | 'meta-llama/Llama-Vision-Free'
     | 'Qwen/Qwen2.5-72B-Instruct-Turbo'
     | 'Qwen/Qwen2.5-Coder-32B-Instruct'
-    | 'Qwen/QwQ-32B-Preview'
+    | 'Qwen/QwQ-32B'
   >({ apiKey, baseURL }),
   createEmbedProvider<'BAAI/bge-base-en-v1.5' | 'BAAI/bge-large-en-v1.5'>({ apiKey, baseURL }),
   createModelProvider({

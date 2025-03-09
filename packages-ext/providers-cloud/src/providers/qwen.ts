@@ -19,7 +19,7 @@ export const createQwen = (apiKey: string, baseURL = 'https://dashscope.aliyuncs
     | 'qwen-max'
     | 'qwen-plus'
     | 'qwen-turbo'
-    | 'qwq-32b-preview'
+    | 'qwq-32b'
   >({ apiKey, baseURL }),
   createEmbedProvider<'text-embedding-v3'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
