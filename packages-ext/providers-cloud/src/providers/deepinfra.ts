@@ -22,7 +22,7 @@ export const createDeepInfra = (apiKey: string, baseURL = 'https://api.deepinfra
     | 'Qwen/QVQ-72B-Preview'
     | 'Qwen/Qwen2.5-72B-Instruct'
     | 'Qwen/Qwen2.5-Coder-32B-Instruct'
-    | 'Qwen/QwQ-32B-Preview'
+    | 'Qwen/QwQ-32B'
   >({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider<

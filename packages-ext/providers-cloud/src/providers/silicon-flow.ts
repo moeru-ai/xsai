@@ -21,7 +21,7 @@ export const createSiliconFlow = (apiKey: string, baseURL = 'https://api.silicon
     | 'Qwen/Qwen2.5-72B-Instruct'
     | 'Qwen/Qwen2.5-72B-Instruct-128K'
     | 'Qwen/Qwen2.5-Coder-32B-Instruct'
-    | 'Qwen/QwQ-32B-Preview'
+    | 'Qwen/QwQ-32B'
   >({ apiKey, baseURL }),
   createEmbedProvider<
     | 'BAAI/bge-reranker-v2-m3'
