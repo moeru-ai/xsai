@@ -14,7 +14,7 @@ interface CreateAzureOptions {
    *
    * If passed in as a function, it is treated as an accessTokenFetcher.
    */
-  apiKey: string | (() => string | Promise<string>)
+  apiKey: (() => Promise<string> | string) | string
   /**
    * The Azure API version to use (`api-version` param).
    *
@@ -39,34 +39,34 @@ export const createAzure = async (options: CreateAzureOptions) => {
 
   const baseURL = `https://${options.resourceName}.services.ai.azure.com/models/`
   const fetch: typeof globalThis.fetch = async (input, init) => {
-     // If the input is a string, it is the URL, otherwise it is an object with a url property
-     const inputIsURL = typeof input === 'string' || !('url' in input)
- 
-     // Add the api-version query parameter to the URL
-     const url = new URL(inputIsURL ? input : input.url)
-     url.searchParams.set('api-version', options.apiVersion ?? '2024-05-01-preview')
-     const urlString = url.toString()
+    // If the input is a string, it is the URL, otherwise it is an object with a url property
+    const inputIsURL = typeof input === 'string' || !('url' in input)
 
-     // Add credential header
-     if (typeof options.apiKey === 'function') {
-       const token = `Bearer ${await options.apiKey()}`
+    // Add the api-version query parameter to the URL
+    const url = new URL(inputIsURL ? input : input.url)
+    url.searchParams.set('api-version', options.apiVersion ?? '2024-05-01-preview')
+    const urlString = url.toString()
 
-       init ??= {}
-       init.headers ??= {}
+    // Add credential header
+    if (typeof options.apiKey === 'function') {
+      const token = `Bearer ${await options.apiKey()}`
 
-       if (Array.isArray(init.headers)) {
-         init.headers.push(['Authorization', token])
-       }
-       else if (init.headers instanceof globalThis.Headers) {
-         init.headers.append('Authorization', token)
-       }
-       else {
-         init.headers['Authorization'] = token
-       }
-     }
+      init ??= {}
+      init.headers ??= {}
 
-     return globalThis.fetch(inputIsURL ? urlString : { ...input, url: urlString }, init)
-   }
+      if (Array.isArray(init.headers)) {
+        init.headers.push(['Authorization', token])
+      }
+      else if (init.headers instanceof globalThis.Headers) {
+        init.headers.append('Authorization', token)
+      }
+      else {
+        init.headers.Authorization = token
+      }
+    }
+
+    return globalThis.fetch(inputIsURL ? urlString : { ...input, url: urlString }, init)
+  }
 
   return merge(
     createMetadataProvider('azure'),
