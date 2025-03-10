@@ -8,16 +8,6 @@ import {
   merge,
 } from '@xsai-ext/shared-providers'
 
-export interface AzureOptions {
-  /**
-   * The static Azure API key for authorization.
-   *
-   * Either `apiKey` or `accessTokenFetcher` must be provided.
-   */
-  apiKey: string
-  resourceName: string
-}
-
 /**
  * For Azure AI services, you can have multiple deployments of the same model with different names.
  *
@@ -25,41 +15,17 @@ export interface AzureOptions {
  *
  * @see {@link https://ai.azure.com/explore/models}
  */
-export const createAzure = (options: AzureOptions) => {
-  const baseURL = `https://${options.resourceName}.services.ai.azure.com/models/`
-  const apiKey = options.apiKey
-
-  const fetch: typeof globalThis.fetch = async (input, init) => {
-    // If the input is a string, it is the URL, otherwise it is an object with a url property
-    const inputIsURL = typeof input === 'string' || !('url' in input)
-
-    // Add the api-version query parameter to the URL
-    const url = new URL(inputIsURL ? input : input.url)
-    const urlString = url.toString()
-
-    // Add credential header
-    init ??= {}
-    init.headers ??= {}
-    if (Array.isArray(init.headers)) {
-      init.headers.push(['api-key', apiKey])
-    }
-    else if (init.headers instanceof globalThis.Headers) {
-      init.headers.append('api-key', apiKey)
-    }
-    else {
-      init.headers[credentialHeaderKey] = credentialHeaderValue
-    }
-
-    return globalThis.fetch(inputIsURL ? urlString : { ...input, url: urlString }, init)
-  }
+export const createAzure = (apiKey: string, resourceName: string) => {
+  const baseURL = `https://${resourceName}.services.ai.azure.com/models/`
+  const headers = { 'api-key': apiKey }
 
   return merge(
     createMetadataProvider('azure'),
-    createChatProvider<AzureChatModels>({ apiKey, baseURL, fetch }),
-    createEmbedProvider<AzureTextEmbeddingModels>({ apiKey, baseURL, fetch }),
-    createSpeechProvider<AzureSpeechModels>({ apiKey, baseURL, fetch }),
-    createTranscriptionProvider<AzureTranscriptionModels>({ apiKey, baseURL, fetch }),
-    createModelProvider({ apiKey, baseURL, fetch }),
+    createChatProvider<AzureChatModels>({ baseURL, headers }),
+    createEmbedProvider<AzureTextEmbeddingModels>({ baseURL, headers }),
+    createSpeechProvider<AzureSpeechModels>({ baseURL, headers }),
+    createTranscriptionProvider<AzureTranscriptionModels>({ baseURL, headers }),
+    createModelProvider({ baseURL, headers }),
   )
 }
 
