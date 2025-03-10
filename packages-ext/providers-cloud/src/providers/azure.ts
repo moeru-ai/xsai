@@ -33,9 +33,6 @@ interface CreateAzureOptions {
  * @see {@link https://ai.azure.com/explore/models}
  */
 export const createAzure = async (options: CreateAzureOptions) => {
-  const apiKey = typeof options.apiKey === 'function'
-    ? await apiKey()
-    : undefined
   const headers = typeof options.apiKey === 'string'
     ? { 'api-key': options.apiKey }
     : undefined
@@ -50,15 +47,33 @@ export const createAzure = async (options: CreateAzureOptions) => {
      url.searchParams.set('api-version', options.apiVersion ?? '2024-05-01-preview')
      const urlString = url.toString()
 
+     // Add credential header
+     if (typeof options.apiKey === 'function') {
+       const token = `Bearer ${await options.accessTokenFetcher()}`
+
+       init ??= {}
+       init.headers ??= {}
+
+       if (Array.isArray(init.headers)) {
+         init.headers.push([credentialHeaderKey, credentialHeaderValue])
+       }
+       else if (init.headers instanceof globalThis.Headers) {
+         init.headers.append(credentialHeaderKey, credentialHeaderValue)
+       }
+       else {
+         init.headers[credentialHeaderKey] = credentialHeaderValue
+       }
+     }
+
      return globalThis.fetch(inputIsURL ? urlString : { ...input, url: urlString }, init)
    }
 
   return merge(
     createMetadataProvider('azure'),
-    createChatProvider<AzureChatModels>({ apiKey, baseURL, fetch, headers }),
-    createEmbedProvider<AzureTextEmbeddingModels>({ apiKey, baseURL, fetch, headers }),
-    createSpeechProvider<AzureSpeechModels>({ apiKey, baseURL, fetch, headers }),
-    createTranscriptionProvider<AzureTranscriptionModels>({ apiKey, baseURL, fetch, headers }),
+    createChatProvider<AzureChatModels>({ baseURL, fetch, headers }),
+    createEmbedProvider<AzureTextEmbeddingModels>({ baseURL, fetch, headers }),
+    createSpeechProvider<AzureSpeechModels>({ baseURL, fetch, headers }),
+    createTranscriptionProvider<AzureTranscriptionModels>({ baseURL, fetch, headers }),
     createModelProvider({ apiKey, baseURL, fetch, headers }),
   )
 }
