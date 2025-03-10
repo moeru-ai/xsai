@@ -47,11 +47,11 @@ It's just a wrapper for [Fetch API](https://developer.mozilla.org/en-US/docs/Web
 
 How xsAI small? you can [try install it with pkg-size.dev](https://pkg-size.dev/xsai):
 
-`xsai@0.0.18` is 111KB install size and 11KB bundle size (3KB gzipped).
+`xsai@0.1.2` is 93KB install size and 16KB bundle size (5.8KB gzipped).
 
 Notably, this contains dependencies introduced to support tool calls and structured output.
 
-If you only need the basic `generateText`, `@xsai/generate-text@0.0.18` is only 12KB install size and 1.2KB bundle size (678B gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
+If you only need the basic `generateText`, `@xsai/generate-text@0.1.2` is only 19KB install size and 2.9KB bundle size (1.4KB gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
 
 ### Runtime-agnostic
 
