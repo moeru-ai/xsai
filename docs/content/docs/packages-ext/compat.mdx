@@ -1,0 +1,236 @@
+---
+title: Compat
+description: Similar to `@preact/compat`, but for the Vercel AI SDK.
+---
+
+<Callout type="warn">
+This package is as compatible as possible with the Vercel AI SDK, but is not fully compatible.
+
+This package is low priority, so if you need a feature that is not up to date, feel free to create Pull Request.
+</Callout>
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai-ext/compat" />
+
+```package-install
+npm i ai@npm:@xsai-ext/compat
+```
+
+## Overrides
+
+This override is required when you use libraries that depend on the Vercel AI SDK, such as Mastra.
+
+import pkg from '../../../package.json'
+
+> Replace `{{version}}` with the current version, for example: ^{pkg.version}
+
+### pnpm
+
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "ai": "npm:@xsai-ext/compat@{{version}}"
+    }
+  }
+}
+```
+
+### yarn
+
+```json
+{
+  "resolutions": {
+    "ai": "npm:@xsai-ext/compat@{{version}}"
+  }
+}
+```
+
+### npm / bun
+
+```json
+{
+  "overrides": {
+    "ai": "npm:@xsai-ext/compat@{{version}}"
+  }
+}
+```
+
+## Examples
+
+### Basic
+
+```ts
+// https://sdk.vercel.ai/docs/ai-sdk-core/overview
+import { generateText } from '@xsai-ext/compat'
+import { createOpenAI } from '@xsai-ext/providers-cloud'
+import { env } from 'node:process'
+
+const openai = createOpenAI(env.OPENAI_API_KEY!)
+
+const { text } = await generateText({
+  model: openai.chat('o3-mini'),
+  prompt: 'What is love?'
+})
+```
+
+### Mastra
+
+#### Create a Tool
+
+```ts
+// https://mastra.ai/docs/getting-started/installation#create-a-tool
+import { createTool } from '@mastra/core/tools'
+import { z } from 'zod'
+
+interface GeocodingResponse {
+  results?: {
+    id: number
+    latitude: number
+    longitude: number
+    name: string
+  }[]
+}
+
+interface WeatherResponse {
+  current: {
+    apparent_temperature: number
+    relative_humidity_2m: number
+    temperature_2m: number
+    time: string
+    weather_code: number
+    wind_gusts_10m: number
+    wind_speed_10m: number
+  }
+}
+
+const getWeather = async (location: string) => {
+  const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1`
+  const geocodingResponse = await fetch(geocodingUrl)
+  const geocodingData = await geocodingResponse.json() as GeocodingResponse
+
+  if (!geocodingData.results?.[0])
+    throw new Error(`Location '${location}' not found`)
+
+  const { latitude, longitude, name } = geocodingData.results[0]
+
+  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_gusts_10m,weather_code`
+
+  const response = await fetch(weatherUrl)
+  const data = await response.json() as WeatherResponse
+
+  return {
+    conditions: getWeatherCondition(data.current.weather_code),
+    feelsLike: data.current.apparent_temperature,
+    humidity: data.current.relative_humidity_2m,
+    location: name,
+    temperature: data.current.temperature_2m,
+    windGust: data.current.wind_gusts_10m,
+    windSpeed: data.current.wind_speed_10m,
+  }
+}
+
+const getWeatherCondition = (code: number): string => {
+  const conditions: Record<number, string> = {
+    0: 'Clear sky',
+    1: 'Mainly clear',
+    2: 'Partly cloudy',
+    3: 'Overcast',
+    45: 'Foggy',
+    48: 'Depositing rime fog',
+    51: 'Light drizzle',
+    53: 'Moderate drizzle',
+    55: 'Dense drizzle',
+    56: 'Light freezing drizzle',
+    57: 'Dense freezing drizzle',
+    61: 'Slight rain',
+    63: 'Moderate rain',
+    65: 'Heavy rain',
+    66: 'Light freezing rain',
+    67: 'Heavy freezing rain',
+    71: 'Slight snow fall',
+    73: 'Moderate snow fall',
+    75: 'Heavy snow fall',
+    77: 'Snow grains',
+    80: 'Slight rain showers',
+    81: 'Moderate rain showers',
+    82: 'Violent rain showers',
+    85: 'Slight snow showers',
+    86: 'Heavy snow showers',
+    95: 'Thunderstorm',
+    96: 'Thunderstorm with slight hail',
+    99: 'Thunderstorm with heavy hail',
+  }
+
+  return conditions[code] || 'Unknown'
+}
+
+export const weatherTool = createTool({
+  description: 'Get current weather for a location',
+  execute: async ({ context }) => getWeather(context.location),
+  id: 'get-weather',
+  inputSchema: z.object({
+    location: z.string().describe('City name'),
+  }),
+  outputSchema: z.object({
+    conditions: z.string(),
+    feelsLike: z.number(),
+    humidity: z.number(),
+    location: z.string(),
+    temperature: z.number(),
+    windGust: z.number(),
+    windSpeed: z.number(),
+  }),
+})
+```
+
+#### Create an Agent
+
+```ts
+// https://mastra.ai/docs/getting-started/installation#create-an-agent
+import { Agent } from '@mastra/core/agent'
+import { createOpenAI } from '@xsai-ext/providers-cloud'
+import { env } from 'node:process'
+
+import { weatherTool } from '../tools/weather-tool'
+
+const openai = createOpenAI(env.OPENAI_API_KEY!)
+
+export const weatherAgent = new Agent({
+  instructions: `You are a helpful weather assistant that provides accurate weather information.
+ 
+Your primary function is to help users get weather details for specific locations. When responding:
+- Always ask for a location if none is provided
+- Include relevant details like humidity, wind conditions, and precipitation
+- Keep responses concise but informative
+ 
+Use the weatherTool to fetch current weather data.`,
+  model: openai.chat('gpt-4o-mini'),
+  name: 'Weather Agent',
+  tools: { weatherTool },
+})
+```
+
+#### Register Agent
+
+```ts
+// https://mastra.ai/docs/getting-started/installation#register-agent
+import { Mastra } from '@mastra/core'
+
+import { weatherAgent } from './agents/weather'
+
+const mastra = new Mastra({ agents: { weatherAgent } })
+```
+
+#### Test the Endpoint
+
+```ts
+// https://mastra.ai/docs/getting-started/installation#test-the-endpoint
+import { mastra } from './mastra'
+
+const agent = await mastra.getAgent('weatherAgent')
+const result = await agent.generate('What is the weather in London?')
+ 
+console.log('Agent response:', result.text)
+```
