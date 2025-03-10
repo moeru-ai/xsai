@@ -18,7 +18,7 @@ interface CreateAzureOptions {
   /**
    * The Azure API version to use (`api-version` param).
    *
-   * @default '2024-05-01-preview'
+   * @default '2024-10-01-preview'
    */
   apiVersion?: string
   /** Azure resource name. */
@@ -44,7 +44,7 @@ export const createAzure = async (options: CreateAzureOptions) => {
 
     // Add the api-version query parameter to the URL
     const url = new URL(inputIsURL ? input : input.url)
-    url.searchParams.set('api-version', options.apiVersion ?? '2024-05-01-preview')
+    url.searchParams.set('api-version', options.apiVersion ?? '2024-10-01-preview')
     const urlString = url.toString()
 
     // Add credential header
