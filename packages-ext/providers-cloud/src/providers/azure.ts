@@ -13,30 +13,56 @@ interface CreateAzureOptions {
    * The static API key or AD access token fetcher for authorization.
    *
    * If passed in as a function, it is treated as an accessTokenFetcher.
+   *
+   * @see {@link https://learn.microsoft.com/en-us/azure/api-management/api-management-authenticate-authorize-azure-openai}
    */
   apiKey: (() => Promise<string> | string) | string
   /**
    * The Azure API version to use (`api-version` param).
    *
-   * @default '2024-10-01-preview'
+   * Notice: Different deployment over different time may have different API versions, please
+   * follow the exact prompt from either [Azure AI Foundry](https://ai.azure.com/) or Azure OpenAI service
+   * to get the correct API version from the Azure OpenAI Service endpoint.
+   *
+   * On Azure AI Foundry portal, you can go to https://ai.azure.com/build/overview > Choose the project >
+   * Overview > Endpoints and keys > Included capabilities > Azure OpenAI Service to get the correct endpoint.
+   *
+   * @see {@link https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#rest-api-versioning}
    */
   apiVersion?: string
-  /** Azure resource name. */
+  /**
+   * Azure resource name.
+   *
+   * On Azure AI Foundry portal, you can go to https://ai.azure.com/build/overview > Choose the project >
+   * Overview > Endpoints and keys > Included capabilities > Azure OpenAI Service to get the correct endpoint.
+   *
+   * @see {@link https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#uri-parameters}
+   */
   resourceName: string
 }
 
 /**
  * For Azure AI services, you can have multiple deployments of the same model with different names.
  *
- * Please pass your deployment name as the `model` parameter. By default, Azure will use the model name as the deployment name when deploying a model.
+ * Please pass your deployment name as the `model` parameter. By default, Azure will use the model name
+ * as the deployment name when deploying a model.
  *
- * @see {@link https://ai.azure.com/explore/models}
+ * @see {@link https://ai.azure.com/explore/models} and
+ * {@link https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/concepts/endpoints?tabs=rest#routing}
  */
 export const createAzure = async (options: CreateAzureOptions) => {
   const headers = typeof options.apiKey === 'string'
     ? { 'api-key': options.apiKey }
     : undefined
 
+  // More reference about how the URL concatenation works:
+  // https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/how-to/inference?tabs=python#endpoints
+  //
+  // Vercel AI SDK implemented it like this:
+  // https://sdk.vercel.ai/providers/ai-sdk-providers/azure
+  //
+  // For *.openai.azure.com, you can learn more here:
+  // https://learn.microsoft.com/en-us/azure/ai-services/openai/reference
   const baseURL = `https://${options.resourceName}.services.ai.azure.com/models/`
   const fetch: typeof globalThis.fetch = async (input, init) => {
     // If the input is a string, it is the URL, otherwise it is an object with a url property
@@ -44,10 +70,16 @@ export const createAzure = async (options: CreateAzureOptions) => {
 
     // Add the api-version query parameter to the URL
     const url = new URL(inputIsURL ? input : input.url)
-    url.searchParams.set('api-version', options.apiVersion ?? '2024-10-01-preview')
+
+    if (options.apiVersion != null) {
+      url.searchParams.set('api-version', options.apiVersion)
+    }
+
     const urlString = url.toString()
 
-    // Add credential header
+    // For the extra steps to obtain the bearer token, please refer to the following links:
+    // https://learn.microsoft.com/en-us/azure/api-management/api-management-authenticate-authorize-azure-openai
+    // https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#authentication
     if (typeof options.apiKey === 'function') {
       const token = `Bearer ${await options.apiKey()}`
 
