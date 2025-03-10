@@ -10,17 +10,11 @@ import {
 
 export interface AzureOptions {
   /**
-   * The Azure AD access token fetcher for authorization.
-   *
-   * Either `apiKey` or `accessTokenFetcher` must be provided.
-   */
-  accessTokenFetcher?: () => Promise<string>
-  /**
    * The static Azure API key for authorization.
    *
    * Either `apiKey` or `accessTokenFetcher` must be provided.
    */
-  apiKey?: string
+  apiKey: string
   /**
    * The Azure API version to use (`api-version` param).
    *
@@ -41,10 +35,6 @@ export const createAzure = (options: AzureOptions) => {
   const baseURL = `https://${options.resourceName}.services.ai.azure.com/models/`
   const apiVersion = options.apiVersion ?? '2024-05-01-preview'
   const apiKey = options.apiKey
-  const accessTokenFetcher = options.accessTokenFetcher
-  if (apiKey == null && !accessTokenFetcher) {
-    throw new Error('Either `apiKey` or `accessTokenFetcher` must be provided')
-  }
 
   const fetch: typeof globalThis.fetch = async (input, init) => {
     // If the input is a string, it is the URL, otherwise it is an object with a url property
@@ -56,15 +46,13 @@ export const createAzure = (options: AzureOptions) => {
     const urlString = url.toString()
 
     // Add credential header
-    const credentialHeaderKey = apiKey != null ? 'api-key' : 'Authorization'
-    const credentialHeaderValue = apiKey ?? `Bearer ${await accessTokenFetcher!()}`
     init ??= {}
     init.headers ??= {}
     if (Array.isArray(init.headers)) {
-      init.headers.push([credentialHeaderKey, credentialHeaderValue])
+      init.headers.push(['api-key', apiKey])
     }
     else if (init.headers instanceof globalThis.Headers) {
-      init.headers.append(credentialHeaderKey, credentialHeaderValue)
+      init.headers.append('api-key', apiKey)
     }
     else {
       init.headers[credentialHeaderKey] = credentialHeaderValue
