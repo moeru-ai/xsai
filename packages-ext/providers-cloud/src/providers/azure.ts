@@ -55,13 +55,13 @@ export const createAzure = async (options: CreateAzureOptions) => {
        init.headers ??= {}
 
        if (Array.isArray(init.headers)) {
-         init.headers.push([credentialHeaderKey, credentialHeaderValue])
+         init.headers.push(['Authorization', token])
        }
        else if (init.headers instanceof globalThis.Headers) {
-         init.headers.append(credentialHeaderKey, credentialHeaderValue)
+         init.headers.append('Authorization', token)
        }
        else {
-         init.headers[credentialHeaderKey] = credentialHeaderValue
+         init.headers['Authorization'] = token
        }
      }
 
