@@ -49,7 +49,7 @@ export const createAzure = async (options: CreateAzureOptions) => {
 
      // Add credential header
      if (typeof options.apiKey === 'function') {
-       const token = `Bearer ${await options.accessTokenFetcher()}`
+       const token = `Bearer ${await options.apiKey()}`
 
        init ??= {}
        init.headers ??= {}
