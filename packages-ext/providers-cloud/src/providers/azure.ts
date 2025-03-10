@@ -14,7 +14,7 @@ interface CreateAzureOptions {
    *
    * If passed in as a function, it is treated as an accessTokenFetcher.
    */
-  apiKey: string | (() => string | Promise<string>
+  apiKey: string | (() => string | Promise<string>)
   /**
    * The Azure API version to use (`api-version` param).
    *
