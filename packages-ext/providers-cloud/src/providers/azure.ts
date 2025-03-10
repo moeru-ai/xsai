@@ -27,26 +27,18 @@ export interface AzureOptions {
    * @default '2024-05-01-preview'
    */
   apiVersion?: string
-  /**
-   * The base URL (usually ends with `/models`, without `/chat/completions`) of your Azure AI endpoint.
-   *
-   * @note It's not recommended to use the `/openai/deployments/<deployment_name>/` endpoint since it ignores the `model` parameter passed through the request body. If you got an endpoint like that just replace the pathname with `/models`.
-   *
-   * @example 'https://<instance>.services.ai.azure.com/models'
-   * @example 'https://<instance>.cognitiveservices.azure.com/models'
-   */
-  baseURL: string
+  resourceName: string
 }
 
 /**
  * For Azure AI services, you can have multiple deployments of the same model with different names.
  *
- * Please pass your deployment name as the `model` parameter. By default, when you're deploying a model, Azure will use the model name as the deployment name.
+ * Please pass your deployment name as the `model` parameter. By default, Azure will use the model name as the deployment name when deploying a model.
  *
  * @see {@link https://ai.azure.com/explore/models}
  */
 export const createAzure = (options: AzureOptions) => {
-  const baseURL = options.baseURL
+  const baseURL = `https://${options.resourceName}.services.ai.azure.com/models/`
   const apiVersion = options.apiVersion ?? '2024-05-01-preview'
   const apiKey = options.apiKey
   const accessTokenFetcher = options.accessTokenFetcher
