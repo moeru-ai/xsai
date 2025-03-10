@@ -15,12 +15,6 @@ export interface AzureOptions {
    * Either `apiKey` or `accessTokenFetcher` must be provided.
    */
   apiKey: string
-  /**
-   * The Azure API version to use (`api-version` param).
-   *
-   * @default '2024-05-01-preview'
-   */
-  apiVersion?: string
   resourceName: string
 }
 
@@ -33,7 +27,6 @@ export interface AzureOptions {
  */
 export const createAzure = (options: AzureOptions) => {
   const baseURL = `https://${options.resourceName}.services.ai.azure.com/models/`
-  const apiVersion = options.apiVersion ?? '2024-05-01-preview'
   const apiKey = options.apiKey
 
   const fetch: typeof globalThis.fetch = async (input, init) => {
@@ -42,7 +35,6 @@ export const createAzure = (options: AzureOptions) => {
 
     // Add the api-version query parameter to the URL
     const url = new URL(inputIsURL ? input : input.url)
-    url.searchParams.set('api-version', apiVersion)
     const urlString = url.toString()
 
     // Add credential header
