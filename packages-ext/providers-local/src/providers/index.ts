@@ -1,3 +1,4 @@
+export { createLiteLLM } from './litellm'
 export { createOllama } from './ollama'
 export { createUnSpeech } from './unspeech'
 export { createUnElevenLabs } from './unspeech/elevenlabs'
