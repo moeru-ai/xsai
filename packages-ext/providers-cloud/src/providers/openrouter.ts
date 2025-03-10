@@ -1,7 +1,7 @@
 import type { ChatProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { createMetadataProvider, merge } from '@xsai-ext/shared-providers'
+import { createMetadataProvider, createModelProvider, merge } from '@xsai-ext/shared-providers'
 import { objCamelToSnake } from '@xsai/shared'
 
 export interface OpenRouterOptions {
@@ -129,4 +129,5 @@ export const createOpenRouter = (apiKey: string, baseURL = '') => merge(
     | 'openai/o1-preview',
     OpenRouterOptions
   >,
+  createModelProvider({ apiKey, baseURL }),
 )
