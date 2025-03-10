@@ -1,4 +1,5 @@
 export { createAnthropic } from './anthropic'
+export { createAzure } from './azure'
 export { createCerebras } from './cerebras'
 export { createDeepInfra } from './deepinfra'
 export { createDeepSeek } from './deepseek'
