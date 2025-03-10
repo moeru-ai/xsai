@@ -74,7 +74,7 @@ export const createAzure = async (options: CreateAzureOptions) => {
     createEmbedProvider<AzureTextEmbeddingModels>({ baseURL, fetch, headers }),
     createSpeechProvider<AzureSpeechModels>({ baseURL, fetch, headers }),
     createTranscriptionProvider<AzureTranscriptionModels>({ baseURL, fetch, headers }),
-    createModelProvider({ apiKey, baseURL, fetch, headers }),
+    createModelProvider({ baseURL, fetch, headers }),
   )
 }
 
