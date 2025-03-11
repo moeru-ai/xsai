@@ -1,5 +1,15 @@
 # Contributing
 
+## Before
+
+Before creating a Pull Request, please contact us at [issues](https://github.com/moeru-ai/xsai/issues) or [discussions](https://github.com/moeru-ai/xsai/discussions) to confirm that the feature in question is one we need.
+
+When creating a Pull Request, please make sure you have read and agreed to it:
+
+- Allow us (xsAI Maintainers) to modify your code at any time.
+  - Usually, this is to make it simpler, but there may be exceptions.
+- Allow us (xsAI Maintainers) to create new Pull Request with your code and close the old ones while adding the `Co-authored-by` trailers.
+
 ## Testing
 
 We weren't supposed to connect to OpenAI's paid APIs while testing, so we chose some local services to use for test:
