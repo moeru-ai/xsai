@@ -10,6 +10,9 @@ When creating a Pull Request, please make sure you have read and agreed to it:
   - Usually, this is to make it simpler, but there may be exceptions.
 - Allow us (xsAI Maintainers) to create new Pull Request with your code and close the old ones while adding the `Co-authored-by` trailers.
 
+We will do our best to try to explain and discuss the possible implementation approaches as much detailed as possible before modifications and Pull Request state changes,
+but still, sometimes it may be much more efficient for us to directly use actual code to address our opinions.
+
 ## Testing
 
 We weren't supposed to connect to OpenAI's paid APIs while testing, so we chose some local services to use for test:
