@@ -4,7 +4,7 @@ exports[`@xsai/generate-text > basic 1`] = `
 [
   {
     "finishReason": "stop",
-    "stepType": "initial",
+    "stepType": "done",
     "text": "YES",
     "toolCalls": [],
     "toolResults": [],
@@ -16,5 +16,3 @@ exports[`@xsai/generate-text > basic 1`] = `
   },
 ]
 `;
-
-exports[`@xsai/generate-text > with tool calling 1`] = `"Right now, it's 42°F (6°C) partly cloudy in San Francisco."`;
