@@ -5,6 +5,9 @@ import { objCamelToSnake } from '@xsai/shared'
 
 import type { UnSpeechOptions } from '.'
 
+export * from './elevenlabs'
+export * from './microsoft'
+
 export interface UnMicrosoftOptionAutoSSML {
   gender:
     | 'Female'
