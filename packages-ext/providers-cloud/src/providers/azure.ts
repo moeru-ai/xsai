@@ -1,3 +1,5 @@
+import type { Fetch } from '@xsai/shared'
+
 import {
   createChatProvider,
   createEmbedProvider,
@@ -64,40 +66,27 @@ export const createAzure = async (options: CreateAzureOptions) => {
   // For *.openai.azure.com, you can learn more here:
   // https://learn.microsoft.com/en-us/azure/ai-services/openai/reference
   const baseURL = `https://${options.resourceName}.services.ai.azure.com/models/`
-  const fetch: typeof globalThis.fetch = async (input, init) => {
-    // If the input is a string, it is the URL, otherwise it is an object with a url property
-    const inputIsURL = typeof input === 'string' || !('url' in input)
-
-    // Add the api-version query parameter to the URL
-    const url = new URL(inputIsURL ? input : input.url)
-
-    if (options.apiVersion != null) {
-      url.searchParams.set('api-version', options.apiVersion)
-    }
-
-    const urlString = url.toString()
+  const fetch: Fetch = async (input, init) => {
+    if (options.apiVersion != null)
+      input.searchParams.set('api-version', options.apiVersion)
 
     // For the extra steps to obtain the bearer token, please refer to the following links:
     // https://learn.microsoft.com/en-us/azure/api-management/api-management-authenticate-authorize-azure-openai
     // https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#authentication
     if (typeof options.apiKey === 'function') {
-      const token = `Bearer ${await options.apiKey()}`
-
-      init ??= {}
       init.headers ??= {}
 
-      if (Array.isArray(init.headers)) {
+      const token = `Bearer ${await options.apiKey()}`
+
+      if (Array.isArray(init.headers))
         init.headers.push(['Authorization', token])
-      }
-      else if (init.headers instanceof globalThis.Headers) {
+      else if (init.headers instanceof Headers)
         init.headers.append('Authorization', token)
-      }
-      else {
+      else
         init.headers.Authorization = token
-      }
     }
 
-    return globalThis.fetch(inputIsURL ? urlString : { ...input, url: urlString }, init)
+    return globalThis.fetch(input, init)
   }
 
   return merge(
