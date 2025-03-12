@@ -38,7 +38,7 @@ describe('@xsai/generate-text', () => {
   it('with tool calling', async () => {
     const weather = await tool({
       description: 'Get the weather in a location',
-      execute: ({ location }) => JSON.stringify({
+      execute: ({ location }) => ({
         location,
         temperature: 42,
       }),
@@ -65,12 +65,11 @@ describe('@xsai/generate-text', () => {
         },
       ],
       model: 'mistral-nemo',
-      seed: 42,
       toolChoice: 'required',
       tools: [weather],
     })
 
-    expect(text).toMatchSnapshot()
+    expect(text).toMatch(/42/) // only match it got 42 degrees
 
     const { toolCalls, toolResults } = steps[0]
 

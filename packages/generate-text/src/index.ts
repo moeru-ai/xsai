@@ -1,4 +1,4 @@
-import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, Usage } from '@xsai/shared-chat'
+import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
 import { chat, wrapToolResult } from '@xsai/shared-chat'
 
@@ -53,6 +53,39 @@ type RawGenerateText = (options: GenerateTextOptions) => RawGenerateTextTrampoli
 type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>) | T>
 
 /** @internal */
+function removeTextAfterLastWhitespace(text: string): string {
+  const lastNonWhitespace = text.trimEnd().length
+  return text.slice(0, lastNonWhitespace + 1)
+}
+
+/** @internal */
+const executeToolCall = async (
+  func: ToolCall['function'],
+  toolCallId: string,
+  options: GenerateTextOptions,
+  messages: Message[],
+): Promise<{ parsedArgs: Record<string, unknown>, result: string | ToolMessagePart[], toolName: string }> => {
+  const tool = options.tools?.find(tool => tool.function.name === func.name)
+
+  if (!tool) {
+    const availableTools = options.tools?.map(tool => tool.function.name)
+    const availableToolsErrorMsg = availableTools === undefined
+      ? 'No tools are available.'
+      : `Available tools: ${availableTools.join(', ')}.`
+    throw new Error(`Model tried to call unavailable tool '${func.name}. ${availableToolsErrorMsg}.`)
+  }
+
+  const parsedArgs = JSON.parse(func.arguments) as Record<string, unknown>
+  const result = wrapToolResult(await tool.execute(parsedArgs, {
+    abortSignal: options.abortSignal,
+    messages,
+    toolCallId,
+  }))
+
+  return { parsedArgs, result, toolName: func.name }
+}
+
+/** @internal */
 const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
   chat({
     ...options,
@@ -70,7 +103,6 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
       const { finish_reason: finishReason, message } = choices[0]
       const msgToolCalls = message?.tool_calls ?? []
-      messages.push({ ...message, content: message.content! })
 
       let stepType: GenerateTextStepResult['stepType'] = 'initial'
 
@@ -86,11 +118,37 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         }
       }
 
+      let text = message.content ?? ''
+      if (steps.length > 0 && stepType === 'continue') {
+        const lastStep = steps[steps.length - 1]
+        const lastText = lastStep.text ?? ''
+
+        const currentTextLeadingWhitespaceTrimmed
+          = text.trimEnd() !== text
+            ? text.trimStart()
+            : text
+
+        const processedLastText = removeTextAfterLastWhitespace(lastText)
+
+        text = processedLastText + currentTextLeadingWhitespaceTrimmed
+
+        const lastMessage = messages[messages.length - 1]
+        if (lastMessage.role === 'assistant' && typeof lastMessage.content === 'string') {
+          lastMessage.content = text
+        }
+        else {
+          messages.push({ ...message, content: text })
+        }
+      }
+      else {
+        messages.push({ ...message, content: message.content! })
+      }
+
       if (stepType === 'done') {
         const step: GenerateTextStepResult = {
           finishReason,
           stepType,
-          text: message.content,
+          text,
           toolCalls,
           toolResults,
           usage,
@@ -105,7 +163,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
           finishReason,
           messages,
           steps,
-          text: message.content,
+          text,
           toolCalls,
           toolResults,
           usage,
@@ -113,37 +171,19 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       }
 
       for (const {
-        function: { arguments: toolArgs, name: toolName },
+        function: func,
         id: toolCallId,
         type: toolCallType,
       } of msgToolCalls) {
-        const tool = options.tools?.find(tool => tool.function.name === toolName)
-
-        if (!tool) {
-          const availableTools = options.tools?.map(tool => tool.function.name)
-          const availableToolsErrorMsg = availableTools === undefined
-            ? 'No tools are available.'
-            : `Available tools: ${availableTools.join(', ')}.`
-          throw new Error(`Model tried to call unavailable tool '${toolName}. ${availableToolsErrorMsg}.`)
-        }
-
-        const parsedArgs = JSON.parse(toolArgs) as Record<string, unknown>
-        const result = wrapToolResult(await tool.execute(parsedArgs, { abortSignal: options.abortSignal, messages, toolCallId }))
-
-        toolCalls.push({
-          args: toolArgs,
+        const { parsedArgs, result, toolName } = await executeToolCall(
+          func,
           toolCallId,
-          toolCallType,
-          toolName,
-        })
-
-        toolResults.push({
-          args: parsedArgs,
-          result,
-          toolCallId,
-          toolName,
-        })
-
+          options,
+          messages,
+        )
+        const toolInfo = { toolCallId, toolName }
+        toolCalls.push({ ...toolInfo, args: func.arguments, toolCallType })
+        toolResults.push({ ...toolInfo, args: parsedArgs, result })
         messages.push({
           content: result,
           role: 'tool',
@@ -154,7 +194,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       const step: GenerateTextStepResult = {
         finishReason,
         stepType,
-        text: message.content,
+        text,
         toolCalls,
         toolResults,
         usage,
