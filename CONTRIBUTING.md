@@ -17,7 +17,7 @@ but still, sometimes it may be much more efficient for us to directly use actual
 
 We weren't supposed to connect to OpenAI's paid APIs while testing, so we chose some local services to use for test:
 
-### generateText, streamText, generateObject, embed
+### embed, {generate,stream}Text, {generate,stream}Object, tool
 
 It uses [Ollama](https://github.com/ollama/ollama).
 
