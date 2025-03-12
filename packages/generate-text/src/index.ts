@@ -86,6 +86,27 @@ const executeToolCall = async (
 }
 
 /** @internal */
+function determineStepType(
+  maxSteps: number,
+  stepsLength: number,
+  toolCallsLength: number,
+  finishReason: FinishReason,
+): GenerateTextStepResult['stepType'] {
+  if (maxSteps >= stepsLength) {
+    if (toolCallsLength > 0 && finishReason === 'tool_calls') {
+      return 'tool-result'
+    }
+    else if (finishReason === 'length') {
+      return 'continue'
+    }
+    else if (finishReason === 'stop') {
+      return 'done'
+    }
+  }
+  return 'initial'
+}
+
+/** @internal */
 const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
   chat({
     ...options,
@@ -104,19 +125,12 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       const { finish_reason: finishReason, message } = choices[0]
       const msgToolCalls = message?.tool_calls ?? []
 
-      let stepType: GenerateTextStepResult['stepType'] = 'initial'
-
-      if ((options.maxSteps ?? 1) >= steps.length) {
-        if (msgToolCalls.length > 0 && finishReason === 'tool_calls') {
-          stepType = 'tool-result'
-        }
-        else if (finishReason === 'length') {
-          stepType = 'continue'
-        }
-        else if (finishReason === 'stop') {
-          stepType = 'done'
-        }
-      }
+      const stepType = determineStepType(
+        options.maxSteps ?? 1,
+        steps.length,
+        msgToolCalls.length,
+        finishReason,
+      )
 
       let text = message.content ?? ''
       if (steps.length > 0 && stepType === 'continue') {
@@ -127,10 +141,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
           = text.trimEnd() !== text
             ? text.trimStart()
             : text
-
-        const processedLastText = removeTextAfterLastWhitespace(lastText)
-
-        text = processedLastText + currentTextLeadingWhitespaceTrimmed
+        text = removeTextAfterLastWhitespace(lastText) + currentTextLeadingWhitespaceTrimmed
 
         const lastMessage = messages[messages.length - 1]
         if (lastMessage.role === 'assistant' && typeof lastMessage.content === 'string') {
