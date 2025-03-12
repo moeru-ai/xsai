@@ -11,6 +11,19 @@ import { PkgSizeBadge } from '@/components/pkg-size-badge'
 npm i xsschema
 ```
 
+## Coverage
+
+`validate` do not require manual support and work with any Standard Schema-compatible library.
+
+So here is the list of libraries that `toJsonSchema` is compatible with:
+
+| Implementer | Version(s) | Status |
+|---|---|---|
+| Zod | 3.24.0+ | Supported |
+| Valibot | v1.0+ | Supported |
+| ArkType | v2.0+ | Supported |
+| Effect Schema | v3.13.0+ | Blocked by [#4494](https://github.com/Effect-TS/effect/issues/4494) |
+
 ## Usage
 
 <Callout>
