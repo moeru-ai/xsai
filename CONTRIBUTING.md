@@ -17,13 +17,14 @@ but still, sometimes it may be much more efficient for us to directly use actual
 
 We weren't supposed to connect to OpenAI's paid APIs while testing, so we chose some local services to use for test:
 
-### generateText, streamText, generateObject
+### generateText, streamText, generateObject, embed
 
 It uses [Ollama](https://github.com/ollama/ollama).
 
-The model used may change as needed, currently `llama3.2` and `mistral-nemo`.
+The model used may change as needed, currently `nomic-embed-text`, `llama3.2` and `mistral-nemo`.
 
 ```bash
+ollama pull nomic-embed-text
 ollama pull llama3.2
 ollama pull mistral-nemo
 ollama serve
