@@ -10,7 +10,7 @@ import {
   merge,
 } from '@xsai-ext/shared-providers'
 
-interface CreateAzureOptions {
+export interface CreateAzureOptions {
   /**
    * The static API key or AD access token fetcher for authorization.
    *
