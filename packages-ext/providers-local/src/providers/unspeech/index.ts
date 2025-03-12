@@ -1,5 +1,8 @@
 import { createMetadataProvider, createSpeechProviderWithExtraOptions, merge } from '@xsai-ext/shared-providers'
 
+export * from './elevenlabs'
+export * from './microsoft'
+
 export interface UnSpeechOptions {
   /** @experimental */
   extraBody?: Record<string, unknown>
