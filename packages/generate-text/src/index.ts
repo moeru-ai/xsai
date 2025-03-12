@@ -39,7 +39,7 @@ export interface GenerateTextResult {
 
 export interface GenerateTextStepResult {
   finishReason: FinishReason
-  stepType: 'continue' | 'initial' | 'tool-result'
+  stepType: 'continue' | 'done' | 'initial' | 'tool-result'
   text?: string
   toolCalls: CompletionToolCall[]
   toolResults: CompletionToolResult[]
@@ -69,17 +69,24 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       const toolResults: CompletionToolResult[] = []
 
       const { finish_reason: finishReason, message } = choices[0]
-
+      const msgToolCalls = message?.tool_calls ?? []
       messages.push({ ...message, content: message.content! })
 
-      const stepType = steps.length === 0
-        ? 'initial'
-        // eslint-disable-next-line sonarjs/no-nested-conditional
-        : steps.at(-1)?.finishReason === 'tool-calls'
-          ? 'tool-result'
-          : 'continue'
+      let stepType: GenerateTextStepResult['stepType'] = 'initial'
 
-      if ((message.content !== undefined && message.content.length > 0) || !message.tool_calls || steps.length >= (options.maxSteps ?? 1)) {
+      if ((options.maxSteps ?? 1) >= steps.length) {
+        if (msgToolCalls.length > 0 && finishReason === 'tool_calls') {
+          stepType = 'tool-result'
+        }
+        else if (finishReason === 'length') {
+          stepType = 'continue'
+        }
+        else if (finishReason === 'stop') {
+          stepType = 'done'
+        }
+      }
+
+      if (stepType === 'done') {
         const step: GenerateTextStepResult = {
           finishReason,
           stepType,
@@ -109,7 +116,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         function: { arguments: toolArgs, name: toolName },
         id: toolCallId,
         type: toolCallType,
-      } of message.tool_calls) {
+      } of msgToolCalls) {
         const tool = options.tools?.find(tool => tool.function.name === toolName)
 
         if (!tool) {
