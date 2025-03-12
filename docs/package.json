@@ -32,6 +32,8 @@
     "@types/mdx": "^2.0.13",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@xsai-ext/providers-cloud": "workspace:^",
+    "@xsai-ext/providers-local": "workspace:^",
     "@xsai/embed": "workspace:^",
     "@xsai/generate-object": "workspace:^",
     "@xsai/generate-speech": "workspace:^",

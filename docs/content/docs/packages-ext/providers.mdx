@@ -1,0 +1,88 @@
+---
+title: Providers
+description: Collection of predefined providers.
+---
+
+<Callout type="info">
+This package is not recommended for xsAI-based libraries,
+which can increase the size of the installation.
+</Callout>
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+## Cloud
+
+<PkgSizeBadge pkg="@xsai-ext/providers-cloud" />
+
+```package-install
+npm i @xsai-ext/providers-cloud
+```
+
+### Examples
+
+#### Keys
+
+```ts twoslash
+import * as providers from '@xsai-ext/providers-cloud'
+
+type Keys = keyof typeof providers
+```
+
+#### OpenAI
+
+```ts twoslash
+import { createOpenAI } from '@xsai-ext/providers-cloud' // [!code ++]
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process'
+
+const openai = createOpenAI(env.OPENAI_API_KEY!) // [!code ++]
+
+const { text } = await generateText({
+  ...openai.chat('gpt-4o'), // [!code ++]
+  apiKey: env.OPENAI_API_KEY!, // [!code --]
+  baseURL: 'https://api.openai.com/v1/', // [!code --]
+  messages: [{
+    content: 'Why is the sky blue?',
+    role: 'user'
+  }],
+  model: 'gpt-4o', // [!code --]
+})
+```
+
+## Local
+
+<PkgSizeBadge pkg="@xsai-ext/providers-local" />
+
+```package-install
+npm i @xsai-ext/providers-local
+```
+
+### Examples
+
+#### Keys
+
+```ts twoslash
+import * as providers from '@xsai-ext/providers-local'
+
+type Keys = keyof typeof providers
+```
+
+#### Ollama
+
+```ts twoslash
+import { createOllama } from '@xsai-ext/providers-local' // [!code ++]
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process'
+
+const ollama = createOllama() // [!code ++]
+
+const { text } = await generateText({
+  ...ollama.chat('llama3.2'), // [!code ++]
+  baseURL: 'http://localhost:11434/v1/', // [!code --]
+  messages: [{
+    content: 'Why is the sky blue?',
+    role: 'user'
+  }],
+  model: 'llama3.2', // [!code --]
+})
+```

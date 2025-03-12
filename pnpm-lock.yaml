@@ -132,6 +132,12 @@ importers:
       '@types/react-dom':
         specifier: ^19.0.4
         version: 19.0.4(@types/react@19.0.10)
+      '@xsai-ext/providers-cloud':
+        specifier: workspace:^
+        version: link:../packages-ext/providers-cloud
+      '@xsai-ext/providers-local':
+        specifier: workspace:^
+        version: link:../packages-ext/providers-local
       '@xsai/embed':
         specifier: workspace:^
         version: link:../packages/embed
