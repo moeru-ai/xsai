@@ -1,6 +1,6 @@
 import type { Message, Tool, ToolCall, ToolMessagePart } from '../types'
 
-import { wrapToolResult } from './wrap-tool-result'
+import { wrapToolResult } from './internal/wrap-tool-result'
 
 export interface ExecuteToolOptions {
   abortSignal?: AbortSignal
@@ -15,7 +15,6 @@ export interface ExecuteToolResult {
   toolName: string
 }
 
-/** @internal */
 export const executeTool = async ({ abortSignal, messages, toolCall, tools }: ExecuteToolOptions): Promise<ExecuteToolResult> => {
   const tool = tools?.find(tool => tool.function.name === toolCall.function.name)
 
