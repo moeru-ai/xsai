@@ -12,7 +12,7 @@ export const determineStepType = ({ finishReason, maxSteps, stepsLength, toolCal
   if (stepsLength === 0) {
     return 'initial'
   }
-  else if (maxSteps >= stepsLength) {
+  else if (stepsLength < maxSteps) {
     if (toolCallsLength > 0 && finishReason === 'tool_calls')
       return 'tool-result'
     else if (!['error', 'length'].includes(finishReason))
