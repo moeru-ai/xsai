@@ -1,6 +1,6 @@
-import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
+import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, Usage } from '@xsai/shared-chat'
 
-import { chat, determineStepType, wrapToolResult } from '@xsai/shared-chat'
+import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
@@ -56,33 +56,6 @@ type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>)
 function removeTextAfterLastWhitespace(text: string): string {
   const lastNonWhitespace = text.trimEnd().length
   return text.slice(0, lastNonWhitespace + 1)
-}
-
-/** @internal */
-const executeToolCall = async (
-  func: ToolCall['function'],
-  toolCallId: string,
-  options: GenerateTextOptions,
-  messages: Message[],
-): Promise<{ parsedArgs: Record<string, unknown>, result: string | ToolMessagePart[], toolName: string }> => {
-  const tool = options.tools?.find(tool => tool.function.name === func.name)
-
-  if (!tool) {
-    const availableTools = options.tools?.map(tool => tool.function.name)
-    const availableToolsErrorMsg = availableTools === undefined
-      ? 'No tools are available.'
-      : `Available tools: ${availableTools.join(', ')}.`
-    throw new Error(`Model tried to call unavailable tool '${func.name}. ${availableToolsErrorMsg}.`)
-  }
-
-  const parsedArgs = JSON.parse(func.arguments) as Record<string, unknown>
-  const result = wrapToolResult(await tool.execute(parsedArgs, {
-    abortSignal: options.abortSignal,
-    messages,
-    toolCallId,
-  }))
-
-  return { parsedArgs, result, toolName: func.name }
 }
 
 /** @internal */
@@ -160,24 +133,20 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         }
       }
 
-      for (const {
-        function: func,
-        id: toolCallId,
-        type: toolCallType,
-      } of msgToolCalls) {
-        const { parsedArgs, result, toolName } = await executeToolCall(
-          func,
-          toolCallId,
-          options,
+      for (const toolCall of msgToolCalls) {
+        const { parsedArgs, result, toolName } = await executeTool({
+          abortSignal: options.abortSignal,
           messages,
-        )
-        const toolInfo = { toolCallId, toolName }
-        toolCalls.push({ ...toolInfo, args: func.arguments, toolCallType })
+          toolCall,
+          tools: options.tools,
+        })
+        const toolInfo = { toolCallId: toolCall.id, toolName }
+        toolCalls.push({ ...toolInfo, args: toolCall.function.arguments, toolCallType: toolCall.type })
         toolResults.push({ ...toolInfo, args: parsedArgs, result })
         messages.push({
           content: result,
           role: 'tool',
-          tool_call_id: toolCallId,
+          tool_call_id: toolCall.id,
         })
       }
 
