@@ -4,7 +4,7 @@ exports[`@xsai/generate-text > basic 1`] = `
 [
   {
     "finishReason": "stop",
-    "stepType": "done",
+    "stepType": "initial",
     "text": "YES",
     "toolCalls": [],
     "toolResults": [],

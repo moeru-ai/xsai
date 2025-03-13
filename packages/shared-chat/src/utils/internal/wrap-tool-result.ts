@@ -1,5 +1,6 @@
-import type { ToolMessagePart } from '../types'
+import type { ToolMessagePart } from '../../types'
 
+/** @internal */
 // eslint-disable-next-line sonarjs/function-return-type
 export const wrapToolResult = (result: object | string | unknown[]): string | ToolMessagePart[] => {
   if (typeof result === 'string')
