@@ -5,6 +5,9 @@ import { chat, wrapToolResult } from '@xsai/shared-chat'
 
 import { parseChunk } from './helper'
 
+/**
+ * practically the same structure as response from openai api
+ */
 export interface StreamTextChunkResult {
   choices: {
     delta: {
@@ -24,6 +27,15 @@ export interface StreamTextChunkResult {
   usage?: Usage
 }
 
+export type StreamTextDataChunk =
+  | { error: unknown, type: 'error' }
+  | { finishReason?: FinishReason, type: 'finish', usage?: Usage }
+  | { reasonDelta: string, type: 'reasoning' }
+  | { refusal: string, type: 'refusal' }
+  | { text: string, type: 'text-delta' }
+  | { toolCall: ToolCall, type: 'tool-call' }
+  | { toolCall: ToolCall, type: 'tool-call-delta' }
+
 /**
  * Options for configuring the StreamText functionality.
  */
@@ -37,6 +49,8 @@ export interface StreamTextOptions extends ChatOptions {
    * @param chunk - The current chunk of the stream.
    */
   onChunk?: (chunk: StreamTextChunkResult) => Promise<unknown> | unknown
+
+  onDataChunk?: (chunk: StreamTextDataChunk) => Promise<unknown> | unknown
 
   /**
    * Callback function that is called when the stream is finished.
@@ -75,12 +89,14 @@ export interface StreamTextOptions extends ChatOptions {
 
 export interface StreamTextResult {
   chunkStream: ReadableStream<StreamTextChunkResult>
+  dataChunkStream: ReadableStream<StreamTextDataChunk>
   stepStream: ReadableStream<StreamTextStep>
   textStream: ReadableStream<string>
 }
 
 export interface StreamTextStep {
   choices: StreamTextChoice[]
+  finishReason?: FinishReason
   messages: Message[]
   toolCalls: CompletionToolCall[]
   toolResults: CompletionToolResult[]
@@ -92,7 +108,7 @@ type RecursivePromise<T> = Promise<(() => RecursivePromise<T>) | T>
 
 /** @internal */
 interface StreamTextChoice {
-  finish_reason?: FinishReason | null
+  finishReason?: FinishReason | null
   index: number
   message: StreamTextMessage
 }
@@ -125,6 +141,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   let chunkCtrl: ReadableStreamDefaultController<StreamTextChunkResult>
   let stepCtrl: ReadableStreamDefaultController<StreamTextStep>
   let textCtrl: ReadableStreamDefaultController<string>
+  let dataChunkCtrl: ReadableStreamDefaultController<StreamTextDataChunk>
 
   const chunkStream = new ReadableStream<StreamTextChunkResult>({
     start(controller) {
@@ -141,6 +158,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       textCtrl = controller
     },
   })
+  const dataChunkStream = new ReadableStream<StreamTextDataChunk>({
+    start(controller) {
+      dataChunkCtrl = controller
+    },
+  })
 
   // constraints
   const maxSteps = options.maxSteps ?? 1
@@ -153,12 +175,17 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const stepOne = async (options: StreamTextOptions): RecursivePromise<void> => {
     const step: StreamTextStep = {
       choices: [],
-      messages: structuredClone(options.messages),
+      messages: options.messages.slice(0),
       toolCalls: [],
       toolResults: [],
     }
     const choiceState: Record<string, StreamTextChoiceState> = {}
+
     let buffer = ''
+
+    let finishReason: FinishReason | undefined
+    let usage: undefined | Usage
+
     let shouldOutputText: boolean = true
 
     const endToolCall = (state: StreamTextChoiceState, id: string) => {
@@ -207,13 +234,28 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     })).pipeTo(new WritableStream({
       abort: (reason) => {
         chunkCtrl.error(reason)
+        dataChunkCtrl.error(reason)
         stepCtrl.error(reason)
         textCtrl.error(reason)
+      },
+      close: () => {
+        dataChunkCtrl.enqueue({
+          finishReason,
+          type: 'finish',
+          usage,
+        })
+        options.onDataChunk?.({
+          finishReason,
+          type: 'finish',
+          usage,
+        })
       },
       // eslint-disable-next-line sonarjs/cognitive-complexity
       write: async (chunk) => {
         options.onChunk?.(chunk)
         chunkCtrl.enqueue(chunk)
+
+        usage = chunk.usage
 
         const choice = chunk.choices[0]
 
@@ -229,7 +271,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
         const { delta, finish_reason, index, ...rest } = choice
         const choiceSnapshot: StreamTextChoice = step.choices[index] ??= {
-          finish_reason,
+          finishReason: finish_reason,
           index,
           message: {
             role: 'assistant',
@@ -237,7 +279,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
 
         if (finish_reason !== undefined) {
-          choiceSnapshot.finish_reason = finish_reason
+          finishReason = choiceSnapshot.finishReason = finish_reason
 
           if (finish_reason === 'length') {
             throw new XSAIError('length exceeded')
@@ -257,12 +299,24 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         if (refusal !== undefined) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.refusal = (message.refusal || '') + refusal
+
+          dataChunkCtrl.enqueue({
+            refusal,
+            type: 'refusal',
+          })
+          options.onDataChunk?.({ refusal, type: 'refusal' })
         }
 
         if (content !== undefined) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.content = (message.content || '') + content
           shouldOutputText && textCtrl?.enqueue(content)
+
+          dataChunkCtrl.enqueue({
+            text: content,
+            type: 'text-delta',
+          })
+          options.onDataChunk?.({ text: content, type: 'text-delta' })
         }
 
         for (const { function: fn, id, type } of tool_calls || []) {
@@ -278,6 +332,12 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             type,
           } satisfies StreamTextToolCall
           toolCall.function.arguments += fn.arguments
+
+          dataChunkCtrl.enqueue({
+            toolCall,
+            type: 'tool-call-delta',
+          })
+          options.onDataChunk?.({ toolCall, type: 'tool-call-delta' })
         }
 
         /**
@@ -341,6 +401,12 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         const tool = options.tools?.find(tool => tool.function.name === toolCall.function.name)
         if (tool) {
           try {
+            dataChunkCtrl.enqueue({
+              toolCall,
+              type: 'tool-call',
+            })
+            options.onDataChunk?.({ toolCall, type: 'tool-call' })
+
             const ret = wrapToolResult(await tool.execute(toolCall.function.parsed_arguments, {
               abortSignal: options.abortSignal,
               messages: options.messages,
@@ -390,18 +456,21 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
     options.onFinish?.(steps)
     chunkCtrl.close()
+    dataChunkCtrl.close()
     stepCtrl.close()
     textCtrl.close()
   }
 
   void invokeFunctionCalls().catch((error) => {
     chunkCtrl.error(error)
+    dataChunkCtrl.error(error)
     stepCtrl.error(error)
     textCtrl.error(error)
   })
 
   return Promise.resolve({
     chunkStream,
+    dataChunkStream,
     stepStream,
     textStream,
   })
