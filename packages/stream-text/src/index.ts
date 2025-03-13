@@ -389,11 +389,10 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   }
 
   const invokeFunctionCalls = async () => {
-    for (
-      let i = 1, ret = await stepOne(options);
-      typeof ret === 'function' && i < maxSteps;
-      ret = await ret(), i += 1
-    ) { ; }
+    let ret = await stepOne(options)
+
+    while (typeof ret === 'function' && steps.at(-1)?.stepType !== 'done')
+      ret = await ret()
 
     options.onFinish?.(steps)
     chunkCtrl.close()
