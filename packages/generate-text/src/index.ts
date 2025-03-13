@@ -53,12 +53,6 @@ type RawGenerateText = (options: GenerateTextOptions) => RawGenerateTextTrampoli
 type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>) | T>
 
 /** @internal */
-function removeTextAfterLastWhitespace(text: string): string {
-  const lastNonWhitespace = text.trimEnd().length
-  return text.slice(0, lastNonWhitespace + 1)
-}
-
-/** @internal */
 const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
   chat({
     ...options,
@@ -84,34 +78,13 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         toolCallsLength: msgToolCalls.length,
       })
 
-      let text = message.content ?? ''
-      if (steps.length > 0 && stepType === 'continue') {
-        const lastStep = steps[steps.length - 1]
-        const lastText = lastStep.text ?? ''
-
-        const currentTextLeadingWhitespaceTrimmed
-          = text.trimEnd() !== text
-            ? text.trimStart()
-            : text
-        text = removeTextAfterLastWhitespace(lastText) + currentTextLeadingWhitespaceTrimmed
-
-        const lastMessage = messages[messages.length - 1]
-        if (lastMessage.role === 'assistant' && typeof lastMessage.content === 'string') {
-          lastMessage.content = text
-        }
-        else {
-          messages.push({ ...message, content: text })
-        }
-      }
-      else {
-        messages.push({ ...message, content: message.content! })
-      }
+      messages.push({ ...message, content: message.content })
 
       if (stepType === 'done') {
         const step: GenerateTextStepResult = {
           finishReason,
           stepType,
-          text,
+          text: message.content,
           toolCalls,
           toolResults,
           usage,
@@ -126,7 +99,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
           finishReason,
           messages,
           steps,
-          text,
+          text: message.content,
           toolCalls,
           toolResults,
           usage,
@@ -153,7 +126,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       const step: GenerateTextStepResult = {
         finishReason,
         stepType,
-        text,
+        text: message.content,
         toolCalls,
         toolResults,
         usage,
