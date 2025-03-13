@@ -391,7 +391,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const invokeFunctionCalls = async () => {
     let ret = await stepOne(options)
 
-    while (typeof ret === 'function' && steps.at(-1)?.stepType !== 'done')
+    while (typeof ret === 'function' && (steps.at(-1)?.finishReason !== 'stop' || steps.at(-1)?.stepType !== 'done'))
       ret = await ret()
 
     options.onFinish?.(steps)

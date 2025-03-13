@@ -80,7 +80,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
       messages.push({ ...message, content: message.content })
 
-      if (stepType === 'done') {
+      if (finishReason === 'stop' || stepType === 'done') {
         const step: GenerateTextStepResult = {
           finishReason,
           stepType,
