@@ -1,4 +1,4 @@
-import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
+import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
 import { chat, wrapToolResult } from '@xsai/shared-chat'
 
@@ -39,7 +39,7 @@ export interface GenerateTextResult {
 
 export interface GenerateTextStepResult {
   finishReason: FinishReason
-  stepType: 'continue' | 'done' | 'initial' | 'tool-result'
+  stepType: StepType
   text?: string
   toolCalls: CompletionToolCall[]
   toolResults: CompletionToolResult[]
