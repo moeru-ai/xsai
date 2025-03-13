@@ -1,7 +1,7 @@
-import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessage, ToolMessagePart, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
 import { XSAIError } from '@xsai/shared'
-import { chat, wrapToolResult } from '@xsai/shared-chat'
+import { chat, executeTool } from '@xsai/shared-chat'
 
 import { parseChunk } from './helper'
 
@@ -337,34 +337,29 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           return
         }
 
-        // eslint-disable-next-line sonarjs/no-nested-functions
-        const tool = options.tools?.find(tool => tool.function.name === toolCall.function.name)
-        if (tool) {
-          try {
-            const ret = wrapToolResult(await tool.execute(toolCall.function.parsed_arguments, {
-              abortSignal: options.abortSignal,
-              messages: options.messages,
-              toolCallId: id,
-            }))
-            state.toolCallResults[id] = ret
-            step.messages.push({
-              content: ret,
-              role: 'tool',
-              tool_call_id: id,
-            } satisfies ToolMessage)
-            step.toolResults.push({
-              args: toolCall.function.parsed_arguments,
-              result: ret,
-              toolCallId: id,
-              toolName: toolCall.function.name,
-            })
-          }
-          catch (error) {
-            state.toolCallErrors[id] = error as Error
-          }
+        try {
+          const { result } = await executeTool({
+            abortSignal: options.abortSignal,
+            messages: options.messages,
+            toolCall,
+            tools: options.tools,
+          })
+
+          state.toolCallResults[id] = result
+          step.messages.push({
+            content: result,
+            role: 'tool',
+            tool_call_id: id,
+          })
+          step.toolResults.push({
+            args: toolCall.function.parsed_arguments, // TODO: use parsedArgs from executeTool
+            result,
+            toolCallId: id,
+            toolName: toolCall.function.name, // TODO: use toolName from executeTool
+          })
         }
-        else {
-          state.toolCallErrors[id] = new XSAIError(`tool ${toolCall.function.name} not found`)
+        catch (error) {
+          state.toolCallErrors[id] = error as Error
         }
       }))
     }))
