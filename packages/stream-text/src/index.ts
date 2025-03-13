@@ -1,7 +1,7 @@
-import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
 import { XSAIError } from '@xsai/shared'
-import { chat, executeTool } from '@xsai/shared-chat'
+import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 import { parseChunk } from './helper'
 
@@ -81,7 +81,9 @@ export interface StreamTextResult {
 
 export interface StreamTextStep {
   choices: StreamTextChoice[]
+  finishReason: FinishReason
   messages: Message[]
+  stepType: StepType
   toolCalls: CompletionToolCall[]
   toolResults: CompletionToolResult[]
   usage?: Usage
@@ -153,7 +155,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const stepOne = async (options: StreamTextOptions): RecursivePromise<void> => {
     const step: StreamTextStep = {
       choices: [],
+      finishReason: 'error',
       messages: structuredClone(options.messages),
+      stepType: 'initial',
       toolCalls: [],
       toolResults: [],
     }
@@ -237,6 +241,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
 
         if (finish_reason !== undefined) {
+          step.finishReason = finish_reason
           choiceSnapshot.finish_reason = finish_reason
 
           if (finish_reason === 'length') {
@@ -363,6 +368,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
       }))
     }))
+
+    step.stepType = determineStepType({
+      finishReason: step.finishReason,
+      maxSteps,
+      stepsLength: steps.length,
+      toolCallsLength: step.toolCalls.length,
+    })
 
     steps.push(step)
     stepCtrl.enqueue(step)
