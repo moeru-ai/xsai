@@ -1,6 +1,6 @@
 import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
-import { chat, wrapToolResult } from '@xsai/shared-chat'
+import { chat, determineStepType, wrapToolResult } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
@@ -86,27 +86,6 @@ const executeToolCall = async (
 }
 
 /** @internal */
-function determineStepType(
-  maxSteps: number,
-  stepsLength: number,
-  toolCallsLength: number,
-  finishReason: FinishReason,
-): GenerateTextStepResult['stepType'] {
-  if (maxSteps >= stepsLength) {
-    if (toolCallsLength > 0 && finishReason === 'tool_calls') {
-      return 'tool-result'
-    }
-    else if (finishReason === 'length') {
-      return 'continue'
-    }
-    else if (finishReason === 'stop') {
-      return 'done'
-    }
-  }
-  return 'initial'
-}
-
-/** @internal */
 const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
   chat({
     ...options,
@@ -125,12 +104,12 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       const { finish_reason: finishReason, message } = choices[0]
       const msgToolCalls = message?.tool_calls ?? []
 
-      const stepType = determineStepType(
-        options.maxSteps ?? 1,
-        steps.length,
-        msgToolCalls.length,
+      const stepType = determineStepType({
         finishReason,
-      )
+        maxSteps: options.maxSteps ?? 1,
+        stepsLength: steps.length,
+        toolCallsLength: msgToolCalls.length,
+      })
 
       let text = message.content ?? ''
       if (steps.length > 0 && stepType === 'continue') {
