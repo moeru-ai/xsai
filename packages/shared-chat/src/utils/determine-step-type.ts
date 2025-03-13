@@ -9,16 +9,15 @@ export interface DetermineStepTypeOptions {
 
 /** @internal */
 export const determineStepType = ({ finishReason, maxSteps, stepsLength, toolCallsLength }: DetermineStepTypeOptions): StepType => {
-  if (maxSteps >= stepsLength) {
-    if (toolCallsLength > 0 && finishReason === 'tool_calls') {
-      return 'tool-result'
-    }
-    else if (finishReason === 'length') {
-      return 'continue'
-    }
-    else if (finishReason === 'stop') {
-      return 'done'
-    }
+  if (stepsLength === 0) {
+    return 'initial'
   }
-  return 'initial'
+  else if (maxSteps >= stepsLength) {
+    if (toolCallsLength > 0 && finishReason === 'tool_calls')
+      return 'tool-result'
+    else if (!['error', 'length'].includes(finishReason))
+      return 'continue'
+  }
+
+  return 'done'
 }
