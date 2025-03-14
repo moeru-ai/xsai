@@ -19,6 +19,7 @@ export type UseChatOptions = Omit<StreamTextOptions, 'messages' | 'onChunk' | 'o
   initialMessages?: Message[]
   onError?: (error: Error) => Promise<void> | void
   onFinish?: (message: Message) => Promise<void> | void
+  preventDefault?: boolean
 }
 
 export type UseChatStatus = 'error' | 'idle' | 'loading'
@@ -32,6 +33,7 @@ export function useChat(options: UseChatOptions) {
     initialMessages = [],
     onError,
     onFinish,
+    preventDefault = false,
     ...streamTextOptions
   } = options
 
@@ -74,12 +76,12 @@ export function useChat(options: UseChatOptions) {
         id: idGenerator(),
         role: 'user',
       } as UIMessage
+      userMessage.parts = extractUIMessageParts(userMessage)
 
       setMessages(messages => [...messages, userMessage])
 
       setStatus('loading')
       setError(null)
-      setInput('')
 
       try {
         abortControllerRef.current = new AbortController()
@@ -99,7 +101,7 @@ export function useChat(options: UseChatOptions) {
 
             // maybe we should throttle this
             setMessages(messages => [
-              ...messages.slice(0, messages.length - 1),
+              ...messages.at(-1)?.role === 'assistant' ? messages.slice(0, messages.length - 1) : messages,
               lastUIMessage.current!,
             ])
           },
@@ -139,6 +141,30 @@ export function useChat(options: UseChatOptions) {
     ],
   )
 
+  const handleSubmit = useCallback(async (e?: React.FormEvent<HTMLFormElement>) => {
+    preventDefault && e?.preventDefault?.()
+
+    if (!input) {
+      return
+    }
+
+    // TODO: support more input types
+    await submitMessage({
+      content: [
+        {
+          text: input,
+          type: 'text',
+        },
+      ],
+    })
+
+    setInput('')
+  }, [
+    preventDefault,
+    input,
+    submitMessage,
+  ])
+
   const stop = useCallback(() => {
     if (!(abortControllerRef.current))
       return
@@ -161,12 +187,9 @@ export function useChat(options: UseChatOptions) {
   return {
     error,
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setInput(e.target.value)
+      setInput(e.currentTarget.value)
     },
-    handleSubmit: (e?: React.FormEvent<HTMLFormElement>) => {
-      e?.preventDefault()
-      submitMessage(input)
-    },
+    handleSubmit,
     input,
     messages,
     reload,

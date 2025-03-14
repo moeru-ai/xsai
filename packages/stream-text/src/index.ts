@@ -1,4 +1,4 @@
-import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessage, ToolMessagePart, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextDataChunk, Tool, ToolCall, ToolMessage, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
 import { XSAIError } from '@xsai/shared'
 import { chat, wrapToolResult } from '@xsai/shared-chat'
@@ -26,15 +26,6 @@ export interface StreamTextChunkResult {
   system_fingerprint: string
   usage?: Usage
 }
-
-export type StreamTextDataChunk =
-  | { error: unknown, type: 'error' }
-  | { finishReason?: FinishReason, type: 'finish', usage?: Usage }
-  | { reasonDelta: string, type: 'reasoning' }
-  | { refusal: string, type: 'refusal' }
-  | { text: string, type: 'text-delta' }
-  | { toolCall: ToolCall, type: 'tool-call' }
-  | { toolCall: ToolCall, type: 'tool-call-delta' }
 
 /**
  * Options for configuring the StreamText functionality.

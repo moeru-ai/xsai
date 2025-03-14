@@ -1,2 +1,1 @@
-export * from './hooks/useChat'
-export * from './hooks/useObject'
+export * from './hooks'
