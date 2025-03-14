@@ -66,9 +66,38 @@ export interface UnElevenLabsOptions {
    * Voice settings overriding stored settings for the given voice. They are applied only on the given request.
    */
   voiceSettings?: {
-    similarityBoost?: number
-    stability?: number
+    /**
+     * Determines how closely the AI should adhere to the original voice when attempting to replicate it.
+     */
+    similarityBoost: number
+    /**
+     * Controls the speed of the generated speech. Values range from 0.7 to 1.2, with 1.0 being the default
+     * speed. Lower values create slower, more deliberate speech while higher values produce faster-paced
+     * speech. Extreme values can impact the quality of the generated speech.
+     *
+     * @default 1.0
+     */
+    speed?: number
+    /**
+     * Determines how stable the voice is and the randomness between each generation. Lower values introduce
+     * broader emotional range for the voice. Higher values can result in a monotonous voice with limited
+     * emotion.
+     */
+    stability: number
+    /**
+     * Determines the style exaggeration of the voice. This setting attempts to amplify the style of the original
+     * speaker. It does consume additional computational resources and might increase latency if set to anything
+     * other than 0.
+     *
+     * @default 0
+     */
     style?: number
+    /**
+     * This setting boosts the similarity to the original speaker. Using this setting requires a slightly higher
+     * computational load, which in turn increases latency.
+     *
+     * @default true
+     */
     useSpeakerBoost?: boolean
   }
 }
@@ -108,9 +137,12 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
         ? pronunciationDictionaryLocators.map(pdl => objCamelToSnake(pdl))
         : undefined,
       seed,
-      voiceSettings: voiceSettings
+      voiceSettings: voiceSettings != null
         ? objCamelToSnake(voiceSettings)
-        : undefined,
+        : {
+            similarityBoost: 0.75,
+            stability: 0.5,
+          },
     }),
   })
 
