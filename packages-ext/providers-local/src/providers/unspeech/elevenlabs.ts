@@ -65,7 +65,7 @@ export interface UnElevenLabsOptions {
   /**
    * Voice settings overriding stored settings for the given voice. They are applied only on the given request.
    */
-  voiceSettings: {
+  voiceSettings?: {
     /**
      * Determines how closely the AI should adhere to the original voice when attempting to replicate it.
      */
@@ -139,7 +139,10 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
       seed,
       voiceSettings: voiceSettings != null
         ? objCamelToSnake(voiceSettings)
-        : undefined,
+        : {
+            similarityBoost: 0.75,
+            stability: 0.5,
+          },
     }),
   })
 
