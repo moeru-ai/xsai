@@ -139,10 +139,10 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
       seed,
       voiceSettings: voiceSettings != null
         ? objCamelToSnake(voiceSettings)
-        : {
+        : objCamelToSnake({
             similarityBoost: 0.75,
             stability: 0.5,
-          },
+          }),
     }),
   })
 
