@@ -140,7 +140,7 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
       voiceSettings: voiceSettings != null
         ? objCamelToSnake(voiceSettings)
         : {
-            similarityBoost: 0.75,
+            similarity_boost: 0.75,
             stability: 0.5,
           },
     }),
