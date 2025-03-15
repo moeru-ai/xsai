@@ -137,9 +137,9 @@ export const createUnElevenLabs = (apiKey: string, baseURL = 'http://localhost:5
         ? pronunciationDictionaryLocators.map(pdl => objCamelToSnake(pdl))
         : undefined,
       seed,
-      voiceSettings: voiceSettings != null
-        ? objCamelToSnake(voiceSettings)
-        : objCamelToSnake({
+      voiceSettings: objCamelToSnake(voiceSettings != null
+        ? voiceSettings
+        : {
             similarityBoost: 0.75,
             stability: 0.5,
           }),
