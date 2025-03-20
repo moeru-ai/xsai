@@ -3,6 +3,7 @@ packages:
   - examples/*
   - packages/*
   - packages-ext/*
+  - packages-top/*
 
 catalog:
   '@valibot/to-json-schema': ^1.0.0-rc.0

@@ -194,13 +194,13 @@ importers:
         version: 1.0.0-rc.3(typescript@5.6.3)
       xsai:
         specifier: workspace:^
-        version: link:../packages/xsai
+        version: link:../packages-top/xsai
       xsfetch:
         specifier: workspace:^
-        version: link:../packages/xsfetch
+        version: link:../packages-top/xsfetch
       xsschema:
         specifier: workspace:^
-        version: link:../packages/xsschema
+        version: link:../packages-top/xsschema
       zod:
         specifier: 'catalog:'
         version: 3.24.2
@@ -209,10 +209,10 @@ importers:
     dependencies:
       xsai:
         specifier: 'workspace:'
-        version: link:../../packages/xsai
+        version: link:../../packages-top/xsai
       xsschema:
         specifier: 'workspace:'
-        version: link:../../packages/xsschema
+        version: link:../../packages-top/xsschema
 
   packages-ext/providers-cloud:
     dependencies:
@@ -242,6 +242,74 @@ importers:
         specifier: 'catalog:'
         version: 4.35.0
 
+  packages-top/xsai:
+    dependencies:
+      '@xsai/embed':
+        specifier: 'workspace:'
+        version: link:../../packages/embed
+      '@xsai/generate-object':
+        specifier: 'workspace:'
+        version: link:../../packages/generate-object
+      '@xsai/generate-speech':
+        specifier: 'workspace:'
+        version: link:../../packages/generate-speech
+      '@xsai/generate-text':
+        specifier: 'workspace:'
+        version: link:../../packages/generate-text
+      '@xsai/generate-transcription':
+        specifier: 'workspace:'
+        version: link:../../packages/generate-transcription
+      '@xsai/model':
+        specifier: 'workspace:'
+        version: link:../../packages/model
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../../packages/shared
+      '@xsai/shared-chat':
+        specifier: 'workspace:'
+        version: link:../../packages/shared-chat
+      '@xsai/stream-object':
+        specifier: 'workspace:'
+        version: link:../../packages/stream-object
+      '@xsai/stream-text':
+        specifier: 'workspace:'
+        version: link:../../packages/stream-text
+      '@xsai/tool':
+        specifier: 'workspace:'
+        version: link:../../packages/tool
+      '@xsai/utils-chat':
+        specifier: 'workspace:'
+        version: link:../../packages/utils-chat
+      '@xsai/utils-stream':
+        specifier: 'workspace:'
+        version: link:../../packages/utils-stream
+
+  packages-top/xsfetch: {}
+
+  packages-top/xsschema:
+    devDependencies:
+      '@standard-schema/spec':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@types/json-schema':
+        specifier: ^7.0.15
+        version: 7.0.15
+      '@valibot/to-json-schema':
+        specifier: 'catalog:'
+        version: 1.0.0-rc.0(valibot@1.0.0-rc.3(typescript@5.6.3))
+      arktype:
+        specifier: 'catalog:'
+        version: 2.0.4
+      valibot:
+        specifier: 'catalog:'
+        version: 1.0.0-rc.3(typescript@5.6.3)
+      zod:
+        specifier: 'catalog:'
+        version: 3.24.2
+      zod-to-json-schema:
+        specifier: 'catalog:'
+        version: 3.24.3(zod@3.24.2)
+
   packages/embed:
     dependencies:
       '@xsai/shared':
@@ -255,7 +323,7 @@ importers:
         version: link:../generate-text
       xsschema:
         specifier: 'workspace:'
-        version: link:../xsschema
+        version: link:../../packages-top/xsschema
     devDependencies:
       '@valibot/to-json-schema':
         specifier: 'catalog:'
@@ -310,7 +378,7 @@ importers:
         version: link:../stream-text
       xsschema:
         specifier: 'workspace:'
-        version: link:../xsschema
+        version: link:../../packages-top/xsschema
     devDependencies:
       '@valibot/to-json-schema':
         specifier: 'catalog:'
@@ -351,7 +419,7 @@ importers:
         version: link:../shared-chat
       xsschema:
         specifier: 'workspace:'
-        version: link:../xsschema
+        version: link:../../packages-top/xsschema
     devDependencies:
       valibot:
         specifier: 'catalog:'
@@ -364,74 +432,6 @@ importers:
         version: link:../shared-chat
 
   packages/utils-stream: {}
-
-  packages/xsai:
-    dependencies:
-      '@xsai/embed':
-        specifier: 'workspace:'
-        version: link:../embed
-      '@xsai/generate-object':
-        specifier: 'workspace:'
-        version: link:../generate-object
-      '@xsai/generate-speech':
-        specifier: 'workspace:'
-        version: link:../generate-speech
-      '@xsai/generate-text':
-        specifier: 'workspace:'
-        version: link:../generate-text
-      '@xsai/generate-transcription':
-        specifier: 'workspace:'
-        version: link:../generate-transcription
-      '@xsai/model':
-        specifier: 'workspace:'
-        version: link:../model
-      '@xsai/shared':
-        specifier: 'workspace:'
-        version: link:../shared
-      '@xsai/shared-chat':
-        specifier: 'workspace:'
-        version: link:../shared-chat
-      '@xsai/stream-object':
-        specifier: 'workspace:'
-        version: link:../stream-object
-      '@xsai/stream-text':
-        specifier: 'workspace:'
-        version: link:../stream-text
-      '@xsai/tool':
-        specifier: 'workspace:'
-        version: link:../tool
-      '@xsai/utils-chat':
-        specifier: 'workspace:'
-        version: link:../utils-chat
-      '@xsai/utils-stream':
-        specifier: 'workspace:'
-        version: link:../utils-stream
-
-  packages/xsfetch: {}
-
-  packages/xsschema:
-    devDependencies:
-      '@standard-schema/spec':
-        specifier: ^1.0.0
-        version: 1.0.0
-      '@types/json-schema':
-        specifier: ^7.0.15
-        version: 7.0.15
-      '@valibot/to-json-schema':
-        specifier: 'catalog:'
-        version: 1.0.0-rc.0(valibot@1.0.0-rc.3(typescript@5.6.3))
-      arktype:
-        specifier: 'catalog:'
-        version: 2.0.4
-      valibot:
-        specifier: 'catalog:'
-        version: 1.0.0-rc.3(typescript@5.6.3)
-      zod:
-        specifier: 'catalog:'
-        version: 3.24.2
-      zod-to-json-schema:
-        specifier: 'catalog:'
-        version: 3.24.3(zod@3.24.2)
 
 packages:
 

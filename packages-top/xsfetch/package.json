@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages/xsfetch"
+    "directory": "packages-top/xsfetch"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "keywords": [

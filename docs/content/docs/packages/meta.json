@@ -8,7 +8,6 @@
     "tool",
     "model",
     "embed",
-    "utils",
-    "top-level"
+    "utils"
   ]
 }
