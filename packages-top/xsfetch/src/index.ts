@@ -1,4 +1,4 @@
-import { sleep } from '../../utils-stream/src/_sleep'
+import { sleep } from '../../../packages/utils-stream/src/_sleep'
 
 export interface CreateFetchOptions {
   debug: boolean
