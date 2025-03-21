@@ -1,0 +1,9 @@
+{
+  "title": "Tools",
+  "defaultOpen": false,
+  "pages": [
+    "[Agentic](https://agentic.so/sdks/xsai)",
+    "composio",
+    "model-context-protocol"
+  ]
+}
