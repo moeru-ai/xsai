@@ -5,6 +5,8 @@ export const toJsonSchema = async (schema: StandardSchemaV1): Promise<JSONSchema
   switch (schema['~standard'].vendor) {
     case 'arktype':
       return (await ((await import('./arktype')).toJsonSchema()))(schema)
+    case 'effect':
+      return (await ((await import('./effect')).toJsonSchema()))(schema)
     case 'valibot':
       return (await ((await import('./valibot')).toJsonSchema()))(schema)
     case 'zod':

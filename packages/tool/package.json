@@ -44,6 +44,6 @@
     "xsschema": "workspace:"
   },
   "devDependencies": {
-    "valibot": "catalog:"
+    "valibot": "catalog:schema"
   }
 }

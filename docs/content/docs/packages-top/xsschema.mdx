@@ -22,7 +22,7 @@ So here is the list of libraries that `toJsonSchema` is compatible with:
 | Zod | 3.24.0+ | Supported |
 | Valibot | v1.0+ | Supported |
 | ArkType | v2.0+ | Supported |
-| Effect Schema | v3.13.0+ | Blocked by [#4494](https://github.com/Effect-TS/effect/issues/4494) |
+| Effect Schema | v3.13.0+ | Supported |
 
 ## Usage
 
@@ -42,6 +42,23 @@ const schema = type({
 }).describe('My neat object schema')
 
 const jsonSchema = await toJsonSchema(schema)
+```
+
+### toJsonSchema (effect)
+
+```ts twoslash
+import { Schema } from 'effect'
+import { toJsonSchema } from 'xsschema'
+
+const schema = Schema.Struct({
+  myString: Schema.String,
+  myUnion: Schema.Union(Schema.Number, Schema.Boolean),
+}).annotations({ description: 'My neat object schema' })
+
+const jsonSchema = await toJsonSchema(
+  // https://github.com/Effect-TS/effect/issues/4494 // [!code highlight]
+  Object.assign(schema, Schema.standardSchemaV1(schema)) // [!code highlight]
+)
 ```
 
 ### toJsonSchema (valibot)

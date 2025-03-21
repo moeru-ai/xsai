@@ -6,12 +6,16 @@ packages:
   - packages-top/*
 
 catalog:
-  '@valibot/to-json-schema': ^1.0.0-rc.0
-  valibot: ^1.0.0-rc.3
-
-  arktype: ^2.0.4
-
-  zod: ^3.24.2
-  zod-to-json-schema: ^3.24.3
-
   type-fest: ^4.35.0
+
+catalogs:
+  schema:
+    '@valibot/to-json-schema': ^1.0.0
+    valibot: ^1.0.0
+
+    arktype: ^2.1.10
+
+    effect: ^3.14.1
+
+    zod: ^3.24.2
+    zod-to-json-schema: ^3.24.4
