@@ -1,0 +1,62 @@
+{
+  "name": "@xsai-ext/react",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages-ext/react"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "openai",
+    "ai"
+  ],
+  "sideEffects": false,
+  "exports": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "tsup",
+    "preview": "vite",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "dependencies": {
+    "@xsai-ext/shared-ui": "workspace:",
+    "@xsai/shared-chat": "workspace:",
+    "@xsai/stream-object": "workspace:",
+    "@xsai/stream-text": "workspace:"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/react": "^18.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@xsai/tool": "workspace:",
+    "jsdom": "^26.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "valibot": "catalog:schema",
+    "vite": "^6.2.1"
+  }
+}
