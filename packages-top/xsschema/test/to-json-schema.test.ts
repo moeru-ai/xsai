@@ -74,6 +74,18 @@ describe('toJsonSchema', () => {
     expect(jsonSchema).toMatchSnapshot()
   })
 
+  it('effect sync', async () => {
+    const schema = Schema.Struct({
+      myString: Schema.String,
+      myUnion: Schema.Union(Schema.Number, Schema.Boolean),
+    }).annotations({ description: 'My neat object schema' })
+
+    await registerStandardSchemaVendor('effect')
+    // https://github.com/Effect-TS/effect/issues/4494
+    const jsonSchema = toJsonSchemaSync(Object.assign(schema, Schema.standardSchemaV1(schema)))
+    expect(jsonSchema).toMatchSnapshot()
+  })
+
   it('valibot sync', async () => {
     const schema = v.pipe(
       v.object({
