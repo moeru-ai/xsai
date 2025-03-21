@@ -108,3 +108,39 @@ const arktypeResult = await validate(arktypeSchema, '123')
 const valibotResult = await validate(valibotSchema, '123')
 const zodResult = await validate(zodSchema, '123')
 ```
+
+## Synchronous Usage
+
+`toJsonSchema` is async (because it has to `await import` the vendor's dependencies), but we also support a synchronous version: `toJsonSchemaSync`.
+
+<Callout type="important">
+  Before using `toJsonSchemaSync`, you must call `registerStandardSchemaVendor` with your schema vendor.
+</Callout>
+
+```ts twoslash
+import { registerStandardSchemaVendor } from 'xsschema'
+
+await registerStandardSchemaVendor('zod')
+// or
+await registerStandardSchemaVendor('valibot')
+// or
+await registerStandardSchemaVendor('arktype')
+```
+
+You can register multiple schema vendors if you need to.
+
+### toJsonSchemaSync (zod)
+
+```ts twoslash
+import { toJsonSchemaSync, registerStandardSchemaVendor } from 'xsschema'
+import * as z from 'zod'
+
+await registerStandardSchemaVendor('zod')
+
+const schema = z.object({
+  myString: z.string(),
+  myUnion: z.union([z.number(), z.boolean()]),
+}).describe('My neat object schema')
+
+const jsonSchema = toJsonSchemaSync(schema)
+```
