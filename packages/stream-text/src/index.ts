@@ -343,7 +343,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
 
         try {
-          const { result } = await executeTool({
+          const { parsedArgs, result, toolName } = await executeTool({
             abortSignal: options.abortSignal,
             messages: options.messages,
             toolCall,
@@ -357,10 +357,10 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             tool_call_id: id,
           })
           step.toolResults.push({
-            args: toolCall.function.parsed_arguments, // TODO: use parsedArgs from executeTool
+            args: parsedArgs,
             result,
             toolCallId: id,
-            toolName: toolCall.function.name, // TODO: use toolName from executeTool
+            toolName,
           })
         }
         catch (error) {
