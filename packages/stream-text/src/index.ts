@@ -170,14 +170,6 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         return
       }
 
-      const toolCall = step.choices[state.index].message.tool_calls![id]
-      try {
-        toolCall.function.parsed_arguments = JSON.parse(toolCall.function.arguments) as Record<string, unknown>
-      }
-      catch (error) {
-        state.toolCallErrors[id] = error as Error
-      }
-
       state.endedToolCallIDs.add(id)
       state.currentToolID = null
     }
@@ -349,6 +341,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             toolCall,
             tools: options.tools,
           })
+
+          toolCall.function.parsed_arguments = parsedArgs
 
           state.toolCallResults[id] = result
           step.messages.push({
