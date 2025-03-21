@@ -6,24 +6,28 @@ settings:
 
 catalogs:
   default:
-    '@valibot/to-json-schema':
-      specifier: ^1.0.0-rc.0
-      version: 1.0.0-rc.0
-    arktype:
-      specifier: ^2.0.4
-      version: 2.0.4
     type-fest:
       specifier: ^4.35.0
       version: 4.35.0
+  schema:
+    '@valibot/to-json-schema':
+      specifier: ^1.0.0
+      version: 1.0.0
+    arktype:
+      specifier: ^2.1.10
+      version: 2.1.10
+    effect:
+      specifier: ^3.14.1
+      version: 3.14.1
     valibot:
-      specifier: ^1.0.0-rc.3
-      version: 1.0.0-rc.3
+      specifier: ^1.0.0
+      version: 1.0.0
     zod:
       specifier: ^3.24.2
       version: 3.24.2
     zod-to-json-schema:
-      specifier: ^3.24.3
-      version: 3.24.3
+      specifier: ^3.24.4
+      version: 3.24.4
 
 importers:
 
@@ -178,11 +182,14 @@ importers:
         specifier: workspace:^
         version: link:../packages/utils-stream
       arktype:
-        specifier: 'catalog:'
-        version: 2.0.4
+        specifier: catalog:schema
+        version: 2.1.10
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.3)
+      effect:
+        specifier: catalog:schema
+        version: 3.14.1
       postcss:
         specifier: ^8.5.3
         version: 8.5.3
@@ -190,8 +197,8 @@ importers:
         specifier: ^4.0.7
         version: 4.0.7
       valibot:
-        specifier: 'catalog:'
-        version: 1.0.0-rc.3(typescript@5.6.3)
+        specifier: catalog:schema
+        version: 1.0.0(typescript@5.6.3)
       xsai:
         specifier: workspace:^
         version: link:../packages-top/xsai
@@ -202,7 +209,7 @@ importers:
         specifier: workspace:^
         version: link:../packages-top/xsschema
       zod:
-        specifier: 'catalog:'
+        specifier: catalog:schema
         version: 3.24.2
 
   packages-ext/compat:
@@ -295,20 +302,23 @@ importers:
         specifier: ^7.0.15
         version: 7.0.15
       '@valibot/to-json-schema':
-        specifier: 'catalog:'
-        version: 1.0.0-rc.0(valibot@1.0.0-rc.3(typescript@5.6.3))
+        specifier: catalog:schema
+        version: 1.0.0(valibot@1.0.0(typescript@5.6.3))
       arktype:
-        specifier: 'catalog:'
-        version: 2.0.4
+        specifier: catalog:schema
+        version: 2.1.10
+      effect:
+        specifier: catalog:schema
+        version: 3.14.1
       valibot:
-        specifier: 'catalog:'
-        version: 1.0.0-rc.3(typescript@5.6.3)
+        specifier: catalog:schema
+        version: 1.0.0(typescript@5.6.3)
       zod:
-        specifier: 'catalog:'
+        specifier: catalog:schema
         version: 3.24.2
       zod-to-json-schema:
-        specifier: 'catalog:'
-        version: 3.24.3(zod@3.24.2)
+        specifier: catalog:schema
+        version: 3.24.4(zod@3.24.2)
 
   packages/embed:
     dependencies:
@@ -326,11 +336,11 @@ importers:
         version: link:../../packages-top/xsschema
     devDependencies:
       '@valibot/to-json-schema':
-        specifier: 'catalog:'
-        version: 1.0.0-rc.0(valibot@1.0.0-rc.3(typescript@5.6.3))
+        specifier: catalog:schema
+        version: 1.0.0(valibot@1.0.0(typescript@5.6.3))
       valibot:
-        specifier: 'catalog:'
-        version: 1.0.0-rc.3(typescript@5.6.3)
+        specifier: catalog:schema
+        version: 1.0.0(typescript@5.6.3)
 
   packages/generate-speech:
     dependencies:
@@ -348,8 +358,8 @@ importers:
         specifier: 'workspace:'
         version: link:../tool
       valibot:
-        specifier: 'catalog:'
-        version: 1.0.0-rc.3(typescript@5.6.3)
+        specifier: catalog:schema
+        version: 1.0.0(typescript@5.6.3)
 
   packages/generate-transcription:
     dependencies:
@@ -381,8 +391,8 @@ importers:
         version: link:../../packages-top/xsschema
     devDependencies:
       '@valibot/to-json-schema':
-        specifier: 'catalog:'
-        version: 1.0.0-rc.0(valibot@1.0.0-rc.3(typescript@5.6.3))
+        specifier: catalog:schema
+        version: 1.0.0(valibot@1.0.0(typescript@5.6.3))
       best-effort-json-parser:
         specifier: ^1.1.3
         version: 1.1.3
@@ -390,8 +400,8 @@ importers:
         specifier: 'catalog:'
         version: 4.35.0
       valibot:
-        specifier: 'catalog:'
-        version: 1.0.0-rc.3(typescript@5.6.3)
+        specifier: catalog:schema
+        version: 1.0.0(typescript@5.6.3)
 
   packages/stream-text:
     dependencies:
@@ -406,8 +416,8 @@ importers:
         specifier: 'workspace:'
         version: link:../tool
       valibot:
-        specifier: 'catalog:'
-        version: 1.0.0-rc.3(typescript@5.6.3)
+        specifier: catalog:schema
+        version: 1.0.0(typescript@5.6.3)
 
   packages/tool:
     dependencies:
@@ -422,8 +432,8 @@ importers:
         version: link:../../packages-top/xsschema
     devDependencies:
       valibot:
-        specifier: 'catalog:'
-        version: 1.0.0-rc.3(typescript@5.6.3)
+        specifier: catalog:schema
+        version: 1.0.0(typescript@5.6.3)
 
   packages/utils-chat:
     dependencies:
@@ -495,11 +505,11 @@ packages:
   '@antfu/utils@8.1.1':
     resolution: {integrity: sha512-Mex9nXf9vR6AhcXmMrlz/HVgYYZpVGJ6YlPgwl7UnaFpnshXs6EK/oa5Gpf3CzENMjkvEx2tQtntGnb7UtSTOQ==}
 
-  '@ark/schema@0.39.0':
-    resolution: {integrity: sha512-LQbQUb3Sj461LgklXObAyUJNtsUUCBxZlO2HqRLYvRSqpStm0xTMrXn51DwBNNxeSULvKVpXFwoxiSec9kwKww==}
+  '@ark/schema@0.45.0':
+    resolution: {integrity: sha512-3XlMWkZbEjh0YsF92vnnRNCWNRNhRKDTf6XhugyCXH0YRFuM+w1vFLDbB2JLfZloEd7i5cbqsLaDLzyBZbPrSg==}
 
-  '@ark/util@0.39.0':
-    resolution: {integrity: sha512-90APHVklk8BP4kku7hIh1BgrhuyKYqoZ4O7EybtFRo7cDl9mIyc/QUbGvYDg//73s0J2H0I/gW9pzroA1R4IBQ==}
+  '@ark/util@0.45.0':
+    resolution: {integrity: sha512-Z1gHEGbpPzLtPmYb932t2B++6YonlUi1Fa14IQ4vhsGMWhd81Mi1miUmdZXW4fNI/wg1saT7H2/5cAuONgTXhg==}
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -2851,10 +2861,10 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@valibot/to-json-schema@1.0.0-rc.0':
-    resolution: {integrity: sha512-F3WDgnPzcDs9Y8qZwU9qfPnEJBQ6lCMCFjI7VsMjAza6yAixGr4cZ50gOy6zniSCk49GkFvq2a6cBKfZjTpyOw==}
+  '@valibot/to-json-schema@1.0.0':
+    resolution: {integrity: sha512-/9crJgPptVsGCL6X+JPDQyaJwkalSZ/52WuF8DiRUxJgcmpNdzYRfZ+gqMEP8W3CTVfuMWPqqvIgfwJ97f9Etw==}
     peerDependencies:
-      valibot: ^1.0.0 || ^1.0.0-beta.5 || ^1.0.0-rc
+      valibot: ^1.0.0
 
   '@vitest/coverage-v8@3.0.4':
     resolution: {integrity: sha512-f0twgRCHgbs24Dp8cLWagzcObXMcuKtAwgxjJV/nnysPAJJk1JiKu/W0gIehZLmkljhJXU/E0/dmuQzsA/4jhA==}
@@ -2975,8 +2985,8 @@ packages:
     resolution: {integrity: sha512-y+CcFFwelSXpLZk/7fMB2mUbGtX9lKycf1MWJ7CaTIERyitVlyQx6C+sxcROU2BAJ24OiZyK+8wj2i8AlBoS3A==}
     engines: {node: '>=10'}
 
-  arktype@2.0.4:
-    resolution: {integrity: sha512-S68rWVDnJauwH7/QCm8zCUM3aTe9Xk6oRihdcc3FSUAtxCo/q1Fwq46JhcwB5Ufv1YStwdQRz+00Y/URlvbhAQ==}
+  arktype@2.1.10:
+    resolution: {integrity: sha512-KqbrzI9qIGrQUClifyS1HpUp/oTSRtGDvnMKzwg2TAvxRpynY1mn/ubXaxAAdGPOM8V3pBqwb01Z6TcXqhBxzQ==}
 
   array-buffer-byte-length@1.0.2:
     resolution: {integrity: sha512-LHE+8BuR7RYGDKvnrmcuSq3tDcKv9OFEXQt/HpbZhY7V6h0zlUXutnAD82GiFx9rdieCMjkvtcsPqBwgUl1Iiw==}
@@ -3543,6 +3553,9 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
+  effect@3.14.1:
+    resolution: {integrity: sha512-YrE6KYUu8r+fF3/cvdM+SZRZRjarVGhfcJwQjP/YyMmF79fwE1Rf0nWqLZ9Xfw7a9njm5/wmrYP83RYt5WTTbQ==}
+
   electron-to-chromium@1.5.102:
     resolution: {integrity: sha512-eHhqaja8tE/FNpIiBrvBjFV/SSKpyWHLvxuR9dPTdo+3V9ppdLmFB7ZZQ98qNovcngPLYIz0oOBF9P0FfZef5Q==}
 
@@ -3893,6 +3906,10 @@ packages:
 
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
+
+  fast-check@3.23.2:
+    resolution: {integrity: sha512-h5+1OzzfCC3Ef7VbtKdcv7zsstUQwUDlYpUTvjeUsJAssPgLn7QzbboPtL5ro04Mq0rPOsMzl7q5hIbRs2wD1A==}
+    engines: {node: '>=8.0.0'}
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -5157,6 +5174,9 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
+  pure-rand@6.1.0:
+    resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
+
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
@@ -6018,8 +6038,8 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  valibot@1.0.0-rc.3:
-    resolution: {integrity: sha512-LT0REa7Iqx4QGcaHLiTiTkcmJqJ9QdpOy89HALFFBJgejTS64GQFRIbDF7e4f6pauQbo/myfKGmWXCLhMeM6+g==}
+  valibot@1.0.0:
+    resolution: {integrity: sha512-1Hc0ihzWxBar6NGeZv7fPLY0QuxFMyxwYR2sF1Blu7Wq7EnremwY2W02tit2ij2VJT8HcSkHAQqmFfl77f73Yw==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -6198,8 +6218,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod-to-json-schema@3.24.3:
-    resolution: {integrity: sha512-HIAfWdYIt1sssHfYZFCXp4rU1w2r8hVVXYIlmoa0r0gABLs5di3RCqPU5DDROogVz1pAdYBaz7HK5n9pSUNs3A==}
+  zod-to-json-schema@3.24.4:
+    resolution: {integrity: sha512-0uNlcvgabyrni9Ag8Vghj21drk7+7tp7VTwwR7KxxXXc/3pbXz2PHlDgj3cICahgF1kHm4dExBFj7BXrZJXzig==}
     peerDependencies:
       zod: ^3.24.1
 
@@ -6271,11 +6291,11 @@ snapshots:
 
   '@antfu/utils@8.1.1': {}
 
-  '@ark/schema@0.39.0':
+  '@ark/schema@0.45.0':
     dependencies:
-      '@ark/util': 0.39.0
+      '@ark/util': 0.45.0
 
-  '@ark/util@0.39.0': {}
+  '@ark/util@0.45.0': {}
 
   '@babel/code-frame@7.26.2':
     dependencies:
@@ -8588,9 +8608,9 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@valibot/to-json-schema@1.0.0-rc.0(valibot@1.0.0-rc.3(typescript@5.6.3))':
+  '@valibot/to-json-schema@1.0.0(valibot@1.0.0(typescript@5.6.3))':
     dependencies:
-      valibot: 1.0.0-rc.3(typescript@5.6.3)
+      valibot: 1.0.0(typescript@5.6.3)
 
   '@vitest/coverage-v8@3.0.4(vitest@3.0.6(@types/debug@4.1.12)(@types/node@22.13.4)(lightningcss@1.29.1)(sass-embedded@1.81.0)(terser@5.36.0))':
     dependencies:
@@ -8731,10 +8751,10 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  arktype@2.0.4:
+  arktype@2.1.10:
     dependencies:
-      '@ark/schema': 0.39.0
-      '@ark/util': 0.39.0
+      '@ark/schema': 0.45.0
+      '@ark/util': 0.45.0
 
   array-buffer-byte-length@1.0.2:
     dependencies:
@@ -9369,6 +9389,11 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
+  effect@3.14.1:
+    dependencies:
+      '@standard-schema/spec': 1.0.0
+      fast-check: 3.23.2
+
   electron-to-chromium@1.5.102: {}
 
   electron-to-chromium@1.5.63: {}
@@ -9962,6 +9987,10 @@ snapshots:
       is-extendable: 0.1.1
 
   extend@3.0.2: {}
+
+  fast-check@3.23.2:
+    dependencies:
+      pure-rand: 6.1.0
 
   fast-deep-equal@3.1.3: {}
 
@@ -11597,6 +11626,8 @@ snapshots:
 
   punycode@2.3.1: {}
 
+  pure-rand@6.1.0: {}
+
   queue-microtask@1.2.3: {}
 
   rc9@2.1.2:
@@ -12602,7 +12633,7 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  valibot@1.0.0-rc.3(typescript@5.6.3):
+  valibot@1.0.0(typescript@5.6.3):
     optionalDependencies:
       typescript: 5.6.3
 
@@ -12824,7 +12855,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.24.3(zod@3.24.2):
+  zod-to-json-schema@3.24.4(zod@3.24.2):
     dependencies:
       zod: 3.24.2
 

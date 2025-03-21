@@ -47,14 +47,15 @@
     "@xsai/tool": "workspace:^",
     "@xsai/utils-chat": "workspace:^",
     "@xsai/utils-stream": "workspace:^",
-    "arktype": "catalog:",
+    "arktype": "catalog:schema",
     "autoprefixer": "^10.4.20",
+    "effect": "catalog:schema",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.7",
-    "valibot": "catalog:",
+    "valibot": "catalog:schema",
     "xsai": "workspace:^",
     "xsfetch": "workspace:^",
     "xsschema": "workspace:^",
-    "zod": "catalog:"
+    "zod": "catalog:schema"
   }
 }

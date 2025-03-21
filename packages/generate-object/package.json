@@ -43,7 +43,7 @@
     "xsschema": "workspace:"
   },
   "devDependencies": {
-    "@valibot/to-json-schema": "catalog:",
-    "valibot": "catalog:"
+    "@valibot/to-json-schema": "catalog:schema",
+    "valibot": "catalog:schema"
   }
 }

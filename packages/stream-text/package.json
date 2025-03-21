@@ -44,6 +44,6 @@
   "devDependencies": {
     "@xsai/shared": "workspace:",
     "@xsai/tool": "workspace:",
-    "valibot": "catalog:"
+    "valibot": "catalog:schema"
   }
 }

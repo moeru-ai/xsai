@@ -43,6 +43,6 @@
   },
   "devDependencies": {
     "@xsai/tool": "workspace:",
-    "valibot": "catalog:"
+    "valibot": "catalog:schema"
   }
 }

@@ -39,15 +39,19 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "@valibot/to-json-schema": "catalog:",
-    "arktype": "^2.0.4",
-    "zod-to-json-schema": "^3.24.1"
+    "@valibot/to-json-schema": "catalog:schema",
+    "arktype": "catalog:schema",
+    "effect": "catalog:schema",
+    "zod-to-json-schema": "catalog:schema"
   },
   "peerDependenciesMeta": {
     "@valibot/to-json-schema": {
       "optional": true
     },
     "arktype": {
+      "optional": true
+    },
+    "effect": {
       "optional": true
     },
     "zod-to-json-schema": {
@@ -57,10 +61,11 @@
   "devDependencies": {
     "@standard-schema/spec": "^1.0.0",
     "@types/json-schema": "^7.0.15",
-    "@valibot/to-json-schema": "catalog:",
-    "arktype": "catalog:",
-    "valibot": "catalog:",
-    "zod": "catalog:",
-    "zod-to-json-schema": "catalog:"
+    "@valibot/to-json-schema": "catalog:schema",
+    "arktype": "catalog:schema",
+    "effect": "catalog:schema",
+    "valibot": "catalog:schema",
+    "zod": "catalog:schema",
+    "zod-to-json-schema": "catalog:schema"
   }
 }
