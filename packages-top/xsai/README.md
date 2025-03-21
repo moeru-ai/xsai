@@ -1,1 +1,1 @@
-https://xsai.js.org/docs/packages/top-level/xsai
+https://xsai.js.org/docs/packages-top/xsai
