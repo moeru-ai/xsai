@@ -170,14 +170,6 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         return
       }
 
-      const toolCall = step.choices[state.index].message.tool_calls![id]
-      try {
-        toolCall.function.parsed_arguments = JSON.parse(toolCall.function.arguments) as Record<string, unknown>
-      }
-      catch (error) {
-        state.toolCallErrors[id] = error as Error
-      }
-
       state.endedToolCallIDs.add(id)
       state.currentToolID = null
     }
@@ -343,12 +335,14 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
 
         try {
-          const { result } = await executeTool({
+          const { parsedArgs, result, toolName } = await executeTool({
             abortSignal: options.abortSignal,
             messages: options.messages,
             toolCall,
             tools: options.tools,
           })
+
+          toolCall.function.parsed_arguments = parsedArgs
 
           state.toolCallResults[id] = result
           step.messages.push({
@@ -357,10 +351,10 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             tool_call_id: id,
           })
           step.toolResults.push({
-            args: toolCall.function.parsed_arguments, // TODO: use parsedArgs from executeTool
+            args: parsedArgs,
             result,
             toolCallId: id,
-            toolName: toolCall.function.name, // TODO: use toolName from executeTool
+            toolName,
           })
         }
         catch (error) {
