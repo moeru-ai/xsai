@@ -1,6 +1,6 @@
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { clean, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
 import type { Message, Tool, ToolChoice } from '../types'
 
@@ -36,7 +36,10 @@ export const chat = async <T extends ChatOptions>(options: T) =>
     body: requestBody({
       ...options,
       tools: (options.tools as Tool[] | undefined)?.map(tool => ({
-        function: tool.function,
+        function: clean({
+          ...tool.function,
+          returns: undefined,
+        }),
         type: 'function',
       })),
     }),
