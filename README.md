@@ -176,6 +176,7 @@ console.log(text)
 - [moeru-ai/arpk](https://github.com/moeru-ai/arpk)
 - [lingticio/neuri-js](https://github.com/lingticio/neuri-js)
 - [GramSearch/telegram-search](https://github.com/GramSearch/telegram-search)
+- [yusixian/moe-copy-ai](https://github.com/yusixian/moe-copy-ai)
 
 ### Status
 
