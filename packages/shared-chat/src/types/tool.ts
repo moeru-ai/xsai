@@ -15,11 +15,13 @@ export interface CompletionToolResult {
 }
 
 export interface Tool {
-  execute: (input: unknown, options: ToolExecuteOptions) => (object | string | unknown[]) | Promise<object | string | unknown[]>
+  execute: (input: unknown, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
   function: {
     description?: string
     name: string
     parameters: Record<string, unknown>
+    /** @experimental */
+    returns?: Record<string, unknown>
     strict?: boolean
   }
   type: 'function'
@@ -30,3 +32,5 @@ export interface ToolExecuteOptions {
   messages: Message[]
   toolCallId: string
 }
+
+export type ToolExecuteResult = object | string | unknown[]

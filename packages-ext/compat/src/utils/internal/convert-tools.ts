@@ -1,4 +1,5 @@
 import type { Tool as XSAITool, ToolOptions as XSAIToolOptions } from 'xsai'
+import type { Schema } from 'xsschema'
 
 import { tool as xsaiTool } from 'xsai'
 
@@ -16,7 +17,7 @@ export const convertTools = async (tools: Record<string, ((() => Promise<XSAIToo
     // handle mastra-ai
     if (!(result as Partial<XSAITool>).function) {
       return xsaiTool({
-        ...result as XSAIToolOptions,
+        ...result as XSAIToolOptions<Schema>,
         name,
       })
     }
