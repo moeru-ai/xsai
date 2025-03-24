@@ -62,12 +62,12 @@ const weather = await tool({
       v.description('The location to get the weather for'),
     ),
   }),
-  returns: object({
-    location: pipe(
-      string(),
-      description('The location to get the weather for'),
+  returns: v.object({
+    location: v.pipe(
+      v.string(),
+      v.description('The location to get the weather for'),
     ),
-    temperature: number(),
+    temperature: v.number(),
   }),
 })
 ```
