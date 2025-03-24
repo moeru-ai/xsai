@@ -1,4 +1,4 @@
-import type { Tool, ToolExecuteOptions } from '@xsai/shared-chat'
+import type { Tool, ToolExecuteOptions, ToolExecuteResult } from '@xsai/shared-chat'
 import type { Infer, InferIn, Schema } from 'xsschema'
 
 import { toJSONSchema } from 'xsschema'
@@ -17,8 +17,6 @@ export interface ToolOptions<T1 extends Schema, T2 extends Schema | undefined = 
 }
 
 export interface ToolResult extends Tool {}
-
-type ToolExecuteResult = object | string | unknown[]
 
 export const tool = async <T1 extends Schema, T2 extends Schema | undefined = undefined>(options: ToolOptions<T1, T2>): Promise<ToolResult> => ({
   execute: options.execute,
