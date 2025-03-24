@@ -30,44 +30,33 @@ Here is the list of libraries that `toJsonSchema` is compatible with:
   If you're using xsAI, this package is a dependency of some of those packages - you don't need to install it separately.
 </Callout>
 
-### toJsonSchema (arktype)
+### toJsonSchema
 
 ```ts twoslash
 import { type } from 'arktype'
+import { Schema } from 'effect'
+import * as v from 'valibot'
 import { toJsonSchema } from 'xsschema'
+import { z } from 'zod'
 
-const schema = type({
+const arktypeSchema = type({
   myString: 'string',
   myUnion: 'number | boolean',
 }).describe('My neat object schema')
 
-const jsonSchema = await toJsonSchema(schema)
-```
+const arktypeJsonSchema = await toJsonSchema(arktypeSchema)
 
-### toJsonSchema (effect)
-
-```ts twoslash
-import { Schema } from 'effect'
-import { toJsonSchema } from 'xsschema'
-
-const schema = Schema.Struct({
+const effectSchema = Schema.Struct({
   myString: Schema.String,
   myUnion: Schema.Union(Schema.Number, Schema.Boolean),
 }).annotations({ description: 'My neat object schema' })
 
-const jsonSchema = await toJsonSchema(
+const effectJsonSchema = await toJsonSchema(
   // https://github.com/Effect-TS/effect/issues/4494 // [!code highlight]
-  Object.assign(schema, Schema.standardSchemaV1(schema)) // [!code highlight]
+  Object.assign(effectSchema, Schema.standardSchemaV1(effectSchema)) // [!code highlight]
 )
-```
 
-### toJsonSchema (valibot)
-
-```ts twoslash
-import * as v from 'valibot'
-import { toJsonSchema } from 'xsschema'
-
-const schema = v.pipe(
+const valibotSchema = v.pipe(
   v.object({
     myString: v.string(),
     myUnion: v.union([v.number(), v.boolean()]),
@@ -75,21 +64,79 @@ const schema = v.pipe(
   v.description('My neat object schema'),
 )
 
-const jsonSchema = await toJsonSchema(schema)
-```
+const valibotJsonSchema = await toJsonSchema(valibotSchema)
 
-### toJsonSchema (zod)
-
-```ts twoslash
-import { toJsonSchema } from 'xsschema'
-import * as z from 'zod'
-
-const schema = z.object({
+const zodSchema = z.object({
   myString: z.string(),
   myUnion: z.union([z.number(), z.boolean()]),
 }).describe('My neat object schema')
 
-const jsonSchema = await toJsonSchema(schema)
+const zodJsonSchema = await toJsonSchema(zodSchema)
+```
+
+### toJsonSchemaSync (experimental)
+
+`toJsonSchema` is async (because it has to `await import` the vendor's dependencies), but we also support a synchronous version: `toJsonSchemaSync`.
+
+<Callout type="important">
+  Before using `toJsonSchemaSync`, you must call `initToJsonSchemaSyncVendor` with your schema vendor.
+</Callout>
+
+```ts twoslash
+import { initToJsonSchemaSyncVendor } from 'xsschema'
+
+await initToJsonSchemaSyncVendor('arktype')
+// or
+await initToJsonSchemaSyncVendor('effect')
+// or
+await initToJsonSchemaSyncVendor('valibot')
+// or
+await initToJsonSchemaSyncVendor('zod')
+```
+
+You can register multiple schema vendors if you need to.
+
+
+```ts twoslash
+import { type } from 'arktype'
+import { Schema } from 'effect'
+import * as v from 'valibot'
+import { toJsonSchemaSync } from 'xsschema'
+import { z } from 'zod'
+
+const arktypeSchema = type({
+  myString: 'string',
+  myUnion: 'number | boolean',
+}).describe('My neat object schema')
+
+const arktypeJsonSchema = toJsonSchemaSync(arktypeSchema)
+
+const effectSchema = Schema.Struct({
+  myString: Schema.String,
+  myUnion: Schema.Union(Schema.Number, Schema.Boolean),
+}).annotations({ description: 'My neat object schema' })
+
+const effectJsonSchema = toJsonSchemaSync(
+  // https://github.com/Effect-TS/effect/issues/4494 // [!code highlight]
+  Object.assign(effectSchema, Schema.standardSchemaV1(effectSchema)) // [!code highlight]
+)
+
+const valibotSchema = v.pipe(
+  v.object({
+    myString: v.string(),
+    myUnion: v.union([v.number(), v.boolean()]),
+  }),
+  v.description('My neat object schema'),
+)
+
+const valibotJsonSchema = toJsonSchemaSync(valibotSchema)
+
+const zodSchema = z.object({
+  myString: z.string(),
+  myUnion: z.union([z.number(), z.boolean()]),
+}).describe('My neat object schema')
+
+const zodJsonSchema = toJsonSchemaSync(zodSchema)
 ```
 
 ### validate
@@ -107,40 +154,4 @@ const zodSchema = z.string()
 const arktypeResult = await validate(arktypeSchema, '123')
 const valibotResult = await validate(valibotSchema, '123')
 const zodResult = await validate(zodSchema, '123')
-```
-
-## Synchronous Usage
-
-`toJsonSchema` is async (because it has to `await import` the vendor's dependencies), but we also support a synchronous version: `toJsonSchemaSync`.
-
-<Callout type="important">
-  Before using `toJsonSchemaSync`, you must call `registerStandardSchemaVendor` with your schema vendor.
-</Callout>
-
-```ts twoslash
-import { registerStandardSchemaVendor } from 'xsschema'
-
-await registerStandardSchemaVendor('zod')
-// or
-await registerStandardSchemaVendor('valibot')
-// or
-await registerStandardSchemaVendor('arktype')
-```
-
-You can register multiple schema vendors if you need to.
-
-### toJsonSchemaSync (zod)
-
-```ts twoslash
-import { toJsonSchemaSync, registerStandardSchemaVendor } from 'xsschema'
-import * as z from 'zod'
-
-await registerStandardSchemaVendor('zod')
-
-const schema = z.object({
-  myString: z.string(),
-  myUnion: z.union([z.number(), z.boolean()]),
-}).describe('My neat object schema')
-
-const jsonSchema = toJsonSchemaSync(schema)
 ```
