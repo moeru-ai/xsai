@@ -4,11 +4,10 @@ import * as v from 'valibot'
 import { describe, expect, it } from 'vitest'
 import * as z from 'zod'
 
-import { registerStandardSchemaVendor, toJsonSchema } from '../src'
-import { toJsonSchemaSync } from '../src/to-json-schema'
+import { initToJsonSchemaSyncVendor, toJsonSchema, toJsonSchemaSync } from '../src'
 
 describe('toJsonSchema', () => {
-  // This test is marked as sequential becasue it should be run before all the other tests have
+  // This test is marked as sequential because it should be run before all the other tests have
   // had a chance to register their vendors.
   it.sequential('toJsonSchemaSync should throw if the vendor is not registered', async () => {
     const schema = z.object({
@@ -69,7 +68,7 @@ describe('toJsonSchema', () => {
       myUnion: 'number | boolean',
     }).describe('My neat object schema')
 
-    await registerStandardSchemaVendor('arktype')
+    await initToJsonSchemaSyncVendor('arktype')
     const jsonSchema = toJsonSchemaSync(schema)
     expect(jsonSchema).toMatchSnapshot()
   })
@@ -80,7 +79,7 @@ describe('toJsonSchema', () => {
       myUnion: Schema.Union(Schema.Number, Schema.Boolean),
     }).annotations({ description: 'My neat object schema' })
 
-    await registerStandardSchemaVendor('effect')
+    await initToJsonSchemaSyncVendor('effect')
     // https://github.com/Effect-TS/effect/issues/4494
     const jsonSchema = toJsonSchemaSync(Object.assign(schema, Schema.standardSchemaV1(schema)))
     expect(jsonSchema).toMatchSnapshot()
@@ -95,7 +94,7 @@ describe('toJsonSchema', () => {
       v.description('My neat object schema'),
     )
 
-    await registerStandardSchemaVendor('valibot')
+    await initToJsonSchemaSyncVendor('valibot')
     const jsonSchema = toJsonSchemaSync(schema)
     expect(jsonSchema).toMatchSnapshot()
   })
@@ -106,7 +105,7 @@ describe('toJsonSchema', () => {
       myUnion: z.union([z.number(), z.boolean()]),
     }).describe('My neat object schema')
 
-    await registerStandardSchemaVendor('zod')
+    await initToJsonSchemaSyncVendor('zod')
     const jsonSchema = toJsonSchemaSync(schema)
     expect(jsonSchema).toMatchSnapshot()
   })
