@@ -20,6 +20,8 @@ export interface Tool {
     description?: string
     name: string
     parameters: Record<string, unknown>
+    /** @experimental */
+    returns?: Record<string, unknown>
     strict?: boolean
   }
   type: 'function'
