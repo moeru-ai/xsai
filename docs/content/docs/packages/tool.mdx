@@ -43,6 +43,35 @@ const weather = await tool({
 })
 ```
 
+### tool (with returns schema)
+
+```ts twoslash
+import { tool } from '@xsai/tool'
+import * as v from 'valibot'
+
+const weather = await tool({
+  description: 'Get the weather in a location',
+  execute: ({ location }) => ({
+    location,
+    temperature: 42,
+  }),
+  name: 'weather',
+  parameters: v.object({
+    location: v.pipe(
+      v.string(),
+      v.description('The location to get the weather for'),
+    ),
+  }),
+  returns: object({
+    location: pipe(
+      string(),
+      description('The location to get the weather for'),
+    ),
+    temperature: number(),
+  }),
+})
+```
+
 ### with generateText
 
 ```ts twoslash
