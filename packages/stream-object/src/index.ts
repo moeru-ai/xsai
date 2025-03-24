@@ -1,12 +1,12 @@
 import type { StreamTextOptions, StreamTextResult } from '@xsai/stream-text'
 import type { PartialDeep } from 'type-fest'
-import type { Infer, JSONSchema, Schema } from 'xsschema'
+import type { Infer, JsonSchema, Schema } from 'xsschema'
 
 import { streamText } from '@xsai/stream-text'
 import { parse } from 'best-effort-json-parser'
-import { toJSONSchema } from 'xsschema'
+import { toJsonSchema } from 'xsschema'
 
-const wrap = (schema: JSONSchema): JSONSchema => {
+const wrap = (schema: JsonSchema): JsonSchema => {
   return {
     properties: {
       elements: {
@@ -62,7 +62,7 @@ export async function streamObject<T extends Schema>(
 ): Promise<StreamObjectResult<T>> {
   const { schema: schemaValidator } = options
 
-  let schema = await toJSONSchema(schemaValidator)
+  let schema = await toJsonSchema(schemaValidator)
   if (options.output === 'array')
     schema = wrap(schema)
 

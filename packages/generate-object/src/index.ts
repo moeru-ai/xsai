@@ -2,7 +2,7 @@ import type { GenerateTextOptions, GenerateTextResult } from '@xsai/generate-tex
 import type { Infer, InferIn, Schema } from 'xsschema'
 
 import { generateText } from '@xsai/generate-text'
-import { toJSONSchema, validate } from 'xsschema'
+import { toJsonSchema, validate } from 'xsschema'
 
 import { wrap } from './wrap'
 
@@ -22,7 +22,7 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
 export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output?: GenerateObjectOutputOption }) {
   const { schema: schemaValidator } = options
 
-  let schema = await toJSONSchema(schemaValidator)
+  let schema = await toJsonSchema(schemaValidator)
   if (options.output === 'array')
     schema = wrap(schema)
 
