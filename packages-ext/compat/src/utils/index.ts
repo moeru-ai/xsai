@@ -1,4 +1,5 @@
 export * from './_unsupported'
+export * from './cosine-similarity'
 export * from './embed'
 export * from './generate-object'
 export * from './generate-text'

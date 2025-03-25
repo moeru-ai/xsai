@@ -35,5 +35,8 @@
   "dependencies": {
     "xsai": "workspace:",
     "xsschema": "workspace:"
+  },
+  "devDependencies": {
+    "@moeru-ai/cosine-similarity": "^1.0.0-beta.1"
   }
 }
