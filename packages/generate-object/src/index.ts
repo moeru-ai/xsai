@@ -19,6 +19,7 @@ type GenerateObjectOutputOption = 'array' | 'object'
 export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'array' }): Promise<GenerateObjectResult<Array<Infer<T>>>>
 export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'object' }): Promise<GenerateObjectResult<Infer<T>>>
 export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<Infer<T>>>
+// eslint-disable-next-line func-style
 export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output?: GenerateObjectOutputOption }) {
   const { schema: schemaValidator } = options
 

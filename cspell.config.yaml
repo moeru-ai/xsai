@@ -3,17 +3,20 @@ ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
 words:
+  - AAAAIGZ
   - agentic
   - all-minilm
   - arktype
   - automd
   - BAAI
+  - Bhdmlm
   - bumpp
   - Cerebras
   - changelogithub
   - codestral
   - cognitivecomputations
   - composio
+  - dall
   - deepinfra
   - deepseek
   - elevenlabs

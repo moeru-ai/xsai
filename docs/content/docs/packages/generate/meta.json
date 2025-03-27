@@ -5,6 +5,7 @@
     "text",
     "object",
     "speech",
-    "transcription"
+    "transcription",
+    "image"
   ]
 }

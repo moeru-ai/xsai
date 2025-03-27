@@ -2,6 +2,7 @@
   "defaultOpen": false,
   "pages": [
     "[@xsai/embed](https://tsdocs.dev/search/docs/@xsai/embed)",
+    "[@xsai/generate-image](https://tsdocs.dev/search/docs/@xsai/generate-image)",
     "[@xsai/generate-object](https://tsdocs.dev/search/docs/@xsai/generate-object)",
     "[@xsai/generate-speech](https://tsdocs.dev/search/docs/@xsai/generate-speech)",
     "[@xsai/generate-text](https://tsdocs.dev/search/docs/@xsai/generate-text)",

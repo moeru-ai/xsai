@@ -1,5 +1,5 @@
 {
-  "name": "xsai",
+  "name": "@xsai/generate-image",
   "type": "module",
   "version": "0.2.0-beta.1",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages-top/xsai"
+    "directory": "packages/generate-image"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "keywords": [
@@ -18,9 +18,7 @@
     "ai"
   ],
   "sideEffects": false,
-  "exports": {
-    ".": "./src/index.ts"
-  },
+  "exports": "./src/index.ts",
   "files": [
     "dist"
   ],
@@ -36,24 +34,9 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "tsup",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "build": "tsup"
   },
   "dependencies": {
-    "@xsai/embed": "workspace:",
-    "@xsai/generate-image": "workspace:",
-    "@xsai/generate-object": "workspace:",
-    "@xsai/generate-speech": "workspace:",
-    "@xsai/generate-text": "workspace:",
-    "@xsai/generate-transcription": "workspace:",
-    "@xsai/model": "workspace:",
-    "@xsai/shared": "workspace:",
-    "@xsai/shared-chat": "workspace:",
-    "@xsai/stream-object": "workspace:",
-    "@xsai/stream-text": "workspace:",
-    "@xsai/tool": "workspace:",
-    "@xsai/utils-chat": "workspace:",
-    "@xsai/utils-stream": "workspace:"
+    "@xsai/shared": "workspace:"
   }
 }

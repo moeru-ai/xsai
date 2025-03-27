@@ -1,0 +1,34 @@
+---
+title: Image
+description: Creates an image given a prompt.
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/generate-image" />
+
+```package-install
+npm i @xsai/generate-image
+```
+
+## Examples
+
+```ts twoslash
+import { generateImage } from '@xsai/generate-image'
+import { env } from 'node:process'
+
+const { image } = await generateImage({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'http://api.openai.com/v1/',
+  model: 'dall-e-3',
+  prompt: 'A cute baby sea otter'
+})
+
+const { images } = await generateImage({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'http://api.openai.com/v1/',
+  n: 4, // [!code highlight]
+  model: 'dall-e-3',
+  prompt: 'A cute baby sea otter'
+})
+```

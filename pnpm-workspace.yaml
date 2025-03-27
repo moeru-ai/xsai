@@ -10,12 +10,9 @@ catalog:
 
 catalogs:
   schema:
-    '@valibot/to-json-schema': ^1.0.0
-    valibot: ^1.0.0
-
+    '@valibot/to-json-schema': &valibot ^1.0.0
     arktype: ^2.1.13
-
     effect: ^3.14.2
-
+    valibot: *valibot
     zod: ^3.24.2
     zod-to-json-schema: ^3.24.5

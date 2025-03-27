@@ -35,6 +35,7 @@
     "@xsai-ext/providers-cloud": "workspace:^",
     "@xsai-ext/providers-local": "workspace:^",
     "@xsai/embed": "workspace:^",
+    "@xsai/generate-image": "workspace:^",
     "@xsai/generate-object": "workspace:^",
     "@xsai/generate-speech": "workspace:^",
     "@xsai/generate-text": "workspace:^",

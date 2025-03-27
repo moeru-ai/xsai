@@ -145,6 +145,9 @@ importers:
       '@xsai/embed':
         specifier: workspace:^
         version: link:../packages/embed
+      '@xsai/generate-image':
+        specifier: workspace:^
+        version: link:../packages/generate-image
       '@xsai/generate-object':
         specifier: workspace:^
         version: link:../packages/generate-object
@@ -258,6 +261,9 @@ importers:
       '@xsai/embed':
         specifier: 'workspace:'
         version: link:../../packages/embed
+      '@xsai/generate-image':
+        specifier: 'workspace:'
+        version: link:../../packages/generate-image
       '@xsai/generate-object':
         specifier: 'workspace:'
         version: link:../../packages/generate-object
@@ -325,6 +331,12 @@ importers:
         version: 3.24.5(zod@3.24.2)
 
   packages/embed:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+
+  packages/generate-image:
     dependencies:
       '@xsai/shared':
         specifier: 'workspace:'

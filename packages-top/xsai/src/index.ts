@@ -1,4 +1,5 @@
 export * from '@xsai/embed'
+export * from '@xsai/generate-image'
 export * from '@xsai/generate-object'
 export * from '@xsai/generate-speech'
 export * from '@xsai/generate-text'
