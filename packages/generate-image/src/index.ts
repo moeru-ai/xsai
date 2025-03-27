@@ -59,7 +59,7 @@ const convertImage = (b64_json: string) => {
 
 /** @experimental */
 export const generateImage = async (options: GenerateImageOptions): Promise<GenerateImageResult> =>
-  (options.fetch ?? globalThis.fetch)(requestURL('audio/speech', options.baseURL), {
+  (options.fetch ?? globalThis.fetch)(requestURL('images/generations', options.baseURL), {
     body: requestBody({
       ...options,
       responseFormat: 'b64_json',
