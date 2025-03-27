@@ -330,6 +330,12 @@ importers:
         specifier: 'workspace:'
         version: link:../shared
 
+  packages/generate-image:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+
   packages/generate-object:
     dependencies:
       '@xsai/generate-text':
