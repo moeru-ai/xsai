@@ -43,18 +43,16 @@ export async function streamObject<T extends Schema>(
     & StreamObjectOptions<T>
     & { output: 'array' }
 ): Promise<StreamObjectResult<T> & { elementStream: ReadableStream<Infer<T>>, partialObjectStream: undefined }>
-
 export async function streamObject<T extends Schema>(
   options: StreamObjectExtraOptions<T>
     & StreamObjectOptions<T>
     & { output: 'object' }
 ): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> }>
-
 export async function streamObject<T extends Schema>(
   options: StreamObjectExtraOptions<T>
     & StreamObjectOptions<T>
 ): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> }>
-
+// eslint-disable-next-line func-style
 export async function streamObject<T extends Schema>(
   options: StreamObjectExtraOptions<T>
     & StreamObjectOptions<T>
