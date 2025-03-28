@@ -66,17 +66,8 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
     .then(async (res) => {
       const { choices, usage } = res
 
-      if (!choices?.length) {
-        const error = new Error('No choices returned')
-
-        if ('error' in res) {
-          error.cause = res.error
-          throw error
-        }
-
-        error.cause = res
-        throw error
-      }
+      if (!choices?.length)
+        throw new Error(`No choices returned, response body: ${JSON.stringify(res)}`)
 
       const messages: Message[] = structuredClone(options.messages)
       const steps: GenerateTextStepResult[] = options.steps ? structuredClone(options.steps) : []
