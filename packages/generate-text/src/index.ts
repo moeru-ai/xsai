@@ -76,12 +76,8 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
     })
     .then(async (res) => {
       const { choices, usage } = res
-      const messages: Message[] = structuredClone(options.messages)
-      const steps: GenerateTextStepResult[] = options.steps ? structuredClone(options.steps) : []
-      const toolCalls: CompletionToolCall[] = []
-      const toolResults: CompletionToolResult[] = []
 
-      if (choices.length === 0) {
+      if (!choices?.length) {
         const error = new XSAIError('No choices returned')
 
         if ('error' in res) {
@@ -92,6 +88,11 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         error.cause = res
         throw error
       }
+
+      const messages: Message[] = structuredClone(options.messages)
+      const steps: GenerateTextStepResult[] = options.steps ? structuredClone(options.steps) : []
+      const toolCalls: CompletionToolCall[] = []
+      const toolResults: CompletionToolResult[] = []
 
       const { finish_reason: finishReason, message } = choices[0]
       const msgToolCalls = message?.tool_calls ?? []
