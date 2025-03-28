@@ -366,6 +366,9 @@ importers:
 
   packages/generate-text:
     dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
       '@xsai/shared-chat':
         specifier: 'workspace:'
         version: link:../shared-chat
