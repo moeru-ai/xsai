@@ -2,16 +2,11 @@ import { responseCatch } from './response-catch'
 
 export const responseJSON = async <T>(res: Response) =>
   responseCatch(res)
-    .then(async (res): Promise<T> => {
-      const text = await res.text()
-
+    .then(async (res) => {
       try {
-        const json = JSON.parse(text) as T
-        return json
+        return res.json() as Promise<T>
       }
       catch {
-        const error = new Error('Failed to parse response')
-        error.cause = text
-        throw error
+        throw new Error(`Failed to parse response, response body: ${await res.text()}`)
       }
     })
