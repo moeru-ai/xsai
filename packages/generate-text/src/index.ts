@@ -1,5 +1,6 @@
 import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, Usage } from '@xsai/shared-chat'
 
+import { responseJSON } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
@@ -61,8 +62,13 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
     steps: undefined,
     stream: false,
   })
-    .then(async res => res.json() as Promise<GenerateTextResponse>)
-    .then(async ({ choices, usage }) => {
+    .then(responseJSON<GenerateTextResponse>)
+    .then(async (res) => {
+      const { choices, usage } = res
+
+      if (!choices?.length)
+        throw new Error(`No choices returned, response body: ${JSON.stringify(res)}`)
+
       const messages: Message[] = structuredClone(options.messages)
       const steps: GenerateTextStepResult[] = options.steps ? structuredClone(options.steps) : []
       const toolCalls: CompletionToolCall[] = []
