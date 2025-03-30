@@ -4,6 +4,31 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    type-fest:
+      specifier: ^4.38.0
+      version: 4.38.0
+  schema:
+    '@valibot/to-json-schema':
+      specifier: ^1.0.0
+      version: 1.0.0
+    arktype:
+      specifier: ^2.1.13
+      version: 2.1.13
+    effect:
+      specifier: ^3.14.2
+      version: 3.14.2
+    valibot:
+      specifier: ^1.0.0
+      version: 1.0.0
+    zod:
+      specifier: ^3.24.2
+      version: 3.24.2
+    zod-to-json-schema:
+      specifier: ^3.24.5
+      version: 3.24.5
+
 importers:
 
   .:
@@ -17,6 +42,9 @@ importers:
       '@importantimport/tsconfig':
         specifier: ^1.0.0-beta.2
         version: 1.0.0-beta.2
+      '@pnpm/find-workspace-dir':
+        specifier: ^1000.1.0
+        version: 1000.1.0
       '@types/eslint':
         specifier: ^9.6.1
         version: 9.6.1
@@ -1492,6 +1520,18 @@ packages:
   '@pkgr/core@0.1.1':
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@pnpm/constants@1001.1.0':
+    resolution: {integrity: sha512-xb9dfSGi1qfUKY3r4Zy9JdC9+ZeaDxwfE7HrrGIEsBVY1hvIn6ntbR7A97z3nk44yX7vwbINNf9sizTp0WEtEw==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/error@1000.0.2':
+    resolution: {integrity: sha512-2SfE4FFL73rE1WVIoESbqlj4sLy5nWW4M/RVdHvCRJPjlQHa9MH7m7CVJM204lz6I+eHoB+E7rL3zmpJR5wYnQ==}
+    engines: {node: '>=18.12'}
+
+  '@pnpm/find-workspace-dir@1000.1.0':
+    resolution: {integrity: sha512-K5iG/z0SLV6bVW1jIYvbNBI6vWAD6ETJKyWj/wwHr7hxloxtm9xJCGbe/41pmM9nfFFUPbr1Z0YOi4q9yWkj6g==}
+    engines: {node: '>=18.12'}
 
   '@radix-ui/number@1.1.0':
     resolution: {integrity: sha512-V3gRzhVNU1ldS5XhAPTom1fOIo4ccrjjJgmE+LI2h/WaFpHmx0MQApT+KZHnx8abG6Avtfcz4WoEciMnpFT3HQ==}
@@ -6365,6 +6405,17 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.1.1': {}
+
+  '@pnpm/constants@1001.1.0': {}
+
+  '@pnpm/error@1000.0.2':
+    dependencies:
+      '@pnpm/constants': 1001.1.0
+
+  '@pnpm/find-workspace-dir@1000.1.0':
+    dependencies:
+      '@pnpm/error': 1000.0.2
+      find-up: 5.0.0
 
   '@radix-ui/number@1.1.0': {}
 
