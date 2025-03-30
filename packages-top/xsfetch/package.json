@@ -33,6 +33,6 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "tsup"
+    "build": "pkgroll"
   }
 }

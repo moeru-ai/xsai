@@ -8,9 +8,7 @@ import type { MessagesOrPrompts } from '../types/internal/messages-or-prompts'
 import { convertPrompts } from './internal/convert-prompts'
 import { convertTools } from './internal/convert-tools'
 
-// @ts-expect-error unused generics
-// eslint-disable-next-line unused-imports/no-unused-vars
-export interface GenerateTextResult<T1 = undefined, T2 = undefined> extends XSAIGenerateTextResult {}
+export interface GenerateTextResult<_T1 = undefined, _T2 = undefined> extends XSAIGenerateTextResult {}
 
 type GenerateTextOptions = MessagesOrPrompts & Omit<XSAIGenerateTextOptions, 'tools' | keyof CommonRequestOptions> & {
   model: LanguageModel

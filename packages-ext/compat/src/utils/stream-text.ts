@@ -8,9 +8,7 @@ import type { MessagesOrPrompts } from '../types/internal/messages-or-prompts'
 import { convertPrompts } from './internal/convert-prompts'
 import { convertTools } from './internal/convert-tools'
 
-// @ts-expect-error unused generics
-// eslint-disable-next-line unused-imports/no-unused-vars
-export interface StreamTextResult<T1 = undefined, T2 = undefined> extends XSAIStreamTextResult {}
+export interface StreamTextResult<_T1 = undefined, _T2 = undefined> extends XSAIStreamTextResult {}
 
 type StreamTextOptions = MessagesOrPrompts & Omit<XSAIStreamTextOptions, 'tools' | keyof CommonRequestOptions> & {
   model: LanguageModel
