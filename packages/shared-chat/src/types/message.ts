@@ -30,6 +30,7 @@ export interface ToolCall {
     name: string
   }
   id: string
+  index: number
   type: 'function'
 }
 

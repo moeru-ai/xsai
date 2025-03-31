@@ -1,10 +1,13 @@
-import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, StreamTextDataChunk, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
 import { XSAIError } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 import { parseChunk } from './helper'
 
+/**
+ * practically the same structure as response from openai api
+ */
 export interface StreamTextChunkResult {
   choices: {
     delta: {
@@ -37,6 +40,14 @@ export interface StreamTextOptions extends ChatOptions {
    * @param chunk - The current chunk of the stream.
    */
   onChunk?: (chunk: StreamTextChunkResult) => Promise<unknown> | unknown
+
+  onDataChunk?: (chunk: StreamTextDataChunk) => Promise<unknown> | unknown
+
+  /**
+   * Callback function that is called when an error occurs.
+   * @param error - The error that occurred.
+   */
+  onError?: (error: Error) => Promise<unknown> | unknown
 
   /**
    * Callback function that is called when the stream is finished.
@@ -75,6 +86,7 @@ export interface StreamTextOptions extends ChatOptions {
 
 export interface StreamTextResult {
   chunkStream: ReadableStream<StreamTextChunkResult>
+  dataChunkStream: ReadableStream<StreamTextDataChunk>
   stepStream: ReadableStream<StreamTextStep>
   textStream: ReadableStream<string>
 }
@@ -94,16 +106,16 @@ type RecursivePromise<T> = Promise<(() => RecursivePromise<T>) | T>
 
 /** @internal */
 interface StreamTextChoice {
-  finish_reason?: FinishReason | null
+  finishReason?: FinishReason | null
   index: number
   message: StreamTextMessage
 }
 
 /** @internal */
 interface StreamTextChoiceState {
-  calledToolCallIDs: Set<string>
-  currentToolID: null | string
-  endedToolCallIDs: Set<string>
+  calledToolCallIndex: Set<number>
+  currentToolIndex: null | number
+  endedToolCallIndex: Set<number>
   index: number
   toolCallErrors: { [id: string]: Error }
   toolCallResults: { [id: string]: string | ToolMessagePart[] }
@@ -112,14 +124,15 @@ interface StreamTextChoiceState {
 /** @internal */
 interface StreamTextMessage extends Omit<AssistantMessage, 'tool_calls'> {
   content?: string
-  tool_calls?: { [id: string]: StreamTextToolCall }
+  toolCallIndexMap?: { [id: number]: StreamTextToolCall }
 }
 
 /** @internal */
 interface StreamTextToolCall extends ToolCall {
   function: ToolCall['function'] & {
-    parsed_arguments: Record<string, unknown>
+    parsedArguments: Record<string, unknown>
   }
+  index: number
 }
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
@@ -127,6 +140,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   let chunkCtrl: ReadableStreamDefaultController<StreamTextChunkResult>
   let stepCtrl: ReadableStreamDefaultController<StreamTextStep>
   let textCtrl: ReadableStreamDefaultController<string>
+  let dataChunkCtrl: ReadableStreamDefaultController<StreamTextDataChunk>
 
   const chunkStream = new ReadableStream<StreamTextChunkResult>({
     start(controller) {
@@ -141,6 +155,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const textStream = new ReadableStream<string>({
     start(controller) {
       textCtrl = controller
+    },
+  })
+  const dataChunkStream = new ReadableStream<StreamTextDataChunk>({
+    start(controller) {
+      dataChunkCtrl = controller
     },
   })
 
@@ -162,16 +181,21 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       toolResults: [],
     }
     const choiceState: Record<string, StreamTextChoiceState> = {}
+
     let buffer = ''
+
+    let finishReason: FinishReason | undefined
+    let usage: undefined | Usage
+
     let shouldOutputText: boolean = true
 
-    const endToolCall = (state: StreamTextChoiceState, id: string) => {
-      if (state.endedToolCallIDs.has(id)) {
+    const endToolCallByIndex = (state: StreamTextChoiceState, idx: number) => {
+      if (state.endedToolCallIndex.has(idx)) {
         return
       }
 
-      state.endedToolCallIDs.add(id)
-      state.currentToolID = null
+      state.endedToolCallIndex.add(idx)
+      state.currentToolIndex = null
     }
 
     await chat({
@@ -203,13 +227,28 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     })).pipeTo(new WritableStream({
       abort: (reason) => {
         chunkCtrl.error(reason)
+        dataChunkCtrl.error(reason)
         stepCtrl.error(reason)
         textCtrl.error(reason)
+      },
+      close: () => {
+        dataChunkCtrl.enqueue({
+          finishReason,
+          type: 'finish',
+          usage,
+        })
+        options.onDataChunk?.({
+          finishReason,
+          type: 'finish',
+          usage,
+        })
       },
       // eslint-disable-next-line sonarjs/cognitive-complexity
       write: async (chunk) => {
         options.onChunk?.(chunk)
         chunkCtrl.enqueue(chunk)
+
+        usage = chunk.usage
 
         const choice = chunk.choices[0]
 
@@ -225,7 +264,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
         const { delta, finish_reason, index, ...rest } = choice
         const choiceSnapshot: StreamTextChoice = step.choices[index] ??= {
-          finish_reason,
+          finishReason: finish_reason,
           index,
           message: {
             role: 'assistant',
@@ -234,7 +273,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
         if (finish_reason !== undefined) {
           step.finishReason = finish_reason
-          choiceSnapshot.finish_reason = finish_reason
+          choiceSnapshot.finishReason = finish_reason
+          finishReason = finish_reason
 
           if (finish_reason === 'length') {
             throw new XSAIError('length exceeded')
@@ -254,36 +294,65 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         if (refusal !== undefined) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.refusal = (message.refusal || '') + refusal
+
+          dataChunkCtrl.enqueue({
+            refusal,
+            type: 'refusal',
+          })
+          options.onDataChunk?.({
+            refusal,
+            type: 'refusal',
+          })
         }
 
         if (content !== undefined) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.content = (message.content || '') + content
           shouldOutputText && textCtrl?.enqueue(content)
+
+          dataChunkCtrl.enqueue({
+            text: content,
+            type: 'text-delta',
+          })
+          options.onDataChunk?.({
+            text: content,
+            type: 'text-delta',
+          })
         }
 
-        for (const { function: fn, id, type } of tool_calls || []) {
-          message.tool_calls ??= {}
+        for (const tool_call of tool_calls || []) {
+          dataChunkCtrl.enqueue({
+            toolCall: tool_call,
+            type: 'tool-call-delta',
+          })
+          options.onDataChunk?.({
+            toolCall: tool_call,
+            type: 'tool-call-delta',
+          })
 
-          const toolCall = message.tool_calls[id] ??= {
+          message.toolCallIndexMap ??= {}
+
+          const toolCall = message.toolCallIndexMap[tool_call.index] ??= {
             function: {
               arguments: '',
-              name: fn.name,
-              parsed_arguments: {},
+              name: tool_call.function.name,
+              parsedArguments: {},
             },
-            id,
-            type,
-          } satisfies StreamTextToolCall
-          toolCall.function.arguments += fn.arguments
+            id: tool_call.id, // it should always have a id when appears for the first time
+            index: tool_call.index,
+            type: tool_call.type,
+          }
+
+          toolCall.function.arguments += tool_call.function.arguments
         }
 
         /**
          * check if tool call is ended
          */
         const state = choiceState[index] ??= {
-          calledToolCallIDs: new Set(),
-          currentToolID: null,
-          endedToolCallIDs: new Set(),
+          calledToolCallIndex: new Set(),
+          currentToolIndex: null,
+          endedToolCallIndex: new Set(),
           index,
           toolCallErrors: {},
           toolCallResults: {},
@@ -291,18 +360,18 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         // eslint-disable-next-line ts/strict-boolean-expressions
         if (finish_reason) {
           // end choice will end the current tool call too
-          if (state.currentToolID !== null) {
-            endToolCall(state, state.currentToolID)
+          if (state.currentToolIndex !== null) {
+            endToolCallByIndex(state, state.currentToolIndex)
           }
         }
         for (const toolCall of delta.tool_calls || []) {
           // new tool call
-          if (state.currentToolID !== null && state.currentToolID !== toolCall.id) {
-            endToolCall(state, state.currentToolID)
+          if (state.currentToolIndex !== toolCall.index && state.currentToolIndex !== null) {
+            endToolCallByIndex(state, state.currentToolIndex)
           }
 
-          state.calledToolCallIDs.add(toolCall.id)
-          state.currentToolID = toolCall.id
+          state.calledToolCallIndex.add(toolCall.index)
+          state.currentToolIndex = toolCall.index
         }
       },
     })),
@@ -320,19 +389,28 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     await Promise.allSettled(step.choices.map(async (choice) => {
       const state = choiceState[choice.index]
 
-      return Promise.allSettled([...state.endedToolCallIDs].map(async (id) => {
-        const toolCall = choice.message.tool_calls![id]
+      return Promise.allSettled([...state.endedToolCallIndex].map(async (idx) => {
+        const toolCall = choice.message.toolCallIndexMap![idx]
         step.toolCalls.push({
           args: toolCall.function.arguments,
-          toolCallId: id,
+          toolCallId: toolCall.id,
           toolCallType: 'function',
           toolName: toolCall.function.name,
         })
 
         // eslint-disable-next-line ts/strict-boolean-expressions
-        if (state.toolCallResults[id]) {
+        if (state.toolCallResults[toolCall.id]) {
           return
         }
+
+        dataChunkCtrl.enqueue({
+          toolCall,
+          type: 'tool-call',
+        })
+        options.onDataChunk?.({
+          toolCall,
+          type: 'tool-call',
+        })
 
         try {
           const { parsedArgs, result, toolName } = await executeTool({
@@ -342,23 +420,44 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             tools: options.tools,
           })
 
-          toolCall.function.parsed_arguments = parsedArgs
+          toolCall.function.parsedArguments = parsedArgs
 
-          state.toolCallResults[id] = result
+          state.toolCallResults[toolCall.id] = result
           step.messages.push({
             content: result,
             role: 'tool',
-            tool_call_id: id,
+            tool_call_id: toolCall.id,
           })
           step.toolResults.push({
             args: parsedArgs,
             result,
-            toolCallId: id,
+            toolCallId: toolCall.id,
             toolName,
+          })
+
+          dataChunkCtrl.enqueue({
+            id: toolCall.id,
+            result,
+            type: 'tool-call-result',
+          })
+          options.onDataChunk?.({
+            id: toolCall.id,
+            result,
+            type: 'tool-call-result',
           })
         }
         catch (error) {
-          state.toolCallErrors[id] = error as Error
+          state.toolCallErrors[idx] = error as Error
+          dataChunkCtrl.enqueue({
+            error,
+            id: toolCall.id,
+            type: 'tool-call-result',
+          })
+          options.onDataChunk?.({
+            error,
+            id: toolCall.id,
+            type: 'tool-call-result',
+          })
         }
       }))
     }))
@@ -390,18 +489,23 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
     options.onFinish?.(steps)
     chunkCtrl.close()
+    dataChunkCtrl.close()
     stepCtrl.close()
     textCtrl.close()
   }
 
   void invokeFunctionCalls().catch((error) => {
+    const actualError = error instanceof Error ? error : new Error(String(error))
+    options.onError?.(actualError)
     chunkCtrl.error(error)
+    dataChunkCtrl.error(error)
     stepCtrl.error(error)
     textCtrl.error(error)
   })
 
   return Promise.resolve({
     chunkStream,
+    dataChunkStream,
     stepStream,
     textStream,
   })
