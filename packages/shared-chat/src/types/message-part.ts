@@ -36,6 +36,10 @@ export type Part =
   | RefusalPart
   | TextPart
 
+export interface ReasoningPart extends CommonPart<'reasoning'> {
+  reasoning: string
+}
+
 export interface RefusalPart extends CommonPart<'refusal'> {
   refusal: string
 }

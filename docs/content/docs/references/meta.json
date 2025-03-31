@@ -18,7 +18,9 @@
     "[@xsai-ext/compat](https://tsdocs.dev/search/docs/@xsai-ext/compat)",
     "[@xsai-ext/providers-cloud](https://tsdocs.dev/search/docs/@xsai-ext/providers-cloud)",
     "[@xsai-ext/providers-local](https://tsdocs.dev/search/docs/@xsai-ext/providers-local)",
-    "[@xsai-ext/shared-providers](https://tsdocs.dev/search/docs/@xsai-ext/shared-providers)"
+    "[@xsai-ext/react](https://tsdocs.dev/search/docs/@xsai-ext/react)",
+    "[@xsai-ext/shared-providers](https://tsdocs.dev/search/docs/@xsai-ext/shared-providers)",
+    "[@xsai-ext/shared-ui](https://tsdocs.dev/search/docs/@xsai-ext/shared-ui)"
   ],
   "title": "Packages"
 }

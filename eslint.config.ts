@@ -6,6 +6,8 @@ export default defineConfig({
 }, [{
   ignores: [
     'docs/components/ui/**/*.tsx',
+    'packages-ext/*/example/*.tsx',
+    'packages-ext/*/example/*.jsx',
   ],
 }, {
   rules: {
