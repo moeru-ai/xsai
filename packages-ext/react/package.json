@@ -50,13 +50,13 @@
   "devDependencies": {
     "@testing-library/react": "^16.2.0",
     "@testing-library/react-hooks": "^8.0.1",
-    "@types/react": "^18.0.0",
+    "@types/react": "^18.3.20",
     "@vitejs/plugin-react": "^4.3.4",
     "@xsai/tool": "workspace:",
     "jsdom": "^26.0.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "valibot": "catalog:schema",
-    "vite": "^6.2.1"
+    "vite": "^6.2.3"
   }
 }
