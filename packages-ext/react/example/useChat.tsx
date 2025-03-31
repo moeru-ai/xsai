@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Component } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 

@@ -36,7 +36,7 @@
   "scripts": {
     "build": "tsup",
     "preview": "vite",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "peerDependencies": {
     "react": "^18.0.0"
@@ -51,6 +51,7 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/react": "^18.3.20",
+    "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
     "@xsai/tool": "workspace:",
     "jsdom": "^26.0.0",
