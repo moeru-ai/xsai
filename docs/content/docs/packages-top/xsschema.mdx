@@ -46,12 +46,14 @@ const arktypeSchema = type({
 
 const arktypeJsonSchema = await toJsonSchema(arktypeSchema)
 
-const effectSchema = Schema.Struct({
-  myString: Schema.String,
-  myUnion: Schema.Union(Schema.Number, Schema.Boolean),
-}).annotations({ description: 'My neat object schema' })
+const effectSchema = Schema.standardSchemaV1( // [!code highlight]
+  Schema.Struct({
+    myString: Schema.String,
+    myUnion: Schema.Union(Schema.Number, Schema.Boolean),
+  }).annotations({ description: 'My neat object schema' })
+)
 
-const effectJsonSchema = await toJsonSchema(Schema.standardSchemaV1(effectSchema)) // [!code highlight]
+const effectJsonSchema = await toJsonSchema(effectSchema)
 
 const valibotSchema = v.pipe(
   v.object({
@@ -96,13 +98,15 @@ const arktypeSchema = type({
 await initToJsonSchemaSyncVendor('arktype') // [!code highlight]
 const arktypeJsonSchema = toJsonSchemaSync(arktypeSchema)
 
-const effectSchema = Schema.Struct({
-  myString: Schema.String,
-  myUnion: Schema.Union(Schema.Number, Schema.Boolean),
-}).annotations({ description: 'My neat object schema' })
+const effectSchema = Schema.standardSchemaV1( // [!code highlight]
+  Schema.Struct({
+    myString: Schema.String,
+    myUnion: Schema.Union(Schema.Number, Schema.Boolean),
+  }).annotations({ description: 'My neat object schema' })
+)
 
 await initToJsonSchemaSyncVendor('effect') // [!code highlight]
-const effectJsonSchema = toJsonSchemaSync(Schema.standardSchemaV1(effectSchema)) // [!code highlight]
+const effectJsonSchema = toJsonSchemaSync(effectSchema)
 
 const valibotSchema = v.pipe(
   v.object({
