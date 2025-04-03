@@ -18,14 +18,14 @@
     "@importantimport/tsconfig": "^1.0.0-beta.2",
     "@pnpm/find-workspace-dir": "^1000.1.0",
     "@types/eslint": "^9.6.1",
-    "@types/node": "^22.13.13",
-    "@vitest/coverage-v8": "^3.0.9",
+    "@types/node": "^22.14.0",
+    "@vitest/coverage-v8": "catalog:",
     "automd": "^0.4.0",
     "bumpp": "^10.1.0",
     "eslint": "^9.23.0",
     "jiti": "^2.4.2",
     "pkgroll": "^2.12.1",
     "tsx": "^4.19.3",
-    "vitest": "^3.0.9"
+    "vitest": "catalog:"
   }
 }

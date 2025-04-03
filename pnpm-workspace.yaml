@@ -6,13 +6,15 @@ packages:
   - packages-top/*
 
 catalog:
-  type-fest: ^4.38.0
+  '@vitest/coverage-v8': &vitest ^3.1.1
+  type-fest: ^4.39.0
+  vitest: *vitest
 
 catalogs:
   schema:
     '@valibot/to-json-schema': &valibot ^1.0.0
-    arktype: ^2.1.13
-    effect: ^3.14.2
+    arktype: ^2.1.16
+    effect: ^3.14.5
     valibot: *valibot
     zod: ^3.24.2
     zod-to-json-schema: ^3.24.5
