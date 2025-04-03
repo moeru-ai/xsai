@@ -82,26 +82,13 @@ const zodJsonSchema = await toJsonSchema(zodSchema)
   Before using `toJsonSchemaSync`, you must call `initToJsonSchemaSyncVendor` with your schema vendor.
 </Callout>
 
-```ts twoslash
-import { initToJsonSchemaSyncVendor } from 'xsschema'
-
-await initToJsonSchemaSyncVendor('arktype')
-// or
-await initToJsonSchemaSyncVendor('effect')
-// or
-await initToJsonSchemaSyncVendor('valibot')
-// or
-await initToJsonSchemaSyncVendor('zod')
-```
-
 You can register multiple schema vendors if you need to.
-
 
 ```ts twoslash
 import { type } from 'arktype'
 import { Schema } from 'effect'
 import * as v from 'valibot'
-import { toJsonSchemaSync } from 'xsschema'
+import { initToJsonSchemaSyncVendor, toJsonSchemaSync } from 'xsschema'
 import { z } from 'zod'
 
 const arktypeSchema = type({
@@ -109,6 +96,7 @@ const arktypeSchema = type({
   myUnion: 'number | boolean',
 }).describe('My neat object schema')
 
+await initToJsonSchemaSyncVendor('arktype') // [!code highlight]
 const arktypeJsonSchema = toJsonSchemaSync(arktypeSchema)
 
 const effectSchema = Schema.Struct({
@@ -116,6 +104,7 @@ const effectSchema = Schema.Struct({
   myUnion: Schema.Union(Schema.Number, Schema.Boolean),
 }).annotations({ description: 'My neat object schema' })
 
+await initToJsonSchemaSyncVendor('effect') // [!code highlight]
 const effectJsonSchema = toJsonSchemaSync(
   // https://github.com/Effect-TS/effect/issues/4494 // [!code highlight]
   Object.assign(effectSchema, Schema.standardSchemaV1(effectSchema)) // [!code highlight]
@@ -129,6 +118,7 @@ const valibotSchema = v.pipe(
   v.description('My neat object schema'),
 )
 
+await initToJsonSchemaSyncVendor('valibot') // [!code highlight]
 const valibotJsonSchema = toJsonSchemaSync(valibotSchema)
 
 const zodSchema = z.object({
@@ -136,6 +126,7 @@ const zodSchema = z.object({
   myUnion: z.union([z.number(), z.boolean()]),
 }).describe('My neat object schema')
 
+await initToJsonSchemaSyncVendor('zod') // [!code highlight]
 const zodJsonSchema = toJsonSchemaSync(zodSchema)
 ```
 
