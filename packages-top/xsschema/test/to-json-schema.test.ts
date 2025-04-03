@@ -34,8 +34,7 @@ describe('toJsonSchema', () => {
       myUnion: Schema.Union(Schema.Number, Schema.Boolean),
     }).annotations({ description: 'My neat object schema' })
 
-    // https://github.com/Effect-TS/effect/issues/4494
-    const jsonSchema = await toJsonSchema(Object.assign(schema, Schema.standardSchemaV1(schema)))
+    const jsonSchema = await toJsonSchema(Schema.standardSchemaV1(schema))
     expect(jsonSchema).toMatchSnapshot()
   })
 
@@ -80,8 +79,7 @@ describe('toJsonSchema', () => {
     }).annotations({ description: 'My neat object schema' })
 
     await initToJsonSchemaSyncVendor('effect')
-    // https://github.com/Effect-TS/effect/issues/4494
-    const jsonSchema = toJsonSchemaSync(Object.assign(schema, Schema.standardSchemaV1(schema)))
+    const jsonSchema = toJsonSchemaSync(Schema.standardSchemaV1(schema))
     expect(jsonSchema).toMatchSnapshot()
   })
 
