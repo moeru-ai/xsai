@@ -1,6 +1,6 @@
 import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
-import { XSAIError } from '@xsai/shared'
+import { objCamelToSnake, XSAIError } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 import { parseChunk } from './helper'
@@ -62,9 +62,8 @@ export interface StreamTextOptions extends ChatOptions {
     /**
      * Return usage.
      * @default `undefined`
-     * @remarks Ollama doesn't support this, see {@link https://github.com/ollama/ollama/issues/5200}
      */
-    usage?: boolean
+    includeUsage?: boolean
   }
 
   /**
@@ -177,6 +176,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     await chat({
       ...options,
       stream: true,
+      streamOptions: options.streamOptions != null
+        ? objCamelToSnake(options.streamOptions)
+        : undefined,
     }).then(async res => res.body!.pipeThrough(new TransformStream({
       transform: async (chunk, controller: TransformStreamDefaultController<StreamTextChunkResult>) => {
         const text = decoder.decode(chunk, { stream: true })
