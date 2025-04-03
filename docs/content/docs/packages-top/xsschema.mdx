@@ -51,10 +51,7 @@ const effectSchema = Schema.Struct({
   myUnion: Schema.Union(Schema.Number, Schema.Boolean),
 }).annotations({ description: 'My neat object schema' })
 
-const effectJsonSchema = await toJsonSchema(
-  // https://github.com/Effect-TS/effect/issues/4494 // [!code highlight]
-  Object.assign(effectSchema, Schema.standardSchemaV1(effectSchema)) // [!code highlight]
-)
+const effectJsonSchema = await toJsonSchema(Schema.standardSchemaV1(effectSchema)) // [!code highlight]
 
 const valibotSchema = v.pipe(
   v.object({
@@ -105,10 +102,7 @@ const effectSchema = Schema.Struct({
 }).annotations({ description: 'My neat object schema' })
 
 await initToJsonSchemaSyncVendor('effect') // [!code highlight]
-const effectJsonSchema = toJsonSchemaSync(
-  // https://github.com/Effect-TS/effect/issues/4494 // [!code highlight]
-  Object.assign(effectSchema, Schema.standardSchemaV1(effectSchema)) // [!code highlight]
-)
+const effectJsonSchema = toJsonSchemaSync(Schema.standardSchemaV1(effectSchema)) // [!code highlight]
 
 const valibotSchema = v.pipe(
   v.object({
