@@ -13,10 +13,7 @@ export interface ListModelsResponse {
 
 export const listModels = async (options: ListModelsOptions): Promise<Model[]> =>
   (options.fetch ?? globalThis.fetch)(requestURL('models', options.baseURL), {
-    headers: requestHeaders({
-      'Content-Type': 'application/json',
-      ...options.headers,
-    }, options.apiKey),
+    headers: requestHeaders(options.headers, options.apiKey),
     signal: options.abortSignal,
   })
     .then(responseJSON<ListModelsResponse>)
