@@ -177,6 +177,7 @@ console.log(text)
 - [lingticio/neuri-js](https://github.com/lingticio/neuri-js)
 - [GramSearch/telegram-search](https://github.com/GramSearch/telegram-search)
 - [yusixian/moe-copy-ai](https://github.com/yusixian/moe-copy-ai)
+- [LemonNekoGH/flow-chat](https://github.com/LemonNekoGH/flow-chat)
 
 ### Status
 
