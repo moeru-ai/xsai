@@ -6,7 +6,7 @@ import {
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://featherless.ai/models} */
-export const createFatherlessAI = (apiKey: string, baseURL = 'https://api.featherless.ai/v1/') => merge(
+export const createFatherless = (apiKey: string, baseURL = 'https://api.featherless.ai/v1/') => merge(
   createMetadataProvider('fatherless-ai'),
   createChatProvider<
     | 'deepseek-ai/DeepSeek-R1'
