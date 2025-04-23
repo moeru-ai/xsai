@@ -1,5 +1,5 @@
-import type { ZodType } from 'zod4'
 import type { ZodSchema } from 'zod'
+import type { ZodType } from 'zod4'
 
 import type { ToJsonSchemaFn } from '.'
 
