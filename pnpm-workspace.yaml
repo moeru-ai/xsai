@@ -16,5 +16,5 @@ catalogs:
     arktype: ^2.1.16
     effect: ^3.14.5
     valibot: *valibot
-    zod: ^3.24.2
+    zod: ^3.24.3
     zod-to-json-schema: ^3.24.5

@@ -1,8 +1,10 @@
+import { z as zm } from '@zod/mini'
 import { type } from 'arktype'
 import { Schema } from 'effect'
 import * as v from 'valibot'
 import { describe, expect, it } from 'vitest'
-import * as z from 'zod'
+import { z as z4 } from 'zod4'
+import { z } from 'zod'
 
 import { initToJsonSchemaSyncVendor, toJsonSchema, toJsonSchemaSync } from '../src'
 
@@ -52,13 +54,29 @@ describe('toJsonSchema', () => {
   })
 
   it('zod', async () => {
-    const schema = z.object({
+    const zod4Schema = z4.object({
+      myString: z4.string(),
+      myUnion: z4.union([z4.number(), z4.boolean()]),
+    }).describe('My neat object schema')
+
+    const zod4JsonSchema = await toJsonSchema(zod4Schema)
+    expect(zod4JsonSchema).toMatchSnapshot()
+
+    const zod3Schema = z.object({
       myString: z.string(),
       myUnion: z.union([z.number(), z.boolean()]),
     }).describe('My neat object schema')
 
-    const jsonSchema = await toJsonSchema(schema)
-    expect(jsonSchema).toMatchSnapshot()
+    const zod3JsonSchema = await toJsonSchema(zod3Schema)
+    expect(zod3JsonSchema).toMatchSnapshot()
+
+    const zodMiniSchema = zm.object({
+      myString: zm.string(),
+      myUnion: zm.union([zm.number(), zm.boolean()]),
+    })
+
+    const zodMiniJsonSchema = await toJsonSchema(zodMiniSchema)
+    expect(zodMiniJsonSchema).toMatchSnapshot()
   })
 
   it('arktype sync', async () => {
@@ -98,13 +116,30 @@ describe('toJsonSchema', () => {
   })
 
   it('zod sync', async () => {
-    const schema = z.object({
+    await initToJsonSchemaSyncVendor('zod')
+
+    const zod4Schema = z4.object({
+      myString: z4.string(),
+      myUnion: z4.union([z4.number(), z4.boolean()]),
+    }).describe('My neat object schema')
+
+    const zod4JsonSchema = await toJsonSchema(zod4Schema)
+    expect(zod4JsonSchema).toMatchSnapshot()
+
+    const zod3Schema = z.object({
       myString: z.string(),
       myUnion: z.union([z.number(), z.boolean()]),
     }).describe('My neat object schema')
 
-    await initToJsonSchemaSyncVendor('zod')
-    const jsonSchema = toJsonSchemaSync(schema)
-    expect(jsonSchema).toMatchSnapshot()
+    const zod3JsonSchema = await toJsonSchema(zod3Schema)
+    expect(zod3JsonSchema).toMatchSnapshot()
+
+    const zodMiniSchema = zm.object({
+      myString: zm.string(),
+      myUnion: zm.union([zm.number(), zm.boolean()]),
+    })
+
+    const zodMiniJsonSchema = await toJsonSchema(zodMiniSchema)
+    expect(zodMiniJsonSchema).toMatchSnapshot()
   })
 })
