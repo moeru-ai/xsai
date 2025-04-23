@@ -4,10 +4,8 @@
     "examples/**/src",
     "packages/**/src",
     "packages/**/test",
-    "packages-ext/compat/src",
-    "packages-ext/providers-cloud/src",
-    "packages-ext/providers-local/src",
-    "packages-ext/shared-providers/src",
+    "packages-ext/**/src",
+    "packages-ext/**/test",
     "packages-top/**/src",
     "packages-top/**/test"
   ]
