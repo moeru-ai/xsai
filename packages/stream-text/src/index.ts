@@ -93,16 +93,16 @@ type RecursivePromise<T> = Promise<(() => RecursivePromise<T>) | T>
 
 /** @internal */
 interface StreamTextChoice {
-  finish_reason?: FinishReason | null
+  finishReason?: FinishReason | null
   index: number
   message: StreamTextMessage
 }
 
 /** @internal */
 interface StreamTextChoiceState {
-  calledToolCallIDs: Set<string>
-  currentToolID: null | string
-  endedToolCallIDs: Set<string>
+  calledToolCallIndex: Set<number>
+  currentToolIndex: null | number
+  endedToolCallIndex: Set<number>
   index: number
   toolCallErrors: { [id: string]: Error }
   toolCallResults: { [id: string]: string | ToolMessagePart[] }
@@ -111,14 +111,15 @@ interface StreamTextChoiceState {
 /** @internal */
 interface StreamTextMessage extends Omit<AssistantMessage, 'tool_calls'> {
   content?: string
-  tool_calls?: { [id: string]: StreamTextToolCall }
+  toolCalls?: { [id: number]: StreamTextToolCall }
 }
 
 /** @internal */
 interface StreamTextToolCall extends ToolCall {
   function: ToolCall['function'] & {
-    parsed_arguments: Record<string, unknown>
+    parsedArguments: Record<string, unknown>
   }
+  index: number
 }
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
@@ -164,13 +165,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     let buffer = ''
     let shouldOutputText: boolean = true
 
-    const endToolCall = (state: StreamTextChoiceState, id: string) => {
-      if (state.endedToolCallIDs.has(id)) {
+    const endToolCallByIndex = (state: StreamTextChoiceState, idx: number) => {
+      if (state.endedToolCallIndex.has(idx)) {
         return
       }
 
-      state.endedToolCallIDs.add(id)
-      state.currentToolID = null
+      state.endedToolCallIndex.add(idx)
+      state.currentToolIndex = null
     }
 
     await chat({
@@ -227,7 +228,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
         const { delta, finish_reason, index, ...rest } = choice
         const choiceSnapshot: StreamTextChoice = step.choices[index] ??= {
-          finish_reason,
+          finishReason: finish_reason,
           index,
           message: {
             role: 'assistant',
@@ -236,7 +237,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
         if (finish_reason !== undefined) {
           step.finishReason = finish_reason
-          choiceSnapshot.finish_reason = finish_reason
+          choiceSnapshot.finishReason = finish_reason
 
           if (finish_reason === 'length') {
             throw new XSAIError('length exceeded')
@@ -264,18 +265,19 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           shouldOutputText && textCtrl?.enqueue(content)
         }
 
-        for (const { function: fn, id, type } of tool_calls || []) {
-          message.tool_calls ??= {}
+        for (const { function: fn, id, index, type } of tool_calls || []) {
+          message.toolCalls ??= {}
 
-          const toolCall = message.tool_calls[id] ??= {
+          const toolCall = message.toolCalls[index] ??= {
             function: {
               arguments: '',
               name: fn.name,
-              parsed_arguments: {},
+              parsedArguments: {},
             },
             id,
+            index,
             type,
-          } satisfies StreamTextToolCall
+          }
           toolCall.function.arguments += fn.arguments
         }
 
@@ -283,9 +285,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
          * check if tool call is ended
          */
         const state = choiceState[index] ??= {
-          calledToolCallIDs: new Set(),
-          currentToolID: null,
-          endedToolCallIDs: new Set(),
+          calledToolCallIndex: new Set(),
+          currentToolIndex: null,
+          endedToolCallIndex: new Set(),
           index,
           toolCallErrors: {},
           toolCallResults: {},
@@ -293,18 +295,18 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         // eslint-disable-next-line ts/strict-boolean-expressions
         if (finish_reason) {
           // end choice will end the current tool call too
-          if (state.currentToolID !== null) {
-            endToolCall(state, state.currentToolID)
+          if (state.currentToolIndex !== null) {
+            endToolCallByIndex(state, state.currentToolIndex)
           }
         }
         for (const toolCall of delta.tool_calls || []) {
           // new tool call
-          if (state.currentToolID !== null && state.currentToolID !== toolCall.id) {
-            endToolCall(state, state.currentToolID)
+          if (state.currentToolIndex !== toolCall.index && state.currentToolIndex !== null) {
+            endToolCallByIndex(state, state.currentToolIndex)
           }
 
-          state.calledToolCallIDs.add(toolCall.id)
-          state.currentToolID = toolCall.id
+          state.calledToolCallIndex.add(toolCall.index)
+          state.currentToolIndex = toolCall.index
         }
       },
     })),
@@ -322,17 +324,17 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     await Promise.allSettled(step.choices.map(async (choice) => {
       const state = choiceState[choice.index]
 
-      return Promise.allSettled([...state.endedToolCallIDs].map(async (id) => {
-        const toolCall = choice.message.tool_calls![id]
+      return Promise.allSettled([...state.endedToolCallIndex].map(async (idx) => {
+        const toolCall = choice.message.toolCalls![idx]
         step.toolCalls.push({
           args: toolCall.function.arguments,
-          toolCallId: id,
+          toolCallId: toolCall.id,
           toolCallType: 'function',
           toolName: toolCall.function.name,
         })
 
         // eslint-disable-next-line ts/strict-boolean-expressions
-        if (state.toolCallResults[id]) {
+        if (state.toolCallResults[toolCall.id]) {
           return
         }
 
@@ -344,23 +346,23 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             tools: options.tools,
           })
 
-          toolCall.function.parsed_arguments = parsedArgs
+          toolCall.function.parsedArguments = parsedArgs
 
-          state.toolCallResults[id] = result
+          state.toolCallResults[toolCall.id] = result
           step.messages.push({
             content: result,
             role: 'tool',
-            tool_call_id: id,
+            tool_call_id: toolCall.id,
           })
           step.toolResults.push({
             args: parsedArgs,
             result,
-            toolCallId: id,
+            toolCallId: toolCall.id,
             toolName,
           })
         }
         catch (error) {
-          state.toolCallErrors[id] = error as Error
+          state.toolCallErrors[idx] = error as Error
         }
       }))
     }))
