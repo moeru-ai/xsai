@@ -42,18 +42,26 @@
   },
   "peerDependencies": {
     "@valibot/to-json-schema": "catalog:schema",
+    "@zod/mini": "^4.0.0-beta",
     "arktype": "catalog:schema",
     "effect": "catalog:schema",
+    "zod": "^3.24.3 || ^4.0.0-beta",
     "zod-to-json-schema": "catalog:schema"
   },
   "peerDependenciesMeta": {
     "@valibot/to-json-schema": {
       "optional": true
     },
+    "@zod/mini": {
+      "optional": true
+    },
     "arktype": {
       "optional": true
     },
     "effect": {
+      "optional": true
+    },
+    "zod": {
       "optional": true
     },
     "zod-to-json-schema": {
