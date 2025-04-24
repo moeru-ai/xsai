@@ -1,6 +1,6 @@
 # xsAI
 
-extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.
+extra-small AI SDK.
 
 <!-- automd:badges name="xsai" provider="badgen" color="cyan" license bundlephobia -->
 
