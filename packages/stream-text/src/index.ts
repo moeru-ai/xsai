@@ -318,7 +318,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       content: step.choices[0]?.message.content ?? '',
       refusal: step.choices[0]?.message.refusal,
       role: 'assistant',
-      tool_calls: Object.values(step.choices[0]?.message.toolCalls || {}).map(toolCall => ({
+      tool_calls: Object.values(step.choices[0]?.message.toolCalls ?? {}).map(toolCall => ({
         function: {
           arguments: toolCall.function.arguments,
           name: toolCall.function.name,
