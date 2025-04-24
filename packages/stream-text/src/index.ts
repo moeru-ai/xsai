@@ -254,12 +254,12 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         const message = choiceSnapshot.message
         Object.assign(message, rests)
 
-        if (refusal !== undefined) {
+        if (refusal !== undefined && refusal != null) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.refusal = (message.refusal || '') + refusal
         }
 
-        if (content !== undefined) {
+        if (content !== undefined && content != null) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.content = (message.content || '') + content
           shouldOutputText && textCtrl?.enqueue(content)
@@ -318,7 +318,16 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       content: step.choices[0]?.message.content ?? '',
       refusal: step.choices[0]?.message.refusal,
       role: 'assistant',
-    } satisfies StreamTextMessage)
+      tool_calls: Object.values(step.choices[0]?.message.toolCalls || {}).map(toolCall => ({
+        function: {
+          arguments: toolCall.function.arguments,
+          name: toolCall.function.name,
+        },
+        id: toolCall.id,
+        index: toolCall.index,
+        type: toolCall.type,
+      })),
+    } satisfies AssistantMessage)
 
     // make actual tool call and wait
     await Promise.allSettled(step.choices.map(async (choice) => {
