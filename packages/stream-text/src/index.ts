@@ -254,12 +254,12 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         const message = choiceSnapshot.message
         Object.assign(message, rests)
 
-        if (refusal !== undefined && refusal != null) {
+        if (refusal != null) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.refusal = (message.refusal || '') + refusal
         }
 
-        if (content !== undefined && content != null) {
+        if (content != null) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.content = (message.content || '') + content
           shouldOutputText && textCtrl?.enqueue(content)
