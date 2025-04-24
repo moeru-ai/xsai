@@ -1,5 +1,3 @@
 export { createLiteLLM } from './litellm'
 export { createLMStudio } from './lmstudio'
 export { createOllama } from './ollama'
-export type * from './unspeech'
-export { createUnElevenLabs, createUnMicrosoft, createUnSpeech } from './unspeech'
