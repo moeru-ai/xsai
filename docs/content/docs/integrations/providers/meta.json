@@ -1,0 +1,8 @@
+{
+  "title": "Providers",
+  "defaultOpen": false,
+  "pages": [
+    "[Transformers.js](https://github.com/moeru-ai/xsai-transformers)",
+    "[unSpeech](https://github.com/moeru-ai/unspeech)"
+  ]
+}
