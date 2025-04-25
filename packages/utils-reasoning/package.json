@@ -30,6 +30,8 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll"
+    "build": "pkgroll",
+    "test": "vitest run",
+    "test:watch": "vitest"
   }
 }
