@@ -261,7 +261,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
         if (content !== undefined) {
           // eslint-disable-next-line ts/strict-boolean-expressions
-          message.refusal = (message.refusal || '') + (refusal || '')
+          message.content = (message.content || '') + (content || '')
           shouldOutputText && textCtrl?.enqueue(content)
         }
 
