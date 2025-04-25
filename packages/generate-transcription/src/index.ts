@@ -22,6 +22,9 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
 
   body.append('model', options.model)
   body.append('file', options.file, options.fileName)
+  options.language != null && body.append('language', options.language)
+  options.prompt != null && body.append('prompt', options.prompt)
+  options.temperature != null && body.append('temperature', options.temperature)
 
   return (options.fetch ?? globalThis.fetch)(requestURL('audio/transcriptions', options.baseURL), {
     body,
