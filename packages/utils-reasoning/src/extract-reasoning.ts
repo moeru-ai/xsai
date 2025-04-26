@@ -1,4 +1,6 @@
 export interface ExtractReasoningOptions {
+  /** @default `\n` */
+  separator?: string
   /** @default `false` */
   startWithReasoning?: boolean
   /** @default `think` */
@@ -15,21 +17,38 @@ export const extractReasoning = (text: string, options: ExtractReasoningOptions 
 }) => {
   const startTag = `<${options.tagName}>`
   const endTag = `<\/${options.tagName}>`
-  const rawText = options.startWithReasoning ? startTag + text : text
+  const separator = options.separator ?? '\n'
+  const fullText = options.startWithReasoning ? startTag + text : text
 
-  const regex = new RegExp(`${startTag}(.*?)${endTag}(.*)`, 'gs')
-  const match = regex.exec(rawText)
+  const regex = new RegExp(`${startTag}(.*?)${endTag}`, 'gs')
+  const reasonMatches = [...fullText.matchAll(regex)]
 
-  if (match) {
-    return {
-      reasoning: match[1],
-      text: match[2],
-    }
-  }
-  else {
+  if (reasonMatches.length === 0) {
     return {
       reasoning: undefined,
       text,
     }
+  }
+
+  const reasoning = reasonMatches.map(match => match[1]).join(separator)
+
+  let startIndex = 0
+  const texts = reasonMatches.reduce((acc, match, idx) => {
+    if (startIndex < match.index) {
+      acc.push(fullText.slice(startIndex, match.index))
+    }
+    startIndex = match.index + match[0].length
+
+    // last match
+    if (idx === reasonMatches.length - 1) {
+      acc.push(fullText.slice(startIndex))
+    }
+
+    return acc
+  }, [] as string[]).join(separator)
+
+  return {
+    reasoning,
+    text: texts,
   }
 }

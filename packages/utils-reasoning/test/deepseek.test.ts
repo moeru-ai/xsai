@@ -5,6 +5,15 @@ import { describe, expect, it } from 'vitest'
 import { extractReasoning, extractReasoningStream } from '../src'
 
 describe('extractReasoning', () => {
+  it('should extract reasoning with default option', () => {
+    const text = '<think>reasoning</think> text.'
+    const result = extractReasoning(text)
+    expect(result).toEqual({
+      reasoning: 'reasoning',
+      text: ' text.',
+    })
+  })
+
   it('should extract reasoning from text', () => {
     const text = '<think>reasoning</think> text.'
     const result = extractReasoning(text, { tagName: 'think' })
@@ -41,13 +50,12 @@ describe('extractReasoning', () => {
     })
   })
 
-  // NOTE: may support multiple reasoning tags in the future
-  it('should only handle one reasoning tags', () => {
+  it('should handle multiple reasoning blocks', () => {
     const text = '<think>reasoning1</think> text1 <think>reasoning2</think> text2'
     const result = extractReasoning(text, { tagName: 'think' })
     expect(result).toEqual({
-      reasoning: 'reasoning1',
-      text: ' text1 <think>reasoning2</think> text2',
+      reasoning: 'reasoning1\nreasoning2',
+      text: ' text1 \n text2',
     })
   })
 
