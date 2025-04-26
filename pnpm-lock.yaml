@@ -475,7 +475,14 @@ importers:
         specifier: 'workspace:'
         version: link:../shared-chat
 
-  packages/utils-reasoning: {}
+  packages/utils-reasoning:
+    devDependencies:
+      '@xsai/generate-text':
+        specifier: 'workspace:'
+        version: link:../generate-text
+      '@xsai/stream-text':
+        specifier: 'workspace:'
+        version: link:../stream-text
 
   packages/utils-stream: {}
 

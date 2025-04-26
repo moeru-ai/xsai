@@ -1,3 +1,5 @@
+import { generateText } from '@xsai/generate-text'
+import { streamText } from '@xsai/stream-text'
 import { describe, expect, it } from 'vitest'
 
 import { extractReasoning, extractReasoningStream } from '../src'
@@ -39,12 +41,13 @@ describe('extractReasoning', () => {
     })
   })
 
-  it('should handle multiple reasoning tags', () => {
-    const text = '<think>reasoning1</think> <think>reasoning2</think>'
+  // NOTE: may support multiple reasoning tags in the future
+  it('should only handle one reasoning tags', () => {
+    const text = '<think>reasoning1</think> text1 <think>reasoning2</think> text2'
     const result = extractReasoning(text, { tagName: 'think' })
     expect(result).toEqual({
       reasoning: 'reasoning1',
-      text: ' <think>reasoning2</think>',
+      text: ' text1 <think>reasoning2</think> text2',
     })
   })
 
@@ -56,6 +59,31 @@ describe('extractReasoning', () => {
       text: ' This is a test.',
     })
   })
+
+  it('should pass real deepseek test', async () => {
+    const { text } = await generateText({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          role: 'user',
+        },
+      ],
+      model: 'deepseek-r1:1.5b',
+    })
+
+    const {
+      reasoning,
+      text: textResult,
+    } = extractReasoning(text!, { tagName: 'think' })
+
+    expect(reasoning).not.toEqual(undefined)
+    expect(textResult.length).to.greaterThan(0)
+  }, 20_000)
 })
 
 const randomSplitTextToStream = (text: string): ReadableStream<string> => new ReadableStream<string>({
@@ -72,6 +100,29 @@ const randomSplitTextToStream = (text: string): ReadableStream<string> => new Re
 })
 
 describe('extractReasoningStream', () => {
+  it('should extract reasoning with default options', async () => {
+    const text = '<think>reasoning</think> text.'
+    const stream = randomSplitTextToStream(text)
+
+    const {
+      reasoningStream,
+      textStream,
+    } = extractReasoningStream(stream)
+
+    let reasoningResult = ''
+    for await (const chunk of reasoningStream) {
+      reasoningResult += chunk
+    }
+
+    let textResult = ''
+    for await (const chunk of textStream) {
+      textResult += chunk
+    }
+
+    expect(reasoningResult).toEqual('reasoning')
+    expect(textResult).toEqual(' text.')
+  })
+
   it('should extract reasoning from a stream', async () => {
     const text = '<think>reasoning</think> text.'
     const stream = randomSplitTextToStream(text)
@@ -165,7 +216,7 @@ describe('extractReasoningStream', () => {
   })
 
   it('should handle multiple reasoning tags', async () => {
-    const text = '<think>reasoning1</think> <think>reasoning2</think>'
+    const text = '<think>reasoning1</think>text1<think>reasoning2</think>text2'
     const stream = randomSplitTextToStream(text)
 
     const {
@@ -183,8 +234,8 @@ describe('extractReasoningStream', () => {
       textResult += chunk
     }
 
-    expect(reasoningResult).toEqual('reasoning1')
-    expect(textResult).toEqual(' <think>reasoning2</think>')
+    expect(reasoningResult).toEqual('reasoning1\nreasoning2')
+    expect(textResult).toEqual('text1\ntext2')
   })
 
   it('should handle startWithReasoning option', async () => {
@@ -209,4 +260,39 @@ describe('extractReasoningStream', () => {
     expect(reasoningResult).toEqual('reasoning')
     expect(textResult).toEqual(' This is a test.')
   })
+
+  it('real deepseek test', async () => {
+    const { textStream } = await streamText({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          role: 'user',
+        },
+      ],
+      model: 'deepseek-r1:1.5b',
+    })
+
+    const {
+      reasoningStream,
+      textStream: textStreamResult,
+    } = extractReasoningStream(textStream, { tagName: 'think' })
+
+    let reasoningResult = ''
+    for await (const chunk of reasoningStream) {
+      reasoningResult += chunk
+    }
+
+    let textResult = ''
+    for await (const chunk of textStreamResult) {
+      textResult += chunk
+    }
+
+    expect(reasoningResult.length).to.greaterThan(0)
+    expect(textResult.length).to.greaterThan(0)
+  }, 20_000)
 })

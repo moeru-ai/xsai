@@ -33,5 +33,9 @@
     "build": "pkgroll",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@xsai/generate-text": "workspace:",
+    "@xsai/stream-text": "workspace:"
   }
 }

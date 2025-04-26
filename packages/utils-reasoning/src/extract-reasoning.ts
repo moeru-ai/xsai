@@ -13,9 +13,12 @@ export interface ExtractReasoningResult {
 export const extractReasoning = (text: string, options: ExtractReasoningOptions = {
   tagName: 'think',
 }) => {
-  // eslint-disable-next-line sonarjs/no-nested-template-literals
-  const regex = new RegExp(`${options.startWithReasoning ? '' : `<${options.tagName}>`}(.*?)<\/${options.tagName}>(.*)`, 'gs')
-  const match = regex.exec(text)
+  const startTag = `<${options.tagName}>`
+  const endTag = `<\/${options.tagName}>`
+  const rawText = options.startWithReasoning ? startTag + text : text
+
+  const regex = new RegExp(`${startTag}(.*?)${endTag}(.*)`, 'gs')
+  const match = regex.exec(rawText)
 
   if (match) {
     return {
