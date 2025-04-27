@@ -47,6 +47,7 @@
     "@xsai/stream-text": "workspace:^",
     "@xsai/tool": "workspace:^",
     "@xsai/utils-chat": "workspace:^",
+    "@xsai/utils-reasoning": "workspace:^",
     "@xsai/utils-stream": "workspace:^",
     "arktype": "catalog:schema",
     "autoprefixer": "^10.4.21",

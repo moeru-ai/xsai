@@ -187,6 +187,9 @@ importers:
       '@xsai/utils-chat':
         specifier: workspace:^
         version: link:../packages/utils-chat
+      '@xsai/utils-reasoning':
+        specifier: workspace:^
+        version: link:../packages/utils-reasoning
       '@xsai/utils-stream':
         specifier: workspace:^
         version: link:../packages/utils-stream

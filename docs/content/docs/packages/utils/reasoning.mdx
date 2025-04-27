@@ -1,0 +1,68 @@
+---
+title: Reasoning
+# description:
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/utils-reasoning" />
+
+```package-install
+npm i @xsai/utils-reasoning
+```
+
+## Examples
+
+### extractReasoning
+
+extracts XML-tagged reasoning sections from text.
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { extractReasoning } from '@xsai/utils-reasoning' // [!code ++]
+import { env } from 'node:process'
+
+const { text: rawText } = await generateText({
+  baseURL: 'http://localhost:11434/v1/',
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    },
+  ],
+  model: 'deepseek-r1',
+})
+
+const { reasoning, text } = extractReasoning(rawText!) // [!code ++]
+```
+
+### extractReasoningStream
+
+extracts XML-tagged reasoning sections from text stream.
+
+```ts twoslash
+import { streamText } from '@xsai/stream-text'
+import { extractReasoningStream } from '@xsai/utils-reasoning' // [!code ++]
+import { env } from 'node:process'
+
+const { textStream: rawTextStream } = await streamText({
+  baseURL: 'http://localhost:11434/v1/',
+  messages: [
+    {
+      content: 'You\'re a helpful assistant.',
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    },
+  ],
+  model: 'deepseek-r1',
+})
+
+const { reasoningStream, textStream } = extractReasoningStream(rawTextStream) // [!code ++]
+```
