@@ -21,11 +21,12 @@ We weren't supposed to connect to OpenAI's paid APIs while testing, so we chose 
 
 It uses [Ollama](https://github.com/ollama/ollama).
 
-The model used may change as needed, currently `nomic-embed-text`, `llama3.2` and `mistral-nemo`.
+The model used may change as needed, currently `nomic-embed-text`, `llama3.2`, `deepseek-r1:1.5b` and `mistral-nemo`.
 
 ```bash
 ollama pull nomic-embed-text
 ollama pull llama3.2
+ollama pull deepseek-r1:1.5b
 ollama pull mistral-nemo
 ollama serve
 ```
