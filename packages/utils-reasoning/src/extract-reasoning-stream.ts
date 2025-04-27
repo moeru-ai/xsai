@@ -1,6 +1,6 @@
 import type { ExtractReasoningOptions } from './extract-reasoning'
 
-import { getPartialMatchIndex } from './get-partial-match-index'
+import { getPartialMatchIndex } from './_get-partial-match-index'
 
 export interface ExtractReasoningStreamOptions extends ExtractReasoningOptions {
   /** @default `\n` */

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { getPartialMatchIndex } from '../src/get-partial-match-index'
+import { getPartialMatchIndex } from '../src/_get-partial-match-index'
 
 describe('getPartialMatchIndex', () => {
   it('should find complete match', () => {
