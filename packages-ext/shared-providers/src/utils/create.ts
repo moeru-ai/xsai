@@ -1,6 +1,19 @@
 import type { CreateProviderOptions } from '../types/create-provider-options'
 import type { ProviderMetadata } from '../types/metadata'
-import type { ChatProvider, ChatProviderWithExtraOptions, EmbedProvider, EmbedProviderWithExtraOptions, MetadataProviders, ModelProvider, ModelProviderWithExtraOptions, SpeechProvider, SpeechProviderWithExtraOptions, TranscriptionProvider, TranscriptionProviderWithExtraOptions } from '../types/providers'
+import type {
+  ChatProvider,
+  ChatProviderWithExtraOptions,
+  EmbedProvider,
+  EmbedProviderWithExtraOptions,
+  ImageProvider,
+  MetadataProviders,
+  ModelProvider,
+  ModelProviderWithExtraOptions,
+  SpeechProvider,
+  SpeechProviderWithExtraOptions,
+  TranscriptionProvider,
+  TranscriptionProviderWithExtraOptions,
+} from '../types/providers'
 
 export const createChatProvider = <T extends string = string>(options: CreateProviderOptions): ChatProvider<T> => ({
   chat: model => Object.assign(options, { model }),
@@ -16,6 +29,10 @@ export const createEmbedProvider = <T extends string = string>(options: CreatePr
 
 export const createEmbedProviderWithExtraOptions = <T extends string = string, T2 = undefined>(options: CreateProviderOptions): EmbedProviderWithExtraOptions<T, T2> => ({
   embed: (model, extraOptions) => Object.assign(options, { model }, extraOptions),
+})
+
+export const createImageProvider = <T extends string = string>(options: CreateProviderOptions): ImageProvider<T> => ({
+  image: model => Object.assign(options, { model }),
 })
 
 export const createModelProvider = (options: CreateProviderOptions): ModelProvider => ({

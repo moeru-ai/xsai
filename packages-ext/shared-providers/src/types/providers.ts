@@ -22,6 +22,11 @@ export interface EmbedProviderWithExtraOptions<T = string, T2 = undefined> {
   embed: (model: (string & {}) | T, extraOptions?: T2) => CommonRequestOptions & Partial<T2>
 }
 
+export interface ImageProvider<T = string> {
+  // eslint-disable-next-line sonarjs/no-useless-intersection
+  image: (model: (string & {}) | T) => CommonRequestOptions
+}
+
 export interface MetadataProviders {
   metadata: ProviderMetadata
 }
