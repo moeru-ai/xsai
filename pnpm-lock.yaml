@@ -187,6 +187,9 @@ importers:
       '@xsai/utils-chat':
         specifier: workspace:^
         version: link:../packages/utils-chat
+      '@xsai/utils-reasoning':
+        specifier: workspace:^
+        version: link:../packages/utils-reasoning
       '@xsai/utils-stream':
         specifier: workspace:^
         version: link:../packages/utils-stream
@@ -303,6 +306,9 @@ importers:
       '@xsai/utils-chat':
         specifier: 'workspace:'
         version: link:../../packages/utils-chat
+      '@xsai/utils-reasoning':
+        specifier: 'workspace:'
+        version: link:../../packages/utils-reasoning
       '@xsai/utils-stream':
         specifier: 'workspace:'
         version: link:../../packages/utils-stream
@@ -471,6 +477,15 @@ importers:
       '@xsai/shared-chat':
         specifier: 'workspace:'
         version: link:../shared-chat
+
+  packages/utils-reasoning:
+    devDependencies:
+      '@xsai/generate-text':
+        specifier: 'workspace:'
+        version: link:../generate-text
+      '@xsai/stream-text':
+        specifier: 'workspace:'
+        version: link:../stream-text
 
   packages/utils-stream: {}
 
