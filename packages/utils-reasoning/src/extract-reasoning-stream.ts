@@ -2,14 +2,7 @@ import type { ExtractReasoningOptions } from './extract-reasoning'
 
 import { getPartialMatchIndex } from './_get-partial-match-index'
 
-export interface ExtractReasoningStreamOptions extends ExtractReasoningOptions {
-  /** @default `\n` */
-  separator?: string
-  /** @default `false` */
-  startWithReasoning?: boolean
-  /** @default `think` */
-  tagName: string
-}
+export interface ExtractReasoningStreamOptions extends ExtractReasoningOptions {}
 
 export interface ExtractReasoningStreamResult {
   reasoningStream: ReadableStream<string>
