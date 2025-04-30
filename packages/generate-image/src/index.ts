@@ -12,6 +12,12 @@ export interface GenerateImageOptions extends CommonRequestOptions {
   /** A text description of the desired image(s). */
   prompt: string
   /**
+   * Currently only `b64_json` is supported.
+   * leave blank if you are using gpt-image-1.
+   * If you use `dall-e-3` or `dall-e-2`, set to `b64_json`.
+   */
+  responseFormat?: 'b64_json'
+  /**
    * The size of the generated images.
    * @default `1024x1024`
    */
@@ -60,10 +66,7 @@ const convertImage = (b64_json: string) => {
 /** @experimental */
 export const generateImage = async (options: GenerateImageOptions): Promise<GenerateImageResult> =>
   (options.fetch ?? globalThis.fetch)(requestURL('images/generations', options.baseURL), {
-    body: requestBody({
-      ...options,
-      responseFormat: 'b64_json',
-    }),
+    body: requestBody(options),
     headers: requestHeaders({
       'Content-Type': 'application/json',
       ...options.headers,
