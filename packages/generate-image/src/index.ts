@@ -1,6 +1,6 @@
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { requestBody, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
+import { requestBody, requestHeaders, requestURL, responseBlobAsDataURL, responseJSON } from '@xsai/shared'
 
 export interface GenerateImageOptions extends CommonRequestOptions {
   [key: string]: unknown
@@ -12,11 +12,13 @@ export interface GenerateImageOptions extends CommonRequestOptions {
   /** A text description of the desired image(s). */
   prompt: string
   /**
-   * Currently only `b64_json` is supported.
-   * leave blank if you are using gpt-image-1.
-   * If you use `dall-e-3` or `dall-e-2`, set to `b64_json`.
+   * The format in which generated images with `dall-e-2` and `dall-e-3` are returned from the API.
+   * `gpt-image-1` only supports `b64_json`, and `url` will be ignored.
+   *
+   * Images will always be Base64-encoded in the result. If `url` is used, the images will be
+   * fetched upon receiving the response.
    */
-  responseFormat?: 'b64_json'
+  responseFormat?: 'b64_json' | 'url'
   /**
    * The size of the generated images.
    * @default `1024x1024`
@@ -27,8 +29,20 @@ export interface GenerateImageOptions extends CommonRequestOptions {
 export interface GenerateImageResponse {
   created: number
   data: {
-    b64_json: string
+    /**
+     * The Bse64-encoded JSON of the generated image. Default value for `gpt-image-1`, and only
+     * present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+     */
+    b64_json?: string
+    /**
+     * For `dall-e-3` only, the revised prompt that was used to generate the image.
+     */
     revised_prompt?: string
+    /**
+     * When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is
+     * set to `url` (default value). Unsupported for `gpt-image-1`.
+     */
+    url?: string
   }[]
 }
 
@@ -75,8 +89,30 @@ export const generateImage = async (options: GenerateImageOptions): Promise<Gene
     signal: options.abortSignal,
   })
     .then(responseJSON<GenerateImageResponse>)
-    .then(({ data }) => {
-      const images: GenerateImageResultImage[] = data.map(({ b64_json }) => convertImage(b64_json))
+    .then(async ({ data }) =>
+      Promise.all(
+        data.map(async (img, i) => {
+          if (typeof img.b64_json === 'string') {
+            return convertImage(img.b64_json)
+          }
 
-      return { image: images[0], images }
-    })
+          if (typeof img.url === 'string') {
+            return (options.fetch ?? globalThis.fetch)(new URL(img.url), {
+              signal: options.abortSignal,
+            })
+              .then(responseBlobAsDataURL)
+              .then((dataURL) => {
+                const sepIndex = dataURL.indexOf(';')
+                const mimeType = dataURL.substring(5, sepIndex) // `data:(...);...`
+                return {
+                  base64: dataURL,
+                  mimeType,
+                }
+              })
+          }
+
+          throw new Error(`Unrecognized image at index ${i}: ${JSON.stringify(img)}`)
+        }),
+      ),
+    )
+    .then(images => ({ image: images[0], images }))
