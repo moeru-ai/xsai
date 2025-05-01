@@ -20,8 +20,8 @@ export default ({ children }: PropsWithChildren) => (
     </head>
     <body className="flex flex-col min-h-screen">
       <RootProvider search={{ options: { type: 'static' } }}>
-        <Banner id="introducing-xsai" variant="rainbow">
-          <Link href="https://blog.moeru.ai/introducing-xsai/">xsAI v0.1 is now available! Read Announcement</Link>
+        <Banner id="xsai-0.2" variant="rainbow">
+          <Link href="https://blog.moeru.ai/xsai-0.2/">xsAI v0.2 is now available! Read Announcement</Link>
         </Banner>
         {children}
       </RootProvider>
