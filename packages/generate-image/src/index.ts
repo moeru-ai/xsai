@@ -1,6 +1,6 @@
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { requestBody, requestHeaders, requestURL, responseBlobAsDataURL, responseJSON } from '@xsai/shared'
+import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
 export interface GenerateImageOptions extends CommonRequestOptions {
   [key: string]: unknown
@@ -76,6 +76,26 @@ const convertImage = (b64_json: string) => {
     mimeType,
   }
 }
+
+/** @internal */
+const responseBlobAsDataURL = async (res: Response): Promise<string> =>
+  responseCatch(res)
+    .then(async (res) => {
+      const blob = await res.blob()
+
+      try {
+        return await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result as string)
+          reader.onerror = reject
+          reader.readAsDataURL(blob)
+        })
+      }
+      catch {
+        throw new Error(`Failed to parse response blob, response URL: ${res.url}`)
+      }
+    })
+
 
 /** @experimental */
 export const generateImage = async (options: GenerateImageOptions): Promise<GenerateImageResult> =>
