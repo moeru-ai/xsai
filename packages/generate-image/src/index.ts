@@ -96,7 +96,6 @@ const responseBlobAsDataURL = async (res: Response): Promise<string> =>
       }
     })
 
-
 /** @experimental */
 export const generateImage = async (options: GenerateImageOptions): Promise<GenerateImageResult> =>
   (options.fetch ?? globalThis.fetch)(requestURL('images/generations', options.baseURL), {
