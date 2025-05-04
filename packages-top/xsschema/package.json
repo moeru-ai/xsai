@@ -45,6 +45,7 @@
     "@zod/mini": "^4.0.0-beta",
     "arktype": "catalog:schema",
     "effect": "catalog:schema",
+    "sury": "^10.0.0-rc",
     "zod": "^3.24.3 || ^4.0.0-beta",
     "zod-to-json-schema": "catalog:schema"
   },
@@ -61,6 +62,9 @@
     "effect": {
       "optional": true
     },
+    "sury": {
+      "optional": true
+    },
     "zod": {
       "optional": true
     },
@@ -75,6 +79,7 @@
     "@zod/mini": "^4.0.0-beta.20250420T053007",
     "arktype": "catalog:schema",
     "effect": "catalog:schema",
+    "sury": "^10.0.0-rc.4",
     "valibot": "catalog:schema",
     "zod": "catalog:schema",
     "zod-to-json-schema": "catalog:schema",

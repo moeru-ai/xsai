@@ -1,6 +1,7 @@
 import { z as zm } from '@zod/mini'
 import { type } from 'arktype'
 import { Schema } from 'effect'
+import * as S from 'sury'
 import * as v from 'valibot'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
@@ -37,6 +38,16 @@ describe('toJsonSchema', () => {
     }).annotations({ description: 'My neat object schema' })
 
     const jsonSchema = await toJsonSchema(Schema.standardSchemaV1(schema))
+    expect(jsonSchema).toMatchSnapshot()
+  })
+
+  it('sury', async () => {
+    const schema = S.schema({
+      myString: S.string,
+      myUnion: S.union([S.number, S.boolean]),
+    }).with(S.meta, { description: 'My neat object schema' })
+
+    const jsonSchema = await toJsonSchema(schema)
     expect(jsonSchema).toMatchSnapshot()
   })
 
@@ -98,6 +109,17 @@ describe('toJsonSchema', () => {
 
     await initToJsonSchemaSyncVendor('effect')
     const jsonSchema = toJsonSchemaSync(Schema.standardSchemaV1(schema))
+    expect(jsonSchema).toMatchSnapshot()
+  })
+
+  it('sury sync', async () => {
+    const schema = S.schema({
+      myString: S.string,
+      myUnion: S.union([S.number, S.boolean]),
+    }).with(S.meta, { description: 'My neat object schema' })
+
+    await initToJsonSchemaSyncVendor('sury')
+    const jsonSchema = toJsonSchemaSync(schema)
     expect(jsonSchema).toMatchSnapshot()
   })
 

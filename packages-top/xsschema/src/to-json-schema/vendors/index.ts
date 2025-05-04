@@ -19,6 +19,9 @@ export const getToJsonSchemaFn = async (vendor: string): Promise<ToJsonSchemaFn>
     case 'effect':
       return import('./effect')
         .then(async ({ getToJsonSchemaFn }) => getToJsonSchemaFn())
+    case 'sury':
+      return import('./sury')
+        .then(async ({ getToJsonSchemaFn }) => getToJsonSchemaFn())
     case 'valibot':
       return import('./valibot')
         .then(async ({ getToJsonSchemaFn }) => getToJsonSchemaFn())
