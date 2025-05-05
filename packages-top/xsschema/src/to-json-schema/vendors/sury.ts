@@ -1,8 +1,10 @@
 import type { Schema } from 'sury'
 
-import { toJSONSchema } from 'sury'
-
 import type { ToJsonSchemaFn } from '.'
 
-export const getToJsonSchemaFn = async (): Promise<ToJsonSchemaFn> =>
-  schema => toJSONSchema((schema as Schema<unknown>))
+import { tryImport } from '.'
+
+export const getToJsonSchemaFn = async (): Promise<ToJsonSchemaFn> => {
+  const { toJSONSchema } = await tryImport(import('sury'), 'sury')
+  return schema => toJSONSchema((schema as Schema<unknown>))
+}
