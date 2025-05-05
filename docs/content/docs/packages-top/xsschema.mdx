@@ -25,6 +25,7 @@ Here is the list of libraries that `toJsonSchema` is compatible with:
 | Valibot (with `@valibot/to-json-schema`) | v1.0+ | Supported |
 | ArkType | v2.1+ | Supported |
 | Effect Schema | v3.14+ | Supported |
+| Sury | v10+ | Supported |
 
 ## Usage
 
@@ -37,6 +38,7 @@ Here is the list of libraries that `toJsonSchema` is compatible with:
 ```ts twoslash
 import { type } from 'arktype'
 import { Schema } from 'effect'
+import * as S from 'sury'
 import * as v from 'valibot'
 import { toJsonSchema } from 'xsschema'
 import { z } from 'zod'
@@ -56,6 +58,13 @@ const effectSchema = Schema.standardSchemaV1( // [!code highlight]
 )
 
 const effectJsonSchema = await toJsonSchema(effectSchema)
+
+const surySchema = S.schema({
+  myString: S.string,
+  myUnion: S.union([S.number, S.boolean]),
+}).with(S.meta, { description: 'My neat object schema' })
+
+const suryJsonSchema = await toJsonSchema(surySchema)
 
 const valibotSchema = v.pipe(
   v.object({
@@ -88,6 +97,7 @@ You can register multiple schema vendors if you need to.
 ```ts twoslash
 import { type } from 'arktype'
 import { Schema } from 'effect'
+import * as S from 'sury'
 import * as v from 'valibot'
 import { initToJsonSchemaSyncVendor, toJsonSchemaSync } from 'xsschema'
 import { z } from 'zod'
@@ -109,6 +119,14 @@ const effectSchema = Schema.standardSchemaV1( // [!code highlight]
 
 await initToJsonSchemaSyncVendor('effect') // [!code highlight]
 const effectJsonSchema = toJsonSchemaSync(effectSchema)
+
+const surySchema = S.schema({
+  myString: S.string,
+  myUnion: S.union([S.number, S.boolean]),
+}).with(S.meta, { description: 'My neat object schema' })
+
+await initToJsonSchemaSyncVendor('sury') // [!code highlight]
+const suryJsonSchema = toJsonSchemaSync(surySchema)
 
 const valibotSchema = v.pipe(
   v.object({
@@ -135,14 +153,20 @@ const zodJsonSchema = toJsonSchemaSync(zodSchema)
 ```ts twoslash
 import { validate } from 'xsschema'
 import { type } from 'arktype'
+import { Schema } from 'effect'
+import * as S from 'sury'
 import * as v from 'valibot'
 import * as z from 'zod'
 
 const arktypeSchema = type("string")
+const effectSchema = Schema.String
+const surySchema = S.string
 const valibotSchema = v.string()
 const zodSchema = z.string()
 
 const arktypeResult = await validate(arktypeSchema, '123')
+const effectResult = await validate(effectSchema, '123')
+const suryResult = await validate(surySchema, '123')
 const valibotResult = await validate(valibotSchema, '123')
 const zodResult = await validate(zodSchema, '123')
 ```
