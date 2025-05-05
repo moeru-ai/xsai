@@ -108,6 +108,60 @@ exports[`toJsonSchema > effect sync 1`] = `
 }
 `;
 
+exports[`toJsonSchema > sury 1`] = `
+{
+  "additionalProperties": true,
+  "description": "My neat object schema",
+  "properties": {
+    "myString": {
+      "type": "string",
+    },
+    "myUnion": {
+      "anyOf": [
+        {
+          "type": "number",
+        },
+        {
+          "type": "boolean",
+        },
+      ],
+    },
+  },
+  "required": [
+    "myString",
+    "myUnion",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`toJsonSchema > sury sync 1`] = `
+{
+  "additionalProperties": true,
+  "description": "My neat object schema",
+  "properties": {
+    "myString": {
+      "type": "string",
+    },
+    "myUnion": {
+      "anyOf": [
+        {
+          "type": "number",
+        },
+        {
+          "type": "boolean",
+        },
+      ],
+    },
+  },
+  "required": [
+    "myString",
+    "myUnion",
+  ],
+  "type": "object",
+}
+`;
+
 exports[`toJsonSchema > valibot 1`] = `
 {
   "$schema": "http://json-schema.org/draft-07/schema#",

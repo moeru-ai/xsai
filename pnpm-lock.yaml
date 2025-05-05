@@ -335,6 +335,9 @@ importers:
       effect:
         specifier: catalog:schema
         version: 3.14.5
+      sury:
+        specifier: ^10.0.0-rc.4
+        version: 10.0.0-rc.4
       valibot:
         specifier: catalog:schema
         version: 1.0.0(typescript@5.6.3)
@@ -5011,6 +5014,14 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  sury@10.0.0-rc.4:
+    resolution: {integrity: sha512-BnGcpxbhbtmJ2rNepTOIc8f1fFnVS2S7T5HLltFcmCNmij6iZq6JFERY0AxsdRd5PP0yp5FByiBngxo3TLokKQ==}
+    peerDependencies:
+      rescript: 11.x
+    peerDependenciesMeta:
+      rescript:
+        optional: true
 
   sync-child-process@1.0.2:
     resolution: {integrity: sha512-8lD+t2KrrScJ/7KXCSyfhT3/hRq78rC0wBFqNJXv3mZyn6hW2ypM05JmlSvtqRbeq6jqA94oHbxAr2vYsJ8vDA==}
@@ -10529,6 +10540,8 @@ snapshots:
     optional: true
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  sury@10.0.0-rc.4: {}
 
   sync-child-process@1.0.2:
     dependencies:
