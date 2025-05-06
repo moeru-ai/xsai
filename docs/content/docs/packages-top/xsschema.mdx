@@ -19,9 +19,9 @@ Here is the list of libraries that `toJsonSchema` is compatible with:
 
 | Implementer | Version(s) | Status |
 |---|---|---|
-| Zod | 4.0+ | Supported |
-| Zod Mini | 4.0+ | Supported |
-| Zod (with `zod-to-json-schema`) | 3.24+ | Supported |
+| Zod | v4.0+ | Supported |
+| Zod Mini | v4.0+ | Supported |
+| Zod (with `zod-to-json-schema`) | v3.24+ | Supported |
 | Valibot (with `@valibot/to-json-schema`) | v1.0+ | Supported |
 | ArkType | v2.1+ | Supported |
 | Effect Schema | v3.14+ | Supported |
@@ -159,7 +159,7 @@ import * as v from 'valibot'
 import * as z from 'zod'
 
 const arktypeSchema = type("string")
-const effectSchema = Schema.String
+const effectSchema = Schema.standardSchemaV1(Schema.String)
 const surySchema = S.string
 const valibotSchema = v.string()
 const zodSchema = z.string()

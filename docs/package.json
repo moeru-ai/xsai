@@ -53,6 +53,7 @@
     "autoprefixer": "^10.4.21",
     "effect": "catalog:schema",
     "postcss": "^8.5.3",
+    "sury": "^10.0.0-rc",
     "tailwindcss": "^4.1.1",
     "valibot": "catalog:schema",
     "xsai": "workspace:^",
