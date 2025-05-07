@@ -25,6 +25,9 @@ catalogs:
     effect:
       specifier: ^3.14.5
       version: 3.14.5
+    sury:
+      specifier: ^10.0.0-rc.4
+      version: 10.0.0-rc.4
     valibot:
       specifier: ^1.0.0
       version: 1.0.0
@@ -206,7 +209,7 @@ importers:
         specifier: ^8.5.3
         version: 8.5.3
       sury:
-        specifier: ^10.0.0-rc
+        specifier: catalog:schema
         version: 10.0.0-rc.4
       tailwindcss:
         specifier: ^4.1.1
@@ -339,7 +342,7 @@ importers:
         specifier: catalog:schema
         version: 3.14.5
       sury:
-        specifier: ^10.0.0-rc.4
+        specifier: catalog:schema
         version: 10.0.0-rc.4
       valibot:
         specifier: catalog:schema
