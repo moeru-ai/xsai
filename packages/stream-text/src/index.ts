@@ -255,7 +255,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
 
         if (finish_reason !== undefined) {
-          finishReason = step.finishReason = choiceSnapshot.finishReason = finish_reason
+          finishReason = finish_reason
+          step.finishReason = finish_reason
+          choiceSnapshot.finishReason = finish_reason
 
           if (finish_reason === 'length') {
             throw new XSAIError('length exceeded')
