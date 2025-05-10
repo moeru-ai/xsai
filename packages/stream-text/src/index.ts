@@ -3,6 +3,8 @@ import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolR
 import { objCamelToSnake, XSAIError } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
+import type { StreamTextEvent } from './event'
+
 import { parseChunk } from './helper'
 
 export interface StreamTextChunkResult {
@@ -37,6 +39,12 @@ export interface StreamTextOptions extends ChatOptions {
    * @param chunk - The current chunk of the stream.
    */
   onChunk?: (chunk: StreamTextChunkResult) => Promise<unknown> | unknown
+
+  /**
+   * Callback function that is called with each event of the stream.
+   * @param event - The current event of the stream.
+   */
+  onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
 
   /**
    * Callback function that is called when the stream is finished.
@@ -163,6 +171,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     }
     const choiceState: Record<string, StreamTextChoiceState> = {}
     let buffer = ''
+    let finishReason: FinishReason | undefined
+    let usage: undefined | Usage
     let shouldOutputText: boolean = true
 
     const endToolCallByIndex = (state: StreamTextChoiceState, idx: number) => {
@@ -209,10 +219,19 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         stepCtrl.error(reason)
         textCtrl.error(reason)
       },
+      close: () => {
+        options.onEvent?.({
+          finishReason,
+          type: 'finish',
+          usage,
+        })
+      },
       // eslint-disable-next-line sonarjs/cognitive-complexity
       write: async (chunk) => {
         options.onChunk?.(chunk)
         chunkCtrl.enqueue(chunk)
+
+        usage = chunk.usage
 
         const choice = chunk.choices[0]
 
@@ -236,6 +255,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         }
 
         if (finish_reason !== undefined) {
+          finishReason = finish_reason
           step.finishReason = finish_reason
           choiceSnapshot.finishReason = finish_reason
 
@@ -257,15 +277,31 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         if (refusal !== undefined) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.refusal = (message.refusal || '') + (refusal || '')
+
+          options.onEvent?.({
+            refusal: message.refusal,
+            type: 'refusal',
+          })
         }
 
         if (content !== undefined) {
           // eslint-disable-next-line ts/strict-boolean-expressions
           message.content = (message.content || '') + (content || '')
           shouldOutputText && textCtrl?.enqueue(content)
+
+          options.onEvent?.({
+            text: content,
+            type: 'text-delta',
+          })
         }
 
-        for (const { function: fn, id, index, type } of tool_calls || []) {
+        for (const tool_call of tool_calls || []) {
+          options.onEvent?.({
+            toolCall: tool_call,
+            type: 'tool-call-delta',
+          })
+
+          const { function: fn, id, index, type } = tool_call
           message.toolCalls ??= {}
 
           const toolCall = message.toolCalls[index] ??= {
@@ -347,6 +383,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           return
         }
 
+        options.onEvent?.({
+          toolCall,
+          type: 'tool-call',
+        })
+
         try {
           const { parsedArgs, result, toolName } = await executeTool({
             abortSignal: options.abortSignal,
@@ -368,6 +409,12 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             result,
             toolCallId: toolCall.id,
             toolName,
+          })
+
+          options.onEvent?.({
+            id: toolCall.id,
+            result,
+            type: 'tool-call-result',
           })
         }
         catch (error) {
