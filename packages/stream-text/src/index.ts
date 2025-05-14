@@ -233,12 +233,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
         usage = chunk.usage
 
-        const choice = chunk.choices[0]
+        // Skip if no choices
+        if (chunk.choices == null || chunk.choices.length === 0)
+          return
 
-        // not likely to happen, but just in case
-        // eslint-disable-next-line ts/strict-boolean-expressions
-        if (!choice)
-          throw new XSAIError('no choice found')
+        const choice = chunk.choices[0]
 
         // mark this time as non-text output if is has tool calls
         if (choice.delta.tool_calls) {
