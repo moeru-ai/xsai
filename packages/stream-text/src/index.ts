@@ -234,9 +234,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         usage = chunk.usage
 
         // Skip if no choices
-        if (!chunk.choices.length) {
+        if (chunk.choices == null || chunk.choices.length === 0)
           return
-        }
 
         const choice = chunk.choices[0]
 
