@@ -1,5 +1,3 @@
-import { metadataImage } from '@/lib/metadata'
-import { source } from '@/lib/source'
 import { getGithubLastEdit } from 'fumadocs-core/server'
 import { Popup, PopupContent, PopupTrigger } from 'fumadocs-twoslash/ui'
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
@@ -11,6 +9,9 @@ import {
   DocsTitle,
 } from 'fumadocs-ui/page'
 import { notFound } from 'next/navigation'
+
+import { metadataImage } from '@/lib/metadata'
+import { source } from '@/lib/source'
 
 export const generateStaticParams = async () =>
   source.generateParams()

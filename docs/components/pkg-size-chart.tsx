@@ -1,6 +1,8 @@
 // eslint-disable-next-line @masknet/no-top-level
 'use client'
 
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+
 import type {
   ChartConfig,
 } from '@/components/ui/chart'
@@ -18,7 +20,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
 const chartConfig = {
   bundled: {
