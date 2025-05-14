@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.2.1",
   "private": true,
-  "packageManager": "pnpm@10.0.0",
+  "packageManager": "pnpm@10.10.0",
   "repository": "github:moeru-ai/xsai",
   "scripts": {
     "build": "pnpm -r build",
