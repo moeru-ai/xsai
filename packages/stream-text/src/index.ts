@@ -7,6 +7,8 @@ import type { StreamTextEvent } from './event'
 
 import { parseChunk } from './helper'
 
+export { type StreamTextEvent } from './event'
+
 export interface StreamTextChunkResult {
   choices: {
     delta: {
