@@ -17,6 +17,7 @@ words:
   - cognitivecomputations
   - composio
   - dall
+  - deepdml
   - deepinfra
   - deepseek
   - elevenlabs
@@ -25,9 +26,11 @@ words:
   - fumadocs
   - ggml
   - Groq
+  - hexgrad
   - Hunyuan
   - importantimport
   - koemotion
+  - Kokoro
   - litellm
   - llms
   - lmstudio
@@ -49,18 +52,22 @@ words:
   - Novita
   - nums
   - ollama
+  - ONNX
   - openrouter
   - pkgroll
   - Plateforme
   - qwen
   - reranker
+  - rhasspy
   - siliconflow
   - sonarjs
   - SoVITS
+  - speaches
   - specdec
   - SSML
   - Stepfun
   - sury
+  - Systran
   - theguild
   - twoslash
   - typeschema
