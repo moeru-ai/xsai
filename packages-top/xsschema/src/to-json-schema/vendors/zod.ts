@@ -1,26 +1,26 @@
 import type { ZodSchema } from 'zod'
-import type { ZodType } from 'zod4'
+import type { ZodType } from 'zod/v4'
 
 import type { ToJsonSchemaFn } from '.'
 
 export const getToJsonSchemaFn = async (): Promise<ToJsonSchemaFn> => {
-  let toJSONSchema: ToJsonSchemaFn = (_schema: unknown) => {
-    throw new Error('xsschema: Missing dependencies "zod" or "@zod/mini".')
+  let zodV4toJSONSchema: ToJsonSchemaFn = (_schema: unknown) => {
+    throw new Error('xsschema: Missing zod v4 dependencies "zod" or "@zod/mini".')
   }
   let zodToJSONSchema: ToJsonSchemaFn = (_schema: unknown) => {
-    throw new Error('xsschema: Missing dependencies "zod-to-json-schema".')
+    throw new Error('xsschema: Missing zod v3 dependencies "zod-to-json-schema".')
   }
 
   try {
     const { z } = await import('@zod/mini')
-    toJSONSchema = z.toJSONSchema as ToJsonSchemaFn
+    zodV4toJSONSchema = z.toJSONSchema as ToJsonSchemaFn
   }
   catch {}
 
   try {
-    const { z } = await import('zod')
+    const { z } = await import('zod/v4')
     if ('toJSONSchema' in z)
-      toJSONSchema = z.toJSONSchema as ToJsonSchemaFn
+      zodV4toJSONSchema = z.toJSONSchema as ToJsonSchemaFn
   }
   catch (err) {
     if (err instanceof Error)
@@ -38,7 +38,7 @@ export const getToJsonSchemaFn = async (): Promise<ToJsonSchemaFn> => {
 
   return async (schema: unknown) => {
     if ('_zod' in (schema as ZodSchema | ZodType))
-      return toJSONSchema(schema)
+      return zodV4toJSONSchema(schema)
     else
       return zodToJSONSchema(schema)
   }

@@ -1,11 +1,11 @@
-import { z as zm } from '@zod/mini'
 import { type } from 'arktype'
 import { Schema } from 'effect'
 import * as S from 'sury'
 import * as v from 'valibot'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
-import { z as z4 } from 'zod4'
+import { z as z4 } from 'zod/v4'
+import { z as zm } from 'zod/v4-mini'
 
 import { initToJsonSchemaSyncVendor, toJsonSchema, toJsonSchemaSync } from '../src'
 
