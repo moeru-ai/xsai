@@ -2,12 +2,14 @@ import type { JSONSchema7 } from 'json-schema'
 
 export type ToJsonSchemaFn = (schema: unknown) => JSONSchema7 | Promise<JSONSchema7>
 
+export const missingDependenciesUrl = 'https://xsai.js.org/docs/packages-top/xsschema#missing-dependencies'
+
 export const tryImport = async <T>(result: Promise<T>, name: string): Promise<Awaited<T>> => {
   try {
     return await result
   }
   catch {
-    throw new Error(`xsschema: Missing dependencies "${name}".`)
+    throw new Error(`xsschema: Missing dependencies "${name}". see ${missingDependenciesUrl}`)
   }
 }
 
@@ -29,6 +31,6 @@ export const getToJsonSchemaFn = async (vendor: string): Promise<ToJsonSchemaFn>
       return import('./zod')
         .then(async ({ getToJsonSchemaFn }) => getToJsonSchemaFn())
     default:
-      throw new Error(`xsschema: Unsupported schema vendor "${vendor}"`)
+      throw new Error(`xsschema: Unsupported schema vendor "${vendor}". see https://xsai.js.org/docs/packages-top/xsschema#unsupported-schema-vendor`)
   }
 }
