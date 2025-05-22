@@ -18,9 +18,9 @@ export const getToJsonSchemaFn = async (): Promise<ToJsonSchemaFn> => {
   catch {}
 
   try {
-    const { z } = await import('zod')
+    const { z } = await import('zod/v4')
     if ('toJSONSchema' in z)
-      zodToJSONSchema = z.toJSONSchema as ToJsonSchemaFn
+      zodV4toJSONSchema = z.toJSONSchema as ToJsonSchemaFn
   }
   catch (err) {
     if (err instanceof Error)
@@ -30,15 +30,6 @@ export const getToJsonSchemaFn = async (): Promise<ToJsonSchemaFn> => {
   try {
     const { zodToJsonSchema } = await import('zod-to-json-schema')
     zodToJSONSchema = zodToJsonSchema as ToJsonSchemaFn
-  }
-  catch (err) {
-    if (err instanceof Error)
-      console.error(err.message)
-  }
-
-  try {
-    const { z } = await import('zod/v4')
-    zodV4toJSONSchema = z.toJSONSchema as ToJsonSchemaFn
   }
   catch (err) {
     if (err instanceof Error)
