@@ -17,5 +17,5 @@ catalogs:
     effect: ^3.14.5
     sury: ^10.0.0-rc.4
     valibot: *valibot
-    zod: ^3.24.3
+    zod: ^3.25.0
     zod-to-json-schema: ^3.24.5

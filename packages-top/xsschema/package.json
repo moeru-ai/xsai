@@ -46,7 +46,7 @@
     "arktype": "catalog:schema",
     "effect": "catalog:schema",
     "sury": "^10.0.0-rc",
-    "zod": "^3.24.3 || ^4.0.0-beta",
+    "zod": "catalog:schema",
     "zod-to-json-schema": "catalog:schema"
   },
   "peerDependenciesMeta": {
@@ -76,13 +76,12 @@
     "@standard-schema/spec": "^1.0.0",
     "@types/json-schema": "^7.0.15",
     "@valibot/to-json-schema": "catalog:schema",
-    "@zod/mini": "^4.0.0-beta.20250420T053007",
+    "@zod/mini": "^4.0.0-beta",
     "arktype": "catalog:schema",
     "effect": "catalog:schema",
     "sury": "catalog:schema",
     "valibot": "catalog:schema",
     "zod": "catalog:schema",
-    "zod-to-json-schema": "catalog:schema",
-    "zod4": "npm:zod@^4.0.0-beta.20250420T053007"
+    "zod-to-json-schema": "catalog:schema"
   }
 }

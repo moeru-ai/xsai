@@ -218,6 +218,7 @@ exports[`toJsonSchema > valibot sync 1`] = `
 
 exports[`toJsonSchema > zod 1`] = `
 {
+  "$schema": "https://json-schema.org/draft-2020-12/schema",
   "description": "My neat object schema",
   "properties": {
     "myString": {
@@ -268,6 +269,7 @@ exports[`toJsonSchema > zod 2`] = `
 
 exports[`toJsonSchema > zod 3`] = `
 {
+  "$schema": "https://json-schema.org/draft-2020-12/schema",
   "properties": {
     "myString": {
       "type": "string",
@@ -293,6 +295,7 @@ exports[`toJsonSchema > zod 3`] = `
 
 exports[`toJsonSchema > zod sync 1`] = `
 {
+  "$schema": "https://json-schema.org/draft-2020-12/schema",
   "description": "My neat object schema",
   "properties": {
     "myString": {
@@ -343,6 +346,7 @@ exports[`toJsonSchema > zod sync 2`] = `
 
 exports[`toJsonSchema > zod sync 3`] = `
 {
+  "$schema": "https://json-schema.org/draft-2020-12/schema",
   "properties": {
     "myString": {
       "type": "string",
