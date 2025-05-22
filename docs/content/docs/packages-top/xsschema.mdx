@@ -188,3 +188,28 @@ Alias for `StandardSchemaV1.Infer`.
 ### InferIn
 
 Alias for `StandardSchemaV1.InferInput`.
+
+## Errors
+
+### Missing dependencies
+
+Some schema providers require additional packages to convert to JsonSchema.
+
+xsschema supports a lot of vendors, so they won't and shouldn't be set as a direct dependencies, which will lead to size growth even if you don't use them.
+
+In a nutshell:
+
+If you use zod v3: install `zod-to-json-schema`
+
+If you use valibot: install `@valibot/to-json-schema`
+
+All optional peer dependencies are noted in [Coverage](#coverage).
+
+### Unsupported schema vendor
+
+This means that xsschema does not yet support this vendor.
+
+If you are interested in adding support, please make sure the library meets the following requirements (choose one of two):
+
+- GitHub stars is greater than 100. (If the repo is not on GitHub, refer to the next entry)
+- npm package has over 1000 weekly downloads.
