@@ -188,6 +188,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
     await chat({
       ...options,
+      maxSteps: undefined,
       stream: true,
       streamOptions: options.streamOptions != null
         ? objCamelToSnake(options.streamOptions)
