@@ -13,6 +13,8 @@ npm i @xsai/stream-text
 
 ## Examples
 
+### Basic
+
 ```ts twoslash
 import { streamText } from '@xsai/stream-text'
 import { env } from 'node:process'
@@ -43,4 +45,63 @@ for await (const textPart of textStream) {
 
 // "The quick brown fox jumps over the lazy dog."
 console.log(text)
+```
+
+### Image input
+
+<Callout>
+  xsAI has no way of knowing if your model supports multi-modal, so please check before using it.
+</Callout>
+
+```ts twoslash
+import { streamText } from '@xsai/stream-text'
+import { env } from 'node:process'
+
+const { textStream } = await streamText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  messages: [{
+    role: 'user',
+    content: [
+      { type: 'text', text: 'What\'s in this image?' },
+      { // [!code highlight]
+        type: 'image_url', // [!code highlight]
+        image_url: { // [!code highlight]
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg', // [!code highlight]
+        }, // [!code highlight]
+      }, // [!code highlight]
+    ],
+  }],
+  model: 'gpt-4o',
+})
+```
+
+### Audio input
+
+<Callout>
+  xsAI has no way of knowing if your model supports multi-modal, so please check before using it.
+</Callout>
+
+```ts twoslash
+import { streamText } from '@xsai/stream-text'
+import { Buffer } from 'node:buffer'
+import { env } from 'node:process'
+
+const data = await fetch('https://cdn.openai.com/API/docs/audio/alloy.wav')
+  .then(res => res.arrayBuffer())
+  .then(buffer => Buffer.from(buffer).toString('base64'))
+
+const { textStream } = await streamText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  messages: [{
+    role: 'user',
+    content: [
+      { type: 'text', text: 'What is in this recording?' },
+      { type: 'input_audio', input_audio: { data, format: 'wav' }} // [!code highlight]
+    ],
+  }],
+  model: 'gpt-4o-audio-preview', // [!code highlight]
+  modalities: ['text', 'audio'], // [!code highlight]
+})
 ```
