@@ -13,16 +13,53 @@ npm i @xsai/generate-transcription
 
 ## Examples
 
+### Basic
+
 ```ts twoslash
 import { generateTranscription } from '@xsai/generate-transcription'
 import { openAsBlob } from 'node:fs'
 
 const { text } = await generateTranscription({
   apiKey: '',
-  baseURL: 'http://localhost:9010',
+  baseURL: 'http://localhost:8000/v1/',
   file: await openAsBlob('./test/fixtures/basic.wav', { type: 'audio/wav' }),
   fileName: 'basic.wav',
-  language: 'en-US',
-  model: 'ggml-large-v3-turbo-q5_0.bin',
+  language: 'en',
+  model: 'deepdml/faster-whisper-large-v3-turbo-ct2',
+})
+```
+
+### Verbose + Segments
+
+```ts twoslash
+import { generateTranscription } from '@xsai/generate-transcription'
+import { openAsBlob } from 'node:fs'
+
+const { duration, language, segments, text } = await generateTranscription({ // [!code highlight]
+  apiKey: '',
+  baseURL: 'http://localhost:8000/v1/',
+  file: await openAsBlob('./test/fixtures/basic.wav', { type: 'audio/wav' }),
+  fileName: 'basic.wav',
+  language: 'en',
+  model: 'deepdml/faster-whisper-large-v3-turbo-ct2',
+  responseFormat: 'verbose_json', // [!code highlight]
+})
+```
+
+### Verbose + Words
+
+```ts twoslash
+import { generateTranscription } from '@xsai/generate-transcription'
+import { openAsBlob } from 'node:fs'
+
+const { duration, language, text, words } = await generateTranscription({ // [!code highlight]
+  apiKey: '',
+  baseURL: 'http://localhost:8000/v1/',
+  file: await openAsBlob('./test/fixtures/basic.wav', { type: 'audio/wav' }),
+  fileName: 'basic.wav',
+  language: 'en',
+  model: 'deepdml/faster-whisper-large-v3-turbo-ct2',
+  responseFormat: 'verbose_json', // [!code highlight]
+  timestampGranularities: 'word', // [!code highlight]
 })
 ```
