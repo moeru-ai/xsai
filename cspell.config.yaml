@@ -25,6 +25,7 @@ words:
   - fishaudio
   - fumadocs
   - ggml
+  - granularities
   - Groq
   - hexgrad
   - Hunyuan
@@ -34,6 +35,7 @@ words:
   - litellm
   - llms
   - lmstudio
+  - logprob
   - masknet
   - mastra
   - ministral

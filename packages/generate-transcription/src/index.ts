@@ -2,29 +2,63 @@ import type { CommonRequestOptions } from '@xsai/shared'
 
 import { requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
-export interface GenerateTranscriptionOptions extends CommonRequestOptions {
+export interface GenerateTranscriptionOptions<T extends GenerateTranscriptionOptionsTimeStampGranularities = undefined> extends CommonRequestOptions {
   file: Blob
   fileName?: string
   language?: string
   prompt?: string
   temperature?: string
-
-  // response_format?: 'json' | 'text' | 'srt' | 'verbose_json' | 'vtt'
-  // timestamp_granularities?: ('segment' | 'word')[]
+  /** @default `segment` */
+  timestampGranularities?: T
 }
 
-export interface GenerateTranscriptionResult {
+export type GenerateTranscriptionOptionsTimeStampGranularities = 'segment' | 'word' | undefined
+
+export interface GenerateTranscriptionResult<T extends GenerateTranscriptionOptionsTimeStampGranularities = undefined> {
+  duration: number
+  language: string
+  segments: T extends 'word' ? never : GenerateTranscriptionResultSegment[]
   text: string
+  words: T extends 'word' ? GenerateTranscriptionResultWord[] : never
 }
 
-export const generateTranscription = async (options: GenerateTranscriptionOptions): Promise<GenerateTranscriptionResult> => {
+/** @see {@link https://platform.openai.com/docs/api-reference/audio/verbose-json-object#audio/verbose-json-object-segments} */
+export interface GenerateTranscriptionResultSegment {
+  avg_logprob: number
+  compression_ratio: number
+  end: number
+  id: number
+  no_speech_prob: number
+  seek: number
+  start: number
+  temperature: number
+  text: string
+  tokens: number[]
+}
+
+/** @see {@link https://platform.openai.com/docs/api-reference/audio/verbose-json-object#audio/verbose-json-object-words} */
+export interface GenerateTranscriptionResultWord {
+  end: number
+  start: number
+  word: string
+}
+
+export const generateTranscription = async <T extends GenerateTranscriptionOptionsTimeStampGranularities = undefined>(options: GenerateTranscriptionOptions<T>): Promise<GenerateTranscriptionResult<T>> => {
   const body = new FormData()
 
   body.append('model', options.model)
   body.append('file', options.file, options.fileName)
-  options.language != null && body.append('language', options.language)
-  options.prompt != null && body.append('prompt', options.prompt)
-  options.temperature != null && body.append('temperature', options.temperature)
+  body.append('response_format', 'verbose_json')
+  body.append('timestamp_granularities[]', options.timestampGranularities ?? 'segment')
+
+  if (options.language != null)
+    body.append('language', options.language)
+
+  if (options.prompt != null)
+    body.append('prompt', options.prompt)
+
+  if (options.temperature != null)
+    body.append('temperature', options.temperature)
 
   return (options.fetch ?? globalThis.fetch)(requestURL('audio/transcriptions', options.baseURL), {
     body,
@@ -32,6 +66,5 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
     method: 'POST',
     signal: options.abortSignal,
   })
-    .then(responseJSON<GenerateTranscriptionResult>)
-    .then(({ text }) => ({ text: text.trim() }))
+    .then(responseJSON<GenerateTranscriptionResult<T>>)
 }
