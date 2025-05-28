@@ -3,14 +3,6 @@ title: Tool Calling
 description: Connect LLMs to external data and systems.
 ---
 
-<Callout>
-  For convenience, we use `valibot` as an example.
-
-  But this package uses `xsschema` internally, so it supports any schema library that xsschema supports: e.g. `zod`, `valibot`, `arktype`, etc.
-
-  See [xsschema](../packages-top/xsschema) for more information.
-</Callout>
-
 import { PkgSizeBadge } from '@/components/pkg-size-badge'
 
 <PkgSizeBadge pkg="@xsai/tool" />
@@ -21,35 +13,23 @@ npm i @xsai/tool
 
 ## Examples
 
+### tool
+
+accepts a `StandardSchemaV1`, automatically infers the type.
+
+<Callout>
+  For convenience, we use `valibot` as an example.
+
+  But this package uses `xsschema` internally, so it supports any schema library that xsschema supports: e.g. `zod`, `valibot`, `arktype`, etc.
+
+  See [xsschema](../packages-top/xsschema) for more information.
+</Callout>
+
 <Callout>
   These below examples require you to install a standard schema to json schema parser (a separate package). As they are not provided by zod or valibot natively.
 
   Read more about them [here](../packages-top/xsschema#coverage)
 </Callout>
-
-### tool
-
-```ts twoslash
-import { tool } from '@xsai/tool'
-import * as v from 'valibot'
-
-const weather = await tool({
-  description: 'Get the weather in a location',
-  execute: ({ location }) => JSON.stringify({
-    location,
-    temperature: 42,
-  }),
-  name: 'weather',
-  parameters: v.object({
-    location: v.pipe(
-      v.string(),
-      v.description('The location to get the weather for'),
-    ),
-  }),
-})
-```
-
-### with generateText
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
@@ -71,6 +51,111 @@ const weather = await tool({
     ),
   }),
 })
+
+const { text } = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  maxSteps: 2, // [!code highlight]
+  messages: [
+    {
+      content: 'You are a helpful assistant.',
+      role: 'system',
+    },
+    {
+      content: 'What is the weather in San Francisco?',
+      role: 'user',
+    },
+  ],
+  model: 'gpt-4o',
+  tools: [weather], // [!code highlight]
+})
+```
+
+### rawTool
+
+accepts a `JsonSchema`, execute params type to be defined manually.
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { rawTool } from '@xsai/tool'
+import { env } from 'node:process'
+
+const weather = rawTool<{ location: string }>({
+  description: 'Get the weather in a location',
+  execute: ({ location }) => JSON.stringify({
+    location,
+    temperature: 42,
+  }),
+  name: 'weather',
+  parameters: {
+    additionalProperties: false,
+    properties: {
+      location: {
+        description: 'The location to get the weather for',
+        type: 'string',
+      },
+    },
+    required: [
+      'location',
+    ],
+    type: 'object',
+  },
+})
+
+const { text } = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  maxSteps: 2, // [!code highlight]
+  messages: [
+    {
+      content: 'You are a helpful assistant.',
+      role: 'system',
+    },
+    {
+      content: 'What is the weather in San Francisco?',
+      role: 'user',
+    },
+  ],
+  model: 'gpt-4o',
+  tools: [weather], // [!code highlight]
+})
+```
+
+### Object
+
+You can also pass an object directly without installing `@xsai/tool`.
+
+```ts twoslash
+import type { Tool } from '@xsai/shared-chat' // [!code highlight]
+
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process'
+
+const weather = {
+  execute: (({ location }) => JSON.stringify({
+    location,
+    temperature: 42,
+  })) as Tool['execute'], // [!code highlight]
+  function: {
+    description: 'Get the weather in a location',
+    name: 'weather',
+    parameters: {
+      additionalProperties: false,
+      properties: {
+        location: {
+          description: 'The location to get the weather for',
+          type: 'string',
+        },
+      },
+      required: [
+        'location',
+      ],
+      type: 'object',
+    },
+    strict: true,
+  },
+  type: 'function',
+} satisfies Tool // [!code highlight]
 
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
