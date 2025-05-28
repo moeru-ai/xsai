@@ -2,14 +2,12 @@ import type { ExtractReasoningOptions } from './extract-reasoning'
 
 import { getPartialMatchIndex } from './_get-partial-match-index'
 
-export interface ExtractReasoningStreamOptions extends ExtractReasoningOptions {}
-
 export interface ExtractReasoningStreamResult {
   reasoningStream: ReadableStream<string>
   textStream: ReadableStream<string>
 }
 
-export const extractReasoningStream = (stream: ReadableStream<string>, options: ExtractReasoningStreamOptions = {
+export const extractReasoningStream = (stream: ReadableStream<string>, options: ExtractReasoningOptions = {
   tagName: 'think',
 }): ExtractReasoningStreamResult => {
   const startTag = `<${options.tagName}>`

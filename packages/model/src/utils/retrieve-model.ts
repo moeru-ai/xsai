@@ -4,9 +4,7 @@ import { requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
 import type { Model } from '../types/model'
 
-export interface RetrieveModelOptions extends CommonRequestOptions {}
-
-export const retrieveModel = async (options: RetrieveModelOptions): Promise<Model> =>
+export const retrieveModel = async (options: CommonRequestOptions): Promise<Model> =>
   (options.fetch ?? globalThis.fetch)(requestURL(`models/${options.model}`, options.baseURL), {
     headers: requestHeaders(options.headers, options.apiKey),
     signal: options.abortSignal,
