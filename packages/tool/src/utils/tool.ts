@@ -10,9 +10,7 @@ export interface ToolOptions<T extends Schema> {
   parameters: T
 }
 
-export interface ToolResult extends Tool {}
-
-export const tool = async <T extends Schema>({ description, execute, name, parameters }: ToolOptions<T>): Promise<ToolResult> => {
+export const tool = async <T extends Schema>({ description, execute, name, parameters }: ToolOptions<T>): Promise<Tool> => {
   const schema = await toJsonSchema(parameters)
 
   return {
