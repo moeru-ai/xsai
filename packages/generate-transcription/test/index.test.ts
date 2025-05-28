@@ -5,7 +5,7 @@ import { generateTranscription } from '../src'
 
 describe('@xsai/generate-transcription', () => {
   it('segment', async () => {
-    const { duration, language, text, segments } = await generateTranscription({
+    const { duration, language, segments, text } = await generateTranscription({
       apiKey: 'a',
       baseURL: new URL('http://localhost:8000/v1/'),
       file: await openAsBlob('./test/fixtures/basic.wav', { type: 'audio/wav' }),
@@ -28,7 +28,7 @@ describe('@xsai/generate-transcription', () => {
       fileName: 'basic.wav',
       language: 'en',
       model: 'deepdml/faster-whisper-large-v3-turbo-ct2',
-      timestampGranularities: 'word'
+      timestampGranularities: 'word',
     })
 
     expect(duration).toBe(5.472)

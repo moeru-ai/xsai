@@ -2,7 +2,7 @@ import type { CommonRequestOptions } from '@xsai/shared'
 
 import { requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
-export interface GenerateTranscriptionOptions<T extends 'word' | 'segment' | undefined = undefined> extends CommonRequestOptions {
+export interface GenerateTranscriptionOptions<T extends 'segment' | 'word' | undefined = undefined> extends CommonRequestOptions {
   file: Blob
   fileName?: string
   language?: string
@@ -12,7 +12,7 @@ export interface GenerateTranscriptionOptions<T extends 'word' | 'segment' | und
   timestampGranularities?: T
 }
 
-export interface GenerateTranscriptionResult<T extends 'word' | 'segment' | undefined = undefined> {
+export interface GenerateTranscriptionResult<T extends 'segment' | 'word' | undefined = undefined> {
   duration: number
   language: string
   segments: T extends 'word' ? never : GenerateTranscriptionResultSegment[]
@@ -41,7 +41,7 @@ export interface GenerateTranscriptionResultWord {
   word: string
 }
 
-export const generateTranscription = async <T extends 'word' | 'segment' | undefined = undefined>(options: GenerateTranscriptionOptions<T>): Promise<GenerateTranscriptionResult<T>> => {
+export const generateTranscription = async <T extends 'segment' | 'word' | undefined = undefined>(options: GenerateTranscriptionOptions<T>): Promise<GenerateTranscriptionResult<T>> => {
   const body = new FormData()
 
   body.append('model', options.model)
