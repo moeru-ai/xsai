@@ -1,8 +1,9 @@
+import type { JsonSchema } from 'xsschema'
+
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
-import { tool, rawTool } from '../src'
-import { JsonSchema } from 'xsschema'
+import { rawTool, tool } from '../src'
 
 describe('@xsai/tool', () => {
   const name = 'weather'
