@@ -1,0 +1,46 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@xsai/generate-transcription > basic 1`] = `
+[
+  {
+    "avg_logprob": -0.084375,
+    "compression_ratio": 1.035294117647059,
+    "end": 4.66,
+    "id": 1,
+    "no_speech_prob": 0,
+    "seek": 0,
+    "start": 0,
+    "temperature": 0,
+    "text": " Hello, I am your AI assistant. Just let me know how I can help bring your ideas to life.",
+    "tokens": [
+      50365,
+      2425,
+      11,
+      286,
+      669,
+      428,
+      7318,
+      10994,
+      13,
+      1449,
+      718,
+      385,
+      458,
+      577,
+      286,
+      393,
+      854,
+      1565,
+      428,
+      3487,
+      281,
+      993,
+      13,
+      50598,
+    ],
+    "words": null,
+  },
+]
+`;
+
+exports[`@xsai/generate-transcription > basic 2`] = `null`;
