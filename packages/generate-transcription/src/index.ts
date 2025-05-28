@@ -8,13 +8,35 @@ export interface GenerateTranscriptionOptions extends CommonRequestOptions {
   language?: string
   prompt?: string
   temperature?: string
-
-  // response_format?: 'json' | 'text' | 'srt' | 'verbose_json' | 'vtt'
-  // timestamp_granularities?: ('segment' | 'word')[]
 }
 
 export interface GenerateTranscriptionResult {
+  duration: number
+  language: string
+  segments: GenerateTranscriptionResultSegment[]
   text: string
+  words: GenerateTranscriptionResultWord[]
+}
+
+/** @see {@link https://platform.openai.com/docs/api-reference/audio/verbose-json-object#audio/verbose-json-object-segments} */
+export interface GenerateTranscriptionResultSegment {
+  avg_logprob: number
+  compression_ratio: number
+  end: number
+  id: number
+  no_speech_prob: number
+  seek: number
+  start: number
+  temperature: number
+  text: string
+  tokens: number[]
+}
+
+/** @see {@link https://platform.openai.com/docs/api-reference/audio/verbose-json-object#audio/verbose-json-object-words} */
+export interface GenerateTranscriptionResultWord {
+  end: number
+  start: number
+  word: string
 }
 
 export const generateTranscription = async (options: GenerateTranscriptionOptions): Promise<GenerateTranscriptionResult> => {
@@ -22,9 +44,17 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
 
   body.append('model', options.model)
   body.append('file', options.file, options.fileName)
-  options.language != null && body.append('language', options.language)
-  options.prompt != null && body.append('prompt', options.prompt)
-  options.temperature != null && body.append('temperature', options.temperature)
+  body.append('response_format', 'verbose_json')
+  body.append('timestamp_granularities[]', 'segment')
+
+  if (options.language != null)
+    body.append('language', options.language)
+
+  if (options.prompt != null)
+    body.append('prompt', options.prompt)
+
+  if (options.temperature != null)
+    body.append('temperature', options.temperature)
 
   return (options.fetch ?? globalThis.fetch)(requestURL('audio/transcriptions', options.baseURL), {
     body,
@@ -33,5 +63,4 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
     signal: options.abortSignal,
   })
     .then(responseJSON<GenerateTranscriptionResult>)
-    .then(({ text }) => ({ text: text.trim() }))
 }
