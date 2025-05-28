@@ -2,20 +2,22 @@ import type { CommonRequestOptions } from '@xsai/shared'
 
 import { requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
-export interface GenerateTranscriptionOptions extends CommonRequestOptions {
+export interface GenerateTranscriptionOptions<T extends 'word' | 'segment' | undefined = undefined> extends CommonRequestOptions {
   file: Blob
   fileName?: string
   language?: string
   prompt?: string
   temperature?: string
+  /** @default `segment` */
+  timestampGranularities?: T
 }
 
-export interface GenerateTranscriptionResult {
+export interface GenerateTranscriptionResult<T extends 'word' | 'segment' | undefined = undefined> {
   duration: number
   language: string
-  segments: GenerateTranscriptionResultSegment[]
+  segments: T extends 'word' ? never : GenerateTranscriptionResultSegment[]
   text: string
-  words: GenerateTranscriptionResultWord[]
+  words: T extends 'word' ? GenerateTranscriptionResultWord[] : never
 }
 
 /** @see {@link https://platform.openai.com/docs/api-reference/audio/verbose-json-object#audio/verbose-json-object-segments} */
@@ -39,13 +41,13 @@ export interface GenerateTranscriptionResultWord {
   word: string
 }
 
-export const generateTranscription = async (options: GenerateTranscriptionOptions): Promise<GenerateTranscriptionResult> => {
+export const generateTranscription = async <T extends 'word' | 'segment' | undefined = undefined>(options: GenerateTranscriptionOptions<T>): Promise<GenerateTranscriptionResult<T>> => {
   const body = new FormData()
 
   body.append('model', options.model)
   body.append('file', options.file, options.fileName)
   body.append('response_format', 'verbose_json')
-  body.append('timestamp_granularities[]', 'segment')
+  body.append('timestamp_granularities[]', options.timestampGranularities ?? 'segment')
 
   if (options.language != null)
     body.append('language', options.language)
@@ -62,5 +64,5 @@ export const generateTranscription = async (options: GenerateTranscriptionOption
     method: 'POST',
     signal: options.abortSignal,
   })
-    .then(responseJSON<GenerateTranscriptionResult>)
+    .then(responseJSON<GenerateTranscriptionResult<T>>)
 }
