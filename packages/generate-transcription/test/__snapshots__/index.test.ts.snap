@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/generate-transcription > segment 1`] = `
+exports[`@xsai/generate-transcription > verbose_json + segment 1`] = `
 [
   {
     "avg_logprob": -0.084375,
@@ -43,7 +43,7 @@ exports[`@xsai/generate-transcription > segment 1`] = `
 ]
 `;
 
-exports[`@xsai/generate-transcription > word 1`] = `
+exports[`@xsai/generate-transcription > verbose_json + word 1`] = `
 [
   {
     "end": 0.4,
