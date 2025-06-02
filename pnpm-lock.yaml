@@ -246,6 +246,15 @@ importers:
         specifier: ^1.0.0-beta.1
         version: 1.0.0-beta.1
 
+  packages-ext/opentelemetry:
+    dependencies:
+      '@opentelemetry/api':
+        specifier: ^1.9.0
+        version: 1.9.0
+      xsai:
+        specifier: 'workspace:'
+        version: link:../../packages-top/xsai
+
   packages-ext/providers-cloud:
     dependencies:
       '@xsai-ext/shared-providers':
@@ -6452,8 +6461,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@opentelemetry/api@1.9.0':
-    optional: true
+  '@opentelemetry/api@1.9.0': {}
 
   '@orama/orama@3.1.11': {}
 
