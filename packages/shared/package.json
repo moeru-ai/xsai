@@ -12,7 +12,11 @@
     "directory": "packages/shared"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
-  "keywords": ["xsai", "openai", "ai"],
+  "keywords": [
+    "xsai",
+    "openai",
+    "ai"
+  ],
   "sideEffects": false,
   "exports": "./src/index.ts",
   "files": [
@@ -31,5 +35,8 @@
   },
   "scripts": {
     "build": "pkgroll"
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "^1.9.0"
   }
 }

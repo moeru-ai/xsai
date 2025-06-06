@@ -1,9 +1,10 @@
+import type { TelemetryOptions } from '@xsai/shared'
 import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, Usage } from '@xsai/shared-chat'
 
-import { responseJSON } from '@xsai/shared'
+import { instrumented, responseJSON } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
-export interface GenerateTextOptions extends ChatOptions {
+export interface GenerateTextOptions extends ChatOptions, TelemetryOptions {
   /** @default 1 */
   maxSteps?: number
   onStepFinish?: (step: GenerateTextStepResult) => Promise<unknown> | unknown
@@ -61,6 +62,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
     messages: options.messages,
     steps: undefined,
     stream: false,
+    telemetry: undefined,
   })
     .then(responseJSON<GenerateTextResponse>)
     .then(async (res) => {
@@ -116,6 +118,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         const { parsedArgs, result, toolName } = await executeTool({
           abortSignal: options.abortSignal,
           messages,
+          telemetry: options.telemetry,
           toolCall,
           tools: options.tools,
         })
@@ -150,11 +153,22 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       })
     })
 
-export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
+export const generateText = instrumented('xsai.generateText', async (options: GenerateTextOptions, span): Promise<GenerateTextResult> => {
   let result = await rawGenerateText(options)
 
   while (typeof result === 'function')
     result = await result()
 
+  span?.setAttributes({
+    'ai.response.finishReason': result.finishReason,
+    'ai.response.id': crypto.randomUUID(),
+    'ai.response.model': options.model,
+    'ai.response.text': result.text,
+    'ai.response.timestamp': new Date().toISOString(),
+    'ai.response.toolCalls': JSON.stringify(result.toolCalls),
+    'ai.usage.completionTokens': result.usage.completion_tokens,
+    'ai.usage.promptTokens': result.usage.prompt_tokens,
+  })
+
   return result
-}
+})

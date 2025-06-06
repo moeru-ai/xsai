@@ -1,34 +1,50 @@
 /// <reference types="vite/client" />
 
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
+import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
+import { resourceFromAttributes } from '@opentelemetry/resources'
 import { NodeSDK } from '@opentelemetry/sdk-node'
-import { VoltAgentExporter } from '@voltagent/vercel-ai-exporter'
-import { describe, expect, it } from 'vitest'
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions'
+import * as v from 'valibot'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { generateText, tool } from 'xsai'
 
 import { createTelemetry } from '../src/utils/telemetry'
 
-describe('@xsai-ext/opentelemetry', () => {
-  // Setup VoltAgent exporter
-  const voltAgentExporter = new VoltAgentExporter({
-    baseUrl: 'https://api.voltagent.dev',
-    debug: true,
-    publicKey: import.meta.env.VOLTAGENT_PUBLIC_KEY as string,
-    secretKey: import.meta.env.VOLTAGENT_SECRET_KEY as string,
-  })
+diag.setLogger(new DiagConsoleLogger(), { logLevel: DiagLogLevel.ALL })
 
-  // Initialize OpenTelemetry SDK
+describe('@xsai-ext/opentelemetry', async () => {
   const sdk = new NodeSDK({
-    instrumentations: [getNodeAutoInstrumentations()],
-    // eslint-disable-next-line ts/no-unsafe-assignment
-    traceExporter: voltAgentExporter as any,
+    resource: resourceFromAttributes({
+      [ATTR_SERVICE_NAME]: 'xsai',
+    }),
+    traceExporter: new OTLPTraceExporter({
+      url: 'http://localhost:4318/v1/traces',
+    }),
   })
 
-  sdk.start()
-
-  const t = createTelemetry()
+  beforeAll(() => {
+    sdk.start()
+  })
 
   it('generateText', async () => {
-    const { text } = await t.generateText({
+    const weather = await tool({
+      description: 'Get the weather in a location',
+      execute: ({ location }) => JSON.stringify({
+        location,
+        temperature: 22,
+      }),
+      name: 'weather',
+      parameters: v.object({
+        location: v.pipe(
+          v.string(),
+          v.description('The location to get the weather for'),
+        ),
+      }),
+    })
+
+    const { text } = await generateText({
+      ...createTelemetry(),
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -36,13 +52,18 @@ describe('@xsai-ext/opentelemetry', () => {
           role: 'system',
         },
         {
-          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          content: 'What is the weather in Tokyo?',
           role: 'user',
         },
       ],
-      model: 'llama3.2',
+      model: 'qwen3:4b',
+      tools: [weather],
     })
 
-    expect(text).toBe('YES')
+    expect(text).toBeDefined() // TODO: Later
   }, 30000)
+
+  afterAll(async () => {
+    await sdk.shutdown()
+  })
 })

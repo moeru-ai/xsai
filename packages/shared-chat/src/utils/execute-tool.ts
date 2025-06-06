@@ -1,8 +1,11 @@
+import type { TelemetryOptions } from '@xsai/shared'
+
 import type { Message, Tool, ToolCall, ToolMessagePart } from '../types'
 
+import { instrumented } from '../../../shared/src/utils/telemetry'
 import { wrapToolResult } from './internal/wrap-tool-result'
 
-export interface ExecuteToolOptions {
+export interface ExecuteToolOptions extends TelemetryOptions {
   abortSignal?: AbortSignal
   messages: Message[]
   toolCall: ToolCall
@@ -15,8 +18,13 @@ export interface ExecuteToolResult {
   toolName: string
 }
 
-export const executeTool = async ({ abortSignal, messages, toolCall, tools }: ExecuteToolOptions): Promise<ExecuteToolResult> => {
+export const executeTool = instrumented('xsai.executeTool', async ({ abortSignal, messages, toolCall, tools }: ExecuteToolOptions, span): Promise<ExecuteToolResult> => {
   const tool = tools?.find(tool => tool.function.name === toolCall.function.name)
+
+  span?.setAttributes({
+    'ai.toolCall.arguments': toolCall.function.arguments,
+    'ai.toolCall.name': toolCall.function.name,
+  })
 
   if (!tool) {
     const availableTools = tools?.map(tool => tool.function.name)
@@ -33,5 +41,9 @@ export const executeTool = async ({ abortSignal, messages, toolCall, tools }: Ex
     toolCallId: toolCall.id,
   }))
 
+  span?.setAttributes({
+    'ai.toolCall.result': typeof result === 'string' ? result : JSON.stringify(result),
+  })
+
   return { parsedArgs, result, toolName: toolCall.function.name }
-}
+})

@@ -255,12 +255,24 @@ importers:
       '@opentelemetry/auto-instrumentations-node':
         specifier: ^0.60.0
         version: 0.60.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.0.1(@opentelemetry/api@1.9.0))
+      '@opentelemetry/exporter-trace-otlp-http':
+        specifier: ^0.202.0
+        version: 0.202.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources':
+        specifier: ^2.0.1
+        version: 2.0.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-node':
         specifier: ^0.202.0
         version: 0.202.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions':
+        specifier: ^1.34.0
+        version: 1.34.0
       '@voltagent/vercel-ai-exporter':
         specifier: ^0.1.4
         version: 0.1.4(@opentelemetry/api@1.9.0)(ai@4.3.16(react@19.1.0)(zod@3.25.20))(zod@3.25.20)
+      valibot:
+        specifier: ^1.1.0
+        version: 1.1.0(typescript@5.6.3)
 
   packages-ext/providers-cloud:
     dependencies:
@@ -432,7 +444,11 @@ importers:
         specifier: 'workspace:'
         version: link:../shared
 
-  packages/shared: {}
+  packages/shared:
+    devDependencies:
+      '@opentelemetry/api':
+        specifier: ^1.9.0
+        version: 1.9.0
 
   packages/shared-chat:
     dependencies:
@@ -4696,6 +4712,7 @@ packages:
 
   libsql@0.5.12:
     resolution: {integrity: sha512-TikiQZ1j4TwFEqVdJdTM9ZTti28is/ytGEvn0S2MocOj69UKQetWACe/qd8KAD5VeNnQSVd6Nlm2AJx0DFW9Ag==}
+    cpu: [x64, arm64, wasm32, arm]
     os: [darwin, linux, win32]
 
   lightningcss-darwin-arm64@1.29.2:
@@ -6243,6 +6260,14 @@ packages:
 
   valibot@1.0.0:
     resolution: {integrity: sha512-1Hc0ihzWxBar6NGeZv7fPLY0QuxFMyxwYR2sF1Blu7Wq7EnremwY2W02tit2ij2VJT8HcSkHAQqmFfl77f73Yw==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  valibot@1.1.0:
+    resolution: {integrity: sha512-Nk8lX30Qhu+9txPYTwM0cFlWLdPFsFr6LblzqIySfbZph9+BFsAHsNvHOymEviUepeIW6KFHzpX8TKhbptBXXw==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -13183,6 +13208,10 @@ snapshots:
   uuid@9.0.1: {}
 
   valibot@1.0.0(typescript@5.6.3):
+    optionalDependencies:
+      typescript: 5.6.3
+
+  valibot@1.1.0(typescript@5.6.3):
     optionalDependencies:
       typescript: 5.6.3
 
