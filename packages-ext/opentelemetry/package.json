@@ -34,10 +34,17 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll"
+    "build": "pkgroll",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
     "xsai": "workspace:"
+  },
+  "devDependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.60.0",
+    "@opentelemetry/sdk-node": "^0.202.0",
+    "@voltagent/vercel-ai-exporter": "^0.1.4"
   }
 }
