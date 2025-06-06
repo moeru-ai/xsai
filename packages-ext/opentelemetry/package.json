@@ -35,6 +35,7 @@
   },
   "scripts": {
     "build": "pkgroll",
+    "dev": "tsx --env-file-if-exists=.env.local scripts/sdk.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
