@@ -3,8 +3,8 @@ import type { CommonRequestOptions } from '@xsai/shared'
 import { requestHeaders, requestURL, responseJSON } from '@xsai/shared'
 
 export interface GenerateTranscriptionOptions<
-  T1 extends GenerateTranscriptionOptionsResponseFormat,
-  T2 extends GenerateTranscriptionOptionsTimeStampGranularities,
+  T1 extends GenerateTranscriptionOptionsResponseFormat = undefined,
+  T2 extends GenerateTranscriptionOptionsTimeStampGranularities = undefined,
 > extends CommonRequestOptions {
   file: Blob
   fileName?: string
@@ -22,8 +22,8 @@ export type GenerateTranscriptionOptionsResponseFormat = 'json' | 'verbose_json'
 export type GenerateTranscriptionOptionsTimeStampGranularities = 'segment' | 'word' | undefined
 
 export interface GenerateTranscriptionResult<
-  T1 extends GenerateTranscriptionOptionsResponseFormat,
-  T2 extends GenerateTranscriptionOptionsTimeStampGranularities,
+  T1 extends GenerateTranscriptionOptionsResponseFormat = undefined,
+  T2 extends GenerateTranscriptionOptionsTimeStampGranularities = undefined,
 > {
   duration: T1 extends 'verbose_json' ? number : never
   language: T1 extends 'verbose_json' ? string : never
