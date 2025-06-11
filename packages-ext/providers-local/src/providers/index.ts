@@ -1,4 +1,5 @@
 export { createLiteLLM } from './litellm'
 export { createLMStudio } from './lmstudio'
 export { createOllama } from './ollama'
+export { createPlayer2 } from './player2'
 export { createSpeaches } from './speaches'
