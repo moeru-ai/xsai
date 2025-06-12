@@ -5,8 +5,6 @@ import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/sh
 export interface GenerateSpeechOptions extends CommonRequestOptions {
   [key: string]: unknown
   input: string
-  /** @default `false` */
-  isPlayer2?: boolean
   /** @default `mp3` */
   responseFormat?: 'aac' | 'flac' | 'mp3' | 'opus' | 'pcm' | 'wav'
   /** @default `1.0` */
@@ -15,8 +13,8 @@ export interface GenerateSpeechOptions extends CommonRequestOptions {
 }
 
 export const generateSpeech = async (options: GenerateSpeechOptions): Promise<ArrayBuffer> => {
-  if (options.isPlayer2) {
-    // special case for player2
+  if (options.specialTag === 'player2') {
+    // special processing for player2, namely use tts/speak, also rename input -> text, voice_ids -> voice, etc. so that it matches the API
     const { input, responseFormat, speed, voice, ...rest } = options
     return (options.fetch ?? globalThis.fetch)(requestURL('tts/speak', options.baseURL), {
       body: requestBody({
@@ -37,7 +35,6 @@ export const generateSpeech = async (options: GenerateSpeechOptions): Promise<Ar
       }, options.apiKey),
       method: 'POST',
       signal: options.abortSignal,
-
     }).then(responseCatch).then(async res => res.arrayBuffer())
   }
   return (options.fetch ?? globalThis.fetch)(requestURL('audio/speech', options.baseURL), {
