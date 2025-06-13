@@ -4,6 +4,7 @@ import {
   createSpeechProvider,
   merge,
 } from '@xsai-ext/shared-providers'
+import { Buffer } from 'node:buffer'
 
 export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/') => merge(createMetadataProvider('player2'), createChatProvider({ baseURL }), createSpeechProvider({
   baseURL,
@@ -27,10 +28,10 @@ export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/') => merge(cr
             speed: speed ?? 1.0,
             text: input,
             voice_ids:
-              voice !== undefined
-              && voice != null
-                ? [voice]
-                : [],
+                      voice !== undefined
+                      && voice != null
+                        ? [voice]
+                        : [],
             ...rest,
           }
           reqInit.body = JSON.stringify(modified)
@@ -40,7 +41,23 @@ export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/') => merge(cr
         console.warn('Could not parse body as JSON:', err)
       }
     }
+    return globalThis.fetch(newUrl, reqInit).then(async res => res.json() as Promise<{ data?: string }>).then((json: { data?: string }) => {
+      const base64 = json.data ?? ''
+      const binary = Buffer.from(base64, 'base64').toString('binary') // base64 to binary string
 
-    return globalThis.fetch(newUrl, reqInit)
+      const bytes = Uint8Array.from(
+        Array.from(binary, char => char.charCodeAt(0)),
+      )
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i)
+      }
+
+      return new Response(bytes.buffer, {
+        headers: {
+          'Content-Type': 'audio/mpeg', // adjust if needed
+        },
+        status: 200,
+      })
+    })
   },
 }))
