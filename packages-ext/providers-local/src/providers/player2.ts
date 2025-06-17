@@ -36,6 +36,7 @@ export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/') => merge(cr
     }
     return globalThis.fetch(newUrl, reqInit).then(async res => res.json() as Promise<{ data?: string }>).then((json: { data?: string }) => {
       const base64 = json.data ?? ''
+      // TODO: use `@moeru/std`
       const binary = Buffer.from(base64, 'base64').toString('binary') // base64 to binary string
 
       const bytes = Uint8Array.from(
