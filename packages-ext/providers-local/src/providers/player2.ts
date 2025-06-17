@@ -1,12 +1,12 @@
 import {
   createChatProvider,
   createMetadataProvider,
-  createSpeechProvider,
+  createSpeechProviderWithExtraOptions,
   merge,
 } from '@xsai-ext/shared-providers'
 import { Buffer } from 'node:buffer'
 
-export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/') => merge(createMetadataProvider('player2'), createChatProvider({ baseURL }), createSpeechProvider({
+export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/', gameKey = 'xsai') => merge(createMetadataProvider('player2'), createChatProvider({ baseURL }), createSpeechProviderWithExtraOptions({
   baseURL,
   fetch: async (input: Parameters<typeof globalThis.fetch>[0], reqInit: Parameters<typeof globalThis.fetch>[1]) => {
     const newUrl = `${input.toString().slice(0, -'audio/speech'.length)}tts/speak`
@@ -48,7 +48,8 @@ export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/') => merge(cr
 
       return new Response(bytes.buffer, {
         headers: {
-          'Content-Type': 'audio/mpeg', // adjust if needed
+          'Content-Type': 'audio/mpeg',
+          'player2-game-key': gameKey, // used by Player2 for metrics
         },
         status: 200,
       })
