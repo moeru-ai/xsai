@@ -28,8 +28,13 @@ export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/', gameKey = '
           : [],
         ...rest,
       }
-      if (reqInit)
+      if (reqInit) {
         reqInit.body = JSON.stringify(modified)
+        reqInit.headers = {
+          ...(reqInit.headers ?? {}),
+          'player2-game-key': gameKey,
+        }
+      }
     }
     catch (err) {
       console.warn('Could not parse body as JSON:', err)
@@ -49,7 +54,6 @@ export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/', gameKey = '
       return new Response(bytes.buffer, {
         headers: {
           'Content-Type': 'audio/mpeg', // adjust if needed
-          'player2-game-key': gameKey,
         },
         status: 200,
       })
