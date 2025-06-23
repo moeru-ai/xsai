@@ -1,7 +1,7 @@
 {
   "name": "@xsai-ext/providers-local",
   "type": "module",
-  "version": "0.3.0-beta.4",
+  "version": "0.3.0-beta.5",
   "description": "extra-small AI SDK.",
   "author": "Moeru AI",
   "license": "MIT",
