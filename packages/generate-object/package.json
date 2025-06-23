@@ -39,8 +39,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/generate-text": "workspace:",
-    "xsschema": "workspace:"
+    "@xsai/generate-text": "workspace:~",
+    "xsschema": "workspace:~"
   },
   "devDependencies": {
     "@valibot/to-json-schema": "catalog:schema",

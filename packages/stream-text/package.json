@@ -1,7 +1,7 @@
 {
   "name": "@xsai/stream-text",
   "type": "module",
-  "version": "0.3.0-beta.4",
+  "version": "0.3.0-beta.3",
   "description": "extra-small AI SDK.",
   "author": "Moeru AI",
   "license": "MIT",
@@ -39,11 +39,11 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/shared-chat": "workspace:"
+    "@xsai/shared-chat": "workspace:~"
   },
   "devDependencies": {
-    "@xsai/shared": "workspace:",
-    "@xsai/tool": "workspace:",
+    "@xsai/shared": "workspace:~",
+    "@xsai/tool": "workspace:~",
     "valibot": "catalog:schema"
   }
 }

@@ -230,10 +230,10 @@ importers:
   packages-ext/compat:
     dependencies:
       xsai:
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages-top/xsai
       xsschema:
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages-top/xsschema
     devDependencies:
       '@moeru-ai/cosine-similarity':
@@ -243,25 +243,25 @@ importers:
   packages-ext/providers-cloud:
     dependencies:
       '@xsai-ext/shared-providers':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared-providers
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/shared
 
   packages-ext/providers-local:
     dependencies:
       '@xsai-ext/shared-providers':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared-providers
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/shared
 
   packages-ext/shared-providers:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/shared
     devDependencies:
       type-fest:
@@ -271,49 +271,49 @@ importers:
   packages-top/xsai:
     dependencies:
       '@xsai/embed':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/embed
       '@xsai/generate-image':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/generate-image
       '@xsai/generate-object':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/generate-object
       '@xsai/generate-speech':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/generate-speech
       '@xsai/generate-text':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/generate-text
       '@xsai/generate-transcription':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/generate-transcription
       '@xsai/model':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/model
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/shared
       '@xsai/shared-chat':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/shared-chat
       '@xsai/stream-object':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/stream-object
       '@xsai/stream-text':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/stream-text
       '@xsai/tool':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/tool
       '@xsai/utils-chat':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/utils-chat
       '@xsai/utils-reasoning':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/utils-reasoning
       '@xsai/utils-stream':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages/utils-stream
 
   packages-top/xsfetch: {}
@@ -351,22 +351,22 @@ importers:
   packages/embed:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
 
   packages/generate-image:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
 
   packages/generate-object:
     dependencies:
       '@xsai/generate-text':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../generate-text
       xsschema:
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages-top/xsschema
     devDependencies:
       '@valibot/to-json-schema':
@@ -379,20 +379,20 @@ importers:
   packages/generate-speech:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
 
   packages/generate-text:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
       '@xsai/shared-chat':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared-chat
     devDependencies:
       '@xsai/tool':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../tool
       valibot:
         specifier: catalog:schema
@@ -401,13 +401,13 @@ importers:
   packages/generate-transcription:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
 
   packages/model:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
 
   packages/shared: {}
@@ -415,16 +415,16 @@ importers:
   packages/shared-chat:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
 
   packages/stream-object:
     dependencies:
       '@xsai/stream-text':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../stream-text
       xsschema:
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages-top/xsschema
     devDependencies:
       '@valibot/to-json-schema':
@@ -443,14 +443,14 @@ importers:
   packages/stream-text:
     dependencies:
       '@xsai/shared-chat':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared-chat
     devDependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
       '@xsai/tool':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../tool
       valibot:
         specifier: catalog:schema
@@ -459,13 +459,13 @@ importers:
   packages/tool:
     dependencies:
       '@xsai/shared':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared
       '@xsai/shared-chat':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared-chat
       xsschema:
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../../packages-top/xsschema
     devDependencies:
       valibot:
@@ -475,16 +475,16 @@ importers:
   packages/utils-chat:
     dependencies:
       '@xsai/shared-chat':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../shared-chat
 
   packages/utils-reasoning:
     devDependencies:
       '@xsai/generate-text':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../generate-text
       '@xsai/stream-text':
-        specifier: 'workspace:'
+        specifier: workspace:~
         version: link:../stream-text
 
   packages/utils-stream: {}

@@ -37,6 +37,6 @@
     "build": "pkgroll"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:"
+    "@xsai/shared": "workspace:~"
   }
 }

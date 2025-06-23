@@ -1,7 +1,7 @@
 {
   "name": "@xsai/stream-object",
   "type": "module",
-  "version": "0.3.0-beta.4",
+  "version": "0.3.0-beta.3",
   "description": "extra-small AI SDK.",
   "author": "Moeru AI",
   "license": "MIT",
@@ -39,8 +39,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/stream-text": "workspace:",
-    "xsschema": "workspace:"
+    "@xsai/stream-text": "workspace:~",
+    "xsschema": "workspace:~"
   },
   "devDependencies": {
     "@valibot/to-json-schema": "catalog:schema",

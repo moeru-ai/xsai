@@ -37,6 +37,6 @@
     "build": "pkgroll"
   },
   "dependencies": {
-    "@xsai/shared-chat": "workspace:"
+    "@xsai/shared-chat": "workspace:~"
   }
 }

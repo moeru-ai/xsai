@@ -1,7 +1,7 @@
 {
   "name": "@xsai/generate-image",
   "type": "module",
-  "version": "0.3.0-beta.4",
+  "version": "0.3.0-beta.3",
   "description": "extra-small AI SDK.",
   "author": "Moeru AI",
   "license": "MIT",
@@ -37,6 +37,6 @@
     "build": "pkgroll"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:"
+    "@xsai/shared": "workspace:~"
   }
 }

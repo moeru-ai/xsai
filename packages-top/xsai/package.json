@@ -41,20 +41,20 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/embed": "workspace:",
-    "@xsai/generate-image": "workspace:",
-    "@xsai/generate-object": "workspace:",
-    "@xsai/generate-speech": "workspace:",
-    "@xsai/generate-text": "workspace:",
-    "@xsai/generate-transcription": "workspace:",
-    "@xsai/model": "workspace:",
-    "@xsai/shared": "workspace:",
-    "@xsai/shared-chat": "workspace:",
-    "@xsai/stream-object": "workspace:",
-    "@xsai/stream-text": "workspace:",
-    "@xsai/tool": "workspace:",
-    "@xsai/utils-chat": "workspace:",
-    "@xsai/utils-reasoning": "workspace:",
-    "@xsai/utils-stream": "workspace:"
+    "@xsai/embed": "workspace:~",
+    "@xsai/generate-image": "workspace:~",
+    "@xsai/generate-object": "workspace:~",
+    "@xsai/generate-speech": "workspace:~",
+    "@xsai/generate-text": "workspace:~",
+    "@xsai/generate-transcription": "workspace:~",
+    "@xsai/model": "workspace:~",
+    "@xsai/shared": "workspace:~",
+    "@xsai/shared-chat": "workspace:~",
+    "@xsai/stream-object": "workspace:~",
+    "@xsai/stream-text": "workspace:~",
+    "@xsai/tool": "workspace:~",
+    "@xsai/utils-chat": "workspace:~",
+    "@xsai/utils-reasoning": "workspace:~",
+    "@xsai/utils-stream": "workspace:~"
   }
 }

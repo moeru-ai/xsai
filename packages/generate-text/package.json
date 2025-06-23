@@ -39,11 +39,11 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:",
-    "@xsai/shared-chat": "workspace:"
+    "@xsai/shared": "workspace:~",
+    "@xsai/shared-chat": "workspace:~"
   },
   "devDependencies": {
-    "@xsai/tool": "workspace:",
+    "@xsai/tool": "workspace:~",
     "valibot": "catalog:schema"
   }
 }
