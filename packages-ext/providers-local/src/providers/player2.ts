@@ -1,10 +1,10 @@
+import { decodeBase64 } from '@moeru/std'
 import {
   createChatProvider,
   createMetadataProvider,
   createSpeechProvider,
   merge,
 } from '@xsai-ext/shared-providers'
-import { Buffer } from 'node:buffer'
 
 export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/', gameKey = 'xsai') => merge(createMetadataProvider('player2'), createChatProvider({ baseURL, headers: { 'player2-game-key': gameKey } }), createSpeechProvider({
   baseURL,
@@ -37,17 +37,9 @@ export const createPlayer2 = (baseURL = 'http://localhost:4315/v1/', gameKey = '
     }
     return globalThis.fetch(newUrl, reqInit).then(async res => res.json() as Promise<{ data?: string }>).then((json: { data?: string }) => {
       const base64 = json.data ?? ''
-      // TODO: use `@moeru/std`
-      const binary = Buffer.from(base64, 'base64').toString('binary') // base64 to binary string
+      const bytes = decodeBase64(base64)
 
-      const bytes = Uint8Array.from(
-        Array.from(binary, char => char.charCodeAt(0)),
-      )
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i)
-      }
-
-      return new Response(bytes.buffer, {
+      return new Response(bytes, {
         headers: {
           'Content-Type': 'audio/mpeg', // adjust if needed
         },
