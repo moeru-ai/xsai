@@ -257,6 +257,10 @@ importers:
       '@xsai/shared':
         specifier: workspace:~
         version: link:../../packages/shared
+    devDependencies:
+      '@moeru/std':
+        specifier: 0.1.0-beta.4
+        version: 0.1.0-beta.4
 
   packages-ext/shared-providers:
     dependencies:
@@ -1203,6 +1207,9 @@ packages:
 
   '@moeru-ai/cosine-similarity@1.0.0-beta.1':
     resolution: {integrity: sha512-rBBJWUBqivldEPDgj/aeG5kZ67Uz4boqkqcncf44fV3xOAhGEFI9MjDZzoSWjweP/sBqkUNA12N6Y5NgVi0NTA==}
+
+  '@moeru/std@0.1.0-beta.4':
+    resolution: {integrity: sha512-L2EPYM0x83MyOP96r80VJmd2BoK/VUlyUtkv3ybCLinIbOOvyYxi4BUxLBcDSxAxoRqp5YsfPniUN+xMPuToFg==}
 
   '@napi-rs/wasm-runtime@0.2.9':
     resolution: {integrity: sha512-OKRBiajrrxB9ATokgEQoG87Z25c67pCpYcCwmXYX8PBftC9pBfN18gnm/fh1wurSLEKIAt+QRFLFCQISrb66Jg==}
@@ -6261,6 +6268,8 @@ snapshots:
       - supports-color
 
   '@moeru-ai/cosine-similarity@1.0.0-beta.1': {}
+
+  '@moeru/std@0.1.0-beta.4': {}
 
   '@napi-rs/wasm-runtime@0.2.9':
     dependencies:
