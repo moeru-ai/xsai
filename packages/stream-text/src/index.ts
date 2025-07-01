@@ -139,19 +139,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   let textCtrl: ReadableStreamDefaultController<string>
 
   const chunkStream = new ReadableStream<StreamTextChunkResult>({
-    start(controller) {
-      chunkCtrl = controller
-    },
+    start: controller => chunkCtrl = controller,
   })
   const stepStream = new ReadableStream<StreamTextStep>({
-    start(controller) {
-      stepCtrl = controller
-    },
+    start: controller => stepCtrl = controller,
   })
   const textStream = new ReadableStream<string>({
-    start(controller) {
-      textCtrl = controller
-    },
+    start: controller => textCtrl = controller,
   })
 
   // constraints
