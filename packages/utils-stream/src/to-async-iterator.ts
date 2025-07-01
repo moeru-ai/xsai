@@ -1,5 +1,4 @@
 /** @see {@link https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility} */
-// eslint-disable-next-line func-style
 export async function* toAsyncIterator<T>(
   stream: ReadableStream<T>,
 ): AsyncGenerator<T, void, unknown> {

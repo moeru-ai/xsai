@@ -1,4 +1,3 @@
-/* eslint-disable @masknet/no-top-level */
 import { findWorkspaceDir } from '@pnpm/find-workspace-dir'
 import { glob, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'

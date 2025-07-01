@@ -95,7 +95,7 @@ describe('extractReasoning', () => {
 })
 
 const randomSplitTextToStream = (text: string): ReadableStream<string> => new ReadableStream<string>({
-  start(controller) {
+  start: (controller) => {
     let index = 0
     while (index < text.length) {
       // eslint-disable-next-line sonarjs/pseudo-random
