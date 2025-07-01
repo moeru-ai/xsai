@@ -52,7 +52,7 @@ export async function streamObject<T extends Schema>(
   options: StreamObjectExtraOptions<T>
     & StreamObjectOptions<T>
 ): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> }>
-// eslint-disable-next-line func-style
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export async function streamObject<T extends Schema>(
   options: StreamObjectExtraOptions<T>
     & StreamObjectOptions<T>
