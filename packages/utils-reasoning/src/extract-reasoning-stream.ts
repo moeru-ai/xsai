@@ -17,14 +17,10 @@ export const extractReasoningStream = (stream: ReadableStream<string>, options: 
   let reasoningStreamController: ReadableStreamDefaultController<string>
   let textStreamController: ReadableStreamDefaultController<string>
   const reasoningStream = new ReadableStream<string>({
-    start(controller) {
-      reasoningStreamController = controller
-    },
+    start: controller => reasoningStreamController = controller,
   })
   const textStream = new ReadableStream<string>({
-    start(controller) {
-      textStreamController = controller
-    },
+    start: controller => textStreamController = controller,
   })
 
   // state for the stream parsing
@@ -56,7 +52,7 @@ export const extractReasoningStream = (stream: ReadableStream<string>, options: 
 
   stream.pipeTo(
     new WritableStream({
-      close() {
+      close: () => {
         if (buffer.length > 0) {
           if (isReasoning) {
             reasoningStreamController?.enqueue(buffer)
@@ -68,7 +64,7 @@ export const extractReasoningStream = (stream: ReadableStream<string>, options: 
         reasoningStreamController?.close()
         textStreamController?.close()
       },
-      write(chunk) {
+      write: (chunk) => {
         buffer += chunk
 
         while (true) {

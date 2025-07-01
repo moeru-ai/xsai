@@ -142,7 +142,7 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
-      await expect(textStream.pipeTo(new WritableStream({ write() {} }))).resolves.toBeUndefined()
+      await expect(textStream.pipeTo(new WritableStream({ write: () => {} }))).resolves.toBeUndefined()
 
       expect(chunks.length).toBeGreaterThan(0)
     }, 20000)
@@ -170,7 +170,7 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
-      await expect(textStream.pipeTo(new WritableStream({ write() {} }))).resolves.toBeUndefined()
+      await expect(textStream.pipeTo(new WritableStream({ write: () => {} }))).resolves.toBeUndefined()
 
       expect(steps.length).toBeGreaterThan(0)
     }, 20000)
@@ -198,7 +198,7 @@ describe('@xsai/stream-text', () => {
         tools: [weather],
       })
 
-      await expect(textStream.pipeTo(new WritableStream({ write() {} }))).resolves.toBeUndefined()
+      await expect(textStream.pipeTo(new WritableStream({ write: () => {} }))).resolves.toBeUndefined()
 
       expect(steps.length).toBeGreaterThan(0)
     }, 20000)
@@ -307,7 +307,7 @@ describe('@xsai/stream-text', () => {
       })
 
       await expect(
-        textStream.pipeTo(new WritableStream({ write() {} })),
+        textStream.pipeTo(new WritableStream({ write: () => {} })),
       ).rejects.toThrow()
     }, 20000)
 
