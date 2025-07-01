@@ -4,7 +4,7 @@
 // Copyright Moeru AI (https://github.com/moeru-ai)
 // SPDX-License-Identifier: Apache-2.0
 
-import { sleep } from './_sleep'
+import { sleep } from '@moeru/std/sleep'
 
 export interface SimulateReadableStreamOptions<T> {
   chunkDelay: number
