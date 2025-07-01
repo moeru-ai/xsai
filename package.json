@@ -14,8 +14,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.0",
-    "@importantimport/eslint-config": "^1.0.0-beta.2",
     "@importantimport/tsconfig": "^1.0.0-beta.2",
+    "@moeru/eslint-config": "catalog:",
     "@pnpm/find-workspace-dir": "^1000.1.0",
     "@types/eslint": "^9.6.1",
     "@types/node": "^22.15.18",
