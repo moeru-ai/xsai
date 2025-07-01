@@ -34,5 +34,8 @@
   },
   "scripts": {
     "build": "pkgroll"
+  },
+  "devDependencies": {
+    "@moeru/std": "catalog:"
   }
 }

@@ -1,6 +1,6 @@
 import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, Usage } from '@xsai/shared-chat'
 
-import { responseJSON } from '@xsai/shared'
+import { responseJSON, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
@@ -150,11 +150,5 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       })
     })
 
-export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> => {
-  let result = await rawGenerateText(options)
-
-  while (typeof result === 'function')
-    result = await result()
-
-  return result
-}
+export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> =>
+  trampoline<GenerateTextResult>(async () => rawGenerateText(options))

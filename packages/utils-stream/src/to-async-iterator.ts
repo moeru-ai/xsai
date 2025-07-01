@@ -1,3 +1,5 @@
+// TODO: update @moeru/std
+// export { readableStreamToAsyncIterator as toAsyncIterator } from '@moeru/std/async-iterator'
 /** @see {@link https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility} */
 export async function* toAsyncIterator<T>(
   stream: ReadableStream<T>,
