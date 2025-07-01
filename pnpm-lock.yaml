@@ -326,7 +326,11 @@ importers:
         specifier: workspace:~
         version: link:../../packages/utils-stream
 
-  packages-top/xsfetch: {}
+  packages-top/xsfetch:
+    devDependencies:
+      '@moeru/std':
+        specifier: 'catalog:'
+        version: 0.1.0-beta.4
 
   packages-top/xsschema:
     devDependencies:

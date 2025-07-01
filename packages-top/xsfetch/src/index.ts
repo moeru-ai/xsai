@@ -1,4 +1,5 @@
-import { sleep } from '../../../packages/utils-stream/src/_sleep'
+import { sleep } from '@moeru/std/sleep'
+import { trampoline } from '@moeru/std/trampoline'
 
 export interface CreateFetchOptions {
   debug: boolean
@@ -29,12 +30,6 @@ export const createFetch = (userOptions: Partial<CreateFetchOptions> = {}): type
     return async () => xsfetch(retriesLeft - 1, input, init)
   }
 
-  return async (input: Request | string | URL, init?: RequestInit) => {
-    let res = await xsfetch(options.retry, input, init)
-
-    while (typeof res === 'function')
-      res = await res()
-
-    return res
-  }
+  return async (input: Request | string | URL, init?: RequestInit) =>
+    trampoline<Response>(async () => xsfetch(options.retry, input, init))
 }
