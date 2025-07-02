@@ -35,8 +35,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const messages: Message[] = structuredClone(options.messages)
 
   // output
-  let fullCtrl: ReadableStreamDefaultController<StreamTextStepEvent>
-  let textCtrl: ReadableStreamDefaultController<string>
+  let fullCtrl: ReadableStreamDefaultController<StreamTextStepEvent> | undefined
+  let textCtrl: ReadableStreamDefaultController<string> | undefined
   const fullStream = new ReadableStream<StreamTextStepEvent>({ start: controller => fullCtrl = controller })
   const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
 
@@ -57,8 +57,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       .pipeThrough(transformChunk())
       .pipeTo(new WritableStream({
         abort: (reason) => {
-          fullCtrl.error(reason)
-          textCtrl.error(reason)
+          fullCtrl?.error(reason)
+          textCtrl?.error(reason)
         },
         close: () => {
           // fullCtrl.close()
@@ -76,14 +76,14 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
           if (choice.delta.tool_calls?.length === 0 || choice.delta.tool_calls == null) {
             if (choice.delta.content != null) {
-              fullCtrl.enqueue({ text: choice.delta.content, type: 'text-delta' })
-              textCtrl.enqueue(choice.delta.content)
+              fullCtrl?.enqueue({ text: choice.delta.content, type: 'text-delta' })
+              textCtrl?.enqueue(choice.delta.content)
             }
             else if (choice.delta.refusal != null) {
-              fullCtrl.enqueue({ error: choice.delta.refusal, type: 'error' })
+              fullCtrl?.enqueue({ error: choice.delta.refusal, type: 'error' })
             }
             else if (choice.finish_reason != null && choice.finish_reason !== 'tool-calls') {
-              fullCtrl.enqueue({ finishReason: choice.finish_reason, type: 'finish', usage })
+              fullCtrl?.enqueue({ finishReason: choice.finish_reason, type: 'finish', usage })
             }
           }
           else {
@@ -93,11 +93,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
               if (!toolCalls.at(index)) {
                 toolCalls[index] = toolCall
-                fullCtrl.enqueue({ toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-streaming-start' })
+                fullCtrl?.enqueue({ toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-streaming-start' })
               }
               else {
                 toolCalls[index].function.arguments += toolCall.function.arguments
-                fullCtrl.enqueue({ argsTextDelta: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-delta' })
+                fullCtrl?.enqueue({ argsTextDelta: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-delta' })
               }
             }
           }
@@ -109,7 +109,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       return
 
     for (const toolCall of toolCalls) {
-      fullCtrl.enqueue({ args: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call' })
+      fullCtrl?.enqueue({ args: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call' })
 
       const { parsedArgs, result } = await executeTool({
         abortSignal: options.abortSignal,
@@ -118,7 +118,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         tools: options.tools,
       })
 
-      fullCtrl.enqueue({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-result' })
+      fullCtrl?.enqueue({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-result' })
 
       // TODO: executeTool return message
       messages.push({
@@ -138,10 +138,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   while (typeof result === 'function' && steps.length < (options.maxSteps ?? 1))
     result = await startStream()
 
-  // @ts-expect-error defined
-  fullCtrl.close()
-  // @ts-expect-error defined
-  textCtrl.close()
+  fullCtrl?.close()
+  textCtrl?.close()
 
   return { fullStream, textStream }
 }
