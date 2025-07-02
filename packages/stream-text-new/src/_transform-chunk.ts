@@ -50,9 +50,8 @@ export const transformChunk = () => {
   const decoder = new TextDecoder()
   let buffer = ''
 
-  return new TransformStream({
-    transform: async (chunk: Uint8Array<ArrayBufferLike>, controller: TransformStreamDefaultController<StreamTextChunkResult>) => {
-      // eslint-disable-next-line ts/no-unsafe-argument
+  return new TransformStream<Uint8Array, StreamTextChunkResult>({
+    transform: async (chunk, controller) => {
       const text = decoder.decode(chunk, { stream: true })
       buffer += text
       const lines = buffer.split('\n')

@@ -3,8 +3,6 @@ import { tool } from '@xsai/tool'
 import { description, number, object, pipe } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
-import type { StreamTextChunkResult } from '../src/_transform-chunk'
-
 import { streamText } from '../src'
 
 // make TS happy
@@ -20,7 +18,7 @@ describe('@xsai/stream-text-new', async () => {
   const add = await tool({
     description: 'Adds two numbers',
     execute: ({ a, b }) => (a + b).toString(),
-    name: 'weather',
+    name: 'add',
     parameters: object({
       a: pipe(
         number(),
@@ -33,14 +31,8 @@ describe('@xsai/stream-text-new', async () => {
     }),
   })
 
-  const cleanChunk = (chunk: StreamTextChunkResult) => clean({
-    ...chunk,
-    created: undefined,
-    id: undefined,
-  })
-
-  it('chunkStream', async () => {
-    const { chunkStream, textStream } = await streamText({
+  it('fullStream', async () => {
+    const { fullStream, textStream } = await streamText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
       messages: [
@@ -49,19 +41,23 @@ describe('@xsai/stream-text-new', async () => {
           role: 'system',
         },
         {
-          content: 'How many times does 114514 plus 1919810 equal? Please try to call the tool to solve the problem.',
+          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
           role: 'user',
         },
       ],
-      model: 'PetrosStav/gemma3-tools:4b',
+      // model: 'PetrosStav/gemma3-tools:4b',
+      model: 'mistral-nemo',
       seed: 114514,
       toolChoice: 'required',
       tools: [add],
     })
 
-    const chunkResult = []
-    for await (const chunk of chunkStream) {
-      chunkResult.push(cleanChunk(chunk))
+    const eventResult = []
+    for await (const event of fullStream) {
+      eventResult.push(clean({
+        ...event,
+        toolCallId: undefined,
+      }))
     }
 
     let textResult = ''
@@ -69,7 +65,7 @@ describe('@xsai/stream-text-new', async () => {
       textResult += text
     }
 
-    expect(chunkResult).toMatchSnapshot()
+    expect(eventResult).toMatchSnapshot()
     expect(textResult).toMatchSnapshot()
   }, 30000)
 })
