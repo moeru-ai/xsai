@@ -1,0 +1,310 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@xsai/stream-text-new > chunkStream 1`] = `
+[
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "Let",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "'",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "s",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " calculate",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " that",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "!",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " I",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " will",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " use",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " the",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " tool",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " to",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " perform",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " the",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": " addition",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": ".",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "
+
+",
+          "role": "assistant",
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "",
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "function": {
+                "arguments": "{"a":114514,"b":1919810}",
+                "name": "tool_name",
+              },
+              "id": "call_7ud3o0in",
+              "index": 0,
+              "type": "function",
+            },
+          ],
+        },
+        "finish_reason": null,
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+  {
+    "choices": [
+      {
+        "delta": {
+          "content": "",
+          "role": "assistant",
+        },
+        "finish_reason": "tool_calls",
+        "index": 0,
+      },
+    ],
+    "model": "PetrosStav/gemma3-tools:4b",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": "fp_ollama",
+  },
+]
+`;
+
+exports[`@xsai/stream-text-new > chunkStream 2`] = `
+"Let's calculate that! I will use the tool to perform the addition.
+
+"
+`;
