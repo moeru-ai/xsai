@@ -45,7 +45,6 @@ describe('@xsai/stream-text-new', async () => {
           role: 'user',
         },
       ],
-      // model: 'PetrosStav/gemma3-tools:4b',
       model: 'mistral-nemo',
       seed: 114514,
       toolChoice: 'required',
