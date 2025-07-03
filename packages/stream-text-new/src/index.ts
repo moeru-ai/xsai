@@ -3,13 +3,15 @@ import type { ChatOptions, Message, Tool, ToolCall, Usage } from '@xsai/shared-c
 import { objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, executeTool } from '@xsai/shared-chat'
 
-import type { StreamTextStepEvent } from './types/step-event'
+import type { StreamTextEvent } from './types/event'
 
 import { transformChunk } from './_transform-chunk'
 
 export interface StreamTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
+  // TODO: onStepFinish, onFinish
+  onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
   /**
    * If you want to disable stream, use `@xsai/generate-{text,object}`.
    */
@@ -25,8 +27,9 @@ export interface StreamTextOptions extends ChatOptions {
 }
 
 export interface StreamTextResult {
-  fullStream: ReadableStream<StreamTextStepEvent>
+  fullStream: ReadableStream<StreamTextEvent>
   textStream: ReadableStream<string>
+  // TODO: steps
 }
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
@@ -35,10 +38,16 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const messages: Message[] = structuredClone(options.messages)
 
   // output
-  let fullCtrl: ReadableStreamDefaultController<StreamTextStepEvent> | undefined
+  let eventCtrl: ReadableStreamDefaultController<StreamTextEvent> | undefined
   let textCtrl: ReadableStreamDefaultController<string> | undefined
-  const fullStream = new ReadableStream<StreamTextStepEvent>({ start: controller => fullCtrl = controller })
+  const eventStream = new ReadableStream<StreamTextEvent>({ start: controller => eventCtrl = controller })
   const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
+
+  const pushEvent = (stepEvent: StreamTextEvent) => {
+    eventCtrl?.enqueue(stepEvent)
+    // eslint-disable-next-line sonarjs/void-use
+    void options.onEvent?.(stepEvent)
+  }
 
   const startStream = async () => {
     let usage: undefined | Usage
@@ -57,7 +66,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       .pipeThrough(transformChunk())
       .pipeTo(new WritableStream({
         abort: (reason) => {
-          fullCtrl?.error(reason)
+          eventCtrl?.error(reason)
           textCtrl?.error(reason)
         },
         close: () => {},
@@ -73,14 +82,14 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
           if (choice.delta.tool_calls?.length === 0 || choice.delta.tool_calls == null) {
             if (choice.delta.content != null) {
-              fullCtrl?.enqueue({ text: choice.delta.content, type: 'text-delta' })
+              pushEvent({ text: choice.delta.content, type: 'text-delta' })
               textCtrl?.enqueue(choice.delta.content)
             }
             else if (choice.delta.refusal != null) {
-              fullCtrl?.enqueue({ error: choice.delta.refusal, type: 'error' })
+              pushEvent({ error: choice.delta.refusal, type: 'error' })
             }
             else if (choice.finish_reason != null && choice.finish_reason !== 'tool-calls') {
-              fullCtrl?.enqueue({ finishReason: choice.finish_reason, type: 'finish', usage })
+              pushEvent({ finishReason: choice.finish_reason, type: 'finish', usage })
             }
           }
           else {
@@ -90,11 +99,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
               if (!toolCalls.at(index)) {
                 toolCalls[index] = toolCall
-                fullCtrl?.enqueue({ toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-streaming-start' })
+                pushEvent({ toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-streaming-start' })
               }
               else {
                 toolCalls[index].function.arguments += toolCall.function.arguments
-                fullCtrl?.enqueue({ argsTextDelta: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-delta' })
+                pushEvent({ argsTextDelta: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-delta' })
               }
             }
           }
@@ -106,7 +115,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       return
 
     for (const toolCall of toolCalls) {
-      fullCtrl?.enqueue({ args: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call' })
+      pushEvent({ args: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call' })
 
       const { parsedArgs, result } = await executeTool({
         abortSignal: options.abortSignal,
@@ -115,12 +124,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         tools: options.tools,
       })
 
-      fullCtrl?.enqueue({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-result' })
+      pushEvent({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-result' })
 
       // TODO: executeTool return message
       messages.push({
-        // content: result,
-        content: 'success',
+        content: result,
         role: 'tool',
         tool_call_id: toolCall.id,
       })
@@ -136,9 +144,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     await trampoline(async () => startStream())
   }
   finally {
-    fullCtrl?.close()
+    eventCtrl?.close()
     textCtrl?.close()
   }
 
-  return { fullStream, textStream }
+  return { fullStream: eventStream, textStream }
 }
