@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/stream-text-new > fullStream 1`] = `
+exports[`@xsai/stream-text-new > basic 1`] = `
 [
   {
     "toolName": "add",
@@ -151,9 +151,9 @@ exports[`@xsai/stream-text-new > fullStream 1`] = `
 ]
 `;
 
-exports[`@xsai/stream-text-new > fullStream 2`] = `"The result of adding 114514 and 1919810 is 2034324."`;
+exports[`@xsai/stream-text-new > basic 2`] = `"The result of adding 114514 and 1919810 is 2034324."`;
 
-exports[`@xsai/stream-text-new > fullStream 3`] = `
+exports[`@xsai/stream-text-new > basic 3`] = `
 [
   {
     "content": "You are a helpful assistant.",
@@ -166,7 +166,6 @@ exports[`@xsai/stream-text-new > fullStream 3`] = `
   {
     "content": "2034324",
     "role": "tool",
-    "tool_call_id": "call_b5wn5iyt",
   },
   {
     "content": "The result of adding 114514 and 1919810 is 2034324.",
@@ -174,3 +173,5 @@ exports[`@xsai/stream-text-new > fullStream 3`] = `
   },
 ]
 `;
+
+exports[`@xsai/stream-text-new > basic 4`] = `undefined`;

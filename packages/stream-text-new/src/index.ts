@@ -31,16 +31,19 @@ export interface StreamTextResult {
   fullStream: ReadableStream<StreamTextEvent>
   messages: Promise<Message[]>
   textStream: ReadableStream<string>
-  // TODO: steps
+  usage: Promise<undefined | Usage>
+  // TODO: steps, totalUsage
 }
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
   // state
   const steps = []
   const messages: Message[] = structuredClone(options.messages)
+  let usage: undefined | Usage
 
   // result state
   const resultMessages = new DelayedPromise<Message[]>()
+  const resultUsage = new DelayedPromise<undefined | Usage>()
 
   // output
   let eventCtrl: ReadableStreamDefaultController<StreamTextEvent> | undefined
@@ -55,7 +58,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   }
 
   const startStream = async () => {
-    let usage: undefined | Usage
+    // let stepUsage: undefined | Usage
+    const pushUsage = (u: Usage) => {
+      usage = u
+      // stepUsage = u
+    }
 
     let text: string = ''
     const pushText = (content?: string) => {
@@ -83,7 +90,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         close: () => {},
         write: (chunk) => {
           if (chunk.usage)
-            usage = chunk.usage
+            pushUsage(chunk.usage)
 
           // skip if no choices
           if (chunk.choices == null || chunk.choices.length === 0)
@@ -161,7 +168,13 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     textCtrl?.close()
 
     resultMessages.resolve(messages)
+    resultUsage.resolve(usage)
   }
 
-  return { fullStream: eventStream, messages: resultMessages.promise, textStream }
+  return {
+    fullStream: eventStream,
+    messages: resultMessages.promise,
+    textStream,
+    usage: resultUsage.promise,
+  }
 }

@@ -31,8 +31,8 @@ describe('@xsai/stream-text-new', async () => {
     }),
   })
 
-  it('fullStream', async () => {
-    const { fullStream, messages, textStream } = await streamText({
+  it('basic', async () => {
+    const { fullStream, messages, textStream, usage } = await streamText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
       messages: [
@@ -67,6 +67,14 @@ describe('@xsai/stream-text-new', async () => {
 
     expect(eventResult).toMatchSnapshot()
     expect(textResult).toMatchSnapshot()
-    expect(await messages).toMatchSnapshot()
+
+    const msgs = (await messages)
+      .map(message => clean({
+        ...message,
+        tool_call_id: undefined,
+      }))
+
+    expect(msgs).toMatchSnapshot()
+    expect(await usage).toMatchSnapshot()
   }, 30000)
 })
