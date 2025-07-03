@@ -1,6 +1,6 @@
 import type { ChatOptions, Message, Tool, ToolCall, Usage } from '@xsai/shared-chat'
 
-import { objCamelToSnake } from '@xsai/shared'
+import { objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, executeTool } from '@xsai/shared-chat'
 
 import type { StreamTextStepEvent } from './types/step-event'
@@ -60,10 +60,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           fullCtrl?.error(reason)
           textCtrl?.error(reason)
         },
-        close: () => {
-          // fullCtrl.close()
-          // textCtrl.close()
-        },
+        close: () => {},
         write: (chunk) => {
           if (chunk.usage)
             usage = chunk.usage
@@ -131,15 +128,17 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
     steps.push('TODO')
 
-    return async () => startStream()
+    if (steps.length < (options.maxSteps ?? 1))
+      return async () => startStream()
   }
 
-  let result = await startStream()
-  while (typeof result === 'function' && steps.length < (options.maxSteps ?? 1))
-    result = await startStream()
-
-  fullCtrl?.close()
-  textCtrl?.close()
+  try {
+    await trampoline(async () => startStream())
+  }
+  finally {
+    fullCtrl?.close()
+    textCtrl?.close()
+  }
 
   return { fullStream, textStream }
 }
