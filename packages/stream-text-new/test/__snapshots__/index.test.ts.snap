@@ -174,4 +174,40 @@ exports[`@xsai/stream-text-new > basic 3`] = `
 ]
 `;
 
-exports[`@xsai/stream-text-new > basic 4`] = `undefined`;
+exports[`@xsai/stream-text-new > basic 4`] = `
+[
+  {
+    "finishReason": "tool_calls",
+    "stepType": "initial",
+    "text": "",
+    "toolCalls": [
+      {
+        "args": "{"a":114514,"b":1919810}",
+        "toolCallType": "function",
+        "toolName": "add",
+      },
+    ],
+    "toolResults": [
+      {
+        "args": {
+          "a": 114514,
+          "b": 1919810,
+        },
+        "result": "2034324",
+        "toolName": "add",
+      },
+    ],
+    "usage": undefined,
+  },
+  {
+    "finishReason": "stop",
+    "stepType": "continue",
+    "text": "The result of adding 114514 and 1919810 is 2034324.",
+    "toolCalls": [],
+    "toolResults": [],
+    "usage": undefined,
+  },
+]
+`;
+
+exports[`@xsai/stream-text-new > basic 5`] = `undefined`;
