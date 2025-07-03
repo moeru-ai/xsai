@@ -1,9 +1,10 @@
-import type { ChatOptions, Message, Tool, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, Usage } from '@xsai/shared-chat'
 
 import { objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, executeTool } from '@xsai/shared-chat'
+import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 import type { StreamTextEvent } from './types/event'
+import type { StreamTextStep } from './types/step-result'
 
 import { transformChunk } from './_transform-chunk'
 import { DelayedPromise } from './internal/delayed-promise'
@@ -11,8 +12,9 @@ import { DelayedPromise } from './internal/delayed-promise'
 export interface StreamTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
-  // TODO: onStepFinish, onFinish
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
+  onFinish?: (step?: StreamTextStep) => Promise<unknown> | unknown
+  onStepFinish?: (step: StreamTextStep) => Promise<unknown> | unknown
   /**
    * If you want to disable stream, use `@xsai/generate-{text,object}`.
    */
@@ -30,18 +32,21 @@ export interface StreamTextOptions extends ChatOptions {
 export interface StreamTextResult {
   fullStream: ReadableStream<StreamTextEvent>
   messages: Promise<Message[]>
+  steps: Promise<StreamTextStep[]>
   textStream: ReadableStream<string>
   usage: Promise<undefined | Usage>
-  // TODO: steps, totalUsage
+  // TODO: totalUsage
 }
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
   // state
-  const steps = []
+  const steps: StreamTextStep[] = []
   const messages: Message[] = structuredClone(options.messages)
+  const maxSteps = options.maxSteps ?? 1
   let usage: undefined | Usage
 
   // result state
+  const resultSteps = new DelayedPromise<StreamTextStep[]>()
   const resultMessages = new DelayedPromise<Message[]>()
   const resultUsage = new DelayedPromise<undefined | Usage>()
 
@@ -55,6 +60,12 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     eventCtrl?.enqueue(stepEvent)
     // eslint-disable-next-line sonarjs/void-use
     void options.onEvent?.(stepEvent)
+  }
+
+  const pushStep = (step: StreamTextStep) => {
+    steps.push(step)
+    // eslint-disable-next-line sonarjs/void-use
+    void options.onStepFinish?.(step)
   }
 
   const startStream = async () => {
@@ -71,6 +82,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     }
 
     const toolCalls: ToolCall[] = []
+    const toolResults: CompletionToolResult[] = []
+    let finishReason: FinishReason = 'other'
 
     await chat({
       ...options,
@@ -106,7 +119,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             else if (choice.delta.refusal != null) {
               pushEvent({ error: choice.delta.refusal, type: 'error' })
             }
-            else if (choice.finish_reason != null && choice.finish_reason !== 'tool-calls') {
+            else if (choice.finish_reason != null) {
+              finishReason = choice.finish_reason
               pushEvent({ finishReason: choice.finish_reason, type: 'finish', usage })
             }
           }
@@ -129,34 +143,48 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       })),
     )
 
-    if (toolCalls.length === 0) {
+    if (toolCalls.length !== 0) {
+      for (const toolCall of toolCalls) {
+        pushEvent({ args: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call' })
+
+        const { parsedArgs, result } = await executeTool({
+          abortSignal: options.abortSignal,
+          messages,
+          toolCall,
+          tools: options.tools,
+        })
+
+        pushEvent({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-result' })
+
+        toolResults.push({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name })
+
+        // TODO: executeTool return message, toolCall, toolResult
+        messages.push({
+          content: result,
+          role: 'tool',
+          tool_call_id: toolCall.id,
+        })
+      }
+    }
+    else {
       messages.push({ content: text, role: 'assistant' })
-      return
     }
 
-    for (const toolCall of toolCalls) {
-      pushEvent({ args: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call' })
+    pushStep({
+      finishReason,
+      stepType: determineStepType({ finishReason, maxSteps, stepsLength: steps.length, toolCallsLength: toolCalls.length }),
+      text,
+      toolCalls: toolCalls.map(toolCall => ({
+        args: toolCall.function.arguments,
+        toolCallId: toolCall.id,
+        toolCallType: toolCall.type,
+        toolName: toolCall.function.name,
+      }) satisfies CompletionToolCall),
+      toolResults,
+      usage,
+    })
 
-      const { parsedArgs, result } = await executeTool({
-        abortSignal: options.abortSignal,
-        messages,
-        toolCall,
-        tools: options.tools,
-      })
-
-      pushEvent({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-result' })
-
-      // TODO: executeTool return message
-      messages.push({
-        content: result,
-        role: 'tool',
-        tool_call_id: toolCall.id,
-      })
-    }
-
-    steps.push('TODO')
-
-    if (steps.length < (options.maxSteps ?? 1))
+    if (toolCalls.length !== 0 && steps.length < maxSteps)
       return async () => startStream()
   }
 
@@ -171,6 +199,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     eventCtrl?.close()
     textCtrl?.close()
 
+    // eslint-disable-next-line sonarjs/void-use
+    void options.onFinish?.(steps.at(-1))
+
     resultMessages.resolve(messages)
     resultUsage.resolve(usage)
   }
@@ -178,6 +209,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   return {
     fullStream: eventStream,
     messages: resultMessages.promise,
+    steps: resultSteps.promise,
     textStream,
     usage: resultUsage.promise,
   }
