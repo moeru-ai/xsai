@@ -25,23 +25,15 @@ exports[`@xsai/stream-text-new > fullStream 1`] = `
     "type": "tool-result",
   },
   {
-    "text": "Sure",
+    "text": "The",
     "type": "text-delta",
   },
   {
-    "text": "!",
+    "text": " sum",
     "type": "text-delta",
   },
   {
-    "text": " The",
-    "type": "text-delta",
-  },
-  {
-    "text": " total",
-    "type": "text-delta",
-  },
-  {
-    "text": " for",
+    "text": " of",
     "type": "text-delta",
   },
   {
@@ -113,10 +105,6 @@ exports[`@xsai/stream-text-new > fullStream 1`] = `
     "type": "text-delta",
   },
   {
-    "text": ":",
-    "type": "text-delta",
-  },
-  {
     "text": " ",
     "type": "text-delta",
   },
@@ -149,10 +137,14 @@ exports[`@xsai/stream-text-new > fullStream 1`] = `
     "type": "text-delta",
   },
   {
+    "text": ".",
+    "type": "text-delta",
+  },
+  {
     "text": "",
     "type": "text-delta",
   },
 ]
 `;
 
-exports[`@xsai/stream-text-new > fullStream 2`] = `"Sure! The total for 114514 and 1919810 is: 2034324"`;
+exports[`@xsai/stream-text-new > fullStream 2`] = `"The sum of 114514 and 1919810 is 2034324."`;
