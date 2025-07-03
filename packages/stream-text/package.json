@@ -28,6 +28,10 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       },
+      "./experimental": {
+        "types": "./dist/experimental/index.d.ts",
+        "default": "./dist/experimental/index.js"
+      },
       "./package.json": "./package.json"
     },
     "main": "./dist/index.js",

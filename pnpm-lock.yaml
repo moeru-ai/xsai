@@ -477,22 +477,6 @@ importers:
         specifier: catalog:schema
         version: 1.0.0(typescript@5.8.3)
 
-  packages/stream-text-new:
-    dependencies:
-      '@xsai/shared-chat':
-        specifier: workspace:~
-        version: link:../shared-chat
-    devDependencies:
-      '@xsai/shared':
-        specifier: workspace:~
-        version: link:../shared
-      '@xsai/tool':
-        specifier: workspace:~
-        version: link:../tool
-      valibot:
-        specifier: catalog:schema
-        version: 1.0.0(typescript@5.8.3)
-
   packages/tool:
     dependencies:
       '@xsai/shared':

@@ -3,7 +3,7 @@ import { tool } from '@xsai/tool'
 import { description, number, object, pipe } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
-import { streamText } from '../src'
+import { streamText } from '../src/experimental'
 
 // make TS happy
 // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-describe('@xsai/stream-text-new', async () => {
+describe('@xsai/stream-text', async () => {
   const add = await tool({
     description: 'Adds two numbers',
     execute: ({ a, b }) => (a + b).toString(),
@@ -31,7 +31,7 @@ describe('@xsai/stream-text-new', async () => {
     }),
   })
 
-  it('basic', async () => {
+  it('experimental', async () => {
     const { fullStream, messages, steps, textStream, usage } = await streamText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
