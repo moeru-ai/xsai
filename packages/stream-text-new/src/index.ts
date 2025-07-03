@@ -194,16 +194,21 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   catch (err) {
     eventCtrl?.error(err)
     textCtrl?.error(err)
+
+    resultSteps.reject(err)
+    resultMessages.reject(err)
+    resultUsage.reject(err)
   }
   finally {
     eventCtrl?.close()
     textCtrl?.close()
 
-    // eslint-disable-next-line sonarjs/void-use
-    void options.onFinish?.(steps.at(-1))
-
+    resultSteps.resolve(steps)
     resultMessages.resolve(messages)
     resultUsage.resolve(usage)
+
+    // eslint-disable-next-line sonarjs/void-use
+    void options.onFinish?.(steps.at(-1))
   }
 
   return {
