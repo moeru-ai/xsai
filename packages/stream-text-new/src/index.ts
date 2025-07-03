@@ -6,6 +6,7 @@ import { chat, executeTool } from '@xsai/shared-chat'
 import type { StreamTextEvent } from './types/event'
 
 import { transformChunk } from './_transform-chunk'
+import { DelayedPromise } from './internal/delayed-promise'
 
 export interface StreamTextOptions extends ChatOptions {
   /** @default 1 */
@@ -28,6 +29,7 @@ export interface StreamTextOptions extends ChatOptions {
 
 export interface StreamTextResult {
   fullStream: ReadableStream<StreamTextEvent>
+  messages: Promise<Message[]>
   textStream: ReadableStream<string>
   // TODO: steps
 }
@@ -36,6 +38,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   // state
   const steps = []
   const messages: Message[] = structuredClone(options.messages)
+
+  // result state
+  const resultMessages = new DelayedPromise<Message[]>()
 
   // output
   let eventCtrl: ReadableStreamDefaultController<StreamTextEvent> | undefined
@@ -51,6 +56,12 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
   const startStream = async () => {
     let usage: undefined | Usage
+
+    let text: string = ''
+    const pushText = (content?: string) => {
+      textCtrl?.enqueue(content)
+      text += content
+    }
 
     const toolCalls: ToolCall[] = []
 
@@ -83,7 +94,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           if (choice.delta.tool_calls?.length === 0 || choice.delta.tool_calls == null) {
             if (choice.delta.content != null) {
               pushEvent({ text: choice.delta.content, type: 'text-delta' })
-              textCtrl?.enqueue(choice.delta.content)
+              pushText(choice.delta.content)
             }
             else if (choice.delta.refusal != null) {
               pushEvent({ error: choice.delta.refusal, type: 'error' })
@@ -111,8 +122,10 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       })),
     )
 
-    if (toolCalls.length === 0)
+    if (toolCalls.length === 0) {
+      messages.push({ content: text, role: 'assistant' })
       return
+    }
 
     for (const toolCall of toolCalls) {
       pushEvent({ args: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call' })
@@ -146,7 +159,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   finally {
     eventCtrl?.close()
     textCtrl?.close()
+
+    resultMessages.resolve(messages)
   }
 
-  return { fullStream: eventStream, textStream }
+  return { fullStream: eventStream, messages: resultMessages.promise, textStream }
 }

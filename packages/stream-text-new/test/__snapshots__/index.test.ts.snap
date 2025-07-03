@@ -29,11 +29,15 @@ exports[`@xsai/stream-text-new > fullStream 1`] = `
     "type": "text-delta",
   },
   {
-    "text": " sum",
+    "text": " result",
     "type": "text-delta",
   },
   {
     "text": " of",
+    "type": "text-delta",
+  },
+  {
+    "text": " adding",
     "type": "text-delta",
   },
   {
@@ -147,4 +151,26 @@ exports[`@xsai/stream-text-new > fullStream 1`] = `
 ]
 `;
 
-exports[`@xsai/stream-text-new > fullStream 2`] = `"The sum of 114514 and 1919810 is 2034324."`;
+exports[`@xsai/stream-text-new > fullStream 2`] = `"The result of adding 114514 and 1919810 is 2034324."`;
+
+exports[`@xsai/stream-text-new > fullStream 3`] = `
+[
+  {
+    "content": "You are a helpful assistant.",
+    "role": "system",
+  },
+  {
+    "content": "How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.",
+    "role": "user",
+  },
+  {
+    "content": "2034324",
+    "role": "tool",
+    "tool_call_id": "call_b5wn5iyt",
+  },
+  {
+    "content": "The result of adding 114514 and 1919810 is 2034324.",
+    "role": "assistant",
+  },
+]
+`;
