@@ -111,6 +111,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
           const choice = chunk.choices[0]
 
+          if (choice.finish_reason != null)
+            finishReason = choice.finish_reason
+
           if (choice.delta.tool_calls?.length === 0 || choice.delta.tool_calls == null) {
             if (choice.delta.content != null) {
               pushEvent({ text: choice.delta.content, type: 'text-delta' })
@@ -120,7 +123,6 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
               pushEvent({ error: choice.delta.refusal, type: 'error' })
             }
             else if (choice.finish_reason != null) {
-              finishReason = choice.finish_reason
               pushEvent({ finishReason: choice.finish_reason, type: 'finish', usage })
             }
           }
