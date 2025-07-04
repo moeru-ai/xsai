@@ -1,10 +1,9 @@
-import type { ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, Usage } from '@xsai/shared-chat'
 
 import { objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 import type { StreamTextEvent } from './types/event'
-import type { StreamTextStep } from './types/step-result'
 
 import { transformChunk } from './_transform-chunk'
 import { DelayedPromise } from './internal/delayed-promise'
@@ -13,8 +12,8 @@ export interface StreamTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
-  onFinish?: (step?: StreamTextStep) => Promise<unknown> | unknown
-  onStepFinish?: (step: StreamTextStep) => Promise<unknown> | unknown
+  onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
+  onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
   /**
    * If you want to disable stream, use `@xsai/generate-{text,object}`.
    */
@@ -32,7 +31,7 @@ export interface StreamTextOptions extends ChatOptions {
 export interface StreamTextResult {
   fullStream: ReadableStream<StreamTextEvent>
   messages: Promise<Message[]>
-  steps: Promise<StreamTextStep[]>
+  steps: Promise<CompletionStep[]>
   textStream: ReadableStream<string>
   usage: Promise<undefined | Usage>
   // TODO: totalUsage
@@ -40,13 +39,13 @@ export interface StreamTextResult {
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
   // state
-  const steps: StreamTextStep[] = []
+  const steps: CompletionStep[] = []
   const messages: Message[] = structuredClone(options.messages)
   const maxSteps = options.maxSteps ?? 1
   let usage: undefined | Usage
 
   // result state
-  const resultSteps = new DelayedPromise<StreamTextStep[]>()
+  const resultSteps = new DelayedPromise<CompletionStep[]>()
   const resultMessages = new DelayedPromise<Message[]>()
   const resultUsage = new DelayedPromise<undefined | Usage>()
 
@@ -62,7 +61,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     void options.onEvent?.(stepEvent)
   }
 
-  const pushStep = (step: StreamTextStep) => {
+  const pushStep = (step: CompletionStep) => {
     steps.push(step)
     // eslint-disable-next-line sonarjs/void-use
     void options.onStepFinish?.(step)

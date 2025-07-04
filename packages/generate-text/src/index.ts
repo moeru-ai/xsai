@@ -1,4 +1,4 @@
-import type { AssistantMessageResponse, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, Usage } from '@xsai/shared-chat'
+import type { AssistantMessageResponse, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, Usage } from '@xsai/shared-chat'
 
 import { responseJSON, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
@@ -6,9 +6,9 @@ import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 export interface GenerateTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
-  onStepFinish?: (step: GenerateTextStepResult) => Promise<unknown> | unknown
+  onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
   /** @internal */
-  steps?: GenerateTextStepResult[]
+  steps?: CompletionStep<true>[]
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
   tools?: Tool[]
@@ -31,16 +31,7 @@ export interface GenerateTextResponse {
 export interface GenerateTextResult {
   finishReason: FinishReason
   messages: Message[]
-  steps: GenerateTextStepResult[]
-  text?: string
-  toolCalls: CompletionToolCall[]
-  toolResults: CompletionToolResult[]
-  usage: Usage
-}
-
-export interface GenerateTextStepResult {
-  finishReason: FinishReason
-  stepType: StepType
+  steps: CompletionStep<true>[]
   text?: string
   toolCalls: CompletionToolCall[]
   toolResults: CompletionToolResult[]
@@ -70,7 +61,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         throw new Error(`No choices returned, response body: ${JSON.stringify(res)}`)
 
       const messages: Message[] = structuredClone(options.messages)
-      const steps: GenerateTextStepResult[] = options.steps ? structuredClone(options.steps) : []
+      const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
       const toolCalls: CompletionToolCall[] = []
       const toolResults: CompletionToolResult[] = []
 
@@ -87,7 +78,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       messages.push({ ...message, content: message.content })
 
       if (finishReason === 'stop' || stepType === 'done') {
-        const step: GenerateTextStepResult = {
+        const step: CompletionStep<true> = {
           finishReason,
           stepType,
           text: message.content,
@@ -129,7 +120,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         })
       }
 
-      const step: GenerateTextStepResult = {
+      const step: CompletionStep<true> = {
         finishReason,
         stepType,
         text: message.content,

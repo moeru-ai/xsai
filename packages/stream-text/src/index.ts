@@ -1,4 +1,4 @@
-import type { AssistantMessage, ChatOptions, CompletionToolCall, CompletionToolResult, FinishReason, Message, StepType, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionStepType, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
 
 import { objCamelToSnake, XSAIError } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
@@ -92,7 +92,7 @@ export interface StreamTextStep {
   choices: StreamTextChoice[]
   finishReason: FinishReason
   messages: Message[]
-  stepType: StepType
+  stepType: CompletionStepType
   toolCalls: CompletionToolCall[]
   toolResults: CompletionToolResult[]
   usage?: Usage

@@ -1,4 +1,4 @@
-import type { FinishReason, StepType } from '../types'
+import type { CompletionStepType, FinishReason } from '../types'
 
 export interface DetermineStepTypeOptions {
   finishReason: FinishReason
@@ -8,7 +8,7 @@ export interface DetermineStepTypeOptions {
 }
 
 /** @internal */
-export const determineStepType = ({ finishReason, maxSteps, stepsLength, toolCallsLength }: DetermineStepTypeOptions): StepType => {
+export const determineStepType = ({ finishReason, maxSteps, stepsLength, toolCallsLength }: DetermineStepTypeOptions): CompletionStepType => {
   if (stepsLength === 0) {
     return 'initial'
   }
