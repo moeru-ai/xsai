@@ -1,7 +1,7 @@
 {
   "name": "xsai",
   "type": "module",
-  "version": "0.3.0-beta.6",
+  "version": "0.3.0-beta.7",
   "description": "extra-small AI SDK.",
   "author": "Moeru AI",
   "license": "MIT",
