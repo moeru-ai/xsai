@@ -1,4 +1,4 @@
-import type { AssistantMessageResponse, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, Usage } from '@xsai/shared-chat'
+import type { AssistantMessageResponse, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Usage } from '@xsai/shared-chat'
 
 import { responseJSON, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
@@ -11,7 +11,6 @@ export interface GenerateTextOptions extends ChatOptions {
   steps?: CompletionStep<true>[]
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
-  tools?: Tool[]
 }
 
 export interface GenerateTextResponse {

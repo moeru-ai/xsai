@@ -1,4 +1,4 @@
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Tool, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, ToolCall, Usage } from '@xsai/shared-chat'
 
 import { objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
@@ -25,7 +25,6 @@ export interface StreamTextOptions extends ChatOptions {
      */
     includeUsage?: boolean
   }
-  tools?: Tool[]
 }
 
 export interface StreamTextResult {
