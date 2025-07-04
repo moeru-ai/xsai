@@ -27,6 +27,7 @@ export interface ChatOptions extends CommonRequestOptions {
    */
   temperature?: number
   toolChoice?: ToolChoice
+  tools?: Tool[]
   /** @default 1 */
   topP?: number
 }
@@ -35,7 +36,7 @@ export const chat = async <T extends ChatOptions>(options: T) =>
   (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
     body: requestBody({
       ...options,
-      tools: (options.tools as Tool[] | undefined)?.map(tool => ({
+      tools: (options.tools)?.map(tool => ({
         function: clean({
           ...tool.function,
           returns: undefined,
