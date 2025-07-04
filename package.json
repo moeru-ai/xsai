@@ -25,6 +25,7 @@
     "eslint": "^9.26.0",
     "pkgroll": "^2.12.2",
     "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
     "vitest": "catalog:"
   }
 }
