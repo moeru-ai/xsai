@@ -130,7 +130,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             for (const toolCall of choice.delta.tool_calls) {
               const { index } = toolCall
 
-              if (!toolCalls.at(index)) {
+              if (!tool_calls.at(index)) {
                 tool_calls[index] = toolCall
                 pushEvent({ toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-streaming-start' })
               }
