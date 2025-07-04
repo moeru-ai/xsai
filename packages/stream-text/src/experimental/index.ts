@@ -79,7 +79,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       text += content
     }
 
-    const toolCalls: ToolCall[] = []
+    const tool_calls: ToolCall[] = []
+    const toolCalls: CompletionToolCall[] = []
     const toolResults: CompletionToolResult[] = []
     let finishReason: FinishReason = 'other'
 
@@ -130,11 +131,11 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
               const { index } = toolCall
 
               if (!toolCalls.at(index)) {
-                toolCalls[index] = toolCall
+                tool_calls[index] = toolCall
                 pushEvent({ toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-streaming-start' })
               }
               else {
-                toolCalls[index].function.arguments += toolCall.function.arguments
+                tool_calls[index].function.arguments += toolCall.function.arguments
                 pushEvent({ argsTextDelta: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-delta' })
               }
             }
@@ -143,27 +144,20 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       })),
     )
 
-    if (toolCalls.length !== 0) {
-      for (const toolCall of toolCalls) {
-        pushEvent({ args: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call' })
-
-        const { parsedArgs, result } = await executeTool({
+    if (tool_calls.length !== 0) {
+      for (const toolCall of tool_calls) {
+        const { completionToolCall, completionToolResult, message } = await executeTool({
           abortSignal: options.abortSignal,
           messages,
           toolCall,
           tools: options.tools,
         })
 
-        pushEvent({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-result' })
-
-        toolResults.push({ args: parsedArgs, result, toolCallId: toolCall.id, toolName: toolCall.function.name })
-
-        // TODO: executeTool return message, toolCall, toolResult
-        messages.push({
-          content: result,
-          role: 'tool',
-          tool_call_id: toolCall.id,
-        })
+        pushEvent({ ...completionToolCall, type: 'tool-call' })
+        pushEvent({ ...completionToolResult, type: 'tool-result' })
+        toolCalls.push(completionToolCall)
+        toolResults.push(completionToolResult)
+        messages.push(message)
       }
     }
     else {
@@ -174,12 +168,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       finishReason,
       stepType: determineStepType({ finishReason, maxSteps, stepsLength: steps.length, toolCallsLength: toolCalls.length }),
       text,
-      toolCalls: toolCalls.map(toolCall => ({
-        args: toolCall.function.arguments,
-        toolCallId: toolCall.id,
-        toolCallType: toolCall.type,
-        toolName: toolCall.function.name,
-      }) satisfies CompletionToolCall),
+      toolCalls,
       toolResults,
       usage,
     })

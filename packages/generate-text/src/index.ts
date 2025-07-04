@@ -103,20 +103,15 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       }
 
       for (const toolCall of msgToolCalls) {
-        const { parsedArgs, result, toolName } = await executeTool({
+        const { completionToolCall, completionToolResult, message } = await executeTool({
           abortSignal: options.abortSignal,
           messages,
           toolCall,
           tools: options.tools,
         })
-        const toolInfo = { toolCallId: toolCall.id, toolName }
-        toolCalls.push({ ...toolInfo, args: toolCall.function.arguments, toolCallType: toolCall.type })
-        toolResults.push({ ...toolInfo, args: parsedArgs, result })
-        messages.push({
-          content: result,
-          role: 'tool',
-          tool_call_id: toolCall.id,
-        })
+        toolCalls.push(completionToolCall)
+        toolResults.push(completionToolResult)
+        messages.push(message)
       }
 
       const step: CompletionStep<true> = {
