@@ -2,13 +2,13 @@ import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
-import type { GenerateTextStepResult } from '../src'
+import type { GenerateTextResult } from '../src'
 
 import { generateText } from '../src'
 
 describe('@xsai/generate-text', () => {
   it('basic', async () => {
-    let step: GenerateTextStepResult | undefined
+    let step: GenerateTextResult['steps'][number] | undefined
 
     const { finishReason, steps, text, toolCalls, toolResults } = await generateText({
       baseURL: 'http://localhost:11434/v1/',

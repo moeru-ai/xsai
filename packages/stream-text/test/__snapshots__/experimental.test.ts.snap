@@ -12,6 +12,7 @@ exports[`@xsai/stream-text > experimental 1`] = `
   },
   {
     "args": "{"a":114514,"b":1919810}",
+    "toolCallType": "function",
     "toolName": "add",
     "type": "tool-call",
   },

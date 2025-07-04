@@ -380,7 +380,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
         })
 
         try {
-          const { parsedArgs, result, toolName } = await executeTool({
+          const { completionToolResult, message, parsedArgs, result } = await executeTool({
             abortSignal: options.abortSignal,
             messages: options.messages,
             toolCall,
@@ -390,17 +390,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           toolCall.function.parsedArguments = parsedArgs
 
           state.toolCallResults[toolCall.id] = result
-          step.messages.push({
-            content: result,
-            role: 'tool',
-            tool_call_id: toolCall.id,
-          })
-          step.toolResults.push({
-            args: parsedArgs,
-            result,
-            toolCallId: toolCall.id,
-            toolName,
-          })
+          step.messages.push(message)
+          step.toolResults.push(completionToolResult)
 
           options.onEvent?.({
             id: toolCall.id,
