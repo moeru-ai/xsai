@@ -4,7 +4,7 @@ import type { Infer, Schema } from 'xsschema'
 
 import { streamText } from '@xsai/stream-text'
 import { parse } from 'best-effort-json-parser'
-import { toJsonSchema } from 'xsschema'
+import { strictJsonSchema, toJsonSchema } from 'xsschema'
 
 import { wrap } from '../../generate-object/src/_wrap'
 
@@ -50,6 +50,8 @@ export async function streamObject<T extends Schema>(
   const { schema: schemaValidator } = options
 
   let schema = await toJsonSchema(schemaValidator)
+    .then(schema => strictJsonSchema(schema))
+
   if (options.output === 'array')
     schema = wrap(schema)
 
