@@ -177,6 +177,45 @@ const valibotResult = await validate(valibotSchema, '123')
 const zodResult = await validate(zodSchema, '123')
 ```
 
+### jsonSchema
+
+Define a JSON Schema.
+
+```ts twoslash
+import { jsonSchema } from 'xsschema'
+
+const schema = jsonSchema({
+  type: 'object',
+  properties: {
+    productId: {
+      description: 'The unique identifier for a product',
+      type: 'integer'
+    }
+  }
+})
+```
+
+### strictJsonSchema
+
+Define a JSON Schema and set additionalProperties to `false`.
+
+```ts twoslash
+import { strictJsonSchema } from 'xsschema'
+
+const schema = strictJsonSchema({
+  type: 'object',
+  properties: {
+    productId: {
+      description: 'The unique identifier for a product',
+      type: 'integer'
+    }
+  }
+})
+
+// false
+console.log(schema.additionalProperties)
+```
+
 ## Types
 
 ### Schema
