@@ -1,7 +1,7 @@
 {
   "name": "@xsai/utils-stream",
   "type": "module",
-  "version": "0.3.0-beta.7",
+  "version": "0.3.0-beta.8",
   "description": "extra-small AI SDK.",
   "author": "Moeru AI",
   "license": "MIT",
