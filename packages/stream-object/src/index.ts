@@ -23,28 +23,20 @@ export interface StreamObjectResult<T extends Schema> extends StreamTextResult {
   partialObjectStream?: ReadableStream<PartialDeep<Infer<T>>>
 }
 
-interface StreamObjectExtraOptions<T extends Schema> {
-  onFinish?: (result: StreamObjectOnFinishResult<T>) => unknown
-}
-
 export async function streamObject<T extends Schema>(
-  options: StreamObjectExtraOptions<T>
-    & StreamObjectOptions<T>
+  options: StreamObjectOptions<T>
     & { output: 'array' }
 ): Promise<StreamObjectResult<T> & { elementStream: ReadableStream<Infer<T>>, partialObjectStream: undefined }>
 export async function streamObject<T extends Schema>(
-  options: StreamObjectExtraOptions<T>
-    & StreamObjectOptions<T>
+  options: StreamObjectOptions<T>
     & { output: 'object' }
 ): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> }>
 export async function streamObject<T extends Schema>(
-  options: StreamObjectExtraOptions<T>
-    & StreamObjectOptions<T>
+  options: StreamObjectOptions<T>
 ): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> }>
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export async function streamObject<T extends Schema>(
-  options: StreamObjectExtraOptions<T>
-    & StreamObjectOptions<T>
+  options: StreamObjectOptions<T>
     & { output?: 'array' | 'object' },
 ): Promise<StreamObjectResult<T>> {
   const { schema: schemaValidator } = options
@@ -83,7 +75,6 @@ export async function streamObject<T extends Schema>(
         flush: (controller) => {
           const data = parse(partialData) as PartialDeep<Infer<T>>
           controller.enqueue((data as { elements: Infer<T>[] }).elements.at(-1))
-          options.onFinish?.({ object: (data as { elements: Infer<T>[] }).elements })
         },
         transform: (chunk, controller) => {
           partialData += chunk
