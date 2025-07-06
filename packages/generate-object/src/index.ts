@@ -4,7 +4,7 @@ import type { Infer, InferIn, Schema } from 'xsschema'
 import { generateText } from '@xsai/generate-text'
 import { toJsonSchema, validate } from 'xsschema'
 
-import { wrap } from './wrap'
+import { wrap } from './_wrap'
 
 export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOptions {
   schema: T

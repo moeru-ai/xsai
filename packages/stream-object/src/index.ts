@@ -1,23 +1,12 @@
 import type { StreamTextOptions, StreamTextResult } from '@xsai/stream-text'
 import type { PartialDeep } from 'type-fest'
-import type { Infer, JsonSchema, Schema } from 'xsschema'
+import type { Infer, Schema } from 'xsschema'
 
 import { streamText } from '@xsai/stream-text'
 import { parse } from 'best-effort-json-parser'
 import { toJsonSchema } from 'xsschema'
 
-const wrap = (schema: JsonSchema): JsonSchema => {
-  return {
-    properties: {
-      elements: {
-        items: schema,
-        type: 'array',
-      },
-    },
-    required: ['elements'],
-    type: 'object',
-  }
-}
+import { wrap } from '../../generate-object/src/_wrap'
 
 export interface StreamObjectOnFinishResult<T extends Schema> {
   object?: Infer<T>
