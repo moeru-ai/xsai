@@ -1,7 +1,7 @@
 import type { Tool, ToolExecuteOptions, ToolExecuteResult } from '@xsai/shared-chat'
-import type { InferIn, JsonSchema, Schema } from 'xsschema'
+import type { InferIn, Schema } from 'xsschema'
 
-import { toJsonSchema } from 'xsschema'
+import { strictJsonSchema, toJsonSchema } from 'xsschema'
 
 export interface ToolOptions<T extends Schema> {
   description?: string
@@ -18,10 +18,7 @@ export const tool = async <T extends Schema>({ description, execute, name, param
     function: {
       description,
       name,
-      parameters: {
-        ...schema,
-        additionalProperties: false,
-      } satisfies JsonSchema,
+      parameters: strictJsonSchema(schema) as Record<string, unknown>,
       strict: true,
     },
     type: 'function',
