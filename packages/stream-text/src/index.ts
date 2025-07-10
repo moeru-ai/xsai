@@ -153,15 +153,23 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           tools: options.tools,
         })
 
-        pushEvent({ ...completionToolCall, type: 'tool-call' })
-        pushEvent({ ...completionToolResult, type: 'tool-result' })
         toolCalls.push(completionToolCall)
         toolResults.push(completionToolResult)
         messages.push(message)
+
+        pushEvent({ ...completionToolCall, type: 'tool-call' })
+        pushEvent({ ...completionToolResult, type: 'tool-result' })
       }
     }
     else {
       messages.push({ content: text, role: 'assistant' })
+
+      // TODO: should we add this on tool calls finish?
+      pushEvent({
+        finishReason,
+        type: 'finish',
+        usage,
+      })
     }
 
     pushStep({

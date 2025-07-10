@@ -149,6 +149,10 @@ exports[`@xsai/stream-text > basic tool calls 1`] = `
     "text": "",
     "type": "text-delta",
   },
+  {
+    "finishReason": "stop",
+    "type": "finish",
+  },
 ]
 `;
 
