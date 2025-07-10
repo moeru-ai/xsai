@@ -1,7 +1,7 @@
 import { clean } from '@xsai/shared'
+import { tool } from '@xsai/tool'
+import { description, number, object, pipe } from 'valibot'
 import { describe, expect, it } from 'vitest'
-
-import type { StreamTextChunkResult } from '../src'
 
 import { streamText } from '../src'
 
@@ -14,103 +14,25 @@ declare global {
   }
 }
 
-describe('@xsai/stream-text', () => {
-  it('basic', async () => {
-    const { textStream } = await streamText({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [
-        {
-          content: 'You are a helpful assistant.',
-          role: 'system',
-        },
-        {
-          content: 'This is a test, so please answer \'YES\' and nothing else.',
-          role: 'user',
-        },
-      ],
-      model: 'llama3.2',
-      // streamOptions: { usage: true },
-    })
-
-    const result: string[] = []
-
-    for await (const textPart of textStream) {
-      result.push(textPart)
-    }
-
-    expect(result.join('')).toStrictEqual('YES')
+describe('@xsai/stream-text', async () => {
+  const add = await tool({
+    description: 'Adds two numbers',
+    execute: ({ a, b }) => (a + b).toString(),
+    name: 'add',
+    parameters: object({
+      a: pipe(
+        number(),
+        description('First number'),
+      ),
+      b: pipe(
+        number(),
+        description('Second number'),
+      ),
+    }),
   })
 
-  it('the-quick-brown-fox', async () => {
-    let onChunkCount = 0
-    let chunkCount = 0
-
-    const { chunkStream, textStream } = await streamText({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [
-        {
-          content: 'You are a helpful assistant.',
-          role: 'system',
-        },
-        {
-          content: 'This is a test, so please answer \'The quick brown fox jumps over the lazy dog.\' and nothing else.',
-          role: 'user',
-        },
-      ],
-      model: 'llama3.2',
-      onChunk: () => { onChunkCount++ },
-    })
-
-    const chunk: StreamTextChunkResult[] = []
-    const text: string[] = []
-
-    for await (const chunkPart of chunkStream) {
-      chunk.push(clean({
-        ...chunkPart,
-        created: undefined,
-        id: undefined,
-      }))
-      chunkCount++
-    }
-
-    for await (const textPart of textStream) {
-      text.push(textPart)
-    }
-
-    expect(text.join('')).toBe('The quick brown fox jumps over the lazy dog.')
-    expect(text).toMatchSnapshot()
-    expect(chunk).toMatchSnapshot()
-
-    expect(onChunkCount).toMatchSnapshot(chunkCount)
-  })
-
-  it('long text', async () => {
-    const { textStream } = await streamText({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [
-        {
-          content: 'You are a helpful assistant.',
-          role: 'system',
-        },
-        {
-          content: 'This is a test, please reply some dummy long text.',
-          role: 'user',
-        },
-      ],
-      model: 'llama3.2',
-    })
-
-    const result: string[] = []
-
-    for await (const textPart of textStream) {
-      result.push(textPart)
-    }
-
-    expect(result.length).greaterThan(1)
-  }, 20000)
-
-  it('stream without deconstruct', async () => {
-    const stream = await streamText({
+  it('basic tool calls', async () => {
+    const { fullStream, messages, steps, textStream, usage } = await streamText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
       messages: [
@@ -119,25 +41,56 @@ describe('@xsai/stream-text', () => {
           role: 'system',
         },
         {
-          content: 'This is a test, so please repeat \'YES\' 10 times and nothing else.',
+          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
           role: 'user',
         },
       ],
-      model: 'mistral-nemo',
-      seed: 42,
+      model: 'granite3.3:2b',
+      // model: 'granite3.2-vision',
+      seed: 114514,
+      toolChoice: 'required',
+      tools: [add],
     })
 
-    const chunkResult = []
-    for await (const chunk of stream.chunkStream) {
-      chunkResult.push(chunk)
+    const eventResult = []
+    for await (const event of fullStream) {
+      eventResult.push(clean({
+        ...event,
+        toolCallId: undefined,
+      }))
     }
 
-    const textResult = []
-    for await (const text of stream.textStream) {
-      textResult.push(text)
+    let textResult = ''
+    for await (const text of textStream) {
+      textResult += text
     }
 
-    expect(chunkResult.length).toBeGreaterThan (0)
-    expect(textResult.join('').length).toBeGreaterThan(0)
-  }, 20000)
+    expect(eventResult).toMatchSnapshot()
+    expect(textResult).toMatchSnapshot()
+
+    const cleanedMessages = (await messages)
+      .map(message => clean({
+        ...message,
+        tool_call_id: undefined,
+      }))
+
+    expect(cleanedMessages).toMatchSnapshot()
+
+    const cleanedSteps = (await steps)
+      .map(({ toolCalls, toolResults, ...rest }) => ({
+        ...rest,
+        toolCalls: toolCalls.map(toolCall => clean({
+          ...toolCall,
+          toolCallId: undefined,
+        })),
+        toolResults: toolResults.map(toolResult => clean({
+          ...toolResult,
+          toolCallId: undefined,
+        })),
+      }))
+
+    expect(cleanedSteps).toMatchSnapshot()
+
+    expect(await usage).toMatchSnapshot()
+  }, 30000)
 })
