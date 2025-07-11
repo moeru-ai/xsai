@@ -11,3 +11,43 @@ exports[`@xsai/stream-object > basic 2`] = `
   "answer": "YES",
 }
 `;
+
+exports[`@xsai/stream-object > object array with onFinish 1`] = `
+[MockFunction spy] {
+  "calls": [
+    [
+      {
+        "finishReason": "stop",
+        "stepType": "initial",
+        "text": "{
+   "elements": [
+    {
+      "fruit": "apple"
+    },
+    {
+      "fruit": "banana"
+    },
+    {
+      "fruit": "orange"
+    },
+    {
+      "fruit" : "grape"
+    },
+    {
+      "fruit": "mango"
+    }]
+}",
+        "toolCalls": [],
+        "toolResults": [],
+        "usage": undefined,
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
