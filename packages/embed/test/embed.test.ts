@@ -7,11 +7,11 @@ describe('@xsai/embed', () => {
     const { embedding, usage } = await embed({
       baseURL: 'http://localhost:11434/v1/',
       input: 'sunny day at the beach',
-      model: 'nomic-embed-text',
+      model: 'granite-embedding',
     })
 
     expect(embedding).toMatchSnapshot()
-    expect(usage.prompt_tokens).toBe(5)
-    expect(usage.total_tokens).toBe(5)
+    expect(usage.prompt_tokens).toBe(6)
+    expect(usage.total_tokens).toBe(6)
   })
 })

@@ -1,5 +1,5 @@
 import { tool } from '@xsai/tool'
-import { description, object, pipe, string } from 'valibot'
+import { description, number, object, pipe } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
 import type { GenerateTextResult } from '../src'
@@ -22,7 +22,7 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'llama3.2',
+      model: 'granite3.3:2b',
       onStepFinish: result => (step = result),
     })
 
@@ -33,20 +33,21 @@ describe('@xsai/generate-text', () => {
     expect(steps).toMatchSnapshot()
 
     expect(steps[0]).toStrictEqual(step)
-  })
+  }, 30000)
 
   it('with tool calling', async () => {
-    const weather = await tool({
-      description: 'Get the weather in a location',
-      execute: ({ location }) => ({
-        location,
-        temperature: 42,
-      }),
-      name: 'weather',
+    const add = await tool({
+      description: 'Adds two numbers',
+      execute: ({ a, b }) => (a + b).toString(),
+      name: 'add',
       parameters: object({
-        location: pipe(
-          string(),
-          description('The location to get the weather for'),
+        a: pipe(
+          number(),
+          description('First number'),
+        ),
+        b: pipe(
+          number(),
+          description('Second number'),
         ),
       }),
     })
@@ -60,24 +61,17 @@ describe('@xsai/generate-text', () => {
           role: 'system',
         },
         {
-          content: 'What is the weather in San Francisco? do not answer anything else.',
+          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
           role: 'user',
         },
       ],
-      model: 'mistral-nemo',
+      model: 'granite3.3:2b',
+      seed: 114514,
       toolChoice: 'required',
-      tools: [weather],
+      tools: [add],
     })
 
-    expect(text).toMatch(/42/) // only match it got 42 degrees
-
-    const { toolCalls, toolResults } = steps[0]
-
-    expect(toolCalls[0].toolName).toBe('weather')
-    expect(toolCalls[0].args).toBe('{"location":"San Francisco"}')
-
-    expect(toolCalls[0].toolName).toBe('weather')
-    expect(toolResults[0].args).toStrictEqual({ location: 'San Francisco' })
-    expect(toolResults[0].result).toBe('{"location":"San Francisco","temperature":42}')
-  }, 20000)
+    expect(text).toMatchSnapshot()
+    expect(steps).toMatchSnapshot()
+  }, 30000)
 })

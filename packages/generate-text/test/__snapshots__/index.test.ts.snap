@@ -10,8 +10,56 @@ exports[`@xsai/generate-text > basic 1`] = `
     "toolResults": [],
     "usage": {
       "completion_tokens": 2,
-      "prompt_tokens": 46,
-      "total_tokens": 48,
+      "prompt_tokens": 34,
+      "total_tokens": 36,
+    },
+  },
+]
+`;
+
+exports[`@xsai/generate-text > with tool calling 1`] = `"According to calling the \`add\` function with parameters a=114514 and b=1919810, 114514 plus 1919810 equals 2034324."`;
+
+exports[`@xsai/generate-text > with tool calling 2`] = `
+[
+  {
+    "finishReason": "tool_calls",
+    "stepType": "initial",
+    "text": "",
+    "toolCalls": [
+      {
+        "args": "{"a":114514,"b":1919810}",
+        "toolCallId": "call_2x03cbcu",
+        "toolCallType": "function",
+        "toolName": "add",
+      },
+    ],
+    "toolResults": [
+      {
+        "args": {
+          "a": 114514,
+          "b": 1919810,
+        },
+        "result": "2034324",
+        "toolCallId": "call_2x03cbcu",
+        "toolName": "add",
+      },
+    ],
+    "usage": {
+      "completion_tokens": 34,
+      "prompt_tokens": 120,
+      "total_tokens": 154,
+    },
+  },
+  {
+    "finishReason": "stop",
+    "stepType": "continue",
+    "text": "According to calling the \`add\` function with parameters a=114514 and b=1919810, 114514 plus 1919810 equals 2034324.",
+    "toolCalls": [],
+    "toolResults": [],
+    "usage": {
+      "completion_tokens": 57,
+      "prompt_tokens": 139,
+      "total_tokens": 196,
     },
   },
 ]

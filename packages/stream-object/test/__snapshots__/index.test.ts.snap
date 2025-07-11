@@ -20,22 +20,13 @@ exports[`@xsai/stream-object > object array with onFinish 1`] = `
         "finishReason": "stop",
         "stepType": "initial",
         "text": "{
-   "elements": [
-    {
-      "fruit": "apple"
-    },
-    {
-      "fruit": "banana"
-    },
-    {
-      "fruit": "orange"
-    },
-    {
-      "fruit" : "grape"
-    },
-    {
-      "fruit": "mango"
-    }]
+  "elements": [
+    {"fruit": "Apple"},
+    {"fruit": "Banana"},
+    {"fruit": "Orange"},
+    {"fruit": "Mango"},
+    {"fruit": "Pineapple"}
+  ]
 }",
         "toolCalls": [],
         "toolResults": [],

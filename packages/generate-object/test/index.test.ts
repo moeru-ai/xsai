@@ -17,7 +17,7 @@ describe('@xsai/generate-object', () => {
           role: 'user',
         },
       ],
-      model: 'llama3.2',
+      model: 'granite3.3:2b',
       schema: v.object({
         answer: v.string(),
       }),
@@ -40,7 +40,7 @@ describe('@xsai/generate-object', () => {
           role: 'user',
         },
       ],
-      model: 'llama3.2',
+      model: 'granite3.3:2b',
       schema: v.date(),
       seed: 39,
     })
@@ -61,7 +61,7 @@ describe('@xsai/generate-object', () => {
           role: 'user',
         },
       ],
-      model: 'llama3.2',
+      model: 'granite3.3:2b',
       output: 'object',
       schema: v.object({
         answer: v.string(),
@@ -85,7 +85,7 @@ describe('@xsai/generate-object', () => {
           role: 'user',
         },
       ],
-      model: 'llama3.2',
+      model: 'granite3.3:2b',
       output: 'array',
       schema: v.object({
         answer: v.string(),
