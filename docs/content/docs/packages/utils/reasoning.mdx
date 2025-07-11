@@ -34,7 +34,7 @@ const { text: rawText } = await generateText({
       role: 'user'
     },
   ],
-  model: 'deepseek-r1',
+  model: 'qwen3',
 })
 
 const { reasoning, text } = extractReasoning(rawText!) // [!code ++]
@@ -61,7 +61,7 @@ const { textStream: rawTextStream } = await streamText({
       role: 'user'
     },
   ],
-  model: 'deepseek-r1',
+  model: 'qwen3',
 })
 
 const { reasoningStream, textStream } = extractReasoningStream(rawTextStream) // [!code ++]
