@@ -68,7 +68,7 @@ describe('extractReasoning', () => {
     })
   })
 
-  it('should pass real deepseek test', async () => {
+  it('should pass real qwen3 test', async () => {
     const { text } = await generateText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
@@ -81,7 +81,7 @@ describe('extractReasoning', () => {
           role: 'user',
         },
       ],
-      model: 'deepseek-r1:1.5b',
+      model: 'qwen3:0.6b',
     })
 
     const {
@@ -269,7 +269,7 @@ describe('extractReasoningStream', () => {
     expect(textResult).toEqual(' This is a test.')
   })
 
-  it('real deepseek test', async () => {
+  it('real qwen3 test', async () => {
     const { textStream } = await streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
@@ -282,7 +282,7 @@ describe('extractReasoningStream', () => {
           role: 'user',
         },
       ],
-      model: 'deepseek-r1:1.5b',
+      model: 'qwen3:0.6b',
     })
 
     const {
