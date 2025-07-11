@@ -62,7 +62,7 @@ export async function streamObject<T extends Schema>(
     schema: undefined,
     schemaDescription: undefined,
     schemaName: undefined,
-  }).then(({ chunkStream, stepStream, textStream }) => {
+  }).then(({ textStream, ...rest }) => {
     let elementStream: ReadableStream<Infer<T>> | undefined
     let partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> | undefined
 
@@ -80,11 +80,10 @@ export async function streamObject<T extends Schema>(
     }
 
     return {
-      chunkStream,
       elementStream,
       partialObjectStream,
-      stepStream,
       textStream,
+      ...rest,
     }
   })
 }

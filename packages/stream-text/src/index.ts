@@ -1,73 +1,23 @@
-import type { AssistantMessage, ChatOptions, CompletionStepType, CompletionToolCall, CompletionToolResult, FinishReason, Message, ToolCall, ToolMessagePart, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, ToolCall, Usage } from '@xsai/shared-chat'
 
-import { objCamelToSnake, XSAIError } from '@xsai/shared'
+import { objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
-import type { StreamTextEvent } from './event'
+import type { StreamTextEvent } from './types/event'
 
-import { parseChunk } from './helper'
+import { DelayedPromise } from './internal/_delayed-promise'
+import { transformChunk } from './internal/_transform-chunk'
 
-export { type StreamTextEvent } from './event'
-
-export interface StreamTextChunkResult {
-  choices: {
-    delta: {
-      content?: string
-      refusal?: string
-      role: 'assistant'
-      tool_calls?: ToolCall[]
-    }
-    finish_reason?: FinishReason
-    index: number
-  }[]
-  created: number
-  id: string
-  model: string
-  object: 'chat.completion.chunk'
-  system_fingerprint: string
-  usage?: Usage
-}
-
-/**
- * Options for configuring the StreamText functionality.
- */
 export interface StreamTextOptions extends ChatOptions {
-
   /** @default 1 */
   maxSteps?: number
-
-  /**
-   * Callback function that is called with each chunk of the stream.
-   * @param chunk - The current chunk of the stream.
-   */
-  onChunk?: (chunk: StreamTextChunkResult) => Promise<unknown> | unknown
-
-  /**
-   * Callback function that is called with each event of the stream.
-   * @param event - The current event of the stream.
-   */
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
-
-  /**
-   * Callback function that is called when the stream is finished.
-   * @param result - The final result of the stream.
-   */
-  onFinish?: (steps: StreamTextStep[]) => Promise<unknown> | unknown
-
-  /**
-   * Callback function that is called when a step in the stream is finished.
-   * @param step - The result of the finished step.
-   */
-  onStepFinish?: (step: StreamTextStep) => Promise<unknown> | unknown
-
+  onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
+  onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
   /**
    * If you want to disable stream, use `@xsai/generate-{text,object}`.
    */
   stream?: never
-
-  /**
-   * Options for configuring the stream.
-   */
   streamOptions?: {
     /**
      * Return usage.
@@ -78,373 +28,191 @@ export interface StreamTextOptions extends ChatOptions {
 }
 
 export interface StreamTextResult {
-  chunkStream: ReadableStream<StreamTextChunkResult>
-  stepStream: ReadableStream<StreamTextStep>
+  fullStream: ReadableStream<StreamTextEvent>
+  messages: Promise<Message[]>
+  steps: Promise<CompletionStep[]>
   textStream: ReadableStream<string>
-}
-
-export interface StreamTextStep {
-  choices: StreamTextChoice[]
-  finishReason: FinishReason
-  messages: Message[]
-  stepType: CompletionStepType
-  toolCalls: CompletionToolCall[]
-  toolResults: CompletionToolResult[]
-  usage?: Usage
-}
-
-/** @internal */
-type RecursivePromise<T> = Promise<(() => RecursivePromise<T>) | T>
-
-/** @internal */
-interface StreamTextChoice {
-  finishReason?: FinishReason | null
-  index: number
-  message: StreamTextMessage
-}
-
-/** @internal */
-interface StreamTextChoiceState {
-  calledToolCallIndex: Set<number>
-  currentToolIndex: null | number
-  endedToolCallIndex: Set<number>
-  index: number
-  toolCallErrors: { [id: string]: Error }
-  toolCallResults: { [id: string]: string | ToolMessagePart[] }
-}
-
-/** @internal */
-interface StreamTextMessage extends Omit<AssistantMessage, 'tool_calls'> {
-  content?: string
-  toolCalls?: { [id: number]: StreamTextToolCall }
-}
-
-/** @internal */
-interface StreamTextToolCall extends ToolCall {
-  function: ToolCall['function'] & {
-    parsedArguments: Record<string, unknown>
-  }
-  index: number
+  usage: Promise<undefined | Usage>
+  // TODO: totalUsage
 }
 
 export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
-  // output
-  let chunkCtrl: ReadableStreamDefaultController<StreamTextChunkResult>
-  let stepCtrl: ReadableStreamDefaultController<StreamTextStep>
-  let textCtrl: ReadableStreamDefaultController<string>
-
-  const chunkStream = new ReadableStream<StreamTextChunkResult>({
-    start: controller => chunkCtrl = controller,
-  })
-  const stepStream = new ReadableStream<StreamTextStep>({
-    start: controller => stepCtrl = controller,
-  })
-  const textStream = new ReadableStream<string>({
-    start: controller => textCtrl = controller,
-  })
-
-  // constraints
-  const maxSteps = options.maxSteps ?? 1
-
-  // utils
-  const decoder = new TextDecoder()
-
   // state
-  const steps: StreamTextStep[] = []
-  const stepOne = async (options: StreamTextOptions): RecursivePromise<void> => {
-    const step: StreamTextStep = {
-      choices: [],
-      finishReason: 'error',
-      messages: structuredClone(options.messages),
-      stepType: 'initial',
-      toolCalls: [],
-      toolResults: [],
-    }
-    const choiceState: Record<string, StreamTextChoiceState> = {}
-    let buffer = ''
-    let finishReason: FinishReason | undefined
-    let usage: undefined | Usage
-    let shouldOutputText: boolean = true
+  const steps: CompletionStep[] = []
+  const messages: Message[] = structuredClone(options.messages)
+  const maxSteps = options.maxSteps ?? 1
+  let usage: undefined | Usage
 
-    const endToolCallByIndex = (state: StreamTextChoiceState, idx: number) => {
-      if (state.endedToolCallIndex.has(idx)) {
-        return
-      }
+  // result state
+  const resultSteps = new DelayedPromise<CompletionStep[]>()
+  const resultMessages = new DelayedPromise<Message[]>()
+  const resultUsage = new DelayedPromise<undefined | Usage>()
 
-      state.endedToolCallIndex.add(idx)
-      state.currentToolIndex = null
+  // output
+  let eventCtrl: ReadableStreamDefaultController<StreamTextEvent> | undefined
+  let textCtrl: ReadableStreamDefaultController<string> | undefined
+  const eventStream = new ReadableStream<StreamTextEvent>({ start: controller => eventCtrl = controller })
+  const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
+
+  const pushEvent = (stepEvent: StreamTextEvent) => {
+    eventCtrl?.enqueue(stepEvent)
+    // eslint-disable-next-line sonarjs/void-use
+    void options.onEvent?.(stepEvent)
+  }
+
+  const pushStep = (step: CompletionStep) => {
+    steps.push(step)
+    // eslint-disable-next-line sonarjs/void-use
+    void options.onStepFinish?.(step)
+  }
+
+  const startStream = async () => {
+    // let stepUsage: undefined | Usage
+    const pushUsage = (u: Usage) => {
+      usage = u
+      // stepUsage = u
     }
+
+    let text: string = ''
+    const pushText = (content?: string) => {
+      textCtrl?.enqueue(content)
+      text += content
+    }
+
+    const tool_calls: ToolCall[] = []
+    const toolCalls: CompletionToolCall[] = []
+    const toolResults: CompletionToolResult[] = []
+    let finishReason: FinishReason = 'other'
 
     await chat({
       ...options,
       maxSteps: undefined,
+      messages,
       stream: true,
       streamOptions: options.streamOptions != null
         ? objCamelToSnake(options.streamOptions)
         : undefined,
-    }).then(async res => res.body!.pipeThrough(new TransformStream({
-      transform: async (chunk, controller: TransformStreamDefaultController<StreamTextChunkResult>) => {
-        const text = decoder.decode(chunk, { stream: true })
-        buffer += text
-        const lines = buffer.split('\n')
-        buffer = lines.pop() ?? ''
+    }).then(async res => res.body!
+      .pipeThrough(transformChunk())
+      .pipeTo(new WritableStream({
+        abort: (reason) => {
+          eventCtrl?.error(reason)
+          textCtrl?.error(reason)
+        },
+        close: () => {},
+        write: (chunk) => {
+          if (chunk.usage)
+            pushUsage(chunk.usage)
 
-        // Process complete lines
-        for (const line of lines) {
-          try {
-            const [chunk, isEnd] = parseChunk(line)
-            if (isEnd)
-              break
+          // skip if no choices
+          if (chunk.choices == null || chunk.choices.length === 0)
+            return
 
-            if (chunk) {
-              controller.enqueue(chunk)
+          const choice = chunk.choices[0]
+
+          if (choice.finish_reason != null)
+            finishReason = choice.finish_reason
+
+          if (choice.delta.tool_calls?.length === 0 || choice.delta.tool_calls == null) {
+            if (choice.delta.content != null) {
+              pushEvent({ text: choice.delta.content, type: 'text-delta' })
+              pushText(choice.delta.content)
+            }
+            else if (choice.delta.refusal != null) {
+              pushEvent({ error: choice.delta.refusal, type: 'error' })
+            }
+            else if (choice.finish_reason != null) {
+              pushEvent({ finishReason: choice.finish_reason, type: 'finish', usage })
             }
           }
-          catch (error) {
-            controller.error(error)
+          else {
+            // https://platform.openai.com/docs/guides/function-calling?api-mode=chat&lang=javascript#streaming
+            for (const toolCall of choice.delta.tool_calls) {
+              const { index } = toolCall
+
+              if (!tool_calls.at(index)) {
+                tool_calls[index] = toolCall
+                pushEvent({ toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-streaming-start' })
+              }
+              else {
+                tool_calls[index].function.arguments += toolCall.function.arguments
+                pushEvent({ argsTextDelta: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-delta' })
+              }
+            }
           }
-        }
-      },
-    })).pipeTo(new WritableStream({
-      abort: (reason) => {
-        chunkCtrl.error(reason)
-        stepCtrl.error(reason)
-        textCtrl.error(reason)
-      },
-      close: () => {
-        options.onEvent?.({
-          finishReason,
-          type: 'finish',
-          usage,
-        })
-      },
-      // eslint-disable-next-line sonarjs/cognitive-complexity
-      write: async (chunk) => {
-        options.onChunk?.(chunk)
-        chunkCtrl.enqueue(chunk)
-
-        usage = chunk.usage
-
-        // Skip if no choices
-        if (chunk.choices == null || chunk.choices.length === 0)
-          return
-
-        const choice = chunk.choices[0]
-
-        // mark this time as non-text output if is has tool calls
-        if (choice.delta.tool_calls) {
-          shouldOutputText = false
-        }
-
-        const { delta, finish_reason, index, ...rest } = choice
-        const choiceSnapshot: StreamTextChoice = step.choices[index] ??= {
-          finishReason: finish_reason,
-          index,
-          message: {
-            role: 'assistant',
-          },
-        }
-
-        if (finish_reason !== undefined) {
-          finishReason = finish_reason
-          step.finishReason = finish_reason
-          choiceSnapshot.finishReason = finish_reason
-
-          if (finish_reason === 'length') {
-            throw new XSAIError('length exceeded')
-          }
-
-          if (finish_reason === 'content_filter') {
-            throw new XSAIError('content filter')
-          }
-        }
-
-        Object.assign(choiceSnapshot, rest)
-
-        const { content, refusal, tool_calls, ...rests } = delta
-        const message = choiceSnapshot.message
-        Object.assign(message, rests)
-
-        if (refusal !== undefined) {
-          // eslint-disable-next-line ts/strict-boolean-expressions
-          message.refusal = (message.refusal || '') + (refusal || '')
-
-          options.onEvent?.({
-            refusal: message.refusal,
-            type: 'refusal',
-          })
-        }
-
-        if (content !== undefined) {
-          // eslint-disable-next-line ts/strict-boolean-expressions
-          message.content = (message.content || '') + (content || '')
-          shouldOutputText && textCtrl?.enqueue(content)
-
-          options.onEvent?.({
-            text: content,
-            type: 'text-delta',
-          })
-        }
-
-        for (const tool_call of tool_calls || []) {
-          options.onEvent?.({
-            toolCall: tool_call,
-            type: 'tool-call-delta',
-          })
-
-          const { function: fn, id, index, type } = tool_call
-          message.toolCalls ??= {}
-
-          const toolCall = message.toolCalls[index] ??= {
-            function: {
-              arguments: '',
-              name: fn.name,
-              parsedArguments: {},
-            },
-            id,
-            index,
-            type,
-          }
-          toolCall.function.arguments += fn.arguments
-        }
-
-        /**
-         * check if tool call is ended
-         */
-        const state = choiceState[index] ??= {
-          calledToolCallIndex: new Set(),
-          currentToolIndex: null,
-          endedToolCallIndex: new Set(),
-          index,
-          toolCallErrors: {},
-          toolCallResults: {},
-        }
-        // eslint-disable-next-line ts/strict-boolean-expressions
-        if (finish_reason) {
-          // end choice will end the current tool call too
-          if (state.currentToolIndex !== null) {
-            endToolCallByIndex(state, state.currentToolIndex)
-          }
-        }
-        for (const toolCall of delta.tool_calls || []) {
-          // new tool call
-          if (state.currentToolIndex !== toolCall.index && state.currentToolIndex !== null) {
-            endToolCallByIndex(state, state.currentToolIndex)
-          }
-
-          state.calledToolCallIndex.add(toolCall.index)
-          state.currentToolIndex = toolCall.index
-        }
-      },
-    })),
+        },
+      })),
     )
 
-    // if the chat has tool calls, then content probably will be empty
-    // but we still push it anyway
-    step.messages.push({
-      content: step.choices[0]?.message.content ?? '',
-      refusal: step.choices[0]?.message.refusal,
-      role: 'assistant',
-      tool_calls: Object.values(step.choices[0]?.message.toolCalls ?? {}).map(toolCall => ({
-        function: {
-          arguments: toolCall.function.arguments,
-          name: toolCall.function.name,
-        },
-        id: toolCall.id,
-        index: toolCall.index,
-        type: toolCall.type,
-      })),
-    } satisfies AssistantMessage)
-
-    // make actual tool call and wait
-    await Promise.allSettled(step.choices.map(async (choice) => {
-      const state = choiceState[choice.index]
-
-      return Promise.allSettled([...state.endedToolCallIndex].map(async (idx) => {
-        const toolCall = choice.message.toolCalls![idx]
-        step.toolCalls.push({
-          args: toolCall.function.arguments,
-          toolCallId: toolCall.id,
-          toolCallType: 'function',
-          toolName: toolCall.function.name,
-        })
-
-        // eslint-disable-next-line ts/strict-boolean-expressions
-        if (state.toolCallResults[toolCall.id]) {
-          return
-        }
-
-        options.onEvent?.({
+    if (tool_calls.length !== 0) {
+      for (const toolCall of tool_calls) {
+        const { completionToolCall, completionToolResult, message } = await executeTool({
+          abortSignal: options.abortSignal,
+          messages,
           toolCall,
-          type: 'tool-call',
+          tools: options.tools,
         })
 
-        try {
-          const { completionToolResult, message, parsedArgs, result } = await executeTool({
-            abortSignal: options.abortSignal,
-            messages: options.messages,
-            toolCall,
-            tools: options.tools,
-          })
+        toolCalls.push(completionToolCall)
+        toolResults.push(completionToolResult)
+        messages.push(message)
 
-          toolCall.function.parsedArguments = parsedArgs
+        pushEvent({ ...completionToolCall, type: 'tool-call' })
+        pushEvent({ ...completionToolResult, type: 'tool-result' })
+      }
+    }
+    else {
+      messages.push({ content: text, role: 'assistant' })
 
-          state.toolCallResults[toolCall.id] = result
-          step.messages.push(message)
-          step.toolResults.push(completionToolResult)
-
-          options.onEvent?.({
-            id: toolCall.id,
-            result,
-            type: 'tool-call-result',
-          })
-        }
-        catch (error) {
-          state.toolCallErrors[idx] = error as Error
-        }
-      }))
-    }))
-
-    step.stepType = determineStepType({
-      finishReason: step.finishReason,
-      maxSteps,
-      stepsLength: steps.length,
-      toolCallsLength: step.toolCalls.length,
-    })
-
-    steps.push(step)
-    stepCtrl.enqueue(step)
-
-    options.onStepFinish?.(step)
-
-    if (shouldOutputText) {
-      return
+      // TODO: should we add this on tool calls finish?
+      pushEvent({
+        finishReason,
+        type: 'finish',
+        usage,
+      })
     }
 
-    return async () => stepOne({ ...options, messages: step.messages })
+    pushStep({
+      finishReason,
+      stepType: determineStepType({ finishReason, maxSteps, stepsLength: steps.length, toolCallsLength: toolCalls.length }),
+      text,
+      toolCalls,
+      toolResults,
+      usage,
+    })
+
+    if (toolCalls.length !== 0 && steps.length < maxSteps)
+      return async () => startStream()
   }
 
-  const invokeFunctionCalls = async () => {
-    let ret = await stepOne(options)
+  try {
+    await trampoline(async () => startStream())
+  }
+  catch (err) {
+    eventCtrl?.error(err)
+    textCtrl?.error(err)
 
-    while (typeof ret === 'function' && steps.length < maxSteps)
-      ret = await ret()
+    resultSteps.reject(err)
+    resultMessages.reject(err)
+    resultUsage.reject(err)
+  }
+  finally {
+    eventCtrl?.close()
+    textCtrl?.close()
 
-    options.onFinish?.(steps)
-    chunkCtrl.close()
-    stepCtrl.close()
-    textCtrl.close()
+    resultSteps.resolve(steps)
+    resultMessages.resolve(messages)
+    resultUsage.resolve(usage)
+
+    // eslint-disable-next-line sonarjs/void-use
+    void options.onFinish?.(steps.at(-1))
   }
 
-  void invokeFunctionCalls().catch((error) => {
-    chunkCtrl.error(error)
-    stepCtrl.error(error)
-    textCtrl.error(error)
-  })
-
-  return Promise.resolve({
-    chunkStream,
-    stepStream,
+  return {
+    fullStream: eventStream,
+    messages: resultMessages.promise,
+    steps: resultSteps.promise,
     textStream,
-  })
+    usage: resultUsage.promise,
+  }
 }
