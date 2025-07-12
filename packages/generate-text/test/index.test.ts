@@ -27,6 +27,7 @@ describe('@xsai/generate-text', () => {
       ],
       model: 'granite3.3:2b',
       onStepFinish: result => (step = result),
+      seed: 114514,
     })
 
     expect(text).toStrictEqual('YES')
