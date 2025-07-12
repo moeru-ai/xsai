@@ -36,7 +36,7 @@ describe('@xsai/generate-text', () => {
     expect(steps).toMatchSnapshot()
 
     expect(steps[0]).toStrictEqual(step)
-  }, 30000)
+  })
 
   it('with tool calling', async () => {
     const add = await tool({
@@ -91,5 +91,5 @@ describe('@xsai/generate-text', () => {
 
     expect(text).toMatchSnapshot()
     expect(cleanSteps(steps)).toMatchSnapshot()
-  }, 30000)
+  })
 })

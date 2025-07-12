@@ -92,5 +92,5 @@ describe('@xsai/stream-text', async () => {
     expect(cleanedSteps).toMatchSnapshot()
 
     expect(await usage).toMatchSnapshot()
-  }, 30000)
+  })
 })

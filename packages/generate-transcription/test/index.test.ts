@@ -34,7 +34,7 @@ describe('@xsai/generate-transcription', () => {
     expect(language).toBe('en')
     expect(text).toBe(expectText)
     expect(segments).toMatchSnapshot()
-  }, 30000)
+  })
 
   it('verbose_json + word', async () => {
     const { duration, language, text, words } = await generateTranscription({
@@ -52,5 +52,5 @@ describe('@xsai/generate-transcription', () => {
     expect(language).toBe('en')
     expect(text).toBe(expectText)
     expect(words).toMatchSnapshot()
-  }, 30000)
+  })
 })
