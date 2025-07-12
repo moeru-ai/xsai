@@ -35,8 +35,7 @@
   },
   "scripts": {
     "build": "pkgroll",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test:speech": "vitest run"
   },
   "dependencies": {
     "@xsai/shared": "workspace:~"
