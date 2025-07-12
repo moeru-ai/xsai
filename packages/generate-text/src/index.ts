@@ -74,7 +74,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         toolCallsLength: msgToolCalls.length,
       })
 
-      messages.push({ ...message, content: message.content })
+      messages.push(message)
 
       if (finishReason === 'stop' || stepType === 'done') {
         const step: CompletionStep<true> = {

@@ -144,6 +144,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       })),
     )
 
+    messages.push({ content: text, role: 'assistant', tool_calls })
+
     if (tool_calls.length !== 0) {
       for (const toolCall of tool_calls) {
         const { completionToolCall, completionToolResult, message } = await executeTool({
@@ -162,8 +164,6 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       }
     }
     else {
-      messages.push({ content: text, role: 'assistant' })
-
       // TODO: should we add this on tool calls finish?
       pushEvent({
         finishReason,
