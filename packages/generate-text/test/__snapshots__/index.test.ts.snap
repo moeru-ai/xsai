@@ -28,7 +28,6 @@ exports[`@xsai/generate-text > with tool calling 2`] = `
     "toolCalls": [
       {
         "args": "{"a":114514,"b":1919810}",
-        "toolCallId": "call_2x03cbcu",
         "toolCallType": "function",
         "toolName": "add",
       },
@@ -40,7 +39,6 @@ exports[`@xsai/generate-text > with tool calling 2`] = `
           "b": 1919810,
         },
         "result": "2034324",
-        "toolCallId": "call_2x03cbcu",
         "toolName": "add",
       },
     ],

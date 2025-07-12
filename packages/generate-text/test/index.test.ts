@@ -1,3 +1,6 @@
+import type { CompletionStep } from '@xsai/shared-chat'
+
+import { clean } from '@xsai/shared'
 import { tool } from '@xsai/tool'
 import { description, number, object, pipe } from 'valibot'
 import { describe, expect, it } from 'vitest'
@@ -52,6 +55,21 @@ describe('@xsai/generate-text', () => {
       }),
     })
 
+    const cleanSteps = (steps: CompletionStep[]) =>
+      steps.map(step => ({
+        ...step,
+        // eslint-disable-next-line sonarjs/no-nested-functions
+        toolCalls: step.toolCalls.map(toolCall => clean({
+          ...toolCall,
+          toolCallId: undefined,
+        })),
+        // eslint-disable-next-line sonarjs/no-nested-functions
+        toolResults: step.toolResults.map(toolResult => clean({
+          ...toolResult,
+          toolCallId: undefined,
+        })),
+      }))
+
     const { steps, text } = await generateText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
@@ -72,6 +90,6 @@ describe('@xsai/generate-text', () => {
     })
 
     expect(text).toMatchSnapshot()
-    expect(steps).toMatchSnapshot()
+    expect(cleanSteps(steps)).toMatchSnapshot()
   }, 30000)
 })
