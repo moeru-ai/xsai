@@ -1,6 +1,6 @@
 import { clean } from '@xsai/shared'
 import { tool } from '@xsai/tool'
-import { description, number, object, pipe } from 'valibot'
+import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'
@@ -17,15 +17,15 @@ declare global {
 describe('@xsai/stream-text', async () => {
   const add = await tool({
     description: 'Adds two numbers',
-    execute: ({ a, b }) => (a + b).toString(),
+    execute: ({ a, b }) => (Number.parseInt(a) + Number.parseInt(b)).toString(),
     name: 'add',
     parameters: object({
       a: pipe(
-        number(),
+        string(),
         description('First number'),
       ),
       b: pipe(
-        number(),
+        string(),
         description('Second number'),
       ),
     }),
@@ -45,8 +45,7 @@ describe('@xsai/stream-text', async () => {
           role: 'user',
         },
       ],
-      model: 'granite3.3:2b',
-      // model: 'granite3.2-vision',
+      model: 'qwen3:0.6b',
       seed: 114514,
       toolChoice: 'required',
       tools: [add],

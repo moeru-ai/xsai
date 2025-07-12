@@ -56,19 +56,16 @@ describe('@xsai/generate-text', () => {
       }),
     })
 
+    const cleanToolCallId = (obj: object) => clean({
+      ...obj,
+      toolCallId: undefined,
+    })
+
     const cleanSteps = (steps: CompletionStep[]) =>
       steps.map(step => ({
         ...step,
-        // eslint-disable-next-line sonarjs/no-nested-functions
-        toolCalls: step.toolCalls.map(toolCall => clean({
-          ...toolCall,
-          toolCallId: undefined,
-        })),
-        // eslint-disable-next-line sonarjs/no-nested-functions
-        toolResults: step.toolResults.map(toolResult => clean({
-          ...toolResult,
-          toolCallId: undefined,
-        })),
+        toolCalls: step.toolCalls.map(cleanToolCallId),
+        toolResults: step.toolResults.map(cleanToolCallId),
       }))
 
     const { steps, text } = await generateText({
@@ -84,8 +81,8 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'granite3.3:2b',
-      seed: 114514,
+      model: 'qwen3:0.6b',
+      seed: 1145141919810,
       toolChoice: 'required',
       tools: [add],
     })
