@@ -47,7 +47,7 @@ describe('@xsai/stream-text', async () => {
       ],
       model: 'qwen3:0.6b',
       seed: 114514,
-      toolChoice: 'required',
+      // toolChoice: 'required',
       tools: [add],
     })
 
