@@ -46,8 +46,8 @@ describe('@xsai/stream-text', async () => {
         },
       ],
       model: 'qwen3:0.6b',
-      seed: 114514,
-      // toolChoice: 'required',
+      seed: 1145141919810,
+      toolChoice: 'required',
       tools: [add],
     })
 
@@ -71,21 +71,26 @@ describe('@xsai/stream-text', async () => {
       .map(message => clean({
         ...message,
         tool_call_id: undefined,
+        tool_calls: message.role === 'assistant'
+          ? message.tool_calls?.map(tool_call => clean({
+            ...tool_call,
+            id: undefined,
+          }))
+          : undefined,
       }))
 
     expect(cleanedMessages).toMatchSnapshot()
 
+    const cleanToolCallId = (obj: object) => clean({
+      ...obj,
+      toolCallId: undefined,
+    })
+
     const cleanedSteps = (await steps)
       .map(({ toolCalls, toolResults, ...rest }) => ({
         ...rest,
-        toolCalls: toolCalls.map(toolCall => clean({
-          ...toolCall,
-          toolCallId: undefined,
-        })),
-        toolResults: toolResults.map(toolResult => clean({
-          ...toolResult,
-          toolCallId: undefined,
-        })),
+        toolCalls: toolCalls.map(cleanToolCallId),
+        toolResults: toolResults.map(cleanToolCallId),
       }))
 
     expect(cleanedSteps).toMatchSnapshot()
