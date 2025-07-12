@@ -36,9 +36,7 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "build": "pkgroll"
   },
   "dependencies": {
     "@xsai/embed": "workspace:~",

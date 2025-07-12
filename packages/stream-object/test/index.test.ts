@@ -43,7 +43,7 @@ describe('@xsai/stream-object', () => {
     }
 
     expect(objects.at(-1)!.answer).toBe('YES')
-  }, 60000)
+  })
 
   it('string array', async () => {
     const { elementStream } = await streamObject({
@@ -73,7 +73,7 @@ describe('@xsai/stream-object', () => {
     for (const object of objects) {
       expect(object).toBeTypeOf('string')
     }
-  }, 60000)
+  })
 
   it('boolean array', async () => {
     const { elementStream } = await streamObject({
@@ -103,7 +103,7 @@ describe('@xsai/stream-object', () => {
     for (const object of objects) {
       expect(object).toBeTypeOf('boolean')
     }
-  }, 60000)
+  })
 
   it('number array', async () => {
     const { elementStream } = await streamObject({
@@ -133,7 +133,7 @@ describe('@xsai/stream-object', () => {
     for (const object of objects) {
       expect(object).toBeTypeOf('number')
     }
-  }, 60000)
+  })
 
   it('object array', async () => {
     const schema = v.object({
@@ -164,7 +164,7 @@ describe('@xsai/stream-object', () => {
     }
 
     expect(objects).toHaveLength(5)
-  }, 60000)
+  })
 
   it('object array with onFinish', async () => {
     const schema = v.object({

@@ -91,7 +91,7 @@ describe('extractReasoning', () => {
 
     expect(reasoning).not.toEqual(undefined)
     expect(textResult.length).to.greaterThan(0)
-  }, 20_000)
+  })
 })
 
 const randomSplitTextToStream = (text: string): ReadableStream<string> => new ReadableStream<string>({
@@ -302,5 +302,5 @@ describe('extractReasoningStream', () => {
 
     expect(reasoningResult.length).to.greaterThan(0)
     expect(textResult.length).to.greaterThan(0)
-  }, 20_000)
+  })
 })

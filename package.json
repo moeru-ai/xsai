@@ -11,7 +11,9 @@
     "bump": "bumpp",
     "docs:dev": "pnpm -rF @xsai/docs dev",
     "lint": "eslint --flag unstable_native_nodejs_ts_config --cache .",
-    "test": "pnpm -r --workspace-concurrency=1 test"
+    "test": "pnpm -r --workspace-concurrency=1 test",
+    "test:speech": "pnpm -r test:speech",
+    "test:transcription": "pnpm -r test:transcription"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.0",

@@ -1,3 +1,6 @@
+import type { CompletionStep } from '@xsai/shared-chat'
+
+import { clean } from '@xsai/shared'
 import { tool } from '@xsai/tool'
 import { description, number, object, pipe } from 'valibot'
 import { describe, expect, it } from 'vitest'
@@ -24,6 +27,7 @@ describe('@xsai/generate-text', () => {
       ],
       model: 'granite3.3:2b',
       onStepFinish: result => (step = result),
+      seed: 114514,
     })
 
     expect(text).toStrictEqual('YES')
@@ -33,7 +37,7 @@ describe('@xsai/generate-text', () => {
     expect(steps).toMatchSnapshot()
 
     expect(steps[0]).toStrictEqual(step)
-  }, 30000)
+  })
 
   it('with tool calling', async () => {
     const add = await tool({
@@ -52,6 +56,18 @@ describe('@xsai/generate-text', () => {
       }),
     })
 
+    const cleanToolCallId = (obj: object) => clean({
+      ...obj,
+      toolCallId: undefined,
+    })
+
+    const cleanSteps = (steps: CompletionStep[]) =>
+      steps.map(step => ({
+        ...step,
+        toolCalls: step.toolCalls.map(cleanToolCallId),
+        toolResults: step.toolResults.map(cleanToolCallId),
+      }))
+
     const { steps, text } = await generateText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
@@ -65,13 +81,13 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'granite3.3:2b',
-      seed: 114514,
+      model: 'qwen3:0.6b',
+      seed: 1145141919810,
       toolChoice: 'required',
       tools: [add],
     })
 
     expect(text).toMatchSnapshot()
-    expect(steps).toMatchSnapshot()
-  }, 30000)
+    expect(cleanSteps(steps)).toMatchSnapshot()
+  })
 })

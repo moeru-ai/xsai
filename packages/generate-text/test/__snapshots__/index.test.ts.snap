@@ -17,18 +17,27 @@ exports[`@xsai/generate-text > basic 1`] = `
 ]
 `;
 
-exports[`@xsai/generate-text > with tool calling 1`] = `"According to calling the \`add\` function with parameters a=114514 and b=1919810, 114514 plus 1919810 equals 2034324."`;
+exports[`@xsai/generate-text > with tool calling 1`] = `
+"<think>
+Okay, so the user asked how many times the sum of 114514 and 1919810 equals. Let me check my calculation again. Adding those two numbers: 114514 + 1919810. Let's do it step by step. 114514 plus 1,000,000 is 2,145,144. Then add the remaining 919,810 to that, which makes 2,145,144 + 919,810. Wait, no, wait. Wait, original numbers are 114,514 and 1,919,810. So adding them: 114,514 + 1,919,810. Let's write it as 1,919,810 + 114,514. Adding, we get 2,034,324. So the sum is 2,034,324. The user probably wants to know how many times that total is something? But the question is unclear. Wait, maybe there's a typo in the query? The original question is "How many times does 114514 plus 1919810 equal?" Maybe they meant to ask how many times the sum of these numbers (which is 2,034,324) equals another value? But there's no mention of another value. Alternatively, perhaps the user made a typo and intended something else. However, given the information, the sum is 2,034,324, so I need to present that result. So, the answer is 2,034,324.
+</think>
+
+The result of adding 114514 and 1919810 is 2034324. If you have a different value in mind, please specify, and I'll assist accordingly."
+`;
 
 exports[`@xsai/generate-text > with tool calling 2`] = `
 [
   {
     "finishReason": "tool_calls",
     "stepType": "initial",
-    "text": "",
+    "text": "<think>
+Okay, the user is asking how many times 114514 plus 1919810 equals. Let me break this down. First, I need to figure out what the sum of these two numbers is. So, 114514 plus 1919810. Let me add those. Adding them together... well, 114514 plus 1919810. Let me do that calculation. 114514 + 1919810. Adding them, 1919810 plus 114514. Let me check again. 1919810 plus 114514. Wait, 1919810 plus 1000000 is 2919810, plus the remaining 14514 would be 2919810 + 14514. Adding these two gives 2934324. So the sum is 2,934,324. The user is asking how many times that equals something? Wait, maybe they meant how many times 2,934,324 appears as a result of the addition? Or is there a typo here? Let me re-read the question. "How many times does 114514 plus 1919810 equal?" So the user is asking for the number of times the sum equals... Wait, but adding 114514 and 1919810 gives a sum, which is 2,934,324. Maybe the user is looking for how many times that sum occurs? Or maybe there's a misunderstanding. Wait, perhaps the problem is written incorrectly, and the user is actually asking for how many times their expression equals a specific value, but the question is ambiguous. Alternatively, maybe it's a typo and the original problem was supposed to have another operation, but assuming the user's question is correct as stated, perhaps they want to know the sum. But the way it's phrased is unclear. But given the provided tools, I need to call the add function. So regardless of the ambiguity, I should perform the addition as per the tool. So, call the add function with a and b set to 114514 and 1919810, then return the result.
+</think>
+
+",
     "toolCalls": [
       {
         "args": "{"a":114514,"b":1919810}",
-        "toolCallId": "call_2x03cbcu",
         "toolCallType": "function",
         "toolName": "add",
       },
@@ -40,26 +49,29 @@ exports[`@xsai/generate-text > with tool calling 2`] = `
           "b": 1919810,
         },
         "result": "2034324",
-        "toolCallId": "call_2x03cbcu",
         "toolName": "add",
       },
     ],
     "usage": {
-      "completion_tokens": 34,
-      "prompt_tokens": 120,
-      "total_tokens": 154,
+      "completion_tokens": 574,
+      "prompt_tokens": 190,
+      "total_tokens": 764,
     },
   },
   {
     "finishReason": "stop",
     "stepType": "continue",
-    "text": "According to calling the \`add\` function with parameters a=114514 and b=1919810, 114514 plus 1919810 equals 2034324.",
+    "text": "<think>
+Okay, so the user asked how many times the sum of 114514 and 1919810 equals. Let me check my calculation again. Adding those two numbers: 114514 + 1919810. Let's do it step by step. 114514 plus 1,000,000 is 2,145,144. Then add the remaining 919,810 to that, which makes 2,145,144 + 919,810. Wait, no, wait. Wait, original numbers are 114,514 and 1,919,810. So adding them: 114,514 + 1,919,810. Let's write it as 1,919,810 + 114,514. Adding, we get 2,034,324. So the sum is 2,034,324. The user probably wants to know how many times that total is something? But the question is unclear. Wait, maybe there's a typo in the query? The original question is "How many times does 114514 plus 1919810 equal?" Maybe they meant to ask how many times the sum of these numbers (which is 2,034,324) equals another value? But there's no mention of another value. Alternatively, perhaps the user made a typo and intended something else. However, given the information, the sum is 2,034,324, so I need to present that result. So, the answer is 2,034,324.
+</think>
+
+The result of adding 114514 and 1919810 is 2034324. If you have a different value in mind, please specify, and I'll assist accordingly.",
     "toolCalls": [],
     "toolResults": [],
     "usage": {
-      "completion_tokens": 57,
-      "prompt_tokens": 139,
-      "total_tokens": 196,
+      "completion_tokens": 452,
+      "prompt_tokens": 749,
+      "total_tokens": 1201,
     },
   },
 ]

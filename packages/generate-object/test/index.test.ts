@@ -25,7 +25,7 @@ describe('@xsai/generate-object', () => {
     })
 
     expect(object.answer).toBe('YES')
-  }, 60000)
+  })
 
   it('should throw if schema is not valid JSON', async () => {
     const g = generateObject({
@@ -46,7 +46,7 @@ describe('@xsai/generate-object', () => {
     })
 
     await expect(g).rejects.toThrowError()
-  }, 60000)
+  })
 
   it('object', async () => {
     const { object } = await generateObject({
@@ -70,7 +70,7 @@ describe('@xsai/generate-object', () => {
     })
 
     expect(object.answer).toBe('YES')
-  }, 60000)
+  })
 
   it('array', async () => {
     const { object } = await generateObject({
@@ -95,5 +95,5 @@ describe('@xsai/generate-object', () => {
 
     expect(object).toHaveProperty('length')
     expect(object[0].answer).toBe('YES')
-  }, 60000)
+  })
 })

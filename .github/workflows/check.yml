@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
@@ -19,6 +17,18 @@ jobs:
           cache: pnpm
           node-version: latest
           registry-url: https://registry.npmjs.org
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm -r build
+
+      - uses: ai-action/setup-ollama@v1
+      - uses: actions/cache@v4
+        with:
+          path: ~/.ollama
+          key: ${{ runner.os }}-ollama
+      - run: ollama pull granite3.3:2b
+      - run: ollama pull granite-embedding
+      - run: ollama pull qwen3:0.6b
+      - run: ollama serve > /dev/null 2>&1 &
+
+      - run: pnpm install
+      - run: pnpm build
       - run: pnpm lint
+      - run: pnpm test
