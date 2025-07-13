@@ -14,7 +14,7 @@ export interface GenerateTextOptions extends ChatOptions {
   transform?: (response: GenerateTextResponse) => GenerateTextResponse
 }
 
-export interface GenerateTextResponse {
+export interface GenerateTextResponse extends Record<string, unknown> {
   choices: ({
     finish_reason: FinishReason
     index: number
