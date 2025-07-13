@@ -1,7 +1,7 @@
 import type { CompletionToolCall, CompletionToolResult, FinishReason, Usage } from '@xsai/shared-chat'
 
 // TODO: reasoning, reasoning-signature, redacted-reasoning, source, file, step-start, step-finish
-export type StreamTextEvent =
+export type StreamTextEvent = (
   | (CompletionToolCall & { type: 'tool-call' })
   | (CompletionToolResult & { type: 'tool-result' })
   | { argsTextDelta: string, toolCallId: string, toolName: string, type: 'tool-call-delta' }
@@ -10,3 +10,4 @@ export type StreamTextEvent =
   | { finishReason: FinishReason, type: 'finish', usage?: Usage }
   | { text: string, type: 'text-delta' }
   | { toolCallId: string, toolName: string, type: 'tool-call-streaming-start' }
+) & Record<string, unknown>

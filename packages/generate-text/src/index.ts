@@ -11,14 +11,15 @@ export interface GenerateTextOptions extends ChatOptions {
   steps?: CompletionStep<true>[]
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
+  transform?: (response: GenerateTextResponse) => GenerateTextResponse
 }
 
 export interface GenerateTextResponse {
-  choices: {
+  choices: ({
     finish_reason: FinishReason
     index: number
     message: AssistantMessageResponse
-  }[]
+  } & Record<string, unknown>)[]
   created: number
   id: string
   model: string
@@ -53,6 +54,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
     stream: false,
   })
     .then(responseJSON<GenerateTextResponse>)
+    .then((value) => options.transform?.(value) ?? value)
     .then(async (res) => {
       const { choices, usage } = res
 

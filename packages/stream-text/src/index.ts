@@ -14,6 +14,7 @@ export interface StreamTextOptions extends ChatOptions {
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
   onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
+  transform?: (response: StreamTextEvent) => StreamTextEvent
   /**
    * If you want to disable stream, use `@xsai/generate-{text,object}`.
    */
@@ -55,6 +56,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
   const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
 
   const pushEvent = (stepEvent: StreamTextEvent) => {
+    stepEvent = options.transform?.(stepEvent) ?? stepEvent
     eventCtrl?.enqueue(stepEvent)
     // eslint-disable-next-line sonarjs/void-use
     void options.onEvent?.(stepEvent)
