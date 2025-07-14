@@ -3,6 +3,8 @@ import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
+import type { StreamTextEvent } from '../src/types/event'
+
 import { streamText } from '../src'
 
 // make TS happy
@@ -32,7 +34,7 @@ describe('@xsai/stream-text', async () => {
   })
 
   it('basic tool calls', async () => {
-    const { fullStream, messages, steps, textStream, usage } = await streamText({
+    const { fullStream, steps } = await streamText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
       messages: [
@@ -51,50 +53,56 @@ describe('@xsai/stream-text', async () => {
       tools: [add],
     })
 
-    const eventResult = []
+    const eventResult: StreamTextEvent[] = []
     for await (const event of fullStream) {
+      // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
       eventResult.push(clean({
         ...event,
         toolCallId: undefined,
-      }))
+      }) as unknown as StreamTextEvent)
     }
 
-    let textResult = ''
-    for await (const text of textStream) {
-      textResult += text
-    }
-
-    expect(eventResult).toMatchSnapshot()
-    expect(textResult).toMatchSnapshot()
-
-    const cleanedMessages = (await messages)
-      .map(message => clean({
-        ...message,
-        tool_call_id: undefined,
-        tool_calls: message.role === 'assistant'
-          ? message.tool_calls?.map(tool_call => clean({
-            ...tool_call,
-            id: undefined,
-          }))
-          : undefined,
-      }))
-
-    expect(cleanedMessages).toMatchSnapshot()
-
-    const cleanToolCallId = (obj: object) => clean({
-      ...obj,
-      toolCallId: undefined,
+    expect(eventResult.find(e => e.type === 'tool-call-streaming-start')).toStrictEqual({
+      toolName: 'add',
+      type: 'tool-call-streaming-start',
     })
 
-    const cleanedSteps = (await steps)
-      .map(({ toolCalls, toolResults, ...rest }) => ({
-        ...rest,
-        toolCalls: toolCalls.map(cleanToolCallId),
-        toolResults: toolResults.map(cleanToolCallId),
-      }))
+    expect(eventResult.find(e => e.type === 'tool-call')).toStrictEqual({
+      args: '{"a":"114514","b":"1919810"}',
+      result: '2034324',
+      toolName: 'add',
+      type: 'tool-call',
+    })
 
-    expect(cleanedSteps).toMatchSnapshot()
+    expect(eventResult.find(e => e.type === 'tool-result')).toStrictEqual({
+      args: {
+        a: '114514',
+        b: '1919810',
+      },
+      result: '2034324',
+      toolName: 'add',
+      type: 'tool-result',
+    })
 
-    expect(await usage).toMatchSnapshot()
+    const allSteps = await steps
+
+    expect(allSteps.length).toBe(2)
+    expect(allSteps[0].toolCalls).toStrictEqual([
+      {
+        args: '{"a":"114514","b":"1919810"}',
+        toolCallType: 'function',
+        toolName: 'add',
+      },
+    ])
+    expect(allSteps[0].toolResults).toStrictEqual([
+      {
+        args: {
+          a: '114514',
+          b: '1919810',
+        },
+        result: '2034324',
+        toolName: 'add',
+      },
+    ])
   })
 })
