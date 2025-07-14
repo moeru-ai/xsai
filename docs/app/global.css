@@ -6,9 +6,6 @@
 @import 'fumadocs-ui/css/black.css';
 @import 'fumadocs-ui/css/preset.css';
 
-/* relative to the CSS file, make sure it's correct for your app */
-@source '../node_modules/fumadocs-ui/dist/**/*.js';
-
 :root {
   --background: hsl(0 0% 100%);
   --foreground: hsl(0 0% 3.9%);
