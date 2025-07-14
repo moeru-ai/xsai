@@ -16,18 +16,18 @@
     "test:transcription": "pnpm -r test:transcription"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.13.0",
+    "@antfu/eslint-config": "^4.16.2",
     "@importantimport/tsconfig": "^1.0.0-beta.2",
     "@moeru/eslint-config": "catalog:",
     "@pnpm/find-workspace-dir": "^1000.1.0",
     "@types/eslint": "^9.6.1",
-    "@types/node": "^22.15.18",
+    "@types/node": "^24.0.13",
     "@vitest/coverage-v8": "catalog:",
     "automd": "^0.4.0",
-    "bumpp": "^10.1.0",
-    "eslint": "^9.26.0",
-    "pkgroll": "^2.12.2",
-    "tsx": "^4.19.4",
+    "bumpp": "^10.2.0",
+    "eslint": "^9.31.0",
+    "pkgroll": "^2.14.3",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vitest": "catalog:"
   }
