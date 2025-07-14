@@ -17,6 +17,38 @@ declare global {
 }
 
 describe('@xsai/stream-text', async () => {
+  it('basic', async () => {
+    const { fullStream, steps, textStream } = await streamText({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          role: 'user',
+        },
+      ],
+      model: 'granite3.3:2b',
+      seed: 114514,
+    })
+
+    expect(steps).toMatchSnapshot()
+
+    let text = ''
+    for await (const t of textStream) {
+      text += t
+    }
+    expect(text).toBe('YES')
+
+    const events: StreamTextEvent[] = []
+    for await (const event of fullStream) {
+      events.push(event)
+    }
+    expect(events).toMatchSnapshot()
+  })
+
   const add = await tool({
     description: 'Adds two numbers',
     execute: ({ a, b }) => (Number.parseInt(a) + Number.parseInt(b)).toString(),
@@ -53,28 +85,28 @@ describe('@xsai/stream-text', async () => {
       tools: [add],
     })
 
-    const eventResult: StreamTextEvent[] = []
+    const events: StreamTextEvent[] = []
     for await (const event of fullStream) {
       // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
-      eventResult.push(clean({
+      events.push(clean({
         ...event,
         toolCallId: undefined,
       }) as unknown as StreamTextEvent)
     }
 
-    expect(eventResult.find(e => e.type === 'tool-call-streaming-start')).toStrictEqual({
+    expect(events.find(e => e.type === 'tool-call-streaming-start')).toStrictEqual({
       toolName: 'add',
       type: 'tool-call-streaming-start',
     })
 
-    expect(eventResult.find(e => e.type === 'tool-call')).toStrictEqual({
+    expect(events.find(e => e.type === 'tool-call')).toStrictEqual({
       args: '{"a":"114514","b":"1919810"}',
-      result: '2034324',
+      toolCallType: 'function',
       toolName: 'add',
       type: 'tool-call',
     })
 
-    expect(eventResult.find(e => e.type === 'tool-result')).toStrictEqual({
+    expect(events.find(e => e.type === 'tool-result')).toStrictEqual({
       args: {
         a: '114514',
         b: '1919810',
@@ -86,15 +118,20 @@ describe('@xsai/stream-text', async () => {
 
     const allSteps = await steps
 
+    const cleanToolCallId = (obj: object) => clean({
+      ...obj,
+      toolCallId: undefined,
+    })
+
     expect(allSteps.length).toBe(2)
-    expect(allSteps[0].toolCalls).toStrictEqual([
+    expect(allSteps[0].toolCalls.map(cleanToolCallId)).toStrictEqual([
       {
         args: '{"a":"114514","b":"1919810"}',
         toolCallType: 'function',
         toolName: 'add',
       },
     ])
-    expect(allSteps[0].toolResults).toStrictEqual([
+    expect(allSteps[0].toolResults.map(cleanToolCallId)).toStrictEqual([
       {
         args: {
           a: '114514',
