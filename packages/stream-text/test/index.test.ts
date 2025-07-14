@@ -49,23 +49,23 @@ describe('@xsai/stream-text', async () => {
     expect(events).toMatchSnapshot()
   })
 
-  const add = await tool({
-    description: 'Adds two numbers',
-    execute: ({ a, b }) => (Number.parseInt(a) + Number.parseInt(b)).toString(),
-    name: 'add',
-    parameters: object({
-      a: pipe(
-        string(),
-        description('First number'),
-      ),
-      b: pipe(
-        string(),
-        description('Second number'),
-      ),
-    }),
-  })
-
   it('basic tool calls', async () => {
+    const add = await tool({
+      description: 'Adds two numbers',
+      execute: ({ a, b }) => (Number.parseInt(a) + Number.parseInt(b)).toString(),
+      name: 'add',
+      parameters: object({
+        a: pipe(
+          string(),
+          description('First number'),
+        ),
+        b: pipe(
+          string(),
+          description('Second number'),
+        ),
+      }),
+    })
+
     const { fullStream, steps } = await streamText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
