@@ -2,6 +2,7 @@
 
 exports[`toJsonSchema > arktype 1`] = `
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "My neat object schema",
   "properties": {
     "myString": {
@@ -28,6 +29,7 @@ exports[`toJsonSchema > arktype 1`] = `
 
 exports[`toJsonSchema > arktype sync 1`] = `
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "My neat object schema",
   "properties": {
     "myString": {
@@ -218,7 +220,8 @@ exports[`toJsonSchema > valibot sync 1`] = `
 
 exports[`toJsonSchema > zod 1`] = `
 {
-  "$schema": "https://json-schema.org/draft-2020-12/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
   "description": "My neat object schema",
   "properties": {
     "myString": {
@@ -245,7 +248,7 @@ exports[`toJsonSchema > zod 1`] = `
 
 exports[`toJsonSchema > zod 2`] = `
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "My neat object schema",
   "properties": {
@@ -253,9 +256,13 @@ exports[`toJsonSchema > zod 2`] = `
       "type": "string",
     },
     "myUnion": {
-      "type": [
-        "number",
-        "boolean",
+      "anyOf": [
+        {
+          "type": "number",
+        },
+        {
+          "type": "boolean",
+        },
       ],
     },
   },
@@ -269,7 +276,8 @@ exports[`toJsonSchema > zod 2`] = `
 
 exports[`toJsonSchema > zod 3`] = `
 {
-  "$schema": "https://json-schema.org/draft-2020-12/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
   "properties": {
     "myString": {
       "type": "string",
@@ -295,7 +303,8 @@ exports[`toJsonSchema > zod 3`] = `
 
 exports[`toJsonSchema > zod sync 1`] = `
 {
-  "$schema": "https://json-schema.org/draft-2020-12/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
   "description": "My neat object schema",
   "properties": {
     "myString": {
@@ -322,7 +331,7 @@ exports[`toJsonSchema > zod sync 1`] = `
 
 exports[`toJsonSchema > zod sync 2`] = `
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "My neat object schema",
   "properties": {
@@ -330,9 +339,13 @@ exports[`toJsonSchema > zod sync 2`] = `
       "type": "string",
     },
     "myUnion": {
-      "type": [
-        "number",
-        "boolean",
+      "anyOf": [
+        {
+          "type": "number",
+        },
+        {
+          "type": "boolean",
+        },
       ],
     },
   },
@@ -346,7 +359,8 @@ exports[`toJsonSchema > zod sync 2`] = `
 
 exports[`toJsonSchema > zod sync 3`] = `
 {
-  "$schema": "https://json-schema.org/draft-2020-12/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
   "properties": {
     "myString": {
       "type": "string",
