@@ -30,11 +30,11 @@ export interface ImageURLorBase64 {
   url: string
 }
 
-export type Part =
-  | AudioPart
-  | ImagePart
-  | RefusalPart
-  | TextPart
+export type Part
+  = | AudioPart
+    | ImagePart
+    | RefusalPart
+    | TextPart
 
 export interface RefusalPart extends CommonPart<'refusal'> {
   refusal: string

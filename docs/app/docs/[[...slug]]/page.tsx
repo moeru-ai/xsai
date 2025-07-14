@@ -43,7 +43,7 @@ export default async (props: {
 
   const { owner, path, repo, sha } = {
     owner: 'moeru-ai',
-    path: `docs/content/docs/${page.file.path}`,
+    path: `docs/content/docs/${page.path}`,
     repo: 'xsai',
     sha: 'main',
   }
