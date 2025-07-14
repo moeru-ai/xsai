@@ -3,6 +3,8 @@ import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
+import type { StreamTextEvent } from '../src/types/event'
+
 import { streamText } from '../src'
 
 // make TS happy
@@ -15,6 +17,38 @@ declare global {
 }
 
 describe('@xsai/stream-text', async () => {
+  it('basic', async () => {
+    const { fullStream, steps, textStream } = await streamText({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          role: 'user',
+        },
+      ],
+      model: 'granite3.3:2b',
+      seed: 114514,
+    })
+
+    expect(steps).toMatchSnapshot()
+
+    let text = ''
+    for await (const t of textStream) {
+      text += t
+    }
+    expect(text).toBe('YES')
+
+    const events: StreamTextEvent[] = []
+    for await (const event of fullStream) {
+      events.push(event)
+    }
+    expect(events).toMatchSnapshot()
+  })
+
   const add = await tool({
     description: 'Adds two numbers',
     execute: ({ a, b }) => (Number.parseInt(a) + Number.parseInt(b)).toString(),
@@ -32,7 +66,7 @@ describe('@xsai/stream-text', async () => {
   })
 
   it('basic tool calls', async () => {
-    const { fullStream, messages, steps, textStream, usage } = await streamText({
+    const { fullStream, steps } = await streamText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
       messages: [
@@ -46,50 +80,66 @@ describe('@xsai/stream-text', async () => {
         },
       ],
       model: 'qwen3:0.6b',
-      seed: 114514,
+      seed: 1145141919810,
       toolChoice: 'required',
       tools: [add],
     })
 
-    const eventResult = []
+    const events: StreamTextEvent[] = []
     for await (const event of fullStream) {
-      eventResult.push(clean({
+      // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
+      events.push(clean({
         ...event,
         toolCallId: undefined,
-      }))
+      }) as unknown as StreamTextEvent)
     }
 
-    let textResult = ''
-    for await (const text of textStream) {
-      textResult += text
-    }
+    expect(events.find(e => e.type === 'tool-call-streaming-start')).toStrictEqual({
+      toolName: 'add',
+      type: 'tool-call-streaming-start',
+    })
 
-    expect(eventResult).toMatchSnapshot()
-    expect(textResult).toMatchSnapshot()
+    expect(events.find(e => e.type === 'tool-call')).toStrictEqual({
+      args: '{"a":"114514","b":"1919810"}',
+      toolCallType: 'function',
+      toolName: 'add',
+      type: 'tool-call',
+    })
 
-    const cleanedMessages = (await messages)
-      .map(message => clean({
-        ...message,
-        tool_call_id: undefined,
-      }))
+    expect(events.find(e => e.type === 'tool-result')).toStrictEqual({
+      args: {
+        a: '114514',
+        b: '1919810',
+      },
+      result: '2034324',
+      toolName: 'add',
+      type: 'tool-result',
+    })
 
-    expect(cleanedMessages).toMatchSnapshot()
+    const allSteps = await steps
 
-    const cleanedSteps = (await steps)
-      .map(({ toolCalls, toolResults, ...rest }) => ({
-        ...rest,
-        toolCalls: toolCalls.map(toolCall => clean({
-          ...toolCall,
-          toolCallId: undefined,
-        })),
-        toolResults: toolResults.map(toolResult => clean({
-          ...toolResult,
-          toolCallId: undefined,
-        })),
-      }))
+    const cleanToolCallId = (obj: object) => clean({
+      ...obj,
+      toolCallId: undefined,
+    })
 
-    expect(cleanedSteps).toMatchSnapshot()
-
-    expect(await usage).toMatchSnapshot()
+    expect(allSteps.length).toBe(2)
+    expect(allSteps[0].toolCalls.map(cleanToolCallId)).toStrictEqual([
+      {
+        args: '{"a":"114514","b":"1919810"}',
+        toolCallType: 'function',
+        toolName: 'add',
+      },
+    ])
+    expect(allSteps[0].toolResults.map(cleanToolCallId)).toStrictEqual([
+      {
+        args: {
+          a: '114514',
+          b: '1919810',
+        },
+        result: '2034324',
+        toolName: 'add',
+      },
+    ])
   })
 })
