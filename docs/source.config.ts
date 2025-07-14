@@ -1,6 +1,5 @@
 import { remarkMermaid } from '@theguild/remark-mermaid'
 import { rehypeCodeDefaultOptions } from 'fumadocs-core/mdx-plugins'
-import { remarkInstall } from 'fumadocs-docgen'
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config'
 import { transformerTwoslash } from 'fumadocs-twoslash'
 
@@ -13,6 +12,7 @@ export default defineConfig({
   mdxOptions: {
     rehypeCodeOptions: {
       inline: 'tailing-curly-colon',
+      langs: ['bash', 'js', 'jsx', 'ts', 'tsx'],
       themes: {
         dark: 'one-dark-pro',
         light: 'one-light',
@@ -23,7 +23,6 @@ export default defineConfig({
       ],
     },
     remarkPlugins: [
-      [remarkInstall, { persist: { id: 'package-manager' } }],
       remarkMermaid,
     ],
   },
