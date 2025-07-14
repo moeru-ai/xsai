@@ -26,20 +26,20 @@ catalogs:
       specifier: ^1.0.0
       version: 1.0.0
     arktype:
-      specifier: ^2.1.16
-      version: 2.1.16
+      specifier: ^2.1.20
+      version: 2.1.20
     effect:
-      specifier: ^3.14.5
-      version: 3.14.5
+      specifier: ^3.16.0
+      version: 3.16.13
     sury:
-      specifier: ^10.0.0-rc.4
-      version: 10.0.0-rc.4
+      specifier: ^10.0.0
+      version: 10.0.4
     valibot:
       specifier: ^1.0.0
       version: 1.0.0
     zod:
-      specifier: ^3.25.0
-      version: 3.25.20
+      specifier: ^3.25.0 || ^4.0.0
+      version: 4.0.5
     zod-to-json-schema:
       specifier: ^3.24.5
       version: 3.24.5
@@ -201,19 +201,19 @@ importers:
         version: link:../packages/utils-stream
       arktype:
         specifier: catalog:schema
-        version: 2.1.16
+        version: 2.1.20
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.6)
       effect:
         specifier: catalog:schema
-        version: 3.14.5
+        version: 3.16.13
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
       sury:
         specifier: catalog:schema
-        version: 10.0.0-rc.4
+        version: 10.0.4
       tailwindcss:
         specifier: ^4.1.11
         version: 4.1.11
@@ -231,7 +231,7 @@ importers:
         version: link:../packages-top/xsschema
       zod:
         specifier: catalog:schema
-        version: 3.25.20
+        version: 4.0.5
 
   packages-ext/compat:
     dependencies:
@@ -345,22 +345,22 @@ importers:
         version: 1.0.0(valibot@1.0.0(typescript@5.8.3))
       arktype:
         specifier: catalog:schema
-        version: 2.1.16
+        version: 2.1.20
       effect:
         specifier: catalog:schema
-        version: 3.14.5
+        version: 3.16.13
       sury:
         specifier: catalog:schema
-        version: 10.0.0-rc.4
+        version: 10.0.4
       valibot:
         specifier: catalog:schema
         version: 1.0.0(typescript@5.8.3)
       zod:
         specifier: catalog:schema
-        version: 3.25.20
+        version: 4.0.5
       zod-to-json-schema:
         specifier: catalog:schema
-        version: 3.24.5(zod@3.25.20)
+        version: 3.24.5(zod@4.0.5)
 
   packages/embed:
     dependencies:
@@ -579,11 +579,11 @@ packages:
   '@antfu/utils@8.1.1':
     resolution: {integrity: sha512-Mex9nXf9vR6AhcXmMrlz/HVgYYZpVGJ6YlPgwl7UnaFpnshXs6EK/oa5Gpf3CzENMjkvEx2tQtntGnb7UtSTOQ==}
 
-  '@ark/schema@0.45.6':
-    resolution: {integrity: sha512-uI/z6kAabOKeFxbJK2w26dD0FZLutL0LTw0o3EZsX+UC4exc34YUVkm7/wuUMvc5Z27IVDjoaZp9o7X4jOFAbg==}
+  '@ark/schema@0.46.0':
+    resolution: {integrity: sha512-c2UQdKgP2eqqDArfBqQIJppxJHvNNXuQPeuSPlDML4rjw+f1cu0qAlzOG4b8ujgm9ctIDWwhpyw6gjG5ledIVQ==}
 
-  '@ark/util@0.45.6':
-    resolution: {integrity: sha512-eI8Y1X0+271Q1p8qU39tkyrzIVMZIuymzixzVD0UL7k+HJaPhbbrjuKW/1CZzQ64tc+ugl7z2kP01YlAMA5h7A==}
+  '@ark/util@0.46.0':
+    resolution: {integrity: sha512-JPy/NGWn/lvf1WmGCPw2VGpBg5utZraE84I7wli18EDF3p3zc/e9WolT35tINeZO3l7C77SjqRJeAUoT0CvMRg==}
 
   '@babel/helper-string-parser@7.25.9':
     resolution: {integrity: sha512-4A/SCr/2KLd5jrtOMFzaKjVtAei3+2r/NChoBNoZ3EyP/+GlhoaEGoWOZUmFmoITP7zOJyHIMm+DYRd8o3PvHA==}
@@ -2704,8 +2704,8 @@ packages:
     resolution: {integrity: sha512-y+CcFFwelSXpLZk/7fMB2mUbGtX9lKycf1MWJ7CaTIERyitVlyQx6C+sxcROU2BAJ24OiZyK+8wj2i8AlBoS3A==}
     engines: {node: '>=10'}
 
-  arktype@2.1.16:
-    resolution: {integrity: sha512-KEuoEtpmbNVAIZqyLE+ox4Ga/6ED7Oe3Ra90sxGe4ZnufLz8AH49Xqis0i6oNEq23KmpduRLZRfS+iTAkjnfDw==}
+  arktype@2.1.20:
+    resolution: {integrity: sha512-IZCEEXaJ8g+Ijd59WtSYwtjnqXiwM8sWQ5EjGamcto7+HVN9eK0C4p0zDlCuAwWhpqr6fIBkxPuYDl4/Mcj/+Q==}
 
   array-buffer-byte-length@1.0.2:
     resolution: {integrity: sha512-LHE+8BuR7RYGDKvnrmcuSq3tDcKv9OFEXQt/HpbZhY7V6h0zlUXutnAD82GiFx9rdieCMjkvtcsPqBwgUl1Iiw==}
@@ -3258,8 +3258,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  effect@3.14.5:
-    resolution: {integrity: sha512-X3/365UyPLyXGgS+kcqh7OTDJJVmjC6n2dDPBSppjwOpS7PV5d/UdBStwvCfkuz7kFajwLkd5KFhjDUtTl5SRA==}
+  effect@3.16.13:
+    resolution: {integrity: sha512-xJDgOhD7+3qIY1d8PGfkaPZMfmdJuSp2XAQgc9dVF8pSl1FJL6WK4ZUpMh177R+GH8XgPloT8dlZsEYUYDo1Ag==}
 
   electron-to-chromium@1.5.102:
     resolution: {integrity: sha512-eHhqaja8tE/FNpIiBrvBjFV/SSKpyWHLvxuR9dPTdo+3V9ppdLmFB7ZZQ98qNovcngPLYIz0oOBF9P0FfZef5Q==}
@@ -5311,8 +5311,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  sury@10.0.0-rc.4:
-    resolution: {integrity: sha512-BnGcpxbhbtmJ2rNepTOIc8f1fFnVS2S7T5HLltFcmCNmij6iZq6JFERY0AxsdRd5PP0yp5FByiBngxo3TLokKQ==}
+  sury@10.0.4:
+    resolution: {integrity: sha512-dWKqOv+6D4AwGCjeKyaWr157RVBtvnPUp1I6RxReYD1dYuBl4k6oUd/t5INh1mBhUuAEC9SP+rZmIunCyNjXzQ==}
     peerDependencies:
       rescript: 11.x
     peerDependenciesMeta:
@@ -5727,9 +5727,6 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
-  zod@3.25.20:
-    resolution: {integrity: sha512-z03fqpTMDF1G02VLKUMt6vyACE7rNWkh3gpXVHgPTw28NPtDFRGvcpTtPwn2kMKtQ0idtYJUTxchytmnqYswcw==}
-
   zod@4.0.5:
     resolution: {integrity: sha512-/5UuuRPStvHXu7RS+gmvRf4NXrNxpSllGwDnCBcJZtQsKrviYXm54yDGV2KYNLT5kq0lHGcl7lqWJLgSaG+tgA==}
 
@@ -5803,11 +5800,11 @@ snapshots:
 
   '@antfu/utils@8.1.1': {}
 
-  '@ark/schema@0.45.6':
+  '@ark/schema@0.46.0':
     dependencies:
-      '@ark/util': 0.45.6
+      '@ark/util': 0.46.0
 
-  '@ark/util@0.45.6': {}
+  '@ark/util@0.46.0': {}
 
   '@babel/helper-string-parser@7.25.9': {}
 
@@ -7697,10 +7694,10 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  arktype@2.1.16:
+  arktype@2.1.20:
     dependencies:
-      '@ark/schema': 0.45.6
-      '@ark/util': 0.45.6
+      '@ark/schema': 0.46.0
+      '@ark/util': 0.46.0
 
   array-buffer-byte-length@1.0.2:
     dependencies:
@@ -8314,7 +8311,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  effect@3.14.5:
+  effect@3.16.13:
     dependencies:
       '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
@@ -11066,7 +11063,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  sury@10.0.0-rc.4: {}
+  sury@10.0.4: {}
 
   sync-child-process@1.0.2:
     dependencies:
@@ -11530,11 +11527,9 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.24.5(zod@3.25.20):
+  zod-to-json-schema@3.24.5(zod@4.0.5):
     dependencies:
-      zod: 3.25.20
-
-  zod@3.25.20: {}
+      zod: 4.0.5
 
   zod@4.0.5: {}
 

@@ -44,7 +44,7 @@
     "@valibot/to-json-schema": "catalog:schema",
     "arktype": "catalog:schema",
     "effect": "catalog:schema",
-    "sury": "^10.0.0-rc",
+    "sury": "catalog:schema",
     "zod": "catalog:schema",
     "zod-to-json-schema": "catalog:schema"
   },
