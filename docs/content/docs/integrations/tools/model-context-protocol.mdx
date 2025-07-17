@@ -10,28 +10,33 @@ npm i @modelcontextprotocol/sdk @xsai/tool
 ```
 
 ```ts
-import type { Client } from '@modelcontextprotocol/sdk'
-import { tool } from '@xsai/tool'
+import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import type { Tool } from "@xsai/shared-chat";
 
-export const getTools = async (mcpServers: Record<string, Client>) =>
+export const getTools = (mcpServers: Record<string, Client>) =>
   Promise.all(
     Object.entries(mcpServers)
-      .map(async ([serverName, client]) => client
-        .listTools()
-        .then(({ tools }) => tools.map(({ description, inputSchema, name }) => ({
-        execute: async args => client.callTool({
-          arguments: args as Record<string, unknown>,
-          name,
-        }).then(res => JSON.stringify(res)),
-        function: {
-          description,
-          name: name === serverName ? name : `${serverName}_${name}`,
-          parameters: inputSchema,
-          strict: true,
-        },
-        type: 'function',
-      })))),
-  ).then(tools => tools.flat())
+      .map(([serverName, client]) =>
+        client
+          .listTools()
+          .then(({ tools }) =>
+            tools.map(({ description, inputSchema, name }) => ({
+              execute: (args: unknown) =>
+                client.callTool({
+                  arguments: args as Record<string, unknown>,
+                  name,
+                }).then((res) => JSON.stringify(res)),
+              function: {
+                description,
+                name: name === serverName ? name : `${serverName}_${name}`,
+                parameters: inputSchema,
+                strict: true,
+              },
+              type: "function",
+            } satisfies Tool))
+          )
+      ),
+  ).then((tools) => tools.flat());
 ```
 
 ## Examples
