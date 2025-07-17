@@ -13,7 +13,7 @@ npm i @modelcontextprotocol/sdk @xsai/tool
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import type { Tool } from "@xsai/shared-chat";
 
-export const getTools = (mcpServers: Record<string, Client>) =>
+export const getTools = (mcpServers: Record<string, Client>): Promise<Tool[]> =>
   Promise.all(
     Object.entries(mcpServers)
       .map(([serverName, client]) =>
