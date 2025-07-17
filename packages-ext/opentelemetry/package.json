@@ -44,8 +44,8 @@
     "xsai": "workspace:"
   },
   "devDependencies": {
-    "@opentelemetry/auto-instrumentations-node": "^0.60.0",
-    "@opentelemetry/sdk-node": "^0.202.0",
-    "@voltagent/vercel-ai-exporter": "^0.1.4"
+    "@opentelemetry/auto-instrumentations-node": "^0.62.0",
+    "@opentelemetry/sdk-node": "^0.203.0",
+    "@voltagent/vercel-ai-exporter": "^0.1.5"
   }
 }
