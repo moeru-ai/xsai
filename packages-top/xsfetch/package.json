@@ -1,7 +1,7 @@
 {
   "name": "xsfetch",
   "type": "module",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "extra-small Fetch API with auto retry.",
   "author": "Moeru AI",
   "license": "MIT",
