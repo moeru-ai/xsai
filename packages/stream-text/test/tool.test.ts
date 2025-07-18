@@ -55,7 +55,6 @@ describe('@xsai/stream-text tool', async () => {
 
     const events: StreamTextEvent[] = []
     for await (const event of fullStream) {
-      console.log(event)
       // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
       events.push(clean({
         ...event,
