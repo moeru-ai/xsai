@@ -92,7 +92,7 @@ export interface OpenRouterOptions {
   transforms?: string[]
 }
 
-export const createOpenRouter = (apiKey: string, baseURL = '') => merge(
+export const createOpenRouter = (apiKey: string, baseURL = 'https://openrouter.ai/api/v1/') => merge(
   createMetadataProvider('openrouter'),
   {
     chat: (model: string, openRouterOptions?: OpenRouterOptions) => {
