@@ -187,6 +187,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
 
   try {
     await trampoline(async () => startStream())
+
+    eventCtrl?.close()
+    textCtrl?.close()
   }
   catch (err) {
     eventCtrl?.error(err)
@@ -195,11 +198,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     resultSteps.reject(err)
     resultMessages.reject(err)
     resultUsage.reject(err)
-  }
-  finally {
-    eventCtrl?.close()
-    textCtrl?.close()
-
+  } finally {
     resultSteps.resolve(steps)
     resultMessages.resolve(messages)
     resultUsage.resolve(usage)
