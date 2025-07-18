@@ -198,7 +198,8 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     resultSteps.reject(err)
     resultMessages.reject(err)
     resultUsage.reject(err)
-  } finally {
+  }
+  finally {
     resultSteps.resolve(steps)
     resultMessages.resolve(messages)
     resultUsage.resolve(usage)
