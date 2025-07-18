@@ -7,7 +7,7 @@ describe('@xsai/embed', () => {
     const { embeddings, usage } = await embedMany({
       baseURL: 'http://localhost:11434/v1/',
       input: ['why is the sky blue?', 'why is the grass green?'],
-      model: 'granite-embedding',
+      model: 'all-minilm',
     })
 
     expect(embeddings).toMatchSnapshot()

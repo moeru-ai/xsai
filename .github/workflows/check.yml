@@ -55,8 +55,8 @@ jobs:
         with:
           path: ~/.ollama
           key: ${{ runner.os }}-ollama
+      - run: ollama pull all-minilm
       - run: ollama pull granite3.3:2b
-      - run: ollama pull granite-embedding
       - run: ollama pull qwen3:0.6b
       - run: ollama serve > /dev/null 2>&1 &
 
