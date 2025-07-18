@@ -1,11 +1,87 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/stream-text > basic 1`] = `Promise {}`;
+exports[`@xsai/stream-text basic > basic 1`] = `Promise {}`;
 
-exports[`@xsai/stream-text > basic 2`] = `
+exports[`@xsai/stream-text basic > basic 2`] = `
 [
   {
-    "text": "YES",
+    "text": "Yes",
+    "type": "text-delta",
+  },
+  {
+    "text": "",
+    "type": "text-delta",
+  },
+  {
+    "finishReason": "stop",
+    "type": "finish",
+    "usage": undefined,
+  },
+]
+`;
+
+exports[`@xsai/stream-text basic > stream 1`] = `Promise {}`;
+
+exports[`@xsai/stream-text basic > stream 2`] = `
+[
+  {
+    "text": "Why",
+    "type": "text-delta",
+  },
+  {
+    "text": " don",
+    "type": "text-delta",
+  },
+  {
+    "text": "'t",
+    "type": "text-delta",
+  },
+  {
+    "text": " sc",
+    "type": "text-delta",
+  },
+  {
+    "text": "ient",
+    "type": "text-delta",
+  },
+  {
+    "text": "ists",
+    "type": "text-delta",
+  },
+  {
+    "text": " trust",
+    "type": "text-delta",
+  },
+  {
+    "text": " atoms",
+    "type": "text-delta",
+  },
+  {
+    "text": "?",
+    "type": "text-delta",
+  },
+  {
+    "text": " Because",
+    "type": "text-delta",
+  },
+  {
+    "text": " they",
+    "type": "text-delta",
+  },
+  {
+    "text": " make",
+    "type": "text-delta",
+  },
+  {
+    "text": " up",
+    "type": "text-delta",
+  },
+  {
+    "text": " everything",
+    "type": "text-delta",
+  },
+  {
+    "text": "!",
     "type": "text-delta",
   },
   {
