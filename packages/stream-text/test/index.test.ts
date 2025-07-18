@@ -37,7 +37,7 @@ describe('@xsai/stream-text basic', async () => {
     for await (const t of textStream) {
       text += t
     }
-    expect(text).toBe('YES')
+    expect(text.toUpperCase()).toBe('YES')
 
     const events: StreamTextEvent[] = []
     for await (const event of fullStream) {

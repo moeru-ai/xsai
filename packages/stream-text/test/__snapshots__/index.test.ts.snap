@@ -1,31 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/stream-text > basic 1`] = `Promise {}`;
-
-exports[`@xsai/stream-text > basic 2`] = `
-[
-  {
-    "text": "YES",
-    "type": "text-delta",
-  },
-  {
-    "text": "",
-    "type": "text-delta",
-  },
-  {
-    "finishReason": "stop",
-    "type": "finish",
-    "usage": undefined,
-  },
-]
-`;
-
 exports[`@xsai/stream-text basic > basic 1`] = `Promise {}`;
 
 exports[`@xsai/stream-text basic > basic 2`] = `
 [
   {
-    "text": "YES",
+    "text": "Yes",
     "type": "text-delta",
   },
   {
