@@ -65,7 +65,7 @@ describe('@xsai/stream-text basic', async () => {
 
     expect(steps).toMatchSnapshot()
 
-    let text = []
+    const text = []
     for await (const t of textStream) {
       text.push(t)
     }

@@ -36,8 +36,8 @@
   "scripts": {
     "build": "pkgroll",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@xsai/shared-chat": "workspace:~"
