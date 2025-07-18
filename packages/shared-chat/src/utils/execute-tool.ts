@@ -1,4 +1,4 @@
-import type { CompletionToolCall, CompletionToolResult, Message, Tool, ToolCall, ToolMessage, ToolMessagePart } from '../types'
+import type { CompletionToolCall, CompletionToolResult, Message, Tool, ToolCall, ToolMessage } from '../types'
 
 import { wrapToolResult } from './internal/wrap-tool-result'
 
@@ -9,14 +9,10 @@ export interface ExecuteToolOptions {
   tools?: Tool[]
 }
 
-// TODO: remove parsedArgs, result when 'stream-text/experimental' is stable
 export interface ExecuteToolResult {
   completionToolCall: CompletionToolCall
   completionToolResult: CompletionToolResult
   message: ToolMessage
-  parsedArgs: Record<string, unknown>
-  result: string | ToolMessagePart[]
-  toolName: string
 }
 
 export const executeTool = async ({ abortSignal, messages, toolCall, tools }: ExecuteToolOptions): Promise<ExecuteToolResult> => {
@@ -64,8 +60,5 @@ export const executeTool = async ({ abortSignal, messages, toolCall, tools }: Ex
     completionToolCall,
     completionToolResult,
     message,
-    parsedArgs,
-    result,
-    toolName,
   }
 }
