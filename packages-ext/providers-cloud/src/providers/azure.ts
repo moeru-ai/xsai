@@ -73,15 +73,17 @@ export const createAzure = async (options: CreateAzureOptions) => {
     // For the extra steps to obtain the bearer token, please refer to the following links:
     // https://learn.microsoft.com/en-us/azure/api-management/api-management-authenticate-authorize-azure-openai
     // https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#authentication
-    const token = `Bearer ${typeof options.apiKey === 'function' ? await options.apiKey() : options.apiKey}`
+    if (options.apiKey) {
+      const token = `Bearer ${typeof options.apiKey === 'function' ? await options.apiKey() : options.apiKey}`
 
-    init.headers ??= {}
-    if (Array.isArray(init.headers))
-      init.headers.push(['Authorization', token])
-    else if (init.headers instanceof Headers)
-      init.headers.append('Authorization', token)
-    else
-      init.headers.Authorization = token
+      init.headers ??= {}
+      if (Array.isArray(init.headers))
+        init.headers.push(['Authorization', token])
+      else if (init.headers instanceof Headers)
+        init.headers.append('Authorization', token)
+      else
+        init.headers.Authorization = token
+    }
 
     return globalThis.fetch(input, init)
   }
