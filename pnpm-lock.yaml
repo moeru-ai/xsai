@@ -7,11 +7,14 @@ settings:
 catalogs:
   default:
     '@moeru/eslint-config':
-      specifier: ^0.1.0-beta.5
-      version: 0.1.0-beta.5
+      specifier: ^0.1.0-beta.7
+      version: 0.1.0-beta.7
     '@moeru/std':
-      specifier: ^0.1.0-beta.5
-      version: 0.1.0-beta.5
+      specifier: ^0.1.0-beta.7
+      version: 0.1.0-beta.7
+    '@moeru/tsconfig':
+      specifier: ^0.1.0-beta.7
+      version: 0.1.0-beta.7
     '@vitest/coverage-v8':
       specifier: ^3.2.4
       version: 3.2.4
@@ -51,12 +54,12 @@ importers:
       '@antfu/eslint-config':
         specifier: ^4.16.2
         version: 4.16.2(@vue/compiler-sfc@3.5.13)(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(lightningcss@1.30.1)(sass-embedded@1.81.0)(terser@5.36.0))
-      '@importantimport/tsconfig':
-        specifier: ^1.0.0-beta.2
-        version: 1.0.0-beta.2
       '@moeru/eslint-config':
         specifier: 'catalog:'
-        version: 0.1.0-beta.5(@antfu/eslint-config@4.16.2(@vue/compiler-sfc@3.5.13)(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(lightningcss@1.30.1)(sass-embedded@1.81.0)(terser@5.36.0)))(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)
+        version: 0.1.0-beta.7(@antfu/eslint-config@4.16.2(@vue/compiler-sfc@3.5.13)(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(lightningcss@1.30.1)(sass-embedded@1.81.0)(terser@5.36.0)))(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)
+      '@moeru/tsconfig':
+        specifier: 'catalog:'
+        version: 0.1.0-beta.7
       '@pnpm/find-workspace-dir':
         specifier: ^1000.1.0
         version: 1000.1.0
@@ -266,7 +269,7 @@ importers:
     devDependencies:
       '@moeru/std':
         specifier: 'catalog:'
-        version: 0.1.0-beta.5
+        version: 0.1.0-beta.7
 
   packages-ext/shared-providers:
     dependencies:
@@ -330,7 +333,7 @@ importers:
     devDependencies:
       '@moeru/std':
         specifier: 'catalog:'
-        version: 0.1.0-beta.5
+        version: 0.1.0-beta.7
 
   packages-top/xsschema:
     devDependencies:
@@ -428,7 +431,7 @@ importers:
     devDependencies:
       '@moeru/std':
         specifier: 'catalog:'
-        version: 0.1.0-beta.5
+        version: 0.1.0-beta.7
 
   packages/shared-chat:
     dependencies:
@@ -509,7 +512,7 @@ importers:
     devDependencies:
       '@moeru/std':
         specifier: 'catalog:'
-        version: 0.1.0-beta.5
+        version: 0.1.0-beta.7
 
 packages:
 
@@ -1327,9 +1330,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@importantimport/tsconfig@1.0.0-beta.2':
-    resolution: {integrity: sha512-18mPKqsupk3L6hsTrQEA78MVGABBePVh616h3MNl3Hw6e2tt2i/rhYiVEEZjIdBKYyXch37ATz7LsQxW8ZP69A==}
-
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -1378,8 +1378,8 @@ packages:
   '@moeru-ai/cosine-similarity@1.0.0-beta.1':
     resolution: {integrity: sha512-rBBJWUBqivldEPDgj/aeG5kZ67Uz4boqkqcncf44fV3xOAhGEFI9MjDZzoSWjweP/sBqkUNA12N6Y5NgVi0NTA==}
 
-  '@moeru/eslint-config@0.1.0-beta.5':
-    resolution: {integrity: sha512-mm4JTq1+Ur5tvVQNwPuH5bMOiVRwoag9jOE07fYlNwJGyeunc9gMqWp7FsHu1SamZLXz3ArszPogPisbo4YcyA==}
+  '@moeru/eslint-config@0.1.0-beta.7':
+    resolution: {integrity: sha512-Yl/5noYB+7ggATRXErIMSMvRVEixTllaAjFogCmVQVkf3qbNyi9WzRB2ysGejCQnwuJZfvRFJ88bVa0knVtdxg==}
     hasBin: true
     peerDependencies:
       '@antfu/eslint-config': ^4.12.0
@@ -1389,8 +1389,11 @@ packages:
       eslint-plugin-oxlint:
         optional: true
 
-  '@moeru/std@0.1.0-beta.5':
-    resolution: {integrity: sha512-+/ex8ZExrboqpFDqiU5hJV1S5vH5ZUw6SPciOZm4VuwTvU/wcAq3+trm6RJqnHN7/+beHeYKHsBZAzH7gSPDaQ==}
+  '@moeru/std@0.1.0-beta.7':
+    resolution: {integrity: sha512-zMo9Bt51SQPNcCa81yEgmcwCe+s5s7+dc8khwY3yKg0fzQgfCyqQ30TAvOmlKw61TS8SGqZxDlYdTEhxYUd+oQ==}
+
+  '@moeru/tsconfig@0.1.0-beta.7':
+    resolution: {integrity: sha512-ZmO88hK3cYa3Gmdm8LHdiwzYX6IK1WrIg3BD4BUjqINbG8lGv2cHV22OpRL866gniacN0P/26vRoHPNOCFEfZw==}
 
   '@next/env@15.3.5':
     resolution: {integrity: sha512-7g06v8BUVtN2njAX/r8gheoVffhiKFVt4nx74Tt6G4Hqw9HCLYQVx/GkH2qHvPtAHZaUNZ0VXAa0pQP6v1wk7g==}
@@ -3451,10 +3454,6 @@ packages:
     peerDependencies:
       eslint: '>=2.0.0'
 
-  eslint-plugin-prefer-let@4.0.0:
-    resolution: {integrity: sha512-X4ep5PMO1320HKaNC9DM5+p6XvOhwv+RcqGjhv3aiw9iAtHhiFtdIUB5l0Zya0iM22ys2BGKzrNI9Xpw/ZHooQ==}
-    engines: {node: '>=0.10.0'}
-
   eslint-plugin-regexp@2.9.0:
     resolution: {integrity: sha512-9WqJMnOq8VlE/cK+YAo9C9YHhkOtcEtEk9d12a+H7OSZFwlpI6stiHmYPGa2VE0QhTzodJyhlyprUaXDZLgHBw==}
     engines: {node: ^18 || >=20}
@@ -4937,10 +4936,6 @@ packages:
   remark@15.0.1:
     resolution: {integrity: sha512-Eht5w30ruCXgFmxVUSlNWQ9iiimq07URKeFS3hNc8cUWy1llX4KDWfyEDZRycMc+znsN9Ux5/tJ/BFdgdOwA3A==}
 
-  requireindex@1.2.0:
-    resolution: {integrity: sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==}
-    engines: {node: '>=0.10.5'}
-
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
@@ -6316,8 +6311,6 @@ snapshots:
   '@img/sharp-win32-x64@0.34.3':
     optional: true
 
-  '@importantimport/tsconfig@1.0.0-beta.2': {}
-
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -6396,23 +6389,24 @@ snapshots:
 
   '@moeru-ai/cosine-similarity@1.0.0-beta.1': {}
 
-  '@moeru/eslint-config@0.1.0-beta.5(@antfu/eslint-config@4.16.2(@vue/compiler-sfc@3.5.13)(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(lightningcss@1.30.1)(sass-embedded@1.81.0)(terser@5.36.0)))(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)':
+  '@moeru/eslint-config@0.1.0-beta.7(@antfu/eslint-config@4.16.2(@vue/compiler-sfc@3.5.13)(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(lightningcss@1.30.1)(sass-embedded@1.81.0)(terser@5.36.0)))(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
       '@antfu/eslint-config': 4.16.2(@vue/compiler-sfc@3.5.13)(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(lightningcss@1.30.1)(sass-embedded@1.81.0)(terser@5.36.0))
       '@masknet/eslint-plugin': 0.3.0(eslint@9.31.0(jiti@2.4.2))
-      '@moeru/std': 0.1.0-beta.5
+      '@moeru/std': 0.1.0-beta.7
       eslint: 9.31.0(jiti@2.4.2)
       eslint-flat-config-utils: 2.1.0
       eslint-plugin-de-morgan: 1.3.0(eslint@9.31.0(jiti@2.4.2))
       eslint-plugin-perfectionist: 4.15.0(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)
       eslint-plugin-prefer-arrow: 1.2.3(eslint@9.31.0(jiti@2.4.2))
-      eslint-plugin-prefer-let: 4.0.0
       eslint-plugin-sonarjs: 3.0.4(eslint@9.31.0(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  '@moeru/std@0.1.0-beta.5': {}
+  '@moeru/std@0.1.0-beta.7': {}
+
+  '@moeru/tsconfig@0.1.0-beta.7': {}
 
   '@next/env@15.3.5': {}
 
@@ -8643,10 +8637,6 @@ snapshots:
     dependencies:
       eslint: 9.31.0(jiti@2.4.2)
 
-  eslint-plugin-prefer-let@4.0.0:
-    dependencies:
-      requireindex: 1.2.0
-
   eslint-plugin-regexp@2.9.0(eslint@9.31.0(jiti@2.4.2)):
     dependencies:
       '@eslint-community/eslint-utils': 4.7.0(eslint@9.31.0(jiti@2.4.2))
@@ -10620,8 +10610,6 @@ snapshots:
       unified: 11.0.5
     transitivePeerDependencies:
       - supports-color
-
-  requireindex@1.2.0: {}
 
   resolve-from@4.0.0: {}
 

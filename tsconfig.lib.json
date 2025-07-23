@@ -1,5 +1,5 @@
 {
-  "extends": "@importantimport/tsconfig/app.json",
+  "extends": "@moeru/tsconfig",
   "include": [
     "examples/**/src",
     "packages/**/src",

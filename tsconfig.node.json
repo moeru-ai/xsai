@@ -1,6 +1,4 @@
 {
-  "extends": [
-    "@importantimport/tsconfig/node.json"
-  ],
+  "extends": "@moeru/tsconfig/tsconfig.node.json",
   "include": ["**/*.config.ts", "**/scripts/*.ts"]
 }

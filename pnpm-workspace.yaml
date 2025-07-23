@@ -6,8 +6,9 @@ packages:
   - packages-top/*
 
 catalog:
-  '@moeru/eslint-config': &std ^0.1.0-beta.5
+  '@moeru/eslint-config': &std ^0.1.0-beta.7
   '@moeru/std': *std
+  '@moeru/tsconfig': *std
   '@vitest/coverage-v8': &vitest ^3.2.4
   type-fest: ^4.41.0
   vitest: *vitest
