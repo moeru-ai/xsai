@@ -71,7 +71,6 @@ const convertImage = (b64_json: string) => {
   const mimeType = mimeTypes[key ?? 'iVBORw0KGgo']
 
   return {
-    // eslint-disable-next-line @masknet/string-no-data-url
     base64: `data:${mimeType};base64,${b64_json}`,
     mimeType,
   }

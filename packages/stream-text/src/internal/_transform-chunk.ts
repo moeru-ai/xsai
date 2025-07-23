@@ -1,4 +1,3 @@
-/* eslint-disable @masknet/string-no-data-url */
 import type { FinishReason, ToolCall, Usage } from '@xsai/shared-chat'
 
 export interface StreamTextChunkResult {
