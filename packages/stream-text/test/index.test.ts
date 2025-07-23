@@ -4,15 +4,6 @@ import type { StreamTextEvent } from '../src/types/event'
 
 import { streamText } from '../src'
 
-// make TS happy
-// https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
-declare global {
-  interface ReadableStream<R = any> {
-    // eslint-disable-next-line ts/method-signature-style
-    [Symbol.asyncIterator](): AsyncIterableIterator<R>
-  }
-}
-
 describe('@xsai/stream-text basic', async () => {
   it('basic', async () => {
     const { fullStream, steps, textStream } = await streamText({

@@ -3,15 +3,6 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { streamObject } from '../src'
 
-// make TS happy
-// https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility
-declare global {
-  interface ReadableStream<R = any> {
-    // eslint-disable-next-line ts/method-signature-style
-    [Symbol.asyncIterator](): AsyncIterableIterator<R>
-  }
-}
-
 type ExtractReadableStream<T> = T extends ReadableStream<infer U> ? U : never
 
 describe('@xsai/stream-object', () => {
