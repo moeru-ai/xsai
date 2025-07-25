@@ -78,6 +78,7 @@ describe('@xsai/generate-text', () => {
       toolCallId: undefined,
     })
 
+    console.log(steps)
     expect(steps.length).toBe(2)
     expect(steps[0].toolCalls.map(cleanToolCallId)).toStrictEqual([
       {
