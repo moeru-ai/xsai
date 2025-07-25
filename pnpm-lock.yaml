@@ -236,19 +236,6 @@ importers:
         specifier: catalog:schema
         version: 4.0.5
 
-  packages-ext/compat:
-    dependencies:
-      xsai:
-        specifier: workspace:~
-        version: link:../../packages-top/xsai
-      xsschema:
-        specifier: workspace:~
-        version: link:../../packages-top/xsschema
-    devDependencies:
-      '@moeru-ai/cosine-similarity':
-        specifier: ^1.0.0-beta.1
-        version: 1.0.0-beta.1
-
   packages-ext/providers-cloud:
     dependencies:
       '@xsai-ext/shared-providers':
@@ -1374,9 +1361,6 @@ packages:
 
   '@mermaid-js/parser@0.3.0':
     resolution: {integrity: sha512-HsvL6zgE5sUPGgkIDlmAWR1HTNHz2Iy11BAWPTa4Jjabkpguy4Ze2gzfLrg6pdRuBvFwgUYyxiaNqZwrEEXepA==}
-
-  '@moeru-ai/cosine-similarity@1.0.0-beta.1':
-    resolution: {integrity: sha512-rBBJWUBqivldEPDgj/aeG5kZ67Uz4boqkqcncf44fV3xOAhGEFI9MjDZzoSWjweP/sBqkUNA12N6Y5NgVi0NTA==}
 
   '@moeru/eslint-config@0.1.0-beta.7':
     resolution: {integrity: sha512-Yl/5noYB+7ggATRXErIMSMvRVEixTllaAjFogCmVQVkf3qbNyi9WzRB2ysGejCQnwuJZfvRFJ88bVa0knVtdxg==}
@@ -6386,8 +6370,6 @@ snapshots:
   '@mermaid-js/parser@0.3.0':
     dependencies:
       langium: 3.0.0
-
-  '@moeru-ai/cosine-similarity@1.0.0-beta.1': {}
 
   '@moeru/eslint-config@0.1.0-beta.7(@antfu/eslint-config@4.16.2(@vue/compiler-sfc@3.5.13)(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.13)(lightningcss@1.30.1)(sass-embedded@1.81.0)(terser@5.36.0)))(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
