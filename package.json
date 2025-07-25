@@ -6,8 +6,8 @@
   "packageManager": "pnpm@10.10.0",
   "repository": "github:moeru-ai/xsai",
   "scripts": {
-    "build": "pnpm -r build",
-    "build:packages": "pnpm -rF \"./packages/*\" -F \"./packages-ext/*\" -F \"./packages-top/*\" build",
+    "build": "turbo build",
+    "build:packages": "turbo -F=!./docs build",
     "bump": "bumpp",
     "docs:dev": "pnpm -rF @xsai/docs dev",
     "lint": "eslint --flag unstable_native_nodejs_ts_config --cache .",
@@ -28,6 +28,7 @@
     "eslint": "^9.31.0",
     "pkgroll": "^2.14.3",
     "tsx": "^4.20.3",
+    "turbo": "^2.5.5",
     "typescript": "^5.8.3",
     "vitest": "catalog:"
   }
