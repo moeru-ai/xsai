@@ -7,7 +7,7 @@
   "repository": "github:moeru-ai/xsai",
   "scripts": {
     "build": "turbo build",
-    "build:packages": "turbo -F \"./packages/*\" -F \"./packages-ext/*\" -F \"./packages-top/*\" build",
+    "build:packages": "turbo -F=!./docs build",
     "bump": "bumpp",
     "docs:dev": "pnpm -rF @xsai/docs dev",
     "lint": "eslint --flag unstable_native_nodejs_ts_config --cache .",
