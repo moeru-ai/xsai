@@ -8,6 +8,8 @@ import type { StreamTextEvent } from './types/event'
 import { DelayedPromise } from './internal/_delayed-promise'
 import { transformChunk } from './internal/_transform-chunk'
 
+export type * from './types/event'
+
 export interface StreamTextOptions extends ChatOptions {
   /** @default 1 */
   maxSteps?: number
