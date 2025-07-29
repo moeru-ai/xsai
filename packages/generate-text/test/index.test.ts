@@ -68,7 +68,7 @@ describe('@xsai/generate-text', () => {
         },
       ],
       model: 'qwen3:0.6b',
-      seed: 114514,
+      seed: 1145141919810,
       toolChoice: 'required',
       tools: [add],
     })
