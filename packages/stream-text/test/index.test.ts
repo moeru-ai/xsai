@@ -32,6 +32,10 @@ describe('@xsai/stream-text basic', async () => {
 
     const events: StreamTextEvent[] = []
     for await (const event of fullStream) {
+      // Yes => YES
+      if (event.type === 'text-delta')
+        event.text = event.text.toUpperCase()
+
       events.push(event)
     }
     expect(events).toMatchSnapshot()
