@@ -5,7 +5,7 @@ exports[`@xsai/stream-text basic > basic 1`] = `Promise {}`;
 exports[`@xsai/stream-text basic > basic 2`] = `
 [
   {
-    "text": "Yes",
+    "text": "YES",
     "type": "text-delta",
   },
   {
