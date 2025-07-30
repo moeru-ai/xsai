@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+
 import { createRelativeLink } from 'fumadocs-ui/mdx'
 import {
   DocsBody,
@@ -12,7 +14,7 @@ import { getMDXComponents } from '@/mdx-components'
 
 export const generateMetadata = async (props: {
   params: Promise<{ slug?: string[] }>
-}) => {
+}): Promise<Metadata> => {
   const params = await props.params
   const page = source.getPage(params.slug)
   if (!page)
@@ -22,6 +24,7 @@ export const generateMetadata = async (props: {
 
   return {
     description: page.data.description,
+    metadataBase: new URL('https://xsai.js.org'),
     openGraph: { images: image },
     title: page.data.title,
   }
