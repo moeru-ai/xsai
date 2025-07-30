@@ -19,10 +19,12 @@ export const getLLMText = async (page: InferPageType<typeof source>) => {
     value: page.data.content,
   })
 
-  return `# ${page.data.title}
-URL: ${page.url}
-
-${page.data.description}
-
-${processed.value.toString()}`
+  return [
+    `# ${page.data.title}`,
+    `URL: ${page.url}`,
+    page.data.description != null
+      ? `\n${page.data.description}\n`
+      : '',
+    processed.value.toString(),
+  ].join('\n')
 }

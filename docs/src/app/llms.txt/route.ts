@@ -11,12 +11,17 @@ export const GET = async () => {
   for (const page of source.getPages()) {
     const dir = page.slugs[0]
     const list = map.get(dir) ?? []
-    list.push(`- [${page.data.title}](${page.url}): ${page.data.description}`)
+    list.push(page.data.description != null
+      ? `- [${page.data.title}](${page.url}): ${page.data.description}`
+      : `- [${page.data.title}](${page.url})`,
+    )
     map.set(dir, list)
   }
 
   for (const [key, value] of map) {
-    scanned.push(`## ${key}`)
+    if (key != null)
+      scanned.push(`## ${key}`)
+
     scanned.push(value.join('\n'))
   }
 
