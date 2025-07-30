@@ -4,4 +4,7 @@ import { source } from '@/lib/source'
 
 export const revalidate = false
 
-export const { staticGET: GET } = createFromSource(source)
+export const { staticGET: GET } = createFromSource(source, {
+  // https://docs.orama.com/open-source/supported-languages
+  language: 'english',
+})

@@ -5,10 +5,10 @@ import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import { baseOptions } from '@/app/layout.config'
 import { source } from '@/lib/source'
 
-const options = { ...baseOptions, links: [] }
-
-export default ({ children }: PropsWithChildren) => (
-  <DocsLayout tree={source.pageTree} {...options}>
+const Layout = ({ children }: PropsWithChildren) => (
+  <DocsLayout tree={source.pageTree} {...baseOptions}>
     {children}
   </DocsLayout>
 )
+
+export default Layout

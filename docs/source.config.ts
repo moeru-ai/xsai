@@ -1,29 +1,38 @@
-import { remarkMermaid } from '@theguild/remark-mermaid'
 import { rehypeCodeDefaultOptions } from 'fumadocs-core/mdx-plugins'
-import { defineConfig, defineDocs } from 'fumadocs-mdx/config'
+import {
+  defineConfig,
+  defineDocs,
+  frontmatterSchema,
+  metaSchema,
+} from 'fumadocs-mdx/config'
 import { transformerTwoslash } from 'fumadocs-twoslash'
+import { createFileSystemTypesCache } from 'fumadocs-twoslash/cache-fs'
 
-export const { docs, meta } = defineDocs({
-  dir: 'content/docs',
+// You can customize Zod schemas for frontmatter and `meta.json` here
+// see https://fumadocs.vercel.app/docs/mdx/collections#define-docs
+export const docs = defineDocs({
+  docs: {
+    schema: frontmatterSchema,
+  },
+  meta: {
+    schema: metaSchema,
+  },
 })
 
 export default defineConfig({
-  lastModifiedTime: 'git',
   mdxOptions: {
     rehypeCodeOptions: {
-      inline: 'tailing-curly-colon',
       langs: ['bash', 'js', 'jsx', 'ts', 'tsx'],
       themes: {
-        dark: 'one-dark-pro',
-        light: 'one-light',
+        dark: 'github-dark',
+        light: 'github-light',
       },
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
-        transformerTwoslash(),
+        transformerTwoslash({
+          typesCache: createFileSystemTypesCache(),
+        }),
       ],
     },
-    remarkPlugins: [
-      remarkMermaid,
-    ],
   },
 })

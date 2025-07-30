@@ -16,4 +16,4 @@ jobs:
     uses: importantimport/.github/.github/workflows/pnpm-gh-pages-artifact.yml@main
     with:
       build: pnpm -r build
-      path: docs/dist
+      path: docs/out

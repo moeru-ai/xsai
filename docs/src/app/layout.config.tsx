@@ -1,6 +1,6 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 
-import pkg from '../package.json' with { type: 'json' }
+import pkg from '../../package.json' with { type: 'json' }
 
 /**
  * Shared layout configurations
@@ -11,18 +11,7 @@ import pkg from '../package.json' with { type: 'json' }
  */
 export const baseOptions: BaseLayoutProps = {
   githubUrl: 'https://github.com/moeru-ai/xsai',
-  links: [
-    {
-      active: 'nested-url',
-      text: 'Docs',
-      url: '/docs',
-    },
-    {
-      active: 'none',
-      text: 'Blog',
-      url: 'https://blog.moeru.ai',
-    },
-  ],
+  links: [],
   nav: {
     title: (
       <div className="prose flex items-center justify-center gap-3">
