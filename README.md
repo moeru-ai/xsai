@@ -49,14 +49,14 @@ How xsAI small? you can [try install it with pkg-size.dev](https://pkg-size.dev/
 
 | Package | Installed size | Bundled size | Gzipped size |
 |---|---|---|---|
-| xsai@0.2.0 | 132KB | 20KB | 7KB |
-| ai@4.3.13 | 10648KB | 240KB | 62KB |
+| xsai@0.3.3 | 131KB | 20KB | 6.9KB |
+| ai@4.3.19 | 13581KB | 242KB | 62KB |
 
-xsAI reduces the installation size **80x** and the bundle size **12x**.
+xsAI reduces the installation size **100x** and the bundle size **12x**.
 
 Notably, this contains dependencies introduced to support tool calls and structured output.
 
-If you only need the basic `generateText`, `@xsai/generate-text@0.1.2` is only 21KB install size and 3.5KB bundle size (1.6KB gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
+If you only need the basic `generateText`, `@xsai/generate-text@0.3.3` is only 21KB install size and 3.5KB bundle size (1.6KB gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
 
 ### Runtime-agnostic
 
