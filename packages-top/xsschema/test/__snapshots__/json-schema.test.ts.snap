@@ -1,0 +1,67 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`strictJsonSchema > basic 1`] = `
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "description": "My neat object schema",
+  "properties": {
+    "myString": {
+      "type": "string",
+    },
+    "myUnion": {
+      "anyOf": [
+        {
+          "type": "number",
+        },
+        {
+          "type": "boolean",
+        },
+      ],
+    },
+  },
+  "required": [
+    "myString",
+    "myUnion",
+  ],
+  "type": "object",
+}
+`;
+
+exports[`strictJsonSchema > nested 1`] = `
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "foo": {
+      "additionalProperties": false,
+      "properties": {
+        "bar": {
+          "type": "string",
+        },
+        "baz": {
+          "additionalProperties": false,
+          "properties": {
+            "qux": {
+              "type": "string",
+            },
+          },
+          "required": [
+            "qux",
+          ],
+          "type": "object",
+        },
+      },
+      "required": [
+        "bar",
+        "baz",
+      ],
+      "type": "object",
+    },
+  },
+  "required": [
+    "foo",
+  ],
+  "type": "object",
+}
+`;
