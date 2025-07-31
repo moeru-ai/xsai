@@ -5,6 +5,6 @@ export default defineConfig({
 })
   .append({
     ignores: [
-      'docs/components/ui/**/*.tsx',
+      'docs/src/components/ui/**/*.tsx',
     ],
   })
