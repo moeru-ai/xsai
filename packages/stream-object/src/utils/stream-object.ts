@@ -17,6 +17,8 @@ export interface StreamObjectOptions<T extends Schema> extends StreamTextOptions
   schema: T
   schemaDescription?: string
   schemaName?: string
+  /** @default true */
+  strict?: boolean
 }
 
 export interface StreamObjectResult<T extends Schema> extends StreamTextResult {
@@ -40,10 +42,10 @@ export async function streamObject<T extends Schema>(
   options: StreamObjectOptions<T>
     & { output?: 'array' | 'object' },
 ): Promise<StreamObjectResult<T>> {
-  const { schema: schemaValidator } = options
+  let schema = await toJsonSchema(options.schema)
 
-  let schema = await toJsonSchema(schemaValidator)
-    .then(schema => strictJsonSchema(schema))
+  if (options.strict !== false)
+    schema = strictJsonSchema(schema)
 
   if (options.output === 'array')
     schema = wrap(schema)
@@ -55,13 +57,14 @@ export async function streamObject<T extends Schema>(
         description: options.schemaDescription,
         name: options.schemaName ?? 'json_schema',
         schema,
-        strict: true,
+        strict: options.strict ?? true,
       },
       type: 'json_schema',
     },
     schema: undefined,
     schemaDescription: undefined,
     schemaName: undefined,
+    strict: undefined,
   }).then(({ textStream, ...rest }) => {
     let elementStream: ReadableStream<Infer<T>> | undefined
     let partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> | undefined

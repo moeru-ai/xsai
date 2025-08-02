@@ -10,6 +10,8 @@ export interface GenerateObjectOptions<T extends Schema> extends GenerateTextOpt
   schema: T
   schemaDescription?: string
   schemaName?: string
+  /** @default true */
+  strict?: boolean
 }
 
 export type GenerateObjectResult<O> = GenerateTextResult & { object: O }
@@ -21,10 +23,10 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
 export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<Infer<T>>>
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output?: GenerateObjectOutputOption }) {
-  const { schema: schemaValidator } = options
+  let schema = await toJsonSchema(options.schema)
 
-  let schema = await toJsonSchema(schemaValidator)
-    .then(schema => strictJsonSchema(schema))
+  if (options.strict !== false)
+    schema = strictJsonSchema(schema)
 
   if (options.output === 'array')
     schema = wrap(schema)
@@ -36,13 +38,14 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
         description: options.schemaDescription,
         name: options.schemaName ?? 'json_schema',
         schema,
-        strict: true,
+        strict: options.strict ?? true,
       },
       type: 'json_schema',
     },
     schema: undefined, // Remove schema from options
     schemaDescription: undefined, // Remove schemaDescription from options
     schemaName: undefined, // Remove schemaName from options
+    strict: undefined, // Remove strict from options
   }).then(async ({ finishReason, messages, steps, text, toolCalls, toolResults, usage }) => {
     const json: unknown = JSON.parse(text!)
 
@@ -52,7 +55,7 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
         messages,
         object: await Promise.all((json as { elements: InferIn<T>[] })
           .elements
-          .map(async element => validate(schemaValidator, element))),
+          .map(async element => validate(options.schema, element))),
         steps,
         text,
         toolCalls,
