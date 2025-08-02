@@ -8,15 +8,18 @@ export interface RawToolOptions<T = unknown> {
   execute: (input: T, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
   name: string
   parameters: JsonSchema
+  strict?: boolean
 }
 
-export const rawTool = <T = unknown>({ description, execute, name, parameters }: RawToolOptions<T>): Tool => ({
+export const rawTool = <T = unknown>({ description, execute, name, parameters, strict }: RawToolOptions<T>): Tool => ({
   execute: execute as Tool['execute'],
   function: {
     description,
     name,
-    parameters: strictJsonSchema(parameters) as Record<string, unknown>,
-    strict: true,
+    parameters: (strict !== false
+      ? strictJsonSchema(parameters)
+      : parameters) as Record<string, unknown>,
+    strict: strict ?? true,
   },
   type: 'function',
 })
