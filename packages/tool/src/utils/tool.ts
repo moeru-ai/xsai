@@ -8,9 +8,11 @@ export interface ToolOptions<T extends Schema> {
   execute: (input: InferIn<T>, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
   name: string
   parameters: T
+  /** @default true */
+  strict?: boolean
 }
 
-export const tool = async <T extends Schema>({ description, execute, name, parameters }: ToolOptions<T>): Promise<Tool> => {
+export const tool = async <T extends Schema>({ description, execute, name, parameters, strict }: ToolOptions<T>): Promise<Tool> => {
   const schema = await toJsonSchema(parameters)
 
   return {
@@ -18,8 +20,10 @@ export const tool = async <T extends Schema>({ description, execute, name, param
     function: {
       description,
       name,
-      parameters: strictJsonSchema(schema) as Record<string, unknown>,
-      strict: true,
+      parameters: (strict !== false
+        ? strictJsonSchema(schema)
+        : schema) as Record<string, unknown>,
+      strict: strict ?? true,
     },
     type: 'function',
   }
