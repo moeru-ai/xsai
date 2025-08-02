@@ -1,7 +1,7 @@
 {
   "name": "@xsai/utils-reasoning",
   "type": "module",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "extra-small AI SDK for Browser, Node.js, Deno, Bun or Edge Runtime.",
   "author": "Moeru AI",
   "license": "MIT",
