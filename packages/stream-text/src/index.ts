@@ -102,6 +102,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
           textCtrl?.error(reason)
         },
         close: () => {},
+        // eslint-disable-next-line sonarjs/cognitive-complexity
         write: (chunk) => {
           if (chunk.usage)
             pushUsage(chunk.usage)
@@ -111,6 +112,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             return
 
           const choice = chunk.choices[0]
+
+          if (choice.delta.reasoning_content != null)
+            pushEvent({ text: choice.delta.reasoning_content, type: 'reasoning-delta' })
 
           if (choice.finish_reason != null)
             finishReason = choice.finish_reason

@@ -10,6 +10,7 @@ export type AssistantMessagePart = RefusalPart | TextPart
 
 export interface AssistantMessageResponse extends Omit<AssistantMessage, 'content'> {
   content?: string
+  reasoning_content?: string
 }
 
 export interface CommonMessage<T extends string, P extends Part> {

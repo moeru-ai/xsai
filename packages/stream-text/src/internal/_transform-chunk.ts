@@ -4,6 +4,7 @@ export interface StreamTextChunkResult {
   choices: {
     delta: {
       content?: string
+      reasoning_content?: string
       refusal?: string
       role: 'assistant'
       tool_calls?: ToolCall[]
