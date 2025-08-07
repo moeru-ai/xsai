@@ -30,6 +30,7 @@ export interface GenerateTextResponse {
 export interface GenerateTextResult {
   finishReason: FinishReason
   messages: Message[]
+  reasoningText?: string
   steps: CompletionStep<true>[]
   text?: string
   toolCalls: CompletionToolCall[]
@@ -94,6 +95,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         return {
           finishReason,
           messages,
+          reasoningText: message.reasoning_content,
           steps,
           text: message.content,
           toolCalls,
