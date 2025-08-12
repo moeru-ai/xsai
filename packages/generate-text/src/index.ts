@@ -121,10 +121,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         })
         toolCalls.push(completionToolCall)
         toolResults.push(completionToolResult)
-        messages.push(clean({
-          ...message,
-          reasoning_content: undefined,
-        }))
+        messages.push(message)
       }
 
       const step: CompletionStep<true> = {
