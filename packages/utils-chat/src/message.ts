@@ -1,4 +1,4 @@
-import type { AssistantMessage, ImageContentPart, Message, SystemMessage, TextContentPart, ToolCall, ToolMessage, UserMessage } from '@xsai/shared-chat'
+import type { AssistantMessage, ImageContentPart, Message, RefusalContentPart, SystemMessage, TextContentPart, ToolCall, ToolMessage, UserMessage } from '@xsai/shared-chat'
 
 export const messages = (...messages: Message[]): Message[] => messages
 
@@ -11,7 +11,7 @@ export const textPart = (text: string): TextContentPart => ({ text, type: 'text'
 export const imagePart = (url: string): ImageContentPart => ({ image_url: { url }, type: 'image_url' })
 
 export const isToolCall = (content: AssistantMessage['content'] | ToolCall | ToolCall[]): content is ToolCall | ToolCall[] => {
-  const isElementToolCallLike = (c: AssistantMessage['content'] | Omit<NonNullable<AssistantMessage['content']>, string>[number] | ToolCall | ToolCall[]) =>
+  const isElementToolCallLike = (c: AssistantMessage['content'] | RefusalContentPart | string | TextContentPart | ToolCall | ToolCall[]) =>
     (typeof c === 'object'
       && (
         ('type' in c && c.type === 'function')
