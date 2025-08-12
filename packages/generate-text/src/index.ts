@@ -1,6 +1,6 @@
-import type { AssistantMessageResponse, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Usage } from '@xsai/shared-chat'
 
-import { responseJSON, trampoline } from '@xsai/shared'
+import { clean, responseJSON, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
@@ -17,7 +17,12 @@ export interface GenerateTextResponse {
   choices: {
     finish_reason: FinishReason
     index: number
-    message: AssistantMessageResponse
+    message: Omit<AssistantMessage, 'content' | 'name'> & {
+      content?: string
+      /** @remarks OpenAI does not support this, but LiteLLM / DeepSeek does. */
+      reasoning_content?: string
+    }
+    refusal?: string
   }[]
   created: number
   id: string
@@ -75,7 +80,10 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         toolCallsLength: msgToolCalls.length,
       })
 
-      messages.push(message)
+      messages.push(clean({
+        ...message,
+        reasoning_content: undefined,
+      }))
 
       if (finishReason === 'stop' || stepType === 'done') {
         const step: CompletionStep<true> = {
@@ -113,7 +121,10 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         })
         toolCalls.push(completionToolCall)
         toolResults.push(completionToolResult)
-        messages.push(message)
+        messages.push(clean({
+          ...message,
+          reasoning_content: undefined,
+        }))
       }
 
       const step: CompletionStep<true> = {

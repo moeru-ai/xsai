@@ -4,10 +4,11 @@ export interface StreamTextChunkResult {
   choices: {
     delta: {
       content?: string
+      /** @remarks OpenAI does not support this, but LiteLLM / DeepSeek does. */
       reasoning_content?: string
       refusal?: string
       role: 'assistant'
-      tool_calls?: ToolCall[]
+      tool_calls?: (ToolCall & { index: number })[]
     }
     finish_reason?: FinishReason
     index: number

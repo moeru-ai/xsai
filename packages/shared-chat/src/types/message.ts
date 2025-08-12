@@ -1,48 +1,38 @@
-import type { AudioPart, ImagePart, Part, RefusalPart, TextPart } from './message-part'
+import type { CommonContentPart, RefusalContentPart, TextContentPart } from './message-content'
+import type { ToolCall } from './tool-call'
 
-export interface AssistantMessage extends Optional<CommonMessage<'assistant', AssistantMessagePart>, 'content'> {
-  refusal?: null | string
-  tool_calls?: ToolCall[]
-  // TODO: audio
-}
-
-export type AssistantMessagePart = RefusalPart | TextPart
-
-export interface AssistantMessageResponse extends Omit<AssistantMessage, 'content'> {
-  content?: string
-  reasoning_content?: string
-}
-
-export interface CommonMessage<T extends string, P extends Part> {
-  content: Array<P> | string
+export interface AssistantMessage {
+  content?: (RefusalContentPart | TextContentPart)[] | string
   name?: string
-  role: T
+  refusal?: string
+  role: 'assistant'
+  tool_calls?: ToolCall[]
 }
 
-export type Message = AssistantMessage | SystemMessage | ToolMessage | UserMessage
-
-export interface SystemMessage extends CommonMessage<'system', SystemMessagePart> {}
-
-export type SystemMessagePart = TextPart
-
-export interface ToolCall {
-  function: {
-    arguments: string
-    name: string
-  }
-  id: string
-  index: number
-  type: 'function'
+export interface DeveloperMessage {
+  content: string | TextContentPart[]
+  name?: string
+  /** @remarks Before using, confirm that your model supports this. */
+  role: 'developer'
 }
 
-export interface ToolMessage extends Omit<CommonMessage<'tool', ToolMessagePart>, 'name'> {
+export type Message = AssistantMessage | DeveloperMessage | SystemMessage | ToolMessage | UserMessage
+
+export interface SystemMessage {
+  content: string | TextContentPart[]
+  name?: string
+  role: 'system'
+}
+
+export interface ToolMessage {
+  /** @remarks considering the support of ecosystems (such as MCP), we have relaxed this type. */
+  content: CommonContentPart[] | string
+  role: 'tool'
   tool_call_id: string
 }
 
-export type ToolMessagePart = AudioPart | ImagePart | TextPart
-
-export interface UserMessage extends CommonMessage<'user', UserMessagePart> { }
-
-export type UserMessagePart = AudioPart | ImagePart | TextPart
-
-type Optional<T, K extends keyof T> = Omit<T, K> & Pick<Partial<T>, K>
+export interface UserMessage {
+  content: CommonContentPart[] | string
+  name?: string
+  role: 'user'
+}
