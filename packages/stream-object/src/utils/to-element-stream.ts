@@ -2,7 +2,7 @@ import type { PartialDeep } from 'type-fest'
 
 import { parse } from 'best-effort-json-parser'
 
-export const toElementStream = <T>(stream: ReadableStream<string>) => {
+export const toElementStream = <T>(stream: ReadableStream<string>): ReadableStream<T> => {
   let partialObjectData = ''
   let index = 0
 
