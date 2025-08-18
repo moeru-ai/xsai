@@ -1,3 +1,5 @@
+import { XSAIError } from '../error'
+
 export const responseJSON = async <T>(res: Response): Promise<T> => {
   const text = await res.text()
 
@@ -5,7 +7,7 @@ export const responseJSON = async <T>(res: Response): Promise<T> => {
     // eslint-disable-next-line @masknet/type-prefer-return-type-annotation
     return JSON.parse(text) as T
   }
-  catch {
-    throw new Error(`Failed to parse response, response body: ${text}`)
+  catch (cause) {
+    throw new XSAIError(`Failed to parse response, response body: ${text}`, res, cause)
   }
 }
