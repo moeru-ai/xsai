@@ -1,6 +1,6 @@
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { requestHeaders, requestURL, responseJSON } from '@xsai/shared'
+import { requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
 export interface GenerateTranscriptionOptions<
   T1 extends GenerateTranscriptionOptionsResponseFormat = undefined,
@@ -91,5 +91,6 @@ export const generateTranscription = async <
     method: 'POST',
     signal: options.abortSignal,
   })
+    .then(responseCatch)
     .then(responseJSON<GenerateTranscriptionResult<T1, T2>>)
 }

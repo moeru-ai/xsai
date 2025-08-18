@@ -1,6 +1,6 @@
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { requestHeaders, requestURL, responseJSON } from '@xsai/shared'
+import { requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
 import type { Model } from '../types/model'
 
@@ -16,5 +16,6 @@ export const listModels = async (options: ListModelsOptions): Promise<Model[]> =
     headers: requestHeaders(options.headers, options.apiKey),
     signal: options.abortSignal,
   })
+    .then(responseCatch)
     .then(responseJSON<ListModelsResponse>)
     .then(({ data }) => data)

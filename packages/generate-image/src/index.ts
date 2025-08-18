@@ -106,6 +106,7 @@ export const generateImage = async (options: GenerateImageOptions): Promise<Gene
     method: 'POST',
     signal: options.abortSignal,
   })
+    .then(responseCatch)
     .then(responseJSON<GenerateImageResponse>)
     .then(async ({ data }) =>
       Promise.all(
