@@ -1,6 +1,6 @@
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { requestBody, requestHeaders, requestURL, responseJSON } from '@xsai/shared'
+import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
 import type { EmbedResponse, EmbedResponseUsage } from './embed'
 
@@ -25,6 +25,7 @@ export const embedMany = async (options: EmbedManyOptions): Promise<EmbedManyRes
     method: 'POST',
     signal: options.abortSignal,
   })
+    .then(responseCatch)
     .then(responseJSON<EmbedResponse>)
     .then(({ data, usage }) => ({
       embeddings: data.map(data => data.embedding),
