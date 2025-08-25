@@ -22,8 +22,6 @@ describe('@xsai/stream-text basic', async () => {
       seed: 114514,
     })
 
-    expect(steps).toMatchSnapshot()
-
     let text = ''
     for await (const t of textStream) {
       text += t
@@ -42,6 +40,8 @@ describe('@xsai/stream-text basic', async () => {
       )
     }
     expect(events).toMatchSnapshot()
+
+    expect(steps).toMatchSnapshot()
   })
 
   it('stream', async () => {
@@ -61,8 +61,6 @@ describe('@xsai/stream-text basic', async () => {
       seed: 114514,
     })
 
-    expect(steps).toMatchSnapshot()
-
     const text = []
     for await (const t of textStream) {
       text.push(t)
@@ -74,5 +72,7 @@ describe('@xsai/stream-text basic', async () => {
       events.push(event)
     }
     expect(events).toMatchSnapshot()
+
+    expect(steps).toMatchSnapshot()
   })
 })
