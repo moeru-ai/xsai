@@ -68,7 +68,18 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     void options.onStepFinish?.(step)
   }
 
-  const startStream = async () => {
+  const startStream = async () =>
+    chat({
+      ...options,
+      maxSteps: undefined,
+      messages,
+      stream: true,
+      streamOptions: options.streamOptions != null
+        ? objCamelToSnake(options.streamOptions)
+        : undefined,
+    }).then(res => res.body!)
+
+  const handleStream = async (stream: ReadableStream) => {
     // let stepUsage: undefined | Usage
     const pushUsage = (u: Usage) => {
       usage = u
@@ -86,15 +97,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     const toolResults: CompletionToolResult[] = []
     let finishReason: FinishReason = 'other'
 
-    await chat({
-      ...options,
-      maxSteps: undefined,
-      messages,
-      stream: true,
-      streamOptions: options.streamOptions != null
-        ? objCamelToSnake(options.streamOptions)
-        : undefined,
-    }).then(async res => res.body!
+    await stream
       .pipeThrough(transformChunk())
       .pipeTo(new WritableStream({
         abort: (reason) => {
@@ -147,8 +150,7 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
             }
           }
         },
-      })),
-    )
+      }))
 
     messages.push({ content: text, role: 'assistant', tool_calls })
 
@@ -188,31 +190,35 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
     })
 
     if (toolCalls.length !== 0 && steps.length < maxSteps)
-      return async () => startStream()
+      return async () => handleStream(await startStream())
   }
 
-  try {
-    await trampoline(async () => startStream())
+  const stream = await startStream()
 
-    eventCtrl?.close()
-    textCtrl?.close()
-  }
-  catch (err) {
-    eventCtrl?.error(err)
-    textCtrl?.error(err)
+  void (async () => {
+    try {
+      await trampoline(async () => handleStream(stream))
 
-    resultSteps.reject(err)
-    resultMessages.reject(err)
-    resultUsage.reject(err)
-  }
-  finally {
-    resultSteps.resolve(steps)
-    resultMessages.resolve(messages)
-    resultUsage.resolve(usage)
+      eventCtrl?.close()
+      textCtrl?.close()
+    }
+    catch (err) {
+      eventCtrl?.error(err)
+      textCtrl?.error(err)
 
-    // eslint-disable-next-line sonarjs/void-use
-    void options.onFinish?.(steps.at(-1))
-  }
+      resultSteps.reject(err)
+      resultMessages.reject(err)
+      resultUsage.reject(err)
+    }
+    finally {
+      resultSteps.resolve(steps)
+      resultMessages.resolve(messages)
+      resultUsage.resolve(usage)
+
+      // eslint-disable-next-line sonarjs/void-use
+      void options.onFinish?.(steps.at(-1))
+    }
+  })()
 
   return {
     fullStream: eventStream,
