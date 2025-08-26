@@ -1,8 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/stream-text basic > basic 1`] = `Promise {}`;
-
-exports[`@xsai/stream-text basic > basic 2`] = `
+exports[`@xsai/stream-text basic > basic 1`] = `
 [
   {
     "text": "YES",
@@ -20,9 +18,9 @@ exports[`@xsai/stream-text basic > basic 2`] = `
 ]
 `;
 
-exports[`@xsai/stream-text basic > stream 1`] = `Promise {}`;
+exports[`@xsai/stream-text basic > basic 2`] = `Promise {}`;
 
-exports[`@xsai/stream-text basic > stream 2`] = `
+exports[`@xsai/stream-text basic > stream 1`] = `
 [
   {
     "text": "Why",
@@ -95,3 +93,5 @@ exports[`@xsai/stream-text basic > stream 2`] = `
   },
 ]
 `;
+
+exports[`@xsai/stream-text basic > stream 2`] = `Promise {}`;
