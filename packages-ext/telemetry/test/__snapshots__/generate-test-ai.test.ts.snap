@@ -1,16 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ai/generateText > basic 1`] = `
-"The sky is blue because of the way light interacts with the atmosphere. Here's a simple explanation:
-
-1. **Light Refraction**: When sunlight hits the Earth's atmosphere, it bends (refracts) the light. This bending causes the blue color of the sky to appear blue.
-
-2. **Water Droplets**: The air is mostly made of nitrogen and oxygen, but water vapor also plays a role. Water vapor can scatter light in all directions, making the sky appear blue.
-
-3. **Optical Properties**: Light waves are electromagnetic waves, and the Earth's atmosphere acts like a medium that bends and scatters light. The blue color is the shorter wavelength of the visible light.
-
-In short, the sky is blue because of the optical properties of the atmosphere and the scattering of light by water vapor."
-`;
+exports[`ai/generateText > basic 1`] = `"The sky appears blue because of the way light interacts with water droplets in the atmosphere. When sunlight passes through water droplets, it refracts and散射, causing the scattered light to appear blue. This phenomenon is known as Rayleigh scattering, and it's why we perceive the sky as blue even though it's mostly composed of air."`;
 
 exports[`ai/generateText > basic 2`] = `
 [
@@ -20,16 +10,16 @@ exports[`ai/generateText > basic 2`] = `
     "_droppedEventsCount": 0,
     "_droppedLinksCount": 0,
     "_duration": [
-      2,
-      381633185,
+      1,
+      606308880,
     ],
     "_ended": true,
-    "_performanceOffset": -0.7255859375,
-    "_performanceStartTime": 2519.986656,
+    "_performanceOffset": -0.889404296875,
+    "_performanceStartTime": 2215.223302,
     "_spanContext": {
-      "spanId": "551829b143b6c9df",
+      "spanId": "3da2c43d2af59aad",
       "traceFlags": 1,
-      "traceId": "abac62c36ccb4e3a74e98b67f95bcfc2",
+      "traceId": "21b2b9ca32e1a20f62e250e3418c2623",
       "traceState": undefined,
     },
     "_spanLimits": {
@@ -71,37 +61,29 @@ exports[`ai/generateText > basic 2`] = `
       "ai.operationId": "ai.generateText.doGenerate",
       "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
       "ai.response.finishReason": "stop",
-      "ai.response.id": "aitxt-3yWUFG3So3GamhjWSS32iO5n",
+      "ai.response.id": "aitxt-yWxfJHYhJPGGv0WvcFLtHVr8",
       "ai.response.model": "qwen3:0.6b",
       "ai.response.providerMetadata": "{"ollama":{}}",
-      "ai.response.text": "The sky is blue because of the way light interacts with the atmosphere. Here's a simple explanation:
-
-1. **Light Refraction**: When sunlight hits the Earth's atmosphere, it bends (refracts) the light. This bending causes the blue color of the sky to appear blue.
-
-2. **Water Droplets**: The air is mostly made of nitrogen and oxygen, but water vapor also plays a role. Water vapor can scatter light in all directions, making the sky appear blue.
-
-3. **Optical Properties**: Light waves are electromagnetic waves, and the Earth's atmosphere acts like a medium that bends and scatters light. The blue color is the shorter wavelength of the visible light.
-
-In short, the sky is blue because of the optical properties of the atmosphere and the scattering of light by water vapor.",
-      "ai.response.timestamp": "2025-08-30T05:17:04.081Z",
+      "ai.response.text": "The sky appears blue because of the way light interacts with water droplets in the atmosphere. When sunlight passes through water droplets, it refracts and散射, causing the scattered light to appear blue. This phenomenon is known as Rayleigh scattering, and it's why we perceive the sky as blue even though it's mostly composed of air.",
+      "ai.response.timestamp": "2025-08-30T11:13:37.702Z",
       "ai.settings.maxRetries": 2,
       "ai.settings.seed": 114514,
-      "ai.usage.completionTokens": 164,
+      "ai.usage.completionTokens": 70,
       "ai.usage.promptTokens": 22,
       "gen_ai.request.model": "qwen3:0.6b",
       "gen_ai.response.finish_reasons": [
         "stop",
       ],
-      "gen_ai.response.id": "aitxt-3yWUFG3So3GamhjWSS32iO5n",
+      "gen_ai.response.id": "aitxt-yWxfJHYhJPGGv0WvcFLtHVr8",
       "gen_ai.response.model": "qwen3:0.6b",
       "gen_ai.system": "ollama.responses",
       "gen_ai.usage.input_tokens": 22,
-      "gen_ai.usage.output_tokens": 164,
+      "gen_ai.usage.output_tokens": 70,
       "operation.name": "ai.generateText.doGenerate",
     },
     "endTime": [
-      1756531024,
-      81633185,
+      1756552417,
+      702308880,
     ],
     "events": [],
     "instrumentationScope": {
@@ -113,9 +95,9 @@ In short, the sky is blue because of the optical properties of the atmosphere an
     "links": [],
     "name": "ai.generateText.doGenerate",
     "parentSpanContext": {
-      "spanId": "1058ea41da3bf3af",
+      "spanId": "d002742514de4879",
       "traceFlags": 1,
-      "traceId": "abac62c36ccb4e3a74e98b67f95bcfc2",
+      "traceId": "21b2b9ca32e1a20f62e250e3418c2623",
       "traceState": undefined,
     },
     "resource": ResourceImpl {
@@ -141,8 +123,8 @@ In short, the sky is blue because of the optical properties of the atmosphere an
       ],
     },
     "startTime": [
-      1756531021,
-      700000000,
+      1756552416,
+      96000000,
     ],
     "status": {
       "code": 0,
@@ -154,16 +136,16 @@ In short, the sky is blue because of the optical properties of the atmosphere an
     "_droppedEventsCount": 0,
     "_droppedLinksCount": 0,
     "_duration": [
-      2,
-      383936403,
+      1,
+      609704903,
     ],
     "_ended": true,
-    "_performanceOffset": -0.34326171875,
-    "_performanceStartTime": 2518.604295,
+    "_performanceOffset": -0.4951171875,
+    "_performanceStartTime": 2213.829092,
     "_spanContext": {
-      "spanId": "1058ea41da3bf3af",
+      "spanId": "d002742514de4879",
       "traceFlags": 1,
-      "traceId": "abac62c36ccb4e3a74e98b67f95bcfc2",
+      "traceId": "21b2b9ca32e1a20f62e250e3418c2623",
       "traceState": undefined,
     },
     "_spanLimits": {
@@ -206,24 +188,16 @@ In short, the sky is blue because of the optical properties of the atmosphere an
       "ai.prompt": "{"prompt":"Why is the sky blue?"}",
       "ai.response.finishReason": "stop",
       "ai.response.providerMetadata": "{"ollama":{}}",
-      "ai.response.text": "The sky is blue because of the way light interacts with the atmosphere. Here's a simple explanation:
-
-1. **Light Refraction**: When sunlight hits the Earth's atmosphere, it bends (refracts) the light. This bending causes the blue color of the sky to appear blue.
-
-2. **Water Droplets**: The air is mostly made of nitrogen and oxygen, but water vapor also plays a role. Water vapor can scatter light in all directions, making the sky appear blue.
-
-3. **Optical Properties**: Light waves are electromagnetic waves, and the Earth's atmosphere acts like a medium that bends and scatters light. The blue color is the shorter wavelength of the visible light.
-
-In short, the sky is blue because of the optical properties of the atmosphere and the scattering of light by water vapor.",
+      "ai.response.text": "The sky appears blue because of the way light interacts with water droplets in the atmosphere. When sunlight passes through water droplets, it refracts and散射, causing the scattered light to appear blue. This phenomenon is known as Rayleigh scattering, and it's why we perceive the sky as blue even though it's mostly composed of air.",
       "ai.settings.maxRetries": 2,
       "ai.settings.seed": 114514,
-      "ai.usage.completionTokens": 164,
+      "ai.usage.completionTokens": 70,
       "ai.usage.promptTokens": 22,
       "operation.name": "ai.generateText",
     },
     "endTime": [
-      1756531024,
-      82936403,
+      1756552417,
+      704704903,
     ],
     "events": [],
     "instrumentationScope": {
@@ -258,8 +232,8 @@ In short, the sky is blue because of the optical properties of the atmosphere an
       ],
     },
     "startTime": [
-      1756531021,
-      699000000,
+      1756552416,
+      95000000,
     ],
     "status": {
       "code": 0,
