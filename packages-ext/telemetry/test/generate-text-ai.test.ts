@@ -1,11 +1,8 @@
 import { InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { generateText } from 'ai'
-import { config } from 'dotenv'
 import { ollama } from 'ollama-ai-provider-v2'
 import { describe, expect, it } from 'vitest'
-
-config()
 
 describe('ai/generateText', () => {
   it('basic', async () => {

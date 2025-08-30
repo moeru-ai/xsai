@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ai/generateText > basic 1`] = `"The sky appears blue because of the way light interacts with water droplets in the atmosphere. When sunlight passes through water droplets, it refracts and散射, causing the scattered light to appear blue. This phenomenon is known as Rayleigh scattering, and it's why we perceive the sky as blue even though it's mostly composed of air."`;
+exports[`ai/generateText > basic 1`] = `"The sky appears blue because of the scattering of sunlight by the atmosphere. When sunlight hits Earth's atmosphere, it is scattered by the molecules and particles in the air, causing the sky to appear blue. The color we perceive is due to the specific wavelength of sunlight that is scattered most efficiently by the atmosphere. This natural process is why the sky has a blue hue."`;
 
 exports[`ai/generateText > basic 2`] = `
 [
@@ -10,16 +10,16 @@ exports[`ai/generateText > basic 2`] = `
     "_droppedEventsCount": 0,
     "_droppedLinksCount": 0,
     "_duration": [
-      1,
-      606308880,
+      0,
+      379107135,
     ],
     "_ended": true,
-    "_performanceOffset": -0.889404296875,
-    "_performanceStartTime": 2215.223302,
+    "_performanceOffset": -0.770751953125,
+    "_performanceStartTime": 2002.296618,
     "_spanContext": {
-      "spanId": "3da2c43d2af59aad",
+      "spanId": "a1ffb28911e12ec9",
       "traceFlags": 1,
-      "traceId": "21b2b9ca32e1a20f62e250e3418c2623",
+      "traceId": "05ec29c71e05380ca9328965d4ebcdb9",
       "traceState": undefined,
     },
     "_spanLimits": {
@@ -61,29 +61,29 @@ exports[`ai/generateText > basic 2`] = `
       "ai.operationId": "ai.generateText.doGenerate",
       "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
       "ai.response.finishReason": "stop",
-      "ai.response.id": "aitxt-yWxfJHYhJPGGv0WvcFLtHVr8",
+      "ai.response.id": "aitxt-AeesYtotKGUP9pDlQUYWnSov",
       "ai.response.model": "qwen3:0.6b",
       "ai.response.providerMetadata": "{"ollama":{}}",
-      "ai.response.text": "The sky appears blue because of the way light interacts with water droplets in the atmosphere. When sunlight passes through water droplets, it refracts and散射, causing the scattered light to appear blue. This phenomenon is known as Rayleigh scattering, and it's why we perceive the sky as blue even though it's mostly composed of air.",
-      "ai.response.timestamp": "2025-08-30T11:13:37.702Z",
+      "ai.response.text": "The sky appears blue because of the scattering of sunlight by the atmosphere. When sunlight hits Earth's atmosphere, it is scattered by the molecules and particles in the air, causing the sky to appear blue. The color we perceive is due to the specific wavelength of sunlight that is scattered most efficiently by the atmosphere. This natural process is why the sky has a blue hue.",
+      "ai.response.timestamp": "2025-08-30T12:13:55.572Z",
       "ai.settings.maxRetries": 2,
       "ai.settings.seed": 114514,
-      "ai.usage.completionTokens": 70,
+      "ai.usage.completionTokens": 74,
       "ai.usage.promptTokens": 22,
       "gen_ai.request.model": "qwen3:0.6b",
       "gen_ai.response.finish_reasons": [
         "stop",
       ],
-      "gen_ai.response.id": "aitxt-yWxfJHYhJPGGv0WvcFLtHVr8",
+      "gen_ai.response.id": "aitxt-AeesYtotKGUP9pDlQUYWnSov",
       "gen_ai.response.model": "qwen3:0.6b",
       "gen_ai.system": "ollama.responses",
       "gen_ai.usage.input_tokens": 22,
-      "gen_ai.usage.output_tokens": 70,
+      "gen_ai.usage.output_tokens": 74,
       "operation.name": "ai.generateText.doGenerate",
     },
     "endTime": [
-      1756552417,
-      702308880,
+      1756556035,
+      573107135,
     ],
     "events": [],
     "instrumentationScope": {
@@ -95,9 +95,9 @@ exports[`ai/generateText > basic 2`] = `
     "links": [],
     "name": "ai.generateText.doGenerate",
     "parentSpanContext": {
-      "spanId": "d002742514de4879",
+      "spanId": "fbbafb611dd9f4d3",
       "traceFlags": 1,
-      "traceId": "21b2b9ca32e1a20f62e250e3418c2623",
+      "traceId": "05ec29c71e05380ca9328965d4ebcdb9",
       "traceState": undefined,
     },
     "resource": ResourceImpl {
@@ -123,8 +123,8 @@ exports[`ai/generateText > basic 2`] = `
       ],
     },
     "startTime": [
-      1756552416,
-      96000000,
+      1756556035,
+      194000000,
     ],
     "status": {
       "code": 0,
@@ -136,16 +136,16 @@ exports[`ai/generateText > basic 2`] = `
     "_droppedEventsCount": 0,
     "_droppedLinksCount": 0,
     "_duration": [
-      1,
-      609704903,
+      0,
+      383927709,
     ],
     "_ended": true,
-    "_performanceOffset": -0.4951171875,
-    "_performanceStartTime": 2213.829092,
+    "_performanceOffset": -0.71044921875,
+    "_performanceStartTime": 2001.236369,
     "_spanContext": {
-      "spanId": "d002742514de4879",
+      "spanId": "fbbafb611dd9f4d3",
       "traceFlags": 1,
-      "traceId": "21b2b9ca32e1a20f62e250e3418c2623",
+      "traceId": "05ec29c71e05380ca9328965d4ebcdb9",
       "traceState": undefined,
     },
     "_spanLimits": {
@@ -188,16 +188,16 @@ exports[`ai/generateText > basic 2`] = `
       "ai.prompt": "{"prompt":"Why is the sky blue?"}",
       "ai.response.finishReason": "stop",
       "ai.response.providerMetadata": "{"ollama":{}}",
-      "ai.response.text": "The sky appears blue because of the way light interacts with water droplets in the atmosphere. When sunlight passes through water droplets, it refracts and散射, causing the scattered light to appear blue. This phenomenon is known as Rayleigh scattering, and it's why we perceive the sky as blue even though it's mostly composed of air.",
+      "ai.response.text": "The sky appears blue because of the scattering of sunlight by the atmosphere. When sunlight hits Earth's atmosphere, it is scattered by the molecules and particles in the air, causing the sky to appear blue. The color we perceive is due to the specific wavelength of sunlight that is scattered most efficiently by the atmosphere. This natural process is why the sky has a blue hue.",
       "ai.settings.maxRetries": 2,
       "ai.settings.seed": 114514,
-      "ai.usage.completionTokens": 70,
+      "ai.usage.completionTokens": 74,
       "ai.usage.promptTokens": 22,
       "operation.name": "ai.generateText",
     },
     "endTime": [
-      1756552417,
-      704704903,
+      1756556035,
+      576927709,
     ],
     "events": [],
     "instrumentationScope": {
@@ -232,8 +232,8 @@ exports[`ai/generateText > basic 2`] = `
       ],
     },
     "startTime": [
-      1756552416,
-      95000000,
+      1756556035,
+      193000000,
     ],
     "status": {
       "code": 0,

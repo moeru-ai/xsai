@@ -1,3 +1,4 @@
+import type { TrampolineFn } from '@xsai/shared'
 import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Usage } from '@xsai/shared-chat'
 
 import { clean, responseJSON, trampoline } from '@xsai/shared'
@@ -44,13 +45,7 @@ export interface GenerateTextResult {
 }
 
 /** @internal */
-type RawGenerateText = (options: GenerateTextOptions) => RawGenerateTextTrampoline<GenerateTextResult>
-
-/** @internal */
-type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>) | T>
-
-/** @internal */
-const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
+const rawGenerateText = async (options: GenerateTextOptions): Promise<TrampolineFn<GenerateTextResult>> =>
   chat({
     ...options,
     maxSteps: undefined,

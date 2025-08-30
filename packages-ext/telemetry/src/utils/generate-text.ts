@@ -8,20 +8,53 @@ import { recordSpan } from './record-span'
 export const generateText = async (options: GenerateTextOptions) => {
   const tracer = getTracer()
 
+  const commonAttributes = (operationId: string) => ({
+    'ai.model.id': options.model,
+    // TODO: provider name
+    'ai.model.provider': 'xsai',
+    'ai.operationId': operationId,
+    'operation.name': operationId,
+  })
+
+  const idAttributes = () => {
+    const id = crypto.randomUUID()
+
+    return {
+      'ai.response.id': id,
+      'ai.response.timestamp': new Date().toISOString(),
+      'gen_ai.response.id': id,
+    }
+  }
+
   return recordSpan<GenerateTextResult>({
     attributes: {
-      'ai.model.id': options.model,
-      // TODO: provider name
-      'ai.model.provider': 'xsai',
-      'ai.operationId': 'ai.generateText',
+      ...commonAttributes('ai.generateText'),
       'ai.prompt': JSON.stringify({ messages: options.messages }),
-      'operation.name': 'ai.generateText',
     },
     name: 'ai.generateText',
     tracer,
   }, async (span) => {
-    // TODO: ai.generateText.doGenerate
-    const result = await originalGenerateText(options)
+    const result = await originalGenerateText({
+      ...options,
+      onStepFinish: async step => recordSpan({
+        attributes: {
+          ...commonAttributes('ai.generateText.doGenerate'),
+          ...idAttributes(),
+          'ai.response.text': step.text,
+          'ai.usage.completionTokens': step.usage.completion_tokens,
+          'ai.usage.promptTokens': step.usage.prompt_tokens,
+          'gen_ai.request.model': options.model,
+          'gen_ai.response.finish_reasons': [step.finishReason],
+          'gen_ai.response.id': crypto.randomUUID(),
+          'gen_ai.response.model': options.model,
+          'gen_ai.system': 'xsai',
+          'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
+          'gen_ai.usage.output_tokens': step.usage.completion_tokens,
+        },
+        name: 'ai.generateText.doGenerate',
+        tracer,
+      }, async () => options.onStepFinish?.(step)),
+    })
 
     span.setAttributes({
       'ai.response.finishReason': result.finishReason,

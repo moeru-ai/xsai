@@ -2,25 +2,21 @@
 
 exports[`generateText > basic 1`] = `
 "<think>
-Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember that in physics, there's atmospheric dispersion of light, but I need to explain it clearly. Let me start by recalling the basic concept. The Earth's atmosphere causes light to散射. But then I should mention Rayleigh scattering. Oh right, Rayleigh scattering is why the sky is blue. It works inversely, right? So blue color occurs because blue light is scattered more than red light.
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from science class that it's mainly due to Rayleigh scattering. Let me recall... Rayleigh scattering is the phenomenon where light, specifically visible light, bends and disperses when it interacts with gas particles. In the case of the Earth's atmosphere, the gas molecules are mainly nitrogen and oxygen. 
 
-Wait, but I should make sure to differentiate between Rayleigh and Mie scattering, maybe? Also, maybe mention that it's not just the sky, like clouds. But the user is asking about the sky, so that's important. Let me structure the answer step by step. Start with the main concept of scattering light, then explain Rayleigh dispersion in detail, maybe mention how different wavelengths get scattered. Also, compare it to the sun's color. Need to keep the explanation simple and avoid jargon. Oh, and finally conclude with the fact that the blue appears after all the visible light, but the user's question is why, so the answer should include that the scattered light forms the blue we see. Alright, that should cover it.
+So when scattered sunlight goes through the atmosphere, shorter wavelengths of light, like blue light, get scattered more than red light. This scattered blue light contributes to the blue color of the sky. I should mention that this scattering is not only from the atmosphere but also happens as light travels through the atmosphere, so the blue is a combination of scattered light.
+
+I should also think about other factors. Maybe the angle at which we're observing the sky? Like if there's a lot of atmosphere, it might scatter more, but as it's a whole, the scattering is consistent. Also, maybe the fact that the Earth is surrounded by the atmosphere, which is a continuous column, and it's not very thick, leading to the scattered light.
+
+Wait, but the user might not know about the atmosphere. I should keep the explanation simple. Maybe also compare it to sunlight. Since blue light is scattered more, and we're in the lower atmosphere, it's more like blue than red. So the answer should be clear, concise, and cover the main reasons mentioned.
 </think>
 
-The sky appears blue because of **Rayleigh scattering**, which describes how light interacts with air particles (like Earth's atmosphere). Here's a breakdown:
+The sky appears blue due to **Rayleigh scattering** of sunlight. Here's why:  
+1. **Sky's atmosphere**: The Earth's atmosphere contains nitrogen and oxygen gas. When sunlight (which consists of different wavelengths) interacts with these gas molecules, shorter (blue) wavelengths are scattered more than longer (red) ones.  
+2. **Scattering effect**: As visible light travels through the atmosphere, the scattered blue light contributes to the sky's blue hue.  
+3. **Continuity**: The blue color is a result of light being scattered continuously in the atmosphere, not just a local phenomenon.  
 
-1. **Rayleigh scattering** explains that:
-   - Shorter wavelengths of light (like blue) are scattered more than longer wavelengths (like red).
-   - These scattered blue light rays form the blue color we perceive in the sky.
-
-2. **Sunlight's role**:
-   - Blue light is scattered at larger angles, while red light is scattered at smaller angles.
-   - This scattering leads to the **blue appearance of the sky**.
-
-3. **Comparison**:
-   - While blue light is scattered in the sky, the **full spectrum of sunlight** (including red) travels through the atmosphere, contributing to the visible color.
-
-This scattering process makes the sky appear blue despite the sun's reddish hue."
+So, in summary, the blue sky comes from the continuous, scattered light of the atmosphere, where blue light survives longer and spreads more than red."
 `;
 
 exports[`generateText > basic 2`] = `
@@ -31,16 +27,16 @@ exports[`generateText > basic 2`] = `
     "_droppedEventsCount": 0,
     "_droppedLinksCount": 0,
     "_duration": [
-      2,
-      157242763,
+      0,
+      126354,
     ],
     "_ended": true,
-    "_performanceOffset": -0.733154296875,
-    "_performanceStartTime": 2729.088065,
+    "_performanceOffset": -0.977294921875,
+    "_performanceStartTime": 4484.936226,
     "_spanContext": {
-      "spanId": "6c9e3b5e78dd08f5",
+      "spanId": "b6cb40b2a98b3566",
       "traceFlags": 1,
-      "traceId": "617e7aea3f78584d9f0289822c1fc718",
+      "traceId": "b72bfb8ce86658170681cab3d04c747d",
       "traceState": undefined,
     },
     "_spanLimits": {
@@ -59,6 +55,142 @@ exports[`generateText > basic 2`] = `
             "_stopped": false,
           },
           "_pendingExports": Set {
+            Promise {},
+            Promise {},
+          },
+          "_shutdownOnce": BindOnceFuture {
+            "_callback": [Function],
+            "_deferred": Deferred {
+              "_promise": Promise {},
+              "_reject": [Function],
+              "_resolve": [Function],
+            },
+            "_isCalled": false,
+            "_that": [Circular],
+          },
+        },
+      ],
+    },
+    "_startTimeProvided": false,
+    "attributes": {
+      "ai.model.id": "qwen3:0.6b",
+      "ai.model.provider": "xsai",
+      "ai.operationId": "ai.generateText.doGenerate",
+      "ai.response.id": "f469e042-feab-4c67-b7bf-6796cdee53f8",
+      "ai.response.text": "<think>
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from science class that it's mainly due to Rayleigh scattering. Let me recall... Rayleigh scattering is the phenomenon where light, specifically visible light, bends and disperses when it interacts with gas particles. In the case of the Earth's atmosphere, the gas molecules are mainly nitrogen and oxygen. 
+
+So when scattered sunlight goes through the atmosphere, shorter wavelengths of light, like blue light, get scattered more than red light. This scattered blue light contributes to the blue color of the sky. I should mention that this scattering is not only from the atmosphere but also happens as light travels through the atmosphere, so the blue is a combination of scattered light.
+
+I should also think about other factors. Maybe the angle at which we're observing the sky? Like if there's a lot of atmosphere, it might scatter more, but as it's a whole, the scattering is consistent. Also, maybe the fact that the Earth is surrounded by the atmosphere, which is a continuous column, and it's not very thick, leading to the scattered light.
+
+Wait, but the user might not know about the atmosphere. I should keep the explanation simple. Maybe also compare it to sunlight. Since blue light is scattered more, and we're in the lower atmosphere, it's more like blue than red. So the answer should be clear, concise, and cover the main reasons mentioned.
+</think>
+
+The sky appears blue due to **Rayleigh scattering** of sunlight. Here's why:  
+1. **Sky's atmosphere**: The Earth's atmosphere contains nitrogen and oxygen gas. When sunlight (which consists of different wavelengths) interacts with these gas molecules, shorter (blue) wavelengths are scattered more than longer (red) ones.  
+2. **Scattering effect**: As visible light travels through the atmosphere, the scattered blue light contributes to the sky's blue hue.  
+3. **Continuity**: The blue color is a result of light being scattered continuously in the atmosphere, not just a local phenomenon.  
+
+So, in summary, the blue sky comes from the continuous, scattered light of the atmosphere, where blue light survives longer and spreads more than red.",
+      "ai.response.timestamp": "2025-08-30T12:13:57.682Z",
+      "ai.usage.completionTokens": 458,
+      "ai.usage.promptTokens": 14,
+      "gen_ai.request.model": "qwen3:0.6b",
+      "gen_ai.response.finish_reasons": [
+        "stop",
+      ],
+      "gen_ai.response.id": "bd0515f4-f53e-4977-98e0-1f1029e14a3f",
+      "gen_ai.response.model": "qwen3:0.6b",
+      "gen_ai.system": "xsai",
+      "gen_ai.usage.input_tokens": 14,
+      "gen_ai.usage.output_tokens": 458,
+      "operation.name": "ai.generateText.doGenerate",
+    },
+    "endTime": [
+      1756556037,
+      682126354,
+    ],
+    "events": [],
+    "instrumentationScope": {
+      "name": "@xsai-ext/telemetry",
+      "schemaUrl": undefined,
+      "version": undefined,
+    },
+    "kind": 0,
+    "links": [],
+    "name": "ai.generateText.doGenerate",
+    "parentSpanContext": {
+      "spanId": "25b79d0854c809be",
+      "traceFlags": 1,
+      "traceId": "b72bfb8ce86658170681cab3d04c747d",
+      "traceState": undefined,
+    },
+    "resource": ResourceImpl {
+      "_asyncAttributesPending": false,
+      "_memoizedAttributes": undefined,
+      "_rawAttributes": [
+        [
+          "service.name",
+          "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+        ],
+        [
+          "telemetry.sdk.language",
+          "nodejs",
+        ],
+        [
+          "telemetry.sdk.name",
+          "opentelemetry",
+        ],
+        [
+          "telemetry.sdk.version",
+          "2.0.1",
+        ],
+      ],
+    },
+    "startTime": [
+      1756556037,
+      682000000,
+    ],
+    "status": {
+      "code": 0,
+    },
+  },
+  SpanImpl {
+    "_attributeValueLengthLimit": Infinity,
+    "_droppedAttributesCount": 0,
+    "_droppedEventsCount": 0,
+    "_droppedLinksCount": 0,
+    "_duration": [
+      1,
+      391901699,
+    ],
+    "_ended": true,
+    "_performanceOffset": -0.388916015625,
+    "_performanceStartTime": 3093.347979,
+    "_spanContext": {
+      "spanId": "25b79d0854c809be",
+      "traceFlags": 1,
+      "traceId": "b72bfb8ce86658170681cab3d04c747d",
+      "traceState": undefined,
+    },
+    "_spanLimits": {
+      "attributeCountLimit": 128,
+      "attributePerEventCountLimit": 128,
+      "attributePerLinkCountLimit": 128,
+      "attributeValueLengthLimit": Infinity,
+      "eventCountLimit": 128,
+      "linkCountLimit": 128,
+    },
+    "_spanProcessor": MultiSpanProcessor {
+      "_spanProcessors": [
+        SimpleSpanProcessor {
+          "_exporter": InMemorySpanExporter {
+            "_finishedSpans": [Circular],
+            "_stopped": false,
+          },
+          "_pendingExports": Set {
+            Promise {},
             Promise {},
           },
           "_shutdownOnce": BindOnceFuture {
@@ -82,32 +214,28 @@ exports[`generateText > basic 2`] = `
       "ai.prompt": "{"messages":[{"content":"Why is the sky blue?","role":"user"}]}",
       "ai.response.finishReason": "stop",
       "ai.response.text": "<think>
-Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember that in physics, there's atmospheric dispersion of light, but I need to explain it clearly. Let me start by recalling the basic concept. The Earth's atmosphere causes light to散射. But then I should mention Rayleigh scattering. Oh right, Rayleigh scattering is why the sky is blue. It works inversely, right? So blue color occurs because blue light is scattered more than red light.
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from science class that it's mainly due to Rayleigh scattering. Let me recall... Rayleigh scattering is the phenomenon where light, specifically visible light, bends and disperses when it interacts with gas particles. In the case of the Earth's atmosphere, the gas molecules are mainly nitrogen and oxygen. 
 
-Wait, but I should make sure to differentiate between Rayleigh and Mie scattering, maybe? Also, maybe mention that it's not just the sky, like clouds. But the user is asking about the sky, so that's important. Let me structure the answer step by step. Start with the main concept of scattering light, then explain Rayleigh dispersion in detail, maybe mention how different wavelengths get scattered. Also, compare it to the sun's color. Need to keep the explanation simple and avoid jargon. Oh, and finally conclude with the fact that the blue appears after all the visible light, but the user's question is why, so the answer should include that the scattered light forms the blue we see. Alright, that should cover it.
+So when scattered sunlight goes through the atmosphere, shorter wavelengths of light, like blue light, get scattered more than red light. This scattered blue light contributes to the blue color of the sky. I should mention that this scattering is not only from the atmosphere but also happens as light travels through the atmosphere, so the blue is a combination of scattered light.
+
+I should also think about other factors. Maybe the angle at which we're observing the sky? Like if there's a lot of atmosphere, it might scatter more, but as it's a whole, the scattering is consistent. Also, maybe the fact that the Earth is surrounded by the atmosphere, which is a continuous column, and it's not very thick, leading to the scattered light.
+
+Wait, but the user might not know about the atmosphere. I should keep the explanation simple. Maybe also compare it to sunlight. Since blue light is scattered more, and we're in the lower atmosphere, it's more like blue than red. So the answer should be clear, concise, and cover the main reasons mentioned.
 </think>
 
-The sky appears blue because of **Rayleigh scattering**, which describes how light interacts with air particles (like Earth's atmosphere). Here's a breakdown:
+The sky appears blue due to **Rayleigh scattering** of sunlight. Here's why:  
+1. **Sky's atmosphere**: The Earth's atmosphere contains nitrogen and oxygen gas. When sunlight (which consists of different wavelengths) interacts with these gas molecules, shorter (blue) wavelengths are scattered more than longer (red) ones.  
+2. **Scattering effect**: As visible light travels through the atmosphere, the scattered blue light contributes to the sky's blue hue.  
+3. **Continuity**: The blue color is a result of light being scattered continuously in the atmosphere, not just a local phenomenon.  
 
-1. **Rayleigh scattering** explains that:
-   - Shorter wavelengths of light (like blue) are scattered more than longer wavelengths (like red).
-   - These scattered blue light rays form the blue color we perceive in the sky.
-
-2. **Sunlight's role**:
-   - Blue light is scattered at larger angles, while red light is scattered at smaller angles.
-   - This scattering leads to the **blue appearance of the sky**.
-
-3. **Comparison**:
-   - While blue light is scattered in the sky, the **full spectrum of sunlight** (including red) travels through the atmosphere, contributing to the visible color.
-
-This scattering process makes the sky appear blue despite the sun's reddish hue.",
-      "ai.usage.completionTokens": 440,
+So, in summary, the blue sky comes from the continuous, scattered light of the atmosphere, where blue light survives longer and spreads more than red.",
+      "ai.usage.completionTokens": 458,
       "ai.usage.promptTokens": 14,
       "operation.name": "ai.generateText",
     },
     "endTime": [
-      1756552418,
-      775242763,
+      1756556037,
+      682901699,
     ],
     "events": [],
     "instrumentationScope": {
@@ -142,8 +270,8 @@ This scattering process makes the sky appear blue despite the sun's reddish hue.
       ],
     },
     "startTime": [
-      1756552416,
-      618000000,
+      1756556036,
+      291000000,
     ],
     "status": {
       "code": 0,
