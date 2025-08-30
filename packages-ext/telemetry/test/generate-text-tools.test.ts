@@ -92,11 +92,19 @@ describe.sequential('generateText with tools', () => {
       .sort((a, b) => a.localeCompare(b))
 
     const spans = memoryExporter.getFinishedSpans()
-    const xsai = spans.slice(0, 4).map(extractAttributeKeys)
-    const ai = spans.slice(4).map(extractAttributeKeys)
+    const xsaiSpans = spans.slice(0, 4)
+    const aiSpans = spans.slice(4)
 
-    xsai.forEach((attributes, i) => {
-      expect(attributes).toStrictEqual(ai[i])
+    const xsaiIds = xsaiSpans.map(span => span.attributes['ai.operationId'])
+    const aiIds = aiSpans.map(span => span.attributes['ai.operationId'])
+
+    expect(xsaiIds).toStrictEqual(aiIds)
+
+    const xsaiKeys = xsaiSpans.map(extractAttributeKeys)
+    const aiKeys = aiSpans.map(extractAttributeKeys)
+
+    xsaiKeys.forEach((attributes, i) => {
+      expect(attributes).toStrictEqual(aiKeys[i])
     })
   })
 })

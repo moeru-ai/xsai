@@ -2,16 +2,22 @@
 
 exports[`generateText > basic 1`] = `
 "<think>
-Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember that in physics, there's related to the wavelength of light. But how does that translate to the sky's color?
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from my studies that it's part of the atmosphere's scattering of light. But maybe I should break it down step by step.
 
-First, I should mention that the Earth's atmosphere causes some light to bend, which affects the visible light spectrum. That's the basic reason. Then, there's the Rayleigh scattering theory about how shorter wavelengths (blue) scatter more than longer ones (red). So blue light, which has a shorter wavelength, is scattered more in the atmosphere, making the sky appear blue.
+First, the basic idea: the Earth's atmosphere contains molecules, mainly nitrogen and oxygen. When light passes through the atmosphere, it interacts with these molecules. The molecules cause the light at different wavelengths to bend. The wavelength that's blue light is shorter than red, so they bend more. This bending effect causes the color we see in the sky to be blue.
 
-Wait, but I should also consider if there's any other explanation. Maybe the atmosphere's composition or other factors? Like, sometimes with pollution, it could affect color. But the main reason is Rayleigh scattering. Make sure to explain that clearly, perhaps also mention that this is an approximation used in scientific contexts, not exact light physics.
+Wait, but I should mention the role of water vapor too. Because it also affects how light is scattered. But maybe the main points are the nitrogen and oxygen molecules. Let me check my notes. Yes, it's also true that water vapor contributes to this phenomenon, but it's usually accounted for in the scattering calculations. 
 
-I should check if there are any other perspectives, like if the sky is affected by temperature or the way the light is scattered. But those aren't as precise. Focus on the Rayleigh scattering part. Keep the explanation simple and concise, avoiding jargon. Alright, putting it all together.
+So, putting it all together: the Earth's atmosphere bends blue light more than red, creating a blue sky. Maybe mention that this is why the sun rises and sets reddish at certain times, which is a common question. Also, note that the blue color is a secondary effect in different conditions, like during sunrises or moons. But that's probably too detailed. The key is to explain the scattering of light and the result it has.
 </think>
 
-The sky appears blue because of the **Rayleigh scattering** theory. When sunlight hits the Earth's atmosphere, it's scattered in such a way that shorter wavelengths (blue) are scattered more than longer wavelengths (red). This scattered blue light makes the sky appear blue, even though the actual color of the air molecules doesn't influence the sky color in a scientific way. This phenomenon is a well-known approximation for explaining the sky's appearance."
+The sky appears blue because **light from the sun is scattered by water vapor in the atmosphere**. Here’s how it works:
+
+1. **Light interacts with the Earth’s atmosphere**—specifically, water vapor.
+2. **Water vapor causes the light** to **scatter** wavelengths of light. When light from the sun hits water vapor molecules, the shorter wavelengths (like blue light) bend more than longer ones (like red light).
+3. **The scattering effect** causes the sky to appear blue: the scattered blue light is what we see as the sky's color.  
+
+This scattered light is a secondary effect caused by water vapor, but the main reason is the atmospheric scattering of blue light. 🌄✨"
 `;
 
 exports[`generateText > basic 2`] = `
@@ -22,22 +28,22 @@ exports[`generateText > basic 2`] = `
     "ai.operationId": "ai.generateText.doGenerate",
     "ai.prompt.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
     "ai.response.finishReason": "stop",
-    "ai.response.id": "68069993-9fc9-413d-b928-aa87208e9d56",
+    "ai.response.id": "23630c51-5027-4363-b1a4-41ef2f60d161",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{}",
     "ai.response.text": "<think> Okay, so the user is asking, "Why is the s",
-    "ai.response.timestamp": "2025-08-30T14:40:18.344Z",
-    "ai.usage.completionTokens": 347,
+    "ai.response.timestamp": "2025-08-30T15:32:29.862Z",
+    "ai.usage.completionTokens": 434,
     "ai.usage.promptTokens": 14,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "36a7800d-f61e-4b14-8167-bf6494b161a2",
+    "gen_ai.response.id": "9da64deb-1e75-45a0-b00c-f13d1ce6302f",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
     "gen_ai.usage.input_tokens": 14,
-    "gen_ai.usage.output_tokens": 347,
+    "gen_ai.usage.output_tokens": 434,
     "operation.name": "ai.generateText.doGenerate",
   },
   {
@@ -48,14 +54,14 @@ exports[`generateText > basic 2`] = `
     "ai.response.finishReason": "stop",
     "ai.response.providerMetadata": "{}",
     "ai.response.text": "<think> Okay, so the user is asking, "Why is the s",
-    "ai.usage.completionTokens": 347,
+    "ai.usage.completionTokens": 434,
     "ai.usage.promptTokens": 14,
     "operation.name": "ai.generateText",
   },
 ]
 `;
 
-exports[`generateText > basic/ai 1`] = `"The sky is blue because it contains a mixture of **ozone** in the atmosphere, which absorbs most of the sunlight. Ozone (O₃) is a molecule composed of three oxygen atoms, and it plays a key role in the Earth's atmosphere by absorbing visible light. When sunlight hits the atmosphere, it's scattered in all directions, and the blue color of the sky is due to the way light is scattered and scattered in the air. This is a natural phenomenon, not a result of human-made activities."`;
+exports[`generateText > basic/ai 1`] = `"The sky is blue because the Earth's atmosphere is made up of nitrogen and oxygen, which are responsible for the scattering of sunlight. When sunlight enters the Earth's atmosphere, it is scattered in all directions, and this scattering makes the sky appear blue. It's a natural phenomenon, not a result of human-made objects."`;
 
 exports[`generateText > basic/ai 2`] = `
 [
@@ -65,24 +71,24 @@ exports[`generateText > basic/ai 2`] = `
     "ai.operationId": "ai.generateText.doGenerate",
     "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
     "ai.response.finishReason": "stop",
-    "ai.response.id": "aitxt-la8SNWPXC8dRDxfys8Xeqlil",
+    "ai.response.id": "aitxt-ZKHNPslqkfWXjDlKImjJZoIm",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{"ollama":{}}",
-    "ai.response.text": "The sky is blue because it contains a mixture of *",
-    "ai.response.timestamp": "2025-08-30T14:40:18.978Z",
+    "ai.response.text": "The sky is blue because the Earth's atmosphere is ",
+    "ai.response.timestamp": "2025-08-30T15:32:32.294Z",
     "ai.settings.maxRetries": 2,
     "ai.settings.seed": 114514,
-    "ai.usage.completionTokens": 106,
+    "ai.usage.completionTokens": 65,
     "ai.usage.promptTokens": 22,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "aitxt-la8SNWPXC8dRDxfys8Xeqlil",
+    "gen_ai.response.id": "aitxt-ZKHNPslqkfWXjDlKImjJZoIm",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "ollama.responses",
     "gen_ai.usage.input_tokens": 22,
-    "gen_ai.usage.output_tokens": 106,
+    "gen_ai.usage.output_tokens": 65,
     "operation.name": "ai.generateText.doGenerate",
   },
   {
@@ -92,10 +98,10 @@ exports[`generateText > basic/ai 2`] = `
     "ai.prompt": "{"prompt":"Why is the sky blue?"}",
     "ai.response.finishReason": "stop",
     "ai.response.providerMetadata": "{"ollama":{}}",
-    "ai.response.text": "The sky is blue because it contains a mixture of *",
+    "ai.response.text": "The sky is blue because the Earth's atmosphere is ",
     "ai.settings.maxRetries": 2,
     "ai.settings.seed": 114514,
-    "ai.usage.completionTokens": 106,
+    "ai.usage.completionTokens": 65,
     "ai.usage.promptTokens": 22,
     "operation.name": "ai.generateText",
   },

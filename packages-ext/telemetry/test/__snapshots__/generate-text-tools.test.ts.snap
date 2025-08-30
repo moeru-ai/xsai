@@ -2,10 +2,14 @@
 
 exports[`generateText with tools > basic 1`] = `
 "<think>
-Okay, so the user asked how many times 114514 plus 1919810 equals. Let me check my calculation again to be sure. 114,514 plus 1,919,810. Let's add them step by step. Adding the thousands first: 1,919,810 + 100,000 comes to 2,019,810. Then add the remaining 14,514 to get 2,034,324. That seems correct. Since the problem is asking for the sum, which is the result of adding those two numbers, the answer should be 2,034,324. I don't see any errors in my calculations, so I'll confirm using the add tool.
+Okay, so the user asked how many times 114514 plus 1919810 equals. Let me check the problem again to make sure I understand it correctly. The user wants to know the result of adding those two numbers and then how many times that sum is equal to something? Wait, maybe there's confusion here. If they mean the sum itself, then it's straightforward. Let me calculate the numbers first.
+
+Adding 114,514 and 1,919,810. Let me do the math. 1,919,810 plus 114,514. Breaking it down, 1,919,810 plus 100,000 is 2,019,810, then add 14,514, which gives 2,034,324. So the total sum is 2,034,324. But the user's question is phrased in a way that doesn't seem to be asking for the sum itself. Maybe there's a typo or misunderstanding in the question. Alternatively, maybe the user intended to check if the sum equals a certain number, but with the given tools, I should focus on calculating the sum first.
+
+The user provided a tool called 'add' which takes two numbers. So even though the question is wordy, I should use the add function to compute the sum. Therefore, the correct step here is to call the add tool with the two numbers provided. The result of that addition is 2,034,324, and that should be the answer they are looking for.
 </think>
 
-The sum of 114514 and 1919810 is 2,034,324. Therefore, the answer is 2,034,324."
+The sum of 114,514 and 1,919,810 is 2,034,324. Therefore, the result is **2,034,324**."
 `;
 
 exports[`generateText with tools > basic 2`] = `
@@ -13,7 +17,7 @@ exports[`generateText with tools > basic 2`] = `
   {
     "ai.operationId": "ai.toolCall",
     "ai.toolCall.args": "{"a":"114514","b":"1919810"}",
-    "ai.toolCall.id": "call_mjl2y3l7",
+    "ai.toolCall.id": "call_nw7h75ld",
     "ai.toolCall.name": "add",
     "ai.toolCall.result": ""2034324"",
     "operation.name": "ai.toolCall",
@@ -28,50 +32,51 @@ exports[`generateText with tools > basic 2`] = `
       "{"description":"Adds two numbers","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
     ],
     "ai.response.finishReason": "tool_calls",
-    "ai.response.id": "e5851cef-3310-43b8-a064-53d2488206a4",
+    "ai.response.id": "3c398bbd-93c6-4f7c-acfc-9fee8716118a",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{}",
-    "ai.response.timestamp": "2025-08-30T14:40:19.439Z",
-    "ai.response.toolCalls": "[{"args":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}","toolCallId":"call_mjl2y3l7","toolCallType":"function","toolName":"add"}]",
-    "ai.usage.completionTokens": 598,
+    "ai.response.text": "<think> Okay, so the user is asking how many times",
+    "ai.response.timestamp": "2025-08-30T15:32:30.049Z",
+    "ai.response.toolCalls": "[{"args":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}","toolCallId":"call_nw7h75ld","toolCallType":"function","toolName":"add"}]",
+    "ai.usage.completionTokens": 487,
     "ai.usage.promptTokens": 180,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.response.finish_reasons": [
       "tool_calls",
     ],
-    "gen_ai.response.id": "ba0cf903-5c70-4d8e-8fe1-39cd978a1d07",
+    "gen_ai.response.id": "bc3b82e2-d86f-466e-9db5-dc8434cb1487",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
     "gen_ai.usage.input_tokens": 180,
-    "gen_ai.usage.output_tokens": 598,
+    "gen_ai.usage.output_tokens": 487,
     "operation.name": "ai.generateText.doGenerate",
   },
   {
     "ai.model.id": "qwen3:0.6b",
     "ai.model.provider": "xsai",
     "ai.operationId": "ai.generateText.doGenerate",
-    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"role":"assistant","content":"<think>\\nOkay, so the user is asking how many times 114514 plus 1919810 equals. Let me break this down. First, I need to calculate the sum of these two numbers. Let me add them. 114514 plus 1919810. Let's do the math step by step. Adding 114514 and 1,919,810. Well, adding them together should give a large number. Let me check: 1,000,000 plus 1,919,810 is 2,919,810, then adding 145,14 gives 2,919,810 + 145,14 = 2,934,924. So the total sum is 2,934,924. But wait, the question is asking how many times this sum equals. Wait, maybe there's a translation confusion here. Because if the problem is phrased as \\"how many times does 114514 plus 1919810 equal,\\" maybe there's a misunderstanding. Maybe it's asking how many times does 114514 equal when added to 1919810? But that's the same number twice. Wait, perhaps there's a mistake in the problem statement. Alternatively, maybe the user wants to check if there's a result, but given the tools provided, I need to call the 'add' function to get the sum first. Let me confirm the function parameters. The function 'add' takes two numbers a and b. So the user is asking to compute a + b, but phrased as \\"how many times does ... equal?\\" Maybe they want to confirm if the sum is correct. Therefore, I need to call the add function, inputting 114514 and 1919810, then outputting the result. So the tool call should be adding those two numbers.\\n</think>\\n\\n","tool_calls":[{"id":"call_nw7h75ld","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_nw7h75ld"}]",
     "ai.prompt.toolChoice": "{"type":"auto"}",
     "ai.prompt.tools": [
       "{"description":"Adds two numbers","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
     ],
     "ai.response.finishReason": "stop",
-    "ai.response.id": "ce1dd049-62f4-4671-af2b-0a91f9c41452",
+    "ai.response.id": "5513be75-14fd-44bb-aa8a-19c35cda223b",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{}",
     "ai.response.text": "<think> Okay, so the user asked how many times 114",
-    "ai.response.timestamp": "2025-08-30T14:40:20.309Z",
-    "ai.usage.completionTokens": 235,
-    "ai.usage.promptTokens": 763,
+    "ai.response.timestamp": "2025-08-30T15:32:32.389Z",
+    "ai.usage.completionTokens": 415,
+    "ai.usage.promptTokens": 652,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "d68f853b-3dbd-4dfa-b713-e1f288b96ba3",
+    "gen_ai.response.id": "ca46820e-57b1-4483-9dd1-c512255975ef",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
-    "gen_ai.usage.input_tokens": 763,
-    "gen_ai.usage.output_tokens": 235,
+    "gen_ai.usage.input_tokens": 652,
+    "gen_ai.usage.output_tokens": 415,
     "operation.name": "ai.generateText.doGenerate",
   },
   {
@@ -82,14 +87,14 @@ exports[`generateText with tools > basic 2`] = `
     "ai.response.finishReason": "stop",
     "ai.response.providerMetadata": "{}",
     "ai.response.text": "<think> Okay, so the user asked how many times 114",
-    "ai.usage.completionTokens": 235,
-    "ai.usage.promptTokens": 763,
+    "ai.usage.completionTokens": 415,
+    "ai.usage.promptTokens": 652,
     "operation.name": "ai.generateText",
   },
 ]
 `;
 
-exports[`generateText with tools > basic/ai 1`] = `"The result is 20,343,24."`;
+exports[`generateText with tools > basic/ai 1`] = `"20,343,24"`;
 
 exports[`generateText with tools > basic/ai 2`] = `
 [
@@ -103,11 +108,11 @@ exports[`generateText with tools > basic/ai 2`] = `
       "{"type":"function","name":"add","description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false}}",
     ],
     "ai.response.finishReason": "stop",
-    "ai.response.id": "aitxt-IGxJsEfJzasA7Mvn5LvzVpIf",
+    "ai.response.id": "aitxt-3FraDzvhvoxecpJOAx8rdnLA",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{"ollama":{}}",
-    "ai.response.timestamp": "2025-08-30T14:40:20.539Z",
-    "ai.response.toolCalls": "[{"toolCallId":"YhznIODrk7g4ptWE","toolName":"add","input":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}]",
+    "ai.response.timestamp": "2025-08-30T15:32:33.955Z",
+    "ai.response.toolCalls": "[{"toolCallId":"861FfVZBsSN7OzHE","toolName":"add","input":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}]",
     "ai.settings.maxRetries": 2,
     "ai.settings.seed": 114514,
     "ai.usage.completionTokens": 36,
@@ -116,7 +121,7 @@ exports[`generateText with tools > basic/ai 2`] = `
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "aitxt-IGxJsEfJzasA7Mvn5LvzVpIf",
+    "gen_ai.response.id": "aitxt-3FraDzvhvoxecpJOAx8rdnLA",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "ollama.responses",
     "gen_ai.usage.input_tokens": 192,
@@ -126,7 +131,7 @@ exports[`generateText with tools > basic/ai 2`] = `
   {
     "ai.operationId": "ai.toolCall",
     "ai.toolCall.args": "{"a":"114514","b":"1919810"}",
-    "ai.toolCall.id": "YhznIODrk7g4ptWE",
+    "ai.toolCall.id": "861FfVZBsSN7OzHE",
     "ai.toolCall.name": "add",
     "ai.toolCall.result": ""2034324"",
     "operation.name": "ai.toolCall",
@@ -135,30 +140,30 @@ exports[`generateText with tools > basic/ai 2`] = `
     "ai.model.id": "qwen3:0.6b",
     "ai.model.provider": "ollama.responses",
     "ai.operationId": "ai.generateText.doGenerate",
-    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem."}]},{"role":"assistant","content":[{"type":"tool-call","toolCallId":"YhznIODrk7g4ptWE","toolName":"add","input":{"a":"114514","b":"1919810"}}]},{"role":"tool","content":[{"type":"tool-result","toolCallId":"YhznIODrk7g4ptWE","toolName":"add","output":{"type":"text","value":"2034324"}}]}]",
+    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem."}]},{"role":"assistant","content":[{"type":"tool-call","toolCallId":"861FfVZBsSN7OzHE","toolName":"add","input":{"a":"114514","b":"1919810"}}]},{"role":"tool","content":[{"type":"tool-result","toolCallId":"861FfVZBsSN7OzHE","toolName":"add","output":{"type":"text","value":"2034324"}}]}]",
     "ai.prompt.toolChoice": "{"type":"auto"}",
     "ai.prompt.tools": [
       "{"type":"function","name":"add","description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false}}",
     ],
     "ai.response.finishReason": "stop",
-    "ai.response.id": "aitxt-ttg0PGvsNJtANIegik7NFDlh",
+    "ai.response.id": "aitxt-K6jX9Q6fY9YOY5F5xgpUwGRQ",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{"ollama":{}}",
-    "ai.response.text": "The result is 20,343,24.",
-    "ai.response.timestamp": "2025-08-30T14:40:20.692Z",
+    "ai.response.text": "20,343,24",
+    "ai.response.timestamp": "2025-08-30T15:32:34.087Z",
     "ai.settings.maxRetries": 2,
     "ai.settings.seed": 114514,
-    "ai.usage.completionTokens": 15,
+    "ai.usage.completionTokens": 10,
     "ai.usage.promptTokens": 245,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "aitxt-ttg0PGvsNJtANIegik7NFDlh",
+    "gen_ai.response.id": "aitxt-K6jX9Q6fY9YOY5F5xgpUwGRQ",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "ollama.responses",
     "gen_ai.usage.input_tokens": 245,
-    "gen_ai.usage.output_tokens": 15,
+    "gen_ai.usage.output_tokens": 10,
     "operation.name": "ai.generateText.doGenerate",
   },
   {
@@ -168,10 +173,10 @@ exports[`generateText with tools > basic/ai 2`] = `
     "ai.prompt": "{"prompt":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem."}",
     "ai.response.finishReason": "stop",
     "ai.response.providerMetadata": "{"ollama":{}}",
-    "ai.response.text": "The result is 20,343,24.",
+    "ai.response.text": "20,343,24",
     "ai.settings.maxRetries": 2,
     "ai.settings.seed": 114514,
-    "ai.usage.completionTokens": 15,
+    "ai.usage.completionTokens": 10,
     "ai.usage.promptTokens": 245,
     "operation.name": "ai.generateText",
   },
