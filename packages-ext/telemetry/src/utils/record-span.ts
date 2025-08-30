@@ -53,7 +53,35 @@ export const recordSpan = async <T>({
         recordErrorOnSpan(span, error)
       }
       finally {
-      // always stop the span when there is an error:
+        // always stop the span when there is an error:
+        span.end()
+      }
+
+      throw error
+    }
+  })
+
+export const recordSpanSync = <T>({
+  attributes,
+  endWhenDone = true,
+  name,
+  tracer,
+}: RecordSpanOptions, fn: (span: Span) => T) =>
+  tracer.startActiveSpan(name, { attributes }, (span) => {
+    try {
+      const result = fn(span)
+
+      if (endWhenDone)
+        span.end()
+
+      return result
+    }
+    catch (error) {
+      try {
+        recordErrorOnSpan(span, error)
+      }
+      finally {
+        // always stop the span when there is an error:
         span.end()
       }
 

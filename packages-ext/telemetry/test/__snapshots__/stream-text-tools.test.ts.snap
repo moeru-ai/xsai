@@ -1,0 +1,192 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`streamText with tools > basic 1`] = `
+"<think>
+Okay, so the user is asking how many times 114514 plus 1919810 equals. Wait, that seems like adding those two numbers, right? Because the question is phrased as "how many times does 114514 plus 1919810 equal." But "equal" here might be a bit confusing. If they mean multiplying them, then obviously it's 114514 * 1919810. But maybe the user intended to ask the sum. Let me check the tools again. The only tool provided is the add function, which takes two numbers and adds them. So if the question is asking for the sum of the two numbers, I should use the add function with a and b both set to these numbers. But wait, the way it's phrased, "plus" is a bit unclear. Let me parse the question again: "How many times does 114514 plus 1919810 equal?" If we interpret "equation" as "sum," then it's simply adding 114514 and 1919810. If there's a different interpretation, but given the tools available, I should proceed with adding those two numbers. So the correct action is to call the add function with a=114514 and b=1919810, then return the result.
+</think>
+
+<think>
+Okay, so the user asked how many times 114514 plus 1919810 equals. Wait, that seems like they mean the sum of those two numbers. Let me double-check. If it's just adding 114514 and 1919810, then the sum would be 114514 + 1919810.
+
+Let me calculate that. 114514 plus 1919810. Adding them together: 114,514 + 1,919,810. Let me do that. 1,919,810 plus 114,514. Adding the digits: 1,919,810 + 0114,514. Adding those, the total should be 2,034,324 as per the tool response. So the answer is 2,034,324 times. The user probably wanted the sum, so I just need to present that result.
+</think>
+
+The sum of 114514 and 1919810 is 2,034,324."
+`;
+
+exports[`streamText with tools > basic 2`] = `
+[
+  {
+    "ai.operationId": "ai.toolCall",
+    "ai.toolCall.args": "{"a":"114514","b":"1919810"}",
+    "ai.toolCall.id": "call_r9x71979",
+    "ai.toolCall.name": "add",
+    "ai.toolCall.result": ""2034324"",
+    "operation.name": "ai.toolCall",
+  },
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "xsai",
+    "ai.operationId": "ai.streamText.doStream",
+    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "ai.prompt.toolChoice": "{"type":"auto"}",
+    "ai.prompt.tools": [
+      "{"description":"Adds two numbers","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
+    ],
+    "ai.response.avgOutputTokensPerSecond": 53.73057459189193,
+    "ai.response.finishReason": "tool_calls",
+    "ai.response.id": "d0a9e4d7-fe53-4192-ae6f-94193922ab03",
+    "ai.response.model": "qwen3:0.6b",
+    "ai.response.msToFinish": 6551.204834,
+    "ai.response.msToFirstChunk": 3754.649459,
+    "ai.response.providerMetadata": "{}",
+    "ai.response.text": "<think> Okay, so the user is asking how many times",
+    "ai.response.timestamp": "2025-09-03T15:53:38.599Z",
+    "ai.response.toolCalls": "[{"args":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}","toolCallId":"call_r9x71979","toolCallType":"function","toolName":"add"}]",
+    "ai.usage.inputTokens": 180,
+    "ai.usage.outputTokens": 352,
+    "ai.usage.totalTokens": 532,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.response.finish_reasons": [
+      "tool_calls",
+    ],
+    "gen_ai.response.id": "e08c033c-481a-43b3-a07e-8e5f67d2cf3c",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "xsai",
+    "gen_ai.usage.input_tokens": 180,
+    "gen_ai.usage.output_tokens": 352,
+    "operation.name": "ai.streamText.doStream",
+  },
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "xsai",
+    "ai.operationId": "ai.streamText.doStream",
+    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "ai.prompt.toolChoice": "{"type":"auto"}",
+    "ai.prompt.tools": [
+      "{"description":"Adds two numbers","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
+    ],
+    "ai.response.avgOutputTokensPerSecond": 68.1909050283425,
+    "ai.response.finishReason": "stop",
+    "ai.response.id": "a6ec18fd-ed03-431d-ab3e-0351950e65a9",
+    "ai.response.model": "qwen3:0.6b",
+    "ai.response.msToFinish": 4062.1252919999997,
+    "ai.response.msToFirstChunk": 1685.3098340000006,
+    "ai.response.providerMetadata": "{}",
+    "ai.response.text": "<think> Okay, so the user asked how many times 114",
+    "ai.response.timestamp": "2025-09-03T15:53:45.151Z",
+    "ai.usage.inputTokens": 517,
+    "ai.usage.outputTokens": 277,
+    "ai.usage.totalTokens": 794,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.response.finish_reasons": [
+      "stop",
+    ],
+    "gen_ai.response.id": "428fbb0e-1092-4e47-91a4-ed4eaa800165",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "xsai",
+    "gen_ai.usage.input_tokens": 517,
+    "gen_ai.usage.output_tokens": 277,
+    "operation.name": "ai.streamText.doStream",
+  },
+]
+`;
+
+exports[`streamText with tools > basic/ai 1`] = `"The sum of 114514 and 1919810 is 2034324."`;
+
+exports[`streamText with tools > basic/ai 2`] = `
+[
+  {
+    "ai.operationId": "ai.toolCall",
+    "ai.toolCall.args": "{"a":"114514","b":"1919810"}",
+    "ai.toolCall.id": "UQItbopVXKY92hiR",
+    "ai.toolCall.name": "add",
+    "ai.toolCall.result": ""2034324"",
+    "operation.name": "ai.toolCall",
+  },
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "ollama.responses",
+    "ai.operationId": "ai.streamText.doStream",
+    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem."}]}]",
+    "ai.prompt.toolChoice": "{"type":"auto"}",
+    "ai.prompt.tools": [
+      "{"type":"function","name":"add","description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false}}",
+    ],
+    "ai.response.avgOutputTokensPerSecond": 100.43444873693214,
+    "ai.response.finishReason": "stop",
+    "ai.response.id": "aitxt-I0HH87ni2GUz4SWw5cgXXG63",
+    "ai.response.model": "qwen3:0.6b",
+    "ai.response.msToFinish": 358.44275000000016,
+    "ai.response.msToFirstChunk": 346.1615419999998,
+    "ai.response.providerMetadata": "{"ollama":{"responseId":null}}",
+    "ai.response.text": "",
+    "ai.response.timestamp": "2025-09-03T15:53:49.563Z",
+    "ai.response.toolCalls": "[{"type":"tool-call","toolCallId":"UQItbopVXKY92hiR","toolName":"add","input":{"a":"114514","b":"1919810"}}]",
+    "ai.settings.maxRetries": 2,
+    "ai.settings.seed": 114514,
+    "ai.usage.inputTokens": 192,
+    "ai.usage.outputTokens": 36,
+    "ai.usage.totalTokens": 228,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.response.finish_reasons": [
+      "stop",
+    ],
+    "gen_ai.response.id": "aitxt-I0HH87ni2GUz4SWw5cgXXG63",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "ollama.responses",
+    "gen_ai.usage.input_tokens": 192,
+    "gen_ai.usage.output_tokens": 36,
+    "operation.name": "ai.streamText.doStream",
+  },
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "ollama.responses",
+    "ai.operationId": "ai.streamText.doStream",
+    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem."}]},{"role":"assistant","content":[{"type":"tool-call","toolCallId":"UQItbopVXKY92hiR","toolName":"add","input":{"a":"114514","b":"1919810"}}]},{"role":"tool","content":[{"type":"tool-result","toolCallId":"UQItbopVXKY92hiR","toolName":"add","output":{"type":"text","value":"2034324"}}]}]",
+    "ai.prompt.toolChoice": "{"type":"auto"}",
+    "ai.prompt.tools": [
+      "{"type":"function","name":"add","description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false}}",
+    ],
+    "ai.response.avgOutputTokensPerSecond": 103.16846129408738,
+    "ai.response.finishReason": "stop",
+    "ai.response.id": "aitxt-9WS5jVfc3EyLoehdUnrsSEY7",
+    "ai.response.model": "qwen3:0.6b",
+    "ai.response.msToFinish": 290.7865409999995,
+    "ai.response.msToFirstChunk": 69.45679100000052,
+    "ai.response.providerMetadata": "{"ollama":{"responseId":null}}",
+    "ai.response.text": "The sum of 114514 and 1919810 is 2034324.",
+    "ai.response.timestamp": "2025-09-03T15:53:49.650Z",
+    "ai.settings.maxRetries": 2,
+    "ai.settings.seed": 114514,
+    "ai.usage.inputTokens": 245,
+    "ai.usage.outputTokens": 30,
+    "ai.usage.totalTokens": 275,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.response.finish_reasons": [
+      "stop",
+    ],
+    "gen_ai.response.id": "aitxt-9WS5jVfc3EyLoehdUnrsSEY7",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "ollama.responses",
+    "gen_ai.usage.input_tokens": 245,
+    "gen_ai.usage.output_tokens": 30,
+    "operation.name": "ai.streamText.doStream",
+  },
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "ollama.responses",
+    "ai.operationId": "ai.streamText",
+    "ai.prompt": "{"prompt":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem."}",
+    "ai.response.finishReason": "stop",
+    "ai.response.providerMetadata": "{"ollama":{"responseId":null}}",
+    "ai.response.text": "The sum of 114514 and 1919810 is 2034324.",
+    "ai.settings.maxRetries": 2,
+    "ai.settings.seed": 114514,
+    "ai.usage.inputTokens": 437,
+    "ai.usage.outputTokens": 66,
+    "ai.usage.totalTokens": 503,
+    "operation.name": "ai.streamText",
+  },
+]
+`;
