@@ -1,7 +1,8 @@
 import type { CompletionStep, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn } from 'xsai'
 
-import { chat, extractGenerateTextStep, responseJSON, trampoline } from 'xsai'
+import { chat, responseJSON, trampoline } from 'xsai'
 
+import { extractGenerateTextStep, extractGenerateTextStepPost } from './generate-text-internal'
 import { getTracer } from './get-tracer'
 import { recordSpan } from './record-span'
 import { stringifyTool } from './stringify-tool'
@@ -33,7 +34,7 @@ export const generateText = async (options: GenerateTextOptions) => {
     const messages: Message[] = structuredClone(options.messages)
     const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
 
-    const [step, { messages: msgs, reasoningText }] = await recordSpan({
+    const [stepWithoutToolCalls, { messages: msgs1, msgToolCalls, reasoningText }] = await recordSpan({
       attributes: {
         ...commonAttributes('ai.generateText.doGenerate'),
         ...idAttributes(),
@@ -61,14 +62,14 @@ export const generateText = async (options: GenerateTextOptions) => {
       })
         .then(responseJSON<GenerateTextResponse>)
 
-      const [step, { messages: msgs, reasoningText }] = await extractGenerateTextStep({
+      const [step, { messages: msgs, msgToolCalls, reasoningText }] = await extractGenerateTextStep({
         ...options,
         messages,
         steps,
       }, res)
 
       span.setAttributes({
-        ...((step.text != null) ? { 'ai.response.text': step.text } : {}),
+        ...((step.text != null && step.toolCalls.length === 0) ? { 'ai.response.text': step.text } : {}),
         ...(step.toolCalls.length > 0 ? { 'ai.response.toolCalls': JSON.stringify(step.toolCalls) } : {}),
         'ai.response.finishReason': step.finishReason,
         'ai.usage.completionTokens': step.usage.completion_tokens,
@@ -78,11 +79,19 @@ export const generateText = async (options: GenerateTextOptions) => {
         'gen_ai.usage.output_tokens': step.usage.completion_tokens,
       })
 
-      return [step, { messages: msgs, reasoningText }]
+      return [step, { messages: msgs, msgToolCalls, reasoningText }]
     })
 
+    const [toolResults, msgs2] = await extractGenerateTextStepPost({
+      ...options,
+      messages,
+      steps,
+    }, msgToolCalls)
+
+    const step = { ...stepWithoutToolCalls, toolResults }
+
     steps.push(step)
-    messages.push(...msgs)
+    messages.push(...msgs1, ...msgs2)
 
     if (options.onStepFinish)
       await options.onStepFinish(step)
