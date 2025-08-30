@@ -294,10 +294,13 @@ importers:
         version: 2.0.1(@opentelemetry/api@1.9.0)
       ai:
         specifier: ^5.0.28
-        version: 5.0.28
+        version: 5.0.28(zod@4.1.5)
       ollama-ai-provider-v2:
         specifier: ^1.2.1
-        version: 1.2.1
+        version: 1.2.1(zod@4.1.5)
+      zod:
+        specifier: ^4.1.5
+        version: 4.1.5
 
   packages-top/xsai:
     dependencies:
@@ -5481,28 +5484,34 @@ packages:
   zod@4.0.5:
     resolution: {integrity: sha512-/5UuuRPStvHXu7RS+gmvRf4NXrNxpSllGwDnCBcJZtQsKrviYXm54yDGV2KYNLT5kq0lHGcl7lqWJLgSaG+tgA==}
 
+  zod@4.1.5:
+    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
-  '@ai-sdk/gateway@1.0.15':
+  '@ai-sdk/gateway@1.0.15(zod@4.1.5)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.7
+      '@ai-sdk/provider-utils': 3.0.7(zod@4.1.5)
+      zod: 4.1.5
 
-  '@ai-sdk/provider-utils@3.0.1':
+  '@ai-sdk/provider-utils@3.0.1(zod@4.1.5)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
       eventsource-parser: 3.0.5
-      zod-to-json-schema: 3.24.5(zod@4.0.5)
+      zod: 4.1.5
+      zod-to-json-schema: 3.24.5(zod@4.1.5)
 
-  '@ai-sdk/provider-utils@3.0.7':
+  '@ai-sdk/provider-utils@3.0.7(zod@4.1.5)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
       eventsource-parser: 3.0.5
+      zod: 4.1.5
 
   '@ai-sdk/provider@2.0.0':
     dependencies:
@@ -7314,12 +7323,13 @@ snapshots:
 
   acorn@8.15.0: {}
 
-  ai@5.0.28:
+  ai@5.0.28(zod@4.1.5):
     dependencies:
-      '@ai-sdk/gateway': 1.0.15
+      '@ai-sdk/gateway': 1.0.15(zod@4.1.5)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.7
+      '@ai-sdk/provider-utils': 3.0.7(zod@4.1.5)
       '@opentelemetry/api': 1.9.0
+      zod: 4.1.5
 
   ajv@6.12.6:
     dependencies:
@@ -9610,10 +9620,11 @@ snapshots:
 
   ohash@2.0.11: {}
 
-  ollama-ai-provider-v2@1.2.1:
+  ollama-ai-provider-v2@1.2.1(zod@4.1.5):
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.1
+      '@ai-sdk/provider-utils': 3.0.1(zod@4.1.5)
+      zod: 4.1.5
 
   oniguruma-parser@0.12.1: {}
 
@@ -10913,6 +10924,12 @@ snapshots:
     dependencies:
       zod: 4.0.5
 
+  zod-to-json-schema@3.24.5(zod@4.1.5):
+    dependencies:
+      zod: 4.1.5
+
   zod@4.0.5: {}
+
+  zod@4.1.5: {}
 
   zwitch@2.0.4: {}

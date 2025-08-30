@@ -2,13 +2,15 @@ import type { ReadableSpan } from '@opentelemetry/sdk-trace-base'
 
 import { InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
-import { generateText as aiGenerateText } from 'ai'
+import { generateText as aiGenerateText, tool as aiTool, stepCountIs } from 'ai'
 import { ollama } from 'ollama-ai-provider-v2'
 import { describe, expect, it } from 'vitest'
+import { tool } from 'xsai'
+import { z } from 'zod/v4'
 
 import { generateText } from '../src'
 
-describe.sequential('generateText', () => {
+describe.sequential('generateText with tools', () => {
   const memoryExporter = new InMemorySpanExporter()
   const tracerProvider = new NodeTracerProvider({
     spanProcessors: [new SimpleSpanProcessor(memoryExporter)],
@@ -24,14 +26,27 @@ describe.sequential('generateText', () => {
   )
 
   it('basic', async () => {
+    const add = await tool({
+      description: 'Adds two numbers',
+      execute: ({ a, b }) => (Number.parseInt(a) + Number.parseInt(b)).toString(),
+      name: 'add',
+      parameters: z.object({
+        a: z.string()
+          .describe('First number'),
+        b: z.string()
+          .describe('Second number'),
+      }),
+    })
+
     const { text } = await generateText({
       baseURL: 'http://localhost:11434/v1',
       messages: [{
-        content: 'Why is the sky blue?',
+        content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
         role: 'user',
       }],
       model: 'qwen3:0.6b',
       seed: 114514,
+      tools: [add],
     })
 
     const spans = memoryExporter.getFinishedSpans().map(getAttributes)
@@ -41,14 +56,30 @@ describe.sequential('generateText', () => {
   })
 
   it('basic/ai', async () => {
+    const add = aiTool({
+      description: 'Adds two numbers',
+      // @ts-expect-error wrong types
+      execute: ({ a, b }) => (Number.parseInt(a) + Number.parseInt(b)).toString(),
+      // @ts-expect-error wrong types
+      inputSchema: z.object({
+        a: z.string()
+          .describe('First number'),
+        b: z.string()
+          .describe('Second number'),
+      }),
+      name: 'add',
+    })
+
     const { text } = await aiGenerateText({
       experimental_telemetry: { isEnabled: true },
       model: ollama('qwen3:0.6b'),
-      prompt: 'Why is the sky blue?',
+      prompt: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
       seed: 114514,
+      stopWhen: stepCountIs(5),
+      tools: { add },
     })
 
-    const spans = memoryExporter.getFinishedSpans().slice(2).map(getAttributes)
+    const spans = memoryExporter.getFinishedSpans().slice(4).map(getAttributes)
 
     expect(text).toMatchSnapshot()
     expect(spans).toMatchSnapshot()
@@ -61,8 +92,8 @@ describe.sequential('generateText', () => {
       .sort((a, b) => a.localeCompare(b))
 
     const spans = memoryExporter.getFinishedSpans()
-    const xsai = spans.slice(0, 2).map(extractAttributeKeys)
-    const ai = spans.slice(2).map(extractAttributeKeys)
+    const xsai = spans.slice(0, 4).map(extractAttributeKeys)
+    const ai = spans.slice(4).map(extractAttributeKeys)
 
     xsai.forEach((attributes, i) => {
       expect(attributes).toStrictEqual(ai[i])

@@ -4,6 +4,8 @@ import { generateText as originalGenerateText } from 'xsai'
 
 import { getTracer } from './get-tracer'
 import { recordSpan } from './record-span'
+import { stringifyTool } from './stringify-tool'
+import { wrapTool } from './wrap-tool'
 
 export const generateText = async (options: GenerateTextOptions) => {
   const tracer = getTracer()
@@ -37,15 +39,23 @@ export const generateText = async (options: GenerateTextOptions) => {
   }, async (span) => {
     const result = await originalGenerateText({
       ...options,
+      tools: options.tools?.map(tool => wrapTool(tool, tracer)),
       onStepFinish: async step => recordSpan({
         attributes: {
           ...commonAttributes('ai.generateText.doGenerate'),
           ...idAttributes(),
+          ...(options.tools != null && options.tools.length > 0
+            ? {
+                'ai.prompt.toolChoice': JSON.stringify(options.toolChoice ?? { type: 'auto' }),
+                'ai.prompt.tools': options.tools.map(stringifyTool),
+              }
+            : {}),
+          ...((step.text != null && step.toolCalls.length === 0) ? { 'ai.response.text': step.text } : {}),
+          ...(step.toolCalls.length > 0 ? { 'ai.response.toolCalls': JSON.stringify(step.toolCalls) } : {}),
           // TODO: step messages
           'ai.prompt.messages': JSON.stringify(options.messages),
           'ai.response.finishReason': step.finishReason,
           'ai.response.model': options.model,
-          'ai.response.text': step.text,
           'ai.usage.completionTokens': step.usage.completion_tokens,
           'ai.usage.promptTokens': step.usage.prompt_tokens,
           'gen_ai.request.model': options.model,
@@ -62,9 +72,9 @@ export const generateText = async (options: GenerateTextOptions) => {
     })
 
     span.setAttributes({
+      ...(result.toolCalls.length > 0 ? { 'ai.response.toolCalls': JSON.stringify(result.toolCalls) } : {}),
+      ...(result.text != null ? { 'ai.response.text': result.text } : {}),
       'ai.response.finishReason': result.finishReason,
-      // TODO: ai.response.toolCalls
-      'ai.response.text': result.text,
       'ai.usage.completionTokens': result.usage.completion_tokens,
       'ai.usage.promptTokens': result.usage.prompt_tokens,
     })
