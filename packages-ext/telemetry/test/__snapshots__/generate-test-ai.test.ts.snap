@@ -1,0 +1,269 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ai/generateText > basic 1`] = `
+"The sky is blue because of the way light interacts with the atmosphere. Here's a simple explanation:
+
+1. **Light Refraction**: When sunlight hits the Earth's atmosphere, it bends (refracts) the light. This bending causes the blue color of the sky to appear blue.
+
+2. **Water Droplets**: The air is mostly made of nitrogen and oxygen, but water vapor also plays a role. Water vapor can scatter light in all directions, making the sky appear blue.
+
+3. **Optical Properties**: Light waves are electromagnetic waves, and the Earth's atmosphere acts like a medium that bends and scatters light. The blue color is the shorter wavelength of the visible light.
+
+In short, the sky is blue because of the optical properties of the atmosphere and the scattering of light by water vapor."
+`;
+
+exports[`ai/generateText > basic 2`] = `
+[
+  SpanImpl {
+    "_attributeValueLengthLimit": Infinity,
+    "_droppedAttributesCount": 0,
+    "_droppedEventsCount": 0,
+    "_droppedLinksCount": 0,
+    "_duration": [
+      2,
+      381633185,
+    ],
+    "_ended": true,
+    "_performanceOffset": -0.7255859375,
+    "_performanceStartTime": 2519.986656,
+    "_spanContext": {
+      "spanId": "551829b143b6c9df",
+      "traceFlags": 1,
+      "traceId": "abac62c36ccb4e3a74e98b67f95bcfc2",
+      "traceState": undefined,
+    },
+    "_spanLimits": {
+      "attributeCountLimit": 128,
+      "attributePerEventCountLimit": 128,
+      "attributePerLinkCountLimit": 128,
+      "attributeValueLengthLimit": Infinity,
+      "eventCountLimit": 128,
+      "linkCountLimit": 128,
+    },
+    "_spanProcessor": MultiSpanProcessor {
+      "_spanProcessors": [
+        SimpleSpanProcessor {
+          "_exporter": InMemorySpanExporter {
+            "_finishedSpans": [Circular],
+            "_stopped": false,
+          },
+          "_pendingExports": Set {
+            Promise {},
+            Promise {},
+          },
+          "_shutdownOnce": BindOnceFuture {
+            "_callback": [Function],
+            "_deferred": Deferred {
+              "_promise": Promise {},
+              "_reject": [Function],
+              "_resolve": [Function],
+            },
+            "_isCalled": false,
+            "_that": [Circular],
+          },
+        },
+      ],
+    },
+    "_startTimeProvided": false,
+    "attributes": {
+      "ai.model.id": "qwen3:0.6b",
+      "ai.model.provider": "ollama.responses",
+      "ai.operationId": "ai.generateText.doGenerate",
+      "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
+      "ai.response.finishReason": "stop",
+      "ai.response.id": "aitxt-3yWUFG3So3GamhjWSS32iO5n",
+      "ai.response.model": "qwen3:0.6b",
+      "ai.response.providerMetadata": "{"ollama":{}}",
+      "ai.response.text": "The sky is blue because of the way light interacts with the atmosphere. Here's a simple explanation:
+
+1. **Light Refraction**: When sunlight hits the Earth's atmosphere, it bends (refracts) the light. This bending causes the blue color of the sky to appear blue.
+
+2. **Water Droplets**: The air is mostly made of nitrogen and oxygen, but water vapor also plays a role. Water vapor can scatter light in all directions, making the sky appear blue.
+
+3. **Optical Properties**: Light waves are electromagnetic waves, and the Earth's atmosphere acts like a medium that bends and scatters light. The blue color is the shorter wavelength of the visible light.
+
+In short, the sky is blue because of the optical properties of the atmosphere and the scattering of light by water vapor.",
+      "ai.response.timestamp": "2025-08-30T05:17:04.081Z",
+      "ai.settings.maxRetries": 2,
+      "ai.settings.seed": 114514,
+      "ai.usage.completionTokens": 164,
+      "ai.usage.promptTokens": 22,
+      "gen_ai.request.model": "qwen3:0.6b",
+      "gen_ai.response.finish_reasons": [
+        "stop",
+      ],
+      "gen_ai.response.id": "aitxt-3yWUFG3So3GamhjWSS32iO5n",
+      "gen_ai.response.model": "qwen3:0.6b",
+      "gen_ai.system": "ollama.responses",
+      "gen_ai.usage.input_tokens": 22,
+      "gen_ai.usage.output_tokens": 164,
+      "operation.name": "ai.generateText.doGenerate",
+    },
+    "endTime": [
+      1756531024,
+      81633185,
+    ],
+    "events": [],
+    "instrumentationScope": {
+      "name": "ai",
+      "schemaUrl": undefined,
+      "version": undefined,
+    },
+    "kind": 0,
+    "links": [],
+    "name": "ai.generateText.doGenerate",
+    "parentSpanContext": {
+      "spanId": "1058ea41da3bf3af",
+      "traceFlags": 1,
+      "traceId": "abac62c36ccb4e3a74e98b67f95bcfc2",
+      "traceState": undefined,
+    },
+    "resource": ResourceImpl {
+      "_asyncAttributesPending": false,
+      "_memoizedAttributes": undefined,
+      "_rawAttributes": [
+        [
+          "service.name",
+          "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+        ],
+        [
+          "telemetry.sdk.language",
+          "nodejs",
+        ],
+        [
+          "telemetry.sdk.name",
+          "opentelemetry",
+        ],
+        [
+          "telemetry.sdk.version",
+          "2.0.1",
+        ],
+      ],
+    },
+    "startTime": [
+      1756531021,
+      700000000,
+    ],
+    "status": {
+      "code": 0,
+    },
+  },
+  SpanImpl {
+    "_attributeValueLengthLimit": Infinity,
+    "_droppedAttributesCount": 0,
+    "_droppedEventsCount": 0,
+    "_droppedLinksCount": 0,
+    "_duration": [
+      2,
+      383936403,
+    ],
+    "_ended": true,
+    "_performanceOffset": -0.34326171875,
+    "_performanceStartTime": 2518.604295,
+    "_spanContext": {
+      "spanId": "1058ea41da3bf3af",
+      "traceFlags": 1,
+      "traceId": "abac62c36ccb4e3a74e98b67f95bcfc2",
+      "traceState": undefined,
+    },
+    "_spanLimits": {
+      "attributeCountLimit": 128,
+      "attributePerEventCountLimit": 128,
+      "attributePerLinkCountLimit": 128,
+      "attributeValueLengthLimit": Infinity,
+      "eventCountLimit": 128,
+      "linkCountLimit": 128,
+    },
+    "_spanProcessor": MultiSpanProcessor {
+      "_spanProcessors": [
+        SimpleSpanProcessor {
+          "_exporter": InMemorySpanExporter {
+            "_finishedSpans": [Circular],
+            "_stopped": false,
+          },
+          "_pendingExports": Set {
+            Promise {},
+            Promise {},
+          },
+          "_shutdownOnce": BindOnceFuture {
+            "_callback": [Function],
+            "_deferred": Deferred {
+              "_promise": Promise {},
+              "_reject": [Function],
+              "_resolve": [Function],
+            },
+            "_isCalled": false,
+            "_that": [Circular],
+          },
+        },
+      ],
+    },
+    "_startTimeProvided": false,
+    "attributes": {
+      "ai.model.id": "qwen3:0.6b",
+      "ai.model.provider": "ollama.responses",
+      "ai.operationId": "ai.generateText",
+      "ai.prompt": "{"prompt":"Why is the sky blue?"}",
+      "ai.response.finishReason": "stop",
+      "ai.response.providerMetadata": "{"ollama":{}}",
+      "ai.response.text": "The sky is blue because of the way light interacts with the atmosphere. Here's a simple explanation:
+
+1. **Light Refraction**: When sunlight hits the Earth's atmosphere, it bends (refracts) the light. This bending causes the blue color of the sky to appear blue.
+
+2. **Water Droplets**: The air is mostly made of nitrogen and oxygen, but water vapor also plays a role. Water vapor can scatter light in all directions, making the sky appear blue.
+
+3. **Optical Properties**: Light waves are electromagnetic waves, and the Earth's atmosphere acts like a medium that bends and scatters light. The blue color is the shorter wavelength of the visible light.
+
+In short, the sky is blue because of the optical properties of the atmosphere and the scattering of light by water vapor.",
+      "ai.settings.maxRetries": 2,
+      "ai.settings.seed": 114514,
+      "ai.usage.completionTokens": 164,
+      "ai.usage.promptTokens": 22,
+      "operation.name": "ai.generateText",
+    },
+    "endTime": [
+      1756531024,
+      82936403,
+    ],
+    "events": [],
+    "instrumentationScope": {
+      "name": "ai",
+      "schemaUrl": undefined,
+      "version": undefined,
+    },
+    "kind": 0,
+    "links": [],
+    "name": "ai.generateText",
+    "parentSpanContext": undefined,
+    "resource": ResourceImpl {
+      "_asyncAttributesPending": false,
+      "_memoizedAttributes": undefined,
+      "_rawAttributes": [
+        [
+          "service.name",
+          "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+        ],
+        [
+          "telemetry.sdk.language",
+          "nodejs",
+        ],
+        [
+          "telemetry.sdk.name",
+          "opentelemetry",
+        ],
+        [
+          "telemetry.sdk.version",
+          "2.0.1",
+        ],
+      ],
+    },
+    "startTime": [
+      1756531021,
+      699000000,
+    ],
+    "status": {
+      "code": 0,
+    },
+  },
+]
+`;
