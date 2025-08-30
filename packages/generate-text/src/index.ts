@@ -71,7 +71,7 @@ const rawGenerateText = async (options: GenerateTextOptions): Promise<Trampoline
       const stepType = determineStepType({
         finishReason,
         maxSteps: options.maxSteps ?? 1,
-        stepsLength: options.steps?.length ?? 0,
+        stepsLength: steps.length,
         toolCallsLength: msgToolCalls.length,
       })
 
@@ -80,7 +80,7 @@ const rawGenerateText = async (options: GenerateTextOptions): Promise<Trampoline
         reasoning_content: undefined,
       }))
 
-      if (finishReason !== 'stop' || stepType !== 'done') {
+      if (finishReason !== 'stop' && stepType !== 'done') {
         for (const toolCall of msgToolCalls) {
           const { completionToolCall, completionToolResult, message } = await executeTool({
             abortSignal: options.abortSignal,
@@ -101,7 +101,7 @@ const rawGenerateText = async (options: GenerateTextOptions): Promise<Trampoline
         toolCalls,
         toolResults,
         usage,
-      } satisfies CompletionStep<true>
+      }
 
       steps.push(step)
 
