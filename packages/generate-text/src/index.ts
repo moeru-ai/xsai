@@ -49,7 +49,6 @@ const rawGenerateText = async (options: GenerateTextOptions): Promise<Trampoline
   chat({
     ...options,
     maxSteps: undefined,
-    messages: options.messages,
     steps: undefined,
     stream: false,
   })
