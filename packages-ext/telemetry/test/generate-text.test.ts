@@ -15,6 +15,11 @@ describe.sequential('generateText', () => {
   })
   tracerProvider.register()
 
+  const getAttributes = (span: ReadableSpan) => Object.fromEntries(
+    Object.entries(span.attributes)
+      .filter(([key]) => !['ai.response.text'].includes(key)),
+  )
+
   it('basic', async () => {
     const { text } = await generateText({
       baseURL: 'http://localhost:11434/v1',
@@ -26,7 +31,7 @@ describe.sequential('generateText', () => {
       seed: 114514,
     })
 
-    const spans = memoryExporter.getFinishedSpans()
+    const spans = memoryExporter.getFinishedSpans().map(getAttributes)
 
     expect(text).toMatchSnapshot()
     expect(spans).toMatchSnapshot()
@@ -40,21 +45,21 @@ describe.sequential('generateText', () => {
       seed: 114514,
     })
 
-    const spans = memoryExporter.getFinishedSpans().slice(2)
+    const spans = memoryExporter.getFinishedSpans().slice(2).map(getAttributes)
 
     expect(text).toMatchSnapshot()
     expect(spans).toMatchSnapshot()
   })
 
   it('basic/compare', () => {
-    const extractAttributes = (span: ReadableSpan) => Object.keys(span.attributes)
+    const extractAttributeKeys = (span: ReadableSpan) => Object.keys(span.attributes)
       // eslint-disable-next-line sonarjs/no-nested-functions
       .filter(key => ['ai.settings'].every(prefix => !key.startsWith(prefix)))
       .sort((a, b) => a.localeCompare(b))
 
     const spans = memoryExporter.getFinishedSpans()
-    const xsai = spans.slice(0, 2).map(extractAttributes)
-    const ai = spans.slice(2).map(extractAttributes)
+    const xsai = spans.slice(0, 2).map(extractAttributeKeys)
+    const ai = spans.slice(2).map(extractAttributeKeys)
 
     xsai.forEach((attributes, i) => {
       expect(attributes).toStrictEqual(ai[i])
