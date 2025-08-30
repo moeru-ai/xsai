@@ -40,7 +40,11 @@ export const generateText = async (options: GenerateTextOptions) => {
         attributes: {
           ...commonAttributes('ai.generateText.doGenerate'),
           ...idAttributes(),
-          // TODO: ai.prompt.messages
+          // TODO: step messages
+          'ai.prompt.messages': JSON.stringify(options.messages),
+          'ai.response.finishReason': step.finishReason,
+          'ai.response.model': options.model,
+          'ai.response.providerMetadata': '{}',
           'ai.response.text': step.text,
           'ai.usage.completionTokens': step.usage.completion_tokens,
           'ai.usage.promptTokens': step.usage.prompt_tokens,

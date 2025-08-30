@@ -2,24 +2,27 @@
 
 exports[`generateText > basic 1`] = `
 "<think>
-Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from science class that it's mainly due to Rayleigh scattering. Let me recall... Rayleigh scattering is the phenomenon where light, specifically visible light, bends and disperses when it interacts with gas particles. In the case of the Earth's atmosphere, the gas molecules are mainly nitrogen and oxygen. 
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember that in physics, there's related to the wavelength of light. But how does that translate to the sky?
 
-So when scattered sunlight goes through the atmosphere, shorter wavelengths of light, like blue light, get scattered more than red light. This scattered blue light contributes to the blue color of the sky. I should mention that this scattering is not only from the atmosphere but also happens as light travels through the atmosphere, so the blue is a combination of scattered light.
+First, the basic idea is that the sky appears blue because it is made of gases in the atmosphere. But I think the key is the Rayleigh scattering. Wait, Rayleigh scattering explains why the planet's sky is blue. But is there any other part to this explanation?
 
-I should also think about other factors. Maybe the angle at which we're observing the sky? Like if there's a lot of atmosphere, it might scatter more, but as it's a whole, the scattering is consistent. Also, maybe the fact that the Earth is surrounded by the atmosphere, which is a continuous column, and it's not very thick, leading to the scattered light.
+Let me check. Rayleigh scattering is when light scattered with longer wavelengths, so blue light is scattered more than red. That's why the sky appears blue. But maybe there are other factors, like the atmosphere's composition. Are there different substances in the atmosphere that affect the scattering? For example, water vapor and CO2 also play a role. But those contribute as well, so the primary factor is Rayleigh scattering. 
 
-Wait, but the user might not know about the atmosphere. I should keep the explanation simple. Maybe also compare it to sunlight. Since blue light is scattered more, and we're in the lower atmosphere, it's more like blue than red. So the answer should be clear, concise, and cover the main reasons mentioned.
+So, the answer would be that the sky appears blue because it's made of gases, and light, when scattered, has different wavelengths, with blue light scattered in all directions much more than red. But maybe I should mention the atmosphere's composition as well. But Rayleigh scattering is the core principle here. 
+
+Wait, sometimes people think it's due to the Earth's rotation, but no, that's related to the auroras, which are visible as auroras. The auroras are because of the Earth's magnetic field. 
+
+So the main answer would be Rayleigh scattering, explaining why the sky is blue. I need to explain that as part of my answer. Make sure to mention the Rayleigh effect, the primary reason, and maybe other factors but keep it concise.
 </think>
 
-The sky appears blue due to **Rayleigh scattering** of sunlight. Here's why:  
-1. **Sky's atmosphere**: The Earth's atmosphere contains nitrogen and oxygen gas. When sunlight (which consists of different wavelengths) interacts with these gas molecules, shorter (blue) wavelengths are scattered more than longer (red) ones.  
-2. **Scattering effect**: As visible light travels through the atmosphere, the scattered blue light contributes to the sky's blue hue.  
-3. **Continuity**: The blue color is a result of light being scattered continuously in the atmosphere, not just a local phenomenon.  
-
-So, in summary, the blue sky comes from the continuous, scattered light of the atmosphere, where blue light survives longer and spreads more than red."
+The sky appears blue primarily because of **Rayleigh scattering**, a phenomenon that describes how sunlight is scattered in the Earth's atmosphere. When visible light (specifically the blue part of the spectrum) hits the atmosphere, it's scattered in all directions—blue light being scattered in all directions much more intensely than red light. This scattered blue light weaves through the atmosphere, making the sky appear blue. While other atmospheric components like water vapor and CO₂ also play a role, Rayleigh scattering is the **primary mechanism** responsible for this coloration."
 `;
 
-exports[`generateText > basic 2`] = `
+exports[`generateText > basic 2`] = `[]`;
+
+exports[`generateText > basic/ai 1`] = `"The sky is blue because it contains a large amount of water vapor, which causes the air to refract light in a way that makes the sky appear blue. This phenomenon is called the Rayleigh scattering effect, where shorter wavelength light (like blue light) is scattered more than longer wavelength light (like red light). This scattering makes the sky appear blue, even though it's mostly empty space."`;
+
+exports[`generateText > basic/ai 2`] = `
 [
   SpanImpl {
     "_attributeValueLengthLimit": Infinity,
@@ -28,15 +31,15 @@ exports[`generateText > basic 2`] = `
     "_droppedLinksCount": 0,
     "_duration": [
       0,
-      126354,
+      325778585,
     ],
     "_ended": true,
-    "_performanceOffset": -0.977294921875,
-    "_performanceStartTime": 4484.936226,
+    "_performanceOffset": -0.55029296875,
+    "_performanceStartTime": 7399.747401,
     "_spanContext": {
-      "spanId": "b6cb40b2a98b3566",
+      "spanId": "377c7a74355d7ee2",
       "traceFlags": 1,
-      "traceId": "b72bfb8ce86658170681cab3d04c747d",
+      "traceId": "87736bb21da734177e629bc9734b4021",
       "traceState": undefined,
     },
     "_spanLimits": {
@@ -51,7 +54,307 @@ exports[`generateText > basic 2`] = `
       "_spanProcessors": [
         SimpleSpanProcessor {
           "_exporter": InMemorySpanExporter {
-            "_finishedSpans": [Circular],
+            "_finishedSpans": [
+              SpanImpl {
+                "_attributeValueLengthLimit": Infinity,
+                "_droppedAttributesCount": 0,
+                "_droppedEventsCount": 0,
+                "_droppedLinksCount": 0,
+                "_duration": [
+                  0,
+                  201067,
+                ],
+                "_ended": true,
+                "_performanceOffset": -0.227783203125,
+                "_performanceStartTime": 7393.424703,
+                "_spanContext": {
+                  "spanId": "e1b478bcfce2aa91",
+                  "traceFlags": 1,
+                  "traceId": "3bbfa8e293206c617e0d47ad12877fff",
+                  "traceState": undefined,
+                },
+                "_spanLimits": {
+                  "attributeCountLimit": 128,
+                  "attributePerEventCountLimit": 128,
+                  "attributePerLinkCountLimit": 128,
+                  "attributeValueLengthLimit": Infinity,
+                  "eventCountLimit": 128,
+                  "linkCountLimit": 128,
+                },
+                "_spanProcessor": [Circular],
+                "_startTimeProvided": false,
+                "attributes": {
+                  "ai.model.id": "qwen3:0.6b",
+                  "ai.model.provider": "xsai",
+                  "ai.operationId": "ai.generateText.doGenerate",
+                  "ai.prompt.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
+                  "ai.response.finishReason": "stop",
+                  "ai.response.id": "6fe4f195-c126-4a8f-a8b6-f682eec36c5c",
+                  "ai.response.model": "qwen3:0.6b",
+                  "ai.response.providerMetadata": "{}",
+                  "ai.response.text": "<think>
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember that in physics, there's related to the wavelength of light. But how does that translate to the sky?
+
+First, the basic idea is that the sky appears blue because it is made of gases in the atmosphere. But I think the key is the Rayleigh scattering. Wait, Rayleigh scattering explains why the planet's sky is blue. But is there any other part to this explanation?
+
+Let me check. Rayleigh scattering is when light scattered with longer wavelengths, so blue light is scattered more than red. That's why the sky appears blue. But maybe there are other factors, like the atmosphere's composition. Are there different substances in the atmosphere that affect the scattering? For example, water vapor and CO2 also play a role. But those contribute as well, so the primary factor is Rayleigh scattering. 
+
+So, the answer would be that the sky appears blue because it's made of gases, and light, when scattered, has different wavelengths, with blue light scattered in all directions much more than red. But maybe I should mention the atmosphere's composition as well. But Rayleigh scattering is the core principle here. 
+
+Wait, sometimes people think it's due to the Earth's rotation, but no, that's related to the auroras, which are visible as auroras. The auroras are because of the Earth's magnetic field. 
+
+So the main answer would be Rayleigh scattering, explaining why the sky is blue. I need to explain that as part of my answer. Make sure to mention the Rayleigh effect, the primary reason, and maybe other factors but keep it concise.
+</think>
+
+The sky appears blue primarily because of **Rayleigh scattering**, a phenomenon that describes how sunlight is scattered in the Earth's atmosphere. When visible light (specifically the blue part of the spectrum) hits the atmosphere, it's scattered in all directions—blue light being scattered in all directions much more intensely than red light. This scattered blue light weaves through the atmosphere, making the sky appear blue. While other atmospheric components like water vapor and CO₂ also play a role, Rayleigh scattering is the **primary mechanism** responsible for this coloration.",
+                  "ai.response.timestamp": "2025-08-30T12:52:47.391Z",
+                  "ai.usage.completionTokens": 464,
+                  "ai.usage.promptTokens": 14,
+                  "gen_ai.request.model": "qwen3:0.6b",
+                  "gen_ai.response.finish_reasons": [
+                    "stop",
+                  ],
+                  "gen_ai.response.id": "1c8ec93e-0978-4c15-bcb5-a808bd3fc74e",
+                  "gen_ai.response.model": "qwen3:0.6b",
+                  "gen_ai.system": "xsai",
+                  "gen_ai.usage.input_tokens": 14,
+                  "gen_ai.usage.output_tokens": 464,
+                  "operation.name": "ai.generateText.doGenerate",
+                },
+                "endTime": [
+                  1756558367,
+                  392201067,
+                ],
+                "events": [],
+                "instrumentationScope": {
+                  "name": "@xsai-ext/telemetry",
+                  "schemaUrl": undefined,
+                  "version": undefined,
+                },
+                "kind": 0,
+                "links": [],
+                "name": "ai.generateText.doGenerate",
+                "parentSpanContext": {
+                  "spanId": "d2ddf80f98535915",
+                  "traceFlags": 1,
+                  "traceId": "3bbfa8e293206c617e0d47ad12877fff",
+                  "traceState": undefined,
+                },
+                "resource": ResourceImpl {
+                  "_asyncAttributesPending": false,
+                  "_memoizedAttributes": undefined,
+                  "_rawAttributes": [
+                    [
+                      "service.name",
+                      "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+                    ],
+                    [
+                      "telemetry.sdk.language",
+                      "nodejs",
+                    ],
+                    [
+                      "telemetry.sdk.name",
+                      "opentelemetry",
+                    ],
+                    [
+                      "telemetry.sdk.version",
+                      "2.0.1",
+                    ],
+                  ],
+                },
+                "startTime": [
+                  1756558367,
+                  392000000,
+                ],
+                "status": {
+                  "code": 0,
+                },
+              },
+              SpanImpl {
+                "_attributeValueLengthLimit": Infinity,
+                "_droppedAttributesCount": 0,
+                "_droppedEventsCount": 0,
+                "_droppedLinksCount": 0,
+                "_duration": [
+                  1,
+                  770876214,
+                ],
+                "_ended": true,
+                "_performanceOffset": -0.788818359375,
+                "_performanceStartTime": 5622.98594,
+                "_spanContext": {
+                  "spanId": "d2ddf80f98535915",
+                  "traceFlags": 1,
+                  "traceId": "3bbfa8e293206c617e0d47ad12877fff",
+                  "traceState": undefined,
+                },
+                "_spanLimits": {
+                  "attributeCountLimit": 128,
+                  "attributePerEventCountLimit": 128,
+                  "attributePerLinkCountLimit": 128,
+                  "attributeValueLengthLimit": Infinity,
+                  "eventCountLimit": 128,
+                  "linkCountLimit": 128,
+                },
+                "_spanProcessor": [Circular],
+                "_startTimeProvided": false,
+                "attributes": {
+                  "ai.model.id": "qwen3:0.6b",
+                  "ai.model.provider": "xsai",
+                  "ai.operationId": "ai.generateText",
+                  "ai.prompt": "{"messages":[{"content":"Why is the sky blue?","role":"user"}]}",
+                  "ai.response.finishReason": "stop",
+                  "ai.response.text": "<think>
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember that in physics, there's related to the wavelength of light. But how does that translate to the sky?
+
+First, the basic idea is that the sky appears blue because it is made of gases in the atmosphere. But I think the key is the Rayleigh scattering. Wait, Rayleigh scattering explains why the planet's sky is blue. But is there any other part to this explanation?
+
+Let me check. Rayleigh scattering is when light scattered with longer wavelengths, so blue light is scattered more than red. That's why the sky appears blue. But maybe there are other factors, like the atmosphere's composition. Are there different substances in the atmosphere that affect the scattering? For example, water vapor and CO2 also play a role. But those contribute as well, so the primary factor is Rayleigh scattering. 
+
+So, the answer would be that the sky appears blue because it's made of gases, and light, when scattered, has different wavelengths, with blue light scattered in all directions much more than red. But maybe I should mention the atmosphere's composition as well. But Rayleigh scattering is the core principle here. 
+
+Wait, sometimes people think it's due to the Earth's rotation, but no, that's related to the auroras, which are visible as auroras. The auroras are because of the Earth's magnetic field. 
+
+So the main answer would be Rayleigh scattering, explaining why the sky is blue. I need to explain that as part of my answer. Make sure to mention the Rayleigh effect, the primary reason, and maybe other factors but keep it concise.
+</think>
+
+The sky appears blue primarily because of **Rayleigh scattering**, a phenomenon that describes how sunlight is scattered in the Earth's atmosphere. When visible light (specifically the blue part of the spectrum) hits the atmosphere, it's scattered in all directions—blue light being scattered in all directions much more intensely than red light. This scattered blue light weaves through the atmosphere, making the sky appear blue. While other atmospheric components like water vapor and CO₂ also play a role, Rayleigh scattering is the **primary mechanism** responsible for this coloration.",
+                  "ai.usage.completionTokens": 464,
+                  "ai.usage.promptTokens": 14,
+                  "operation.name": "ai.generateText",
+                },
+                "endTime": [
+                  1756558367,
+                  391876214,
+                ],
+                "events": [],
+                "instrumentationScope": {
+                  "name": "@xsai-ext/telemetry",
+                  "schemaUrl": undefined,
+                  "version": undefined,
+                },
+                "kind": 0,
+                "links": [],
+                "name": "ai.generateText",
+                "parentSpanContext": undefined,
+                "resource": ResourceImpl {
+                  "_asyncAttributesPending": false,
+                  "_memoizedAttributes": undefined,
+                  "_rawAttributes": [
+                    [
+                      "service.name",
+                      "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+                    ],
+                    [
+                      "telemetry.sdk.language",
+                      "nodejs",
+                    ],
+                    [
+                      "telemetry.sdk.name",
+                      "opentelemetry",
+                    ],
+                    [
+                      "telemetry.sdk.version",
+                      "2.0.1",
+                    ],
+                  ],
+                },
+                "startTime": [
+                  1756558365,
+                  621000000,
+                ],
+                "status": {
+                  "code": 0,
+                },
+              },
+              [Circular],
+              SpanImpl {
+                "_attributeValueLengthLimit": Infinity,
+                "_droppedAttributesCount": 0,
+                "_droppedEventsCount": 0,
+                "_droppedLinksCount": 0,
+                "_duration": [
+                  0,
+                  328360780,
+                ],
+                "_ended": true,
+                "_performanceOffset": -0.22998046875,
+                "_performanceStartTime": 7398.426982,
+                "_spanContext": {
+                  "spanId": "cf424da3915f9823",
+                  "traceFlags": 1,
+                  "traceId": "87736bb21da734177e629bc9734b4021",
+                  "traceState": undefined,
+                },
+                "_spanLimits": {
+                  "attributeCountLimit": 128,
+                  "attributePerEventCountLimit": 128,
+                  "attributePerLinkCountLimit": 128,
+                  "attributeValueLengthLimit": Infinity,
+                  "eventCountLimit": 128,
+                  "linkCountLimit": 128,
+                },
+                "_spanProcessor": [Circular],
+                "_startTimeProvided": false,
+                "attributes": {
+                  "ai.model.id": "qwen3:0.6b",
+                  "ai.model.provider": "ollama.responses",
+                  "ai.operationId": "ai.generateText",
+                  "ai.prompt": "{"prompt":"Why is the sky blue?"}",
+                  "ai.response.finishReason": "stop",
+                  "ai.response.providerMetadata": "{"ollama":{}}",
+                  "ai.response.text": "The sky is blue because it contains a large amount of water vapor, which causes the air to refract light in a way that makes the sky appear blue. This phenomenon is called the Rayleigh scattering effect, where shorter wavelength light (like blue light) is scattered more than longer wavelength light (like red light). This scattering makes the sky appear blue, even though it's mostly empty space.",
+                  "ai.settings.maxRetries": 2,
+                  "ai.settings.seed": 114514,
+                  "ai.usage.completionTokens": 80,
+                  "ai.usage.promptTokens": 22,
+                  "operation.name": "ai.generateText",
+                },
+                "endTime": [
+                  1756558367,
+                  725360780,
+                ],
+                "events": [],
+                "instrumentationScope": {
+                  "name": "ai",
+                  "schemaUrl": undefined,
+                  "version": undefined,
+                },
+                "kind": 0,
+                "links": [],
+                "name": "ai.generateText",
+                "parentSpanContext": undefined,
+                "resource": ResourceImpl {
+                  "_asyncAttributesPending": false,
+                  "_memoizedAttributes": undefined,
+                  "_rawAttributes": [
+                    [
+                      "service.name",
+                      "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+                    ],
+                    [
+                      "telemetry.sdk.language",
+                      "nodejs",
+                    ],
+                    [
+                      "telemetry.sdk.name",
+                      "opentelemetry",
+                    ],
+                    [
+                      "telemetry.sdk.version",
+                      "2.0.1",
+                    ],
+                  ],
+                },
+                "startTime": [
+                  1756558367,
+                  397000000,
+                ],
+                "status": {
+                  "code": 0,
+                },
+              },
+            ],
             "_stopped": false,
           },
           "_pendingExports": Set {
@@ -74,46 +377,37 @@ exports[`generateText > basic 2`] = `
     "_startTimeProvided": false,
     "attributes": {
       "ai.model.id": "qwen3:0.6b",
-      "ai.model.provider": "xsai",
+      "ai.model.provider": "ollama.responses",
       "ai.operationId": "ai.generateText.doGenerate",
-      "ai.response.id": "f469e042-feab-4c67-b7bf-6796cdee53f8",
-      "ai.response.text": "<think>
-Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from science class that it's mainly due to Rayleigh scattering. Let me recall... Rayleigh scattering is the phenomenon where light, specifically visible light, bends and disperses when it interacts with gas particles. In the case of the Earth's atmosphere, the gas molecules are mainly nitrogen and oxygen. 
-
-So when scattered sunlight goes through the atmosphere, shorter wavelengths of light, like blue light, get scattered more than red light. This scattered blue light contributes to the blue color of the sky. I should mention that this scattering is not only from the atmosphere but also happens as light travels through the atmosphere, so the blue is a combination of scattered light.
-
-I should also think about other factors. Maybe the angle at which we're observing the sky? Like if there's a lot of atmosphere, it might scatter more, but as it's a whole, the scattering is consistent. Also, maybe the fact that the Earth is surrounded by the atmosphere, which is a continuous column, and it's not very thick, leading to the scattered light.
-
-Wait, but the user might not know about the atmosphere. I should keep the explanation simple. Maybe also compare it to sunlight. Since blue light is scattered more, and we're in the lower atmosphere, it's more like blue than red. So the answer should be clear, concise, and cover the main reasons mentioned.
-</think>
-
-The sky appears blue due to **Rayleigh scattering** of sunlight. Here's why:  
-1. **Sky's atmosphere**: The Earth's atmosphere contains nitrogen and oxygen gas. When sunlight (which consists of different wavelengths) interacts with these gas molecules, shorter (blue) wavelengths are scattered more than longer (red) ones.  
-2. **Scattering effect**: As visible light travels through the atmosphere, the scattered blue light contributes to the sky's blue hue.  
-3. **Continuity**: The blue color is a result of light being scattered continuously in the atmosphere, not just a local phenomenon.  
-
-So, in summary, the blue sky comes from the continuous, scattered light of the atmosphere, where blue light survives longer and spreads more than red.",
-      "ai.response.timestamp": "2025-08-30T12:13:57.682Z",
-      "ai.usage.completionTokens": 458,
-      "ai.usage.promptTokens": 14,
+      "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
+      "ai.response.finishReason": "stop",
+      "ai.response.id": "aitxt-WdVzT7jyDxfEnXNLk5VrqQXC",
+      "ai.response.model": "qwen3:0.6b",
+      "ai.response.providerMetadata": "{"ollama":{}}",
+      "ai.response.text": "The sky is blue because it contains a large amount of water vapor, which causes the air to refract light in a way that makes the sky appear blue. This phenomenon is called the Rayleigh scattering effect, where shorter wavelength light (like blue light) is scattered more than longer wavelength light (like red light). This scattering makes the sky appear blue, even though it's mostly empty space.",
+      "ai.response.timestamp": "2025-08-30T12:52:47.723Z",
+      "ai.settings.maxRetries": 2,
+      "ai.settings.seed": 114514,
+      "ai.usage.completionTokens": 80,
+      "ai.usage.promptTokens": 22,
       "gen_ai.request.model": "qwen3:0.6b",
       "gen_ai.response.finish_reasons": [
         "stop",
       ],
-      "gen_ai.response.id": "bd0515f4-f53e-4977-98e0-1f1029e14a3f",
+      "gen_ai.response.id": "aitxt-WdVzT7jyDxfEnXNLk5VrqQXC",
       "gen_ai.response.model": "qwen3:0.6b",
-      "gen_ai.system": "xsai",
-      "gen_ai.usage.input_tokens": 14,
-      "gen_ai.usage.output_tokens": 458,
+      "gen_ai.system": "ollama.responses",
+      "gen_ai.usage.input_tokens": 22,
+      "gen_ai.usage.output_tokens": 80,
       "operation.name": "ai.generateText.doGenerate",
     },
     "endTime": [
-      1756556037,
-      682126354,
+      1756558367,
+      723778585,
     ],
     "events": [],
     "instrumentationScope": {
-      "name": "@xsai-ext/telemetry",
+      "name": "ai",
       "schemaUrl": undefined,
       "version": undefined,
     },
@@ -121,9 +415,9 @@ So, in summary, the blue sky comes from the continuous, scattered light of the a
     "links": [],
     "name": "ai.generateText.doGenerate",
     "parentSpanContext": {
-      "spanId": "25b79d0854c809be",
+      "spanId": "cf424da3915f9823",
       "traceFlags": 1,
-      "traceId": "b72bfb8ce86658170681cab3d04c747d",
+      "traceId": "87736bb21da734177e629bc9734b4021",
       "traceState": undefined,
     },
     "resource": ResourceImpl {
@@ -149,8 +443,8 @@ So, in summary, the blue sky comes from the continuous, scattered light of the a
       ],
     },
     "startTime": [
-      1756556037,
-      682000000,
+      1756558367,
+      398000000,
     ],
     "status": {
       "code": 0,
@@ -162,16 +456,16 @@ So, in summary, the blue sky comes from the continuous, scattered light of the a
     "_droppedEventsCount": 0,
     "_droppedLinksCount": 0,
     "_duration": [
-      1,
-      391901699,
+      0,
+      328360780,
     ],
     "_ended": true,
-    "_performanceOffset": -0.388916015625,
-    "_performanceStartTime": 3093.347979,
+    "_performanceOffset": -0.22998046875,
+    "_performanceStartTime": 7398.426982,
     "_spanContext": {
-      "spanId": "25b79d0854c809be",
+      "spanId": "cf424da3915f9823",
       "traceFlags": 1,
-      "traceId": "b72bfb8ce86658170681cab3d04c747d",
+      "traceId": "87736bb21da734177e629bc9734b4021",
       "traceState": undefined,
     },
     "_spanLimits": {
@@ -186,7 +480,324 @@ So, in summary, the blue sky comes from the continuous, scattered light of the a
       "_spanProcessors": [
         SimpleSpanProcessor {
           "_exporter": InMemorySpanExporter {
-            "_finishedSpans": [Circular],
+            "_finishedSpans": [
+              SpanImpl {
+                "_attributeValueLengthLimit": Infinity,
+                "_droppedAttributesCount": 0,
+                "_droppedEventsCount": 0,
+                "_droppedLinksCount": 0,
+                "_duration": [
+                  0,
+                  201067,
+                ],
+                "_ended": true,
+                "_performanceOffset": -0.227783203125,
+                "_performanceStartTime": 7393.424703,
+                "_spanContext": {
+                  "spanId": "e1b478bcfce2aa91",
+                  "traceFlags": 1,
+                  "traceId": "3bbfa8e293206c617e0d47ad12877fff",
+                  "traceState": undefined,
+                },
+                "_spanLimits": {
+                  "attributeCountLimit": 128,
+                  "attributePerEventCountLimit": 128,
+                  "attributePerLinkCountLimit": 128,
+                  "attributeValueLengthLimit": Infinity,
+                  "eventCountLimit": 128,
+                  "linkCountLimit": 128,
+                },
+                "_spanProcessor": [Circular],
+                "_startTimeProvided": false,
+                "attributes": {
+                  "ai.model.id": "qwen3:0.6b",
+                  "ai.model.provider": "xsai",
+                  "ai.operationId": "ai.generateText.doGenerate",
+                  "ai.prompt.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
+                  "ai.response.finishReason": "stop",
+                  "ai.response.id": "6fe4f195-c126-4a8f-a8b6-f682eec36c5c",
+                  "ai.response.model": "qwen3:0.6b",
+                  "ai.response.providerMetadata": "{}",
+                  "ai.response.text": "<think>
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember that in physics, there's related to the wavelength of light. But how does that translate to the sky?
+
+First, the basic idea is that the sky appears blue because it is made of gases in the atmosphere. But I think the key is the Rayleigh scattering. Wait, Rayleigh scattering explains why the planet's sky is blue. But is there any other part to this explanation?
+
+Let me check. Rayleigh scattering is when light scattered with longer wavelengths, so blue light is scattered more than red. That's why the sky appears blue. But maybe there are other factors, like the atmosphere's composition. Are there different substances in the atmosphere that affect the scattering? For example, water vapor and CO2 also play a role. But those contribute as well, so the primary factor is Rayleigh scattering. 
+
+So, the answer would be that the sky appears blue because it's made of gases, and light, when scattered, has different wavelengths, with blue light scattered in all directions much more than red. But maybe I should mention the atmosphere's composition as well. But Rayleigh scattering is the core principle here. 
+
+Wait, sometimes people think it's due to the Earth's rotation, but no, that's related to the auroras, which are visible as auroras. The auroras are because of the Earth's magnetic field. 
+
+So the main answer would be Rayleigh scattering, explaining why the sky is blue. I need to explain that as part of my answer. Make sure to mention the Rayleigh effect, the primary reason, and maybe other factors but keep it concise.
+</think>
+
+The sky appears blue primarily because of **Rayleigh scattering**, a phenomenon that describes how sunlight is scattered in the Earth's atmosphere. When visible light (specifically the blue part of the spectrum) hits the atmosphere, it's scattered in all directions—blue light being scattered in all directions much more intensely than red light. This scattered blue light weaves through the atmosphere, making the sky appear blue. While other atmospheric components like water vapor and CO₂ also play a role, Rayleigh scattering is the **primary mechanism** responsible for this coloration.",
+                  "ai.response.timestamp": "2025-08-30T12:52:47.391Z",
+                  "ai.usage.completionTokens": 464,
+                  "ai.usage.promptTokens": 14,
+                  "gen_ai.request.model": "qwen3:0.6b",
+                  "gen_ai.response.finish_reasons": [
+                    "stop",
+                  ],
+                  "gen_ai.response.id": "1c8ec93e-0978-4c15-bcb5-a808bd3fc74e",
+                  "gen_ai.response.model": "qwen3:0.6b",
+                  "gen_ai.system": "xsai",
+                  "gen_ai.usage.input_tokens": 14,
+                  "gen_ai.usage.output_tokens": 464,
+                  "operation.name": "ai.generateText.doGenerate",
+                },
+                "endTime": [
+                  1756558367,
+                  392201067,
+                ],
+                "events": [],
+                "instrumentationScope": {
+                  "name": "@xsai-ext/telemetry",
+                  "schemaUrl": undefined,
+                  "version": undefined,
+                },
+                "kind": 0,
+                "links": [],
+                "name": "ai.generateText.doGenerate",
+                "parentSpanContext": {
+                  "spanId": "d2ddf80f98535915",
+                  "traceFlags": 1,
+                  "traceId": "3bbfa8e293206c617e0d47ad12877fff",
+                  "traceState": undefined,
+                },
+                "resource": ResourceImpl {
+                  "_asyncAttributesPending": false,
+                  "_memoizedAttributes": undefined,
+                  "_rawAttributes": [
+                    [
+                      "service.name",
+                      "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+                    ],
+                    [
+                      "telemetry.sdk.language",
+                      "nodejs",
+                    ],
+                    [
+                      "telemetry.sdk.name",
+                      "opentelemetry",
+                    ],
+                    [
+                      "telemetry.sdk.version",
+                      "2.0.1",
+                    ],
+                  ],
+                },
+                "startTime": [
+                  1756558367,
+                  392000000,
+                ],
+                "status": {
+                  "code": 0,
+                },
+              },
+              SpanImpl {
+                "_attributeValueLengthLimit": Infinity,
+                "_droppedAttributesCount": 0,
+                "_droppedEventsCount": 0,
+                "_droppedLinksCount": 0,
+                "_duration": [
+                  1,
+                  770876214,
+                ],
+                "_ended": true,
+                "_performanceOffset": -0.788818359375,
+                "_performanceStartTime": 5622.98594,
+                "_spanContext": {
+                  "spanId": "d2ddf80f98535915",
+                  "traceFlags": 1,
+                  "traceId": "3bbfa8e293206c617e0d47ad12877fff",
+                  "traceState": undefined,
+                },
+                "_spanLimits": {
+                  "attributeCountLimit": 128,
+                  "attributePerEventCountLimit": 128,
+                  "attributePerLinkCountLimit": 128,
+                  "attributeValueLengthLimit": Infinity,
+                  "eventCountLimit": 128,
+                  "linkCountLimit": 128,
+                },
+                "_spanProcessor": [Circular],
+                "_startTimeProvided": false,
+                "attributes": {
+                  "ai.model.id": "qwen3:0.6b",
+                  "ai.model.provider": "xsai",
+                  "ai.operationId": "ai.generateText",
+                  "ai.prompt": "{"messages":[{"content":"Why is the sky blue?","role":"user"}]}",
+                  "ai.response.finishReason": "stop",
+                  "ai.response.text": "<think>
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember that in physics, there's related to the wavelength of light. But how does that translate to the sky?
+
+First, the basic idea is that the sky appears blue because it is made of gases in the atmosphere. But I think the key is the Rayleigh scattering. Wait, Rayleigh scattering explains why the planet's sky is blue. But is there any other part to this explanation?
+
+Let me check. Rayleigh scattering is when light scattered with longer wavelengths, so blue light is scattered more than red. That's why the sky appears blue. But maybe there are other factors, like the atmosphere's composition. Are there different substances in the atmosphere that affect the scattering? For example, water vapor and CO2 also play a role. But those contribute as well, so the primary factor is Rayleigh scattering. 
+
+So, the answer would be that the sky appears blue because it's made of gases, and light, when scattered, has different wavelengths, with blue light scattered in all directions much more than red. But maybe I should mention the atmosphere's composition as well. But Rayleigh scattering is the core principle here. 
+
+Wait, sometimes people think it's due to the Earth's rotation, but no, that's related to the auroras, which are visible as auroras. The auroras are because of the Earth's magnetic field. 
+
+So the main answer would be Rayleigh scattering, explaining why the sky is blue. I need to explain that as part of my answer. Make sure to mention the Rayleigh effect, the primary reason, and maybe other factors but keep it concise.
+</think>
+
+The sky appears blue primarily because of **Rayleigh scattering**, a phenomenon that describes how sunlight is scattered in the Earth's atmosphere. When visible light (specifically the blue part of the spectrum) hits the atmosphere, it's scattered in all directions—blue light being scattered in all directions much more intensely than red light. This scattered blue light weaves through the atmosphere, making the sky appear blue. While other atmospheric components like water vapor and CO₂ also play a role, Rayleigh scattering is the **primary mechanism** responsible for this coloration.",
+                  "ai.usage.completionTokens": 464,
+                  "ai.usage.promptTokens": 14,
+                  "operation.name": "ai.generateText",
+                },
+                "endTime": [
+                  1756558367,
+                  391876214,
+                ],
+                "events": [],
+                "instrumentationScope": {
+                  "name": "@xsai-ext/telemetry",
+                  "schemaUrl": undefined,
+                  "version": undefined,
+                },
+                "kind": 0,
+                "links": [],
+                "name": "ai.generateText",
+                "parentSpanContext": undefined,
+                "resource": ResourceImpl {
+                  "_asyncAttributesPending": false,
+                  "_memoizedAttributes": undefined,
+                  "_rawAttributes": [
+                    [
+                      "service.name",
+                      "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+                    ],
+                    [
+                      "telemetry.sdk.language",
+                      "nodejs",
+                    ],
+                    [
+                      "telemetry.sdk.name",
+                      "opentelemetry",
+                    ],
+                    [
+                      "telemetry.sdk.version",
+                      "2.0.1",
+                    ],
+                  ],
+                },
+                "startTime": [
+                  1756558365,
+                  621000000,
+                ],
+                "status": {
+                  "code": 0,
+                },
+              },
+              SpanImpl {
+                "_attributeValueLengthLimit": Infinity,
+                "_droppedAttributesCount": 0,
+                "_droppedEventsCount": 0,
+                "_droppedLinksCount": 0,
+                "_duration": [
+                  0,
+                  325778585,
+                ],
+                "_ended": true,
+                "_performanceOffset": -0.55029296875,
+                "_performanceStartTime": 7399.747401,
+                "_spanContext": {
+                  "spanId": "377c7a74355d7ee2",
+                  "traceFlags": 1,
+                  "traceId": "87736bb21da734177e629bc9734b4021",
+                  "traceState": undefined,
+                },
+                "_spanLimits": {
+                  "attributeCountLimit": 128,
+                  "attributePerEventCountLimit": 128,
+                  "attributePerLinkCountLimit": 128,
+                  "attributeValueLengthLimit": Infinity,
+                  "eventCountLimit": 128,
+                  "linkCountLimit": 128,
+                },
+                "_spanProcessor": [Circular],
+                "_startTimeProvided": false,
+                "attributes": {
+                  "ai.model.id": "qwen3:0.6b",
+                  "ai.model.provider": "ollama.responses",
+                  "ai.operationId": "ai.generateText.doGenerate",
+                  "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
+                  "ai.response.finishReason": "stop",
+                  "ai.response.id": "aitxt-WdVzT7jyDxfEnXNLk5VrqQXC",
+                  "ai.response.model": "qwen3:0.6b",
+                  "ai.response.providerMetadata": "{"ollama":{}}",
+                  "ai.response.text": "The sky is blue because it contains a large amount of water vapor, which causes the air to refract light in a way that makes the sky appear blue. This phenomenon is called the Rayleigh scattering effect, where shorter wavelength light (like blue light) is scattered more than longer wavelength light (like red light). This scattering makes the sky appear blue, even though it's mostly empty space.",
+                  "ai.response.timestamp": "2025-08-30T12:52:47.723Z",
+                  "ai.settings.maxRetries": 2,
+                  "ai.settings.seed": 114514,
+                  "ai.usage.completionTokens": 80,
+                  "ai.usage.promptTokens": 22,
+                  "gen_ai.request.model": "qwen3:0.6b",
+                  "gen_ai.response.finish_reasons": [
+                    "stop",
+                  ],
+                  "gen_ai.response.id": "aitxt-WdVzT7jyDxfEnXNLk5VrqQXC",
+                  "gen_ai.response.model": "qwen3:0.6b",
+                  "gen_ai.system": "ollama.responses",
+                  "gen_ai.usage.input_tokens": 22,
+                  "gen_ai.usage.output_tokens": 80,
+                  "operation.name": "ai.generateText.doGenerate",
+                },
+                "endTime": [
+                  1756558367,
+                  723778585,
+                ],
+                "events": [],
+                "instrumentationScope": {
+                  "name": "ai",
+                  "schemaUrl": undefined,
+                  "version": undefined,
+                },
+                "kind": 0,
+                "links": [],
+                "name": "ai.generateText.doGenerate",
+                "parentSpanContext": {
+                  "spanId": "cf424da3915f9823",
+                  "traceFlags": 1,
+                  "traceId": "87736bb21da734177e629bc9734b4021",
+                  "traceState": undefined,
+                },
+                "resource": ResourceImpl {
+                  "_asyncAttributesPending": false,
+                  "_memoizedAttributes": undefined,
+                  "_rawAttributes": [
+                    [
+                      "service.name",
+                      "unknown_service:/nix/store/mqf6vklgxgh9qpmvnd4kp6vh5cvll306-nodejs-24.4.1/bin/node",
+                    ],
+                    [
+                      "telemetry.sdk.language",
+                      "nodejs",
+                    ],
+                    [
+                      "telemetry.sdk.name",
+                      "opentelemetry",
+                    ],
+                    [
+                      "telemetry.sdk.version",
+                      "2.0.1",
+                    ],
+                  ],
+                },
+                "startTime": [
+                  1756558367,
+                  398000000,
+                ],
+                "status": {
+                  "code": 0,
+                },
+              },
+              [Circular],
+            ],
             "_stopped": false,
           },
           "_pendingExports": Set {
@@ -209,37 +820,25 @@ So, in summary, the blue sky comes from the continuous, scattered light of the a
     "_startTimeProvided": false,
     "attributes": {
       "ai.model.id": "qwen3:0.6b",
-      "ai.model.provider": "xsai",
+      "ai.model.provider": "ollama.responses",
       "ai.operationId": "ai.generateText",
-      "ai.prompt": "{"messages":[{"content":"Why is the sky blue?","role":"user"}]}",
+      "ai.prompt": "{"prompt":"Why is the sky blue?"}",
       "ai.response.finishReason": "stop",
-      "ai.response.text": "<think>
-Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from science class that it's mainly due to Rayleigh scattering. Let me recall... Rayleigh scattering is the phenomenon where light, specifically visible light, bends and disperses when it interacts with gas particles. In the case of the Earth's atmosphere, the gas molecules are mainly nitrogen and oxygen. 
-
-So when scattered sunlight goes through the atmosphere, shorter wavelengths of light, like blue light, get scattered more than red light. This scattered blue light contributes to the blue color of the sky. I should mention that this scattering is not only from the atmosphere but also happens as light travels through the atmosphere, so the blue is a combination of scattered light.
-
-I should also think about other factors. Maybe the angle at which we're observing the sky? Like if there's a lot of atmosphere, it might scatter more, but as it's a whole, the scattering is consistent. Also, maybe the fact that the Earth is surrounded by the atmosphere, which is a continuous column, and it's not very thick, leading to the scattered light.
-
-Wait, but the user might not know about the atmosphere. I should keep the explanation simple. Maybe also compare it to sunlight. Since blue light is scattered more, and we're in the lower atmosphere, it's more like blue than red. So the answer should be clear, concise, and cover the main reasons mentioned.
-</think>
-
-The sky appears blue due to **Rayleigh scattering** of sunlight. Here's why:  
-1. **Sky's atmosphere**: The Earth's atmosphere contains nitrogen and oxygen gas. When sunlight (which consists of different wavelengths) interacts with these gas molecules, shorter (blue) wavelengths are scattered more than longer (red) ones.  
-2. **Scattering effect**: As visible light travels through the atmosphere, the scattered blue light contributes to the sky's blue hue.  
-3. **Continuity**: The blue color is a result of light being scattered continuously in the atmosphere, not just a local phenomenon.  
-
-So, in summary, the blue sky comes from the continuous, scattered light of the atmosphere, where blue light survives longer and spreads more than red.",
-      "ai.usage.completionTokens": 458,
-      "ai.usage.promptTokens": 14,
+      "ai.response.providerMetadata": "{"ollama":{}}",
+      "ai.response.text": "The sky is blue because it contains a large amount of water vapor, which causes the air to refract light in a way that makes the sky appear blue. This phenomenon is called the Rayleigh scattering effect, where shorter wavelength light (like blue light) is scattered more than longer wavelength light (like red light). This scattering makes the sky appear blue, even though it's mostly empty space.",
+      "ai.settings.maxRetries": 2,
+      "ai.settings.seed": 114514,
+      "ai.usage.completionTokens": 80,
+      "ai.usage.promptTokens": 22,
       "operation.name": "ai.generateText",
     },
     "endTime": [
-      1756556037,
-      682901699,
+      1756558367,
+      725360780,
     ],
     "events": [],
     "instrumentationScope": {
-      "name": "@xsai-ext/telemetry",
+      "name": "ai",
       "schemaUrl": undefined,
       "version": undefined,
     },
@@ -270,8 +869,8 @@ So, in summary, the blue sky comes from the continuous, scattered light of the a
       ],
     },
     "startTime": [
-      1756556036,
-      291000000,
+      1756558367,
+      397000000,
     ],
     "status": {
       "code": 0,
