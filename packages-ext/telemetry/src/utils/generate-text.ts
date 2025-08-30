@@ -39,7 +39,6 @@ export const generateText = async (options: GenerateTextOptions) => {
   }, async (span) => {
     const result = await originalGenerateText({
       ...options,
-      tools: options.tools?.map(tool => wrapTool(tool, tracer)),
       onStepFinish: async step => recordSpan({
         attributes: {
           ...commonAttributes('ai.generateText.doGenerate'),
@@ -69,6 +68,7 @@ export const generateText = async (options: GenerateTextOptions) => {
         name: 'ai.generateText.doGenerate',
         tracer,
       }, async () => options.onStepFinish?.(step)),
+      tools: options.tools?.map(tool => wrapTool(tool, tracer)),
     })
 
     span.setAttributes({
