@@ -1,25 +1,6 @@
-import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, GenerateTextOptions, Message, ToolCall, Usage } from 'xsai'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, Message, ToolCall } from 'xsai'
 
 import { clean, determineStepType, executeTool } from 'xsai'
-
-export interface GenerateTextResponse {
-  choices: {
-    finish_reason: FinishReason
-    index: number
-    message: Omit<AssistantMessage, 'content' | 'name'> & {
-      content?: string
-      /** @remarks OpenAI does not support this, but LiteLLM / DeepSeek does. */
-      reasoning_content?: string
-    }
-    refusal?: string
-  }[]
-  created: number
-  id: string
-  model: string
-  object: 'chat.completion'
-  system_fingerprint: string
-  usage: Usage
-}
 
 /** @internal */
 export interface RunGenerateTextStepResult {
