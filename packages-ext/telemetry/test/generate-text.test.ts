@@ -16,12 +16,6 @@ describe.sequential('generateText', () => {
   tracerProvider.register()
 
   it('basic', async () => {
-    const memoryExporter = new InMemorySpanExporter()
-    const tracerProvider = new NodeTracerProvider({
-      spanProcessors: [new SimpleSpanProcessor(memoryExporter)],
-    })
-    tracerProvider.register()
-
     const { text } = await generateText({
       baseURL: 'http://localhost:11434/v1',
       messages: [{
