@@ -19,7 +19,7 @@ npm i @xsai/stream-text
 import { streamText } from '@xsai/stream-text'
 import { env } from 'node:process'
 
-const { textStream } = await streamText({
+const { textStream } = streamText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
   messages: [
@@ -57,7 +57,7 @@ console.log(text)
 import { streamText } from '@xsai/stream-text'
 import { env } from 'node:process'
 
-const { textStream } = await streamText({
+const { textStream } = streamText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
   messages: [{
@@ -91,7 +91,7 @@ const data = await fetch('https://cdn.openai.com/API/docs/audio/alloy.wav')
   .then(res => res.arrayBuffer())
   .then(buffer => Buffer.from(buffer).toString('base64'))
 
-const { textStream } = await streamText({
+const { textStream } = streamText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
   messages: [{

@@ -38,7 +38,7 @@ export interface StreamTextResult {
   // TODO: totalUsage
 }
 
-export const streamText = async (options: StreamTextOptions): Promise<StreamTextResult> => {
+export const streamText = (options: StreamTextOptions): StreamTextResult => {
   // state
   const steps: CompletionStep[] = []
   const messages: Message[] = structuredClone(options.messages)
@@ -193,11 +193,9 @@ export const streamText = async (options: StreamTextOptions): Promise<StreamText
       return async () => handleStream(await startStream())
   }
 
-  const stream = await startStream()
-
   void (async () => {
     try {
-      await trampoline(async () => handleStream(stream))
+      await trampoline(async () => handleStream(await startStream()))
 
       eventCtrl?.close()
       textCtrl?.close()

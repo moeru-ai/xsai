@@ -49,7 +49,7 @@ import { streamText } from '@xsai/stream-text'
 import { extractReasoningStream } from '@xsai/utils-reasoning' // [!code ++]
 import { env } from 'node:process'
 
-const { textStream: rawTextStream } = await streamText({
+const { textStream: rawTextStream } = streamText({
   baseURL: 'http://localhost:11434/v1/',
   messages: [
     {
