@@ -50,7 +50,7 @@ export async function streamObject<T extends Schema>(
   if (options.output === 'array')
     schema = wrap(schema)
 
-  return streamText({
+  let { textStream, ...rest } = streamText({
     ...options,
     response_format: {
       json_schema: {
@@ -65,28 +65,28 @@ export async function streamObject<T extends Schema>(
     schemaDescription: undefined,
     schemaName: undefined,
     strict: undefined,
-  }).then(({ textStream, ...rest }) => {
-    let elementStream: ReadableStream<Infer<T>> | undefined
-    let partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> | undefined
-
-    if (options.output === 'array') {
-      let rawElementStream
-      ;[rawElementStream, textStream] = textStream.tee()
-
-      elementStream = toElementStream<Infer<T>>(rawElementStream)
-    }
-    else {
-      let rawPartialObjectStream
-      ;[textStream, rawPartialObjectStream] = textStream.tee()
-
-      partialObjectStream = toPartialObjectStream<Infer<T>>(rawPartialObjectStream)
-    }
-
-    return {
-      elementStream,
-      partialObjectStream,
-      textStream,
-      ...rest,
-    }
   })
+
+  let elementStream: ReadableStream<Infer<T>> | undefined
+  let partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> | undefined
+
+  if (options.output === 'array') {
+    let rawElementStream;
+    [rawElementStream, textStream] = textStream.tee()
+
+    elementStream = toElementStream<Infer<T>>(rawElementStream)
+  }
+  else {
+    let rawPartialObjectStream;
+    [textStream, rawPartialObjectStream] = textStream.tee()
+
+    partialObjectStream = toPartialObjectStream<Infer<T>>(rawPartialObjectStream)
+  }
+
+  return {
+    elementStream,
+    partialObjectStream,
+    textStream,
+    ...rest,
+  }
 }

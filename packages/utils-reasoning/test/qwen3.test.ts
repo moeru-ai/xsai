@@ -270,7 +270,7 @@ describe('extractReasoningStream', () => {
   })
 
   it('real qwen3 test', async () => {
-    const { textStream } = await streamText({
+    const { textStream } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {

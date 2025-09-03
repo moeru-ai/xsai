@@ -25,7 +25,7 @@ describe('@xsai/stream-text tool', async () => {
       }),
     })
 
-    const { fullStream, steps } = await streamText({
+    const { fullStream, steps } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       maxSteps: 2,
       messages: [

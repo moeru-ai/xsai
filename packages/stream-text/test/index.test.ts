@@ -6,7 +6,7 @@ import { streamText } from '../src'
 
 describe('@xsai/stream-text basic', async () => {
   it('basic', async () => {
-    const { fullStream, steps, textStream } = await streamText({
+    const { fullStream, steps, textStream } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -45,7 +45,7 @@ describe('@xsai/stream-text basic', async () => {
   })
 
   it('stream', async () => {
-    const { fullStream, steps, textStream } = await streamText({
+    const { fullStream, steps, textStream } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {

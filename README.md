@@ -103,7 +103,7 @@ Read the [documentation](https://xsai.js.org/docs) to get started.
 import { streamText } from '@xsai/stream-text'
 import { env } from 'node:process'
 
-const { textStream } = await streamText({
+const { textStream } = streamText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
   messages: [
