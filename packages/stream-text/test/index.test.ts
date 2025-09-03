@@ -41,7 +41,7 @@ describe('@xsai/stream-text basic', async () => {
     }
     expect(events).toMatchSnapshot()
 
-    expect(steps).toMatchSnapshot()
+    await expect(steps).resolves.toMatchSnapshot()
   })
 
   it('stream', async () => {
@@ -73,6 +73,41 @@ describe('@xsai/stream-text basic', async () => {
     }
     expect(events).toMatchSnapshot()
 
-    expect(steps).toMatchSnapshot()
+    await expect(steps).resolves.toMatchSnapshot()
+  })
+
+  it('includes usage', async () => {
+    const { fullStream, steps, textStream } = streamText({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'Please tell a short joke',
+          role: 'user',
+        },
+      ],
+      model: 'granite3.3:2b',
+      seed: 114514,
+      streamOptions: {
+        includeUsage: true,
+      },
+    })
+
+    const text = []
+    for await (const t of textStream) {
+      text.push(t)
+    }
+    expect(text.length).toBeGreaterThan(1)
+
+    const events: StreamTextEvent[] = []
+    for await (const event of fullStream) {
+      events.push(event)
+    }
+    expect(events).toMatchSnapshot()
+
+    await expect(steps).resolves.toMatchSnapshot()
   })
 })

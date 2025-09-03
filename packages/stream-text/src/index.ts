@@ -34,8 +34,8 @@ export interface StreamTextResult {
   messages: Promise<Message[]>
   steps: Promise<CompletionStep[]>
   textStream: ReadableStream<string>
+  totalUsage: Promise<undefined | Usage>
   usage: Promise<undefined | Usage>
-  // TODO: totalUsage
 }
 
 export const streamText = (options: StreamTextOptions): StreamTextResult => {
@@ -44,11 +44,13 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
   const messages: Message[] = structuredClone(options.messages)
   const maxSteps = options.maxSteps ?? 1
   let usage: undefined | Usage
+  let totalUsage: undefined | Usage
 
   // result state
   const resultSteps = new DelayedPromise<CompletionStep[]>()
   const resultMessages = new DelayedPromise<Message[]>()
   const resultUsage = new DelayedPromise<undefined | Usage>()
+  const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
   // output
   let eventCtrl: ReadableStreamDefaultController<StreamTextEvent> | undefined
@@ -83,6 +85,13 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
     // let stepUsage: undefined | Usage
     const pushUsage = (u: Usage) => {
       usage = u
+      totalUsage = totalUsage
+        ? {
+            completion_tokens: totalUsage.completion_tokens + u.completion_tokens,
+            prompt_tokens: totalUsage.prompt_tokens + u.prompt_tokens,
+            total_tokens: totalUsage.total_tokens + u.total_tokens,
+          }
+        : { ...u }
       // stepUsage = u
     }
 
@@ -207,11 +216,13 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
       resultSteps.reject(err)
       resultMessages.reject(err)
       resultUsage.reject(err)
+      resultTotalUsage.reject(err)
     }
     finally {
       resultSteps.resolve(steps)
       resultMessages.resolve(messages)
       resultUsage.resolve(usage)
+      resultTotalUsage.resolve(totalUsage)
 
       // eslint-disable-next-line sonarjs/void-use
       void options.onFinish?.(steps.at(-1))
@@ -223,6 +234,7 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
     messages: resultMessages.promise,
     steps: resultSteps.promise,
     textStream,
+    totalUsage: resultTotalUsage.promise,
     usage: resultUsage.promise,
   }
 }

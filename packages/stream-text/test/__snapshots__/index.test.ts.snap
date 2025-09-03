@@ -18,7 +18,113 @@ exports[`@xsai/stream-text basic > basic 1`] = `
 ]
 `;
 
-exports[`@xsai/stream-text basic > basic 2`] = `Promise {}`;
+exports[`@xsai/stream-text basic > basic 2`] = `
+[
+  {
+    "finishReason": "stop",
+    "stepType": "initial",
+    "text": "YES",
+    "toolCalls": [],
+    "toolResults": [],
+    "usage": undefined,
+  },
+]
+`;
+
+exports[`@xsai/stream-text basic > includes usage 1`] = `
+[
+  {
+    "text": "Why",
+    "type": "text-delta",
+  },
+  {
+    "text": " don",
+    "type": "text-delta",
+  },
+  {
+    "text": "'t",
+    "type": "text-delta",
+  },
+  {
+    "text": " sc",
+    "type": "text-delta",
+  },
+  {
+    "text": "ient",
+    "type": "text-delta",
+  },
+  {
+    "text": "ists",
+    "type": "text-delta",
+  },
+  {
+    "text": " trust",
+    "type": "text-delta",
+  },
+  {
+    "text": " atoms",
+    "type": "text-delta",
+  },
+  {
+    "text": "?",
+    "type": "text-delta",
+  },
+  {
+    "text": " Because",
+    "type": "text-delta",
+  },
+  {
+    "text": " they",
+    "type": "text-delta",
+  },
+  {
+    "text": " make",
+    "type": "text-delta",
+  },
+  {
+    "text": " up",
+    "type": "text-delta",
+  },
+  {
+    "text": " everything",
+    "type": "text-delta",
+  },
+  {
+    "text": "!",
+    "type": "text-delta",
+  },
+  {
+    "text": "",
+    "type": "text-delta",
+  },
+  {
+    "finishReason": "stop",
+    "type": "finish",
+    "usage": {
+      "completion_tokens": 16,
+      "prompt_tokens": 25,
+      "total_tokens": 41,
+    },
+  },
+]
+`;
+
+exports[`@xsai/stream-text basic > includes usage 2`] = `
+[
+  {
+    "finishReason": "stop",
+    "stepType": "initial",
+    "text": "Why don't scientists trust atoms? Because they make up everything!",
+    "toolCalls": [],
+    "toolResults": [],
+    "usage": {
+      "completion_tokens": 16,
+      "prompt_tokens": 25,
+      "total_tokens": 41,
+    },
+  },
+]
+`;
 
 exports[`@xsai/stream-text basic > stream 1`] = `
 [
@@ -94,4 +200,15 @@ exports[`@xsai/stream-text basic > stream 1`] = `
 ]
 `;
 
-exports[`@xsai/stream-text basic > stream 2`] = `Promise {}`;
+exports[`@xsai/stream-text basic > stream 2`] = `
+[
+  {
+    "finishReason": "stop",
+    "stepType": "initial",
+    "text": "Why don't scientists trust atoms? Because they make up everything!",
+    "toolCalls": [],
+    "toolResults": [],
+    "usage": undefined,
+  },
+]
+`;
