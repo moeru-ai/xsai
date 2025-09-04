@@ -68,6 +68,7 @@ export const generateText = async (options: GenerateTextOptions) => {
         steps,
       }, res)
 
+      // TODO: metrics counter
       span.setAttributes({
         ...((step.text != null && step.toolCalls.length === 0) ? { 'ai.response.text': step.text } : {}),
         ...(step.toolCalls.length > 0 ? { 'ai.response.toolCalls': JSON.stringify(step.toolCalls) } : {}),
