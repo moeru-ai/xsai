@@ -2,6 +2,9 @@ import type { CompletionStep, GenerateTextOptions, GenerateTextResponse, Generat
 
 import { chat, responseJSON, trampoline } from 'xsai'
 
+import type { WithTelemetry } from '../types/options'
+
+import { commonAttributes, idAttributes, metadataAttributes } from './attributes'
 import { extractGenerateTextStep, extractGenerateTextStepPost } from './generate-text-internal'
 import { getTracer } from './get-tracer'
 import { recordSpan } from './record-span'
@@ -12,36 +15,18 @@ import { wrapTool } from './wrap-tool'
  * @experimental
  * Generating Text with Telemetry.
  */
-export const generateText = async (options: GenerateTextOptions) => {
+export const generateText = async (options: WithTelemetry<GenerateTextOptions>) => {
   const tracer = getTracer()
 
-  const commonAttributes = (operationId: string) => ({
-    'ai.model.id': options.model,
-    // TODO: provider name
-    'ai.model.provider': 'xsai',
-    'ai.operationId': operationId,
-    'ai.response.providerMetadata': '{}',
-    'operation.name': operationId,
-  })
-
-  const idAttributes = () => {
-    const id = crypto.randomUUID()
-
-    return {
-      'ai.response.id': id,
-      'ai.response.timestamp': new Date().toISOString(),
-      'gen_ai.response.id': id,
-    }
-  }
-
-  const rawGenerateText = async (options: GenerateTextOptions): Promise<TrampolineFn<GenerateTextResult>> => {
+  const rawGenerateText = async (options: WithTelemetry<GenerateTextOptions>): Promise<TrampolineFn<GenerateTextResult>> => {
     const messages: Message[] = structuredClone(options.messages)
     const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
 
     const [stepWithoutToolCalls, { messages: msgs1, msgToolCalls, reasoningText }] = await recordSpan({
       attributes: {
-        ...commonAttributes('ai.generateText.doGenerate'),
         ...idAttributes(),
+        ...commonAttributes('ai.generateText.doGenerate', options.model),
+        ...metadataAttributes(options.telemetry?.metadata),
         ...(options.tools != null && options.tools.length > 0
           ? {
               'ai.prompt.toolChoice': JSON.stringify(options.toolChoice ?? { type: 'auto' }),
@@ -63,6 +48,7 @@ export const generateText = async (options: GenerateTextOptions) => {
         maxSteps: undefined,
         steps: undefined,
         stream: false,
+        telemetry: undefined,
       })
         .then(responseJSON<GenerateTextResponse>)
 
@@ -124,7 +110,8 @@ export const generateText = async (options: GenerateTextOptions) => {
 
   return recordSpan<GenerateTextResult>({
     attributes: {
-      ...commonAttributes('ai.generateText'),
+      ...commonAttributes('ai.generateText', options.model),
+      ...metadataAttributes(options.telemetry?.metadata),
       'ai.prompt': JSON.stringify({ messages: options.messages }),
     },
     name: 'ai.generateText',

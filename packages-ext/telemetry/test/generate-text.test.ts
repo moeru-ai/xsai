@@ -32,6 +32,12 @@ describe.sequential('generateText', () => {
       }],
       model: 'qwen3:0.6b',
       seed: 114514,
+      telemetry: {
+        metadata: {
+          agentId: 'weather-assistant',
+          instructions: 'You are a helpful weather assistant',
+        },
+      },
     })
 
     const spans = memoryExporter.getFinishedSpans().map(getAttributes)
@@ -42,7 +48,13 @@ describe.sequential('generateText', () => {
 
   it('basic/ai', async () => {
     const { text } = await aiGenerateText({
-      experimental_telemetry: { isEnabled: true },
+      experimental_telemetry: {
+        isEnabled: true,
+        metadata: {
+          agentId: 'weather-assistant',
+          instructions: 'You are a helpful weather assistant',
+        },
+      },
       model: ollama('qwen3:0.6b'),
       prompt: 'Why is the sky blue?',
       seed: 114514,

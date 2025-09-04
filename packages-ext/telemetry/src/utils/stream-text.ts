@@ -2,6 +2,9 @@ import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishRe
 
 import { chat, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
+import type { WithTelemetry } from '../types/options'
+
+import { commonAttributes, idAttributes, metadataAttributes } from './attributes'
 import { getTracer } from './get-tracer'
 import { now } from './now'
 import { recordSpan, recordSpanSync } from './record-span'
@@ -13,27 +16,8 @@ import { wrapTool } from './wrap-tool'
  * @experimental
  * Streaming Text with Telemetry.
  */
-export const streamText = (options: StreamTextOptions) => {
+export const streamText = (options: WithTelemetry<StreamTextOptions>) => {
   const tracer = getTracer()
-
-  const commonAttributes = (operationId: string) => ({
-    'ai.model.id': options.model,
-    // TODO: provider name
-    'ai.model.provider': 'xsai',
-    'ai.operationId': operationId,
-    'ai.response.providerMetadata': '{}',
-    'operation.name': operationId,
-  })
-
-  const idAttributes = () => {
-    const id = crypto.randomUUID()
-
-    return {
-      'ai.response.id': id,
-      'ai.response.timestamp': new Date().toISOString(),
-      'gen_ai.response.id': id,
-    }
-  }
 
   // state
   const steps: CompletionStep[] = []
@@ -72,8 +56,9 @@ export const streamText = (options: StreamTextOptions) => {
 
   const doStream = async () => recordSpan({
     attributes: {
-      ...commonAttributes('ai.streamText.doStream'),
       ...idAttributes(),
+      ...commonAttributes('ai.streamText.doStream', options.model),
+      ...metadataAttributes(options.telemetry?.metadata),
       ...(tools != null && tools.length > 0 && {
         'ai.prompt.toolChoice': JSON.stringify(options.toolChoice ?? { type: 'auto' }),
         'ai.prompt.tools': tools.map(stringifyTool),
@@ -256,7 +241,8 @@ export const streamText = (options: StreamTextOptions) => {
 
   return recordSpanSync<StreamTextResult>({
     attributes: {
-      ...commonAttributes('ai.streamText'),
+      ...commonAttributes('ai.streamText', options.model),
+      ...metadataAttributes(options.telemetry?.metadata),
       'ai.prompt': JSON.stringify({ messages: options.messages }),
     },
     endWhenDone: false,

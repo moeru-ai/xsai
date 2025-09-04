@@ -58,6 +58,12 @@ describe.sequential('streamText', () => {
       streamOptions: {
         includeUsage: true,
       },
+      telemetry: {
+        metadata: {
+          agentId: 'weather-assistant',
+          instructions: 'You are a helpful weather assistant',
+        },
+      },
     })
 
     for await (const textDelta of textStream) {
@@ -67,7 +73,13 @@ describe.sequential('streamText', () => {
 
   it('basic/ai', async () => {
     const { text } = aiStreamText({
-      experimental_telemetry: { isEnabled: true },
+      experimental_telemetry: {
+        isEnabled: true,
+        metadata: {
+          agentId: 'weather-assistant',
+          instructions: 'You are a helpful weather assistant',
+        },
+      },
       model: ollama('qwen3:0.6b'),
       prompt: 'Why is the sky blue?',
       seed: 114514,

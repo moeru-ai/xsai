@@ -2,12 +2,11 @@
 
 exports[`generateText with tools > basic 1`] = `
 "<think>
-Okay, so the user asked how many times 114514 plus 1919810 equals. First, I need to calculate that sum. Let me add those two numbers. 114,514 plus 1,919,810. Adding them step by step: 1,919,810 + 100,000 is 2,019,810, then add 14,514 to get 2,034,324. So the total is 2,034,324. The question might have a typo, but based on the numbers provided, the result of the addition is 2,034,324. The user called the add tool, so I'll return that as the answer.
+Okay, let me check the calculation again. The user asked how many times 114514 plus 1919810 equals. Since adding those two numbers gives 2,034,324, which is the sum, the answer should be that number. But the tool response is 2034324, so I just need to present that as the final answer.
 </think>
-
 The sum of 114,514 and 1,919,810 is 2,034,324. 
 
-**Answer:** 2,034,324"
+So, the final answer is 2,034,324."
 `;
 
 exports[`generateText with tools > basic 2`] = `
@@ -22,28 +21,28 @@ exports[`generateText with tools > basic 2`] = `
       "{"description":"Adds two numbers","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
     ],
     "ai.response.finishReason": "tool_calls",
-    "ai.response.id": "c2f28f9c-1641-4082-ae9e-fe5e298131dc",
+    "ai.response.id": "db17e1e4-abcc-43a5-a385-ec0d16a0cdc7",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{}",
-    "ai.response.timestamp": "2025-08-30T15:53:28.748Z",
-    "ai.response.toolCalls": "[{"args":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}","toolCallId":"call_wwh8d495","toolCallType":"function","toolName":"add"}]",
-    "ai.usage.completionTokens": 528,
+    "ai.response.timestamp": "2025-09-04T06:37:22.702Z",
+    "ai.response.toolCalls": "[{"args":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}","toolCallId":"call_5ann9oq4","toolCallType":"function","toolName":"add"}]",
+    "ai.usage.completionTokens": 1412,
     "ai.usage.promptTokens": 180,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.response.finish_reasons": [
       "tool_calls",
     ],
-    "gen_ai.response.id": "e1476dd3-b5b9-43fc-b49c-12111250ab3e",
+    "gen_ai.response.id": "634c3aff-0651-40e1-9c0a-d9dde2897746",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
     "gen_ai.usage.input_tokens": 180,
-    "gen_ai.usage.output_tokens": 528,
+    "gen_ai.usage.output_tokens": 1412,
     "operation.name": "ai.generateText.doGenerate",
   },
   {
     "ai.operationId": "ai.toolCall",
     "ai.toolCall.args": "{"a":"114514","b":"1919810"}",
-    "ai.toolCall.id": "call_wwh8d495",
+    "ai.toolCall.id": "call_5ann9oq4",
     "ai.toolCall.name": "add",
     "ai.toolCall.result": ""2034324"",
     "operation.name": "ai.toolCall",
@@ -52,28 +51,28 @@ exports[`generateText with tools > basic 2`] = `
     "ai.model.id": "qwen3:0.6b",
     "ai.model.provider": "xsai",
     "ai.operationId": "ai.generateText.doGenerate",
-    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"role":"assistant","content":"<think>\\nOkay, so the user is asking how many times 114514 plus 1919810 equals. Let me break this down. First, I need to calculate the sum of these two numbers. Let me add them. 114514 plus 1919810. Let's do the math step by step. Adding 114514 and 1,919,810. Well, adding them together, 1,919,810 plus 114,514. Let me add those. 1,919,810 plus 100,000 is 2,019,810, then add the remaining 14,514. 2,019,810 plus 14,514 equals 2,034,324. So the total sum is 2,034,324. But the question is how many times does that equal. Wait, maybe there's a typo or misunderstanding here. The user wrote \\"114514 plus 1919810\\", which I think is the sum. But if the question is phrased as \\"how many times does 114514 plus 1919810 equal?\\" then maybe it's a different interpretation. Perhaps they want to know the sum of the two numbers? Or maybe it's a multiple? Wait, let me check again. The problem says \\"114514 plus 1919810 equals\\". That would mean the sum. Unless there's a specific context where this is a multiplication question, but I don't think so. The user might have made a typo. Alternatively, maybe it's a code or a problem where the sum needs to be input, but given the way the question is phrased, I think the correct answer is the sum, which is 2,034,324. But maybe the user intended to ask for division or something else? Wait, the problem is very straightforward: add the two numbers. So the answer is their sum. Therefore, calling the 'add' function with a and b as the numbers.\\n</think>\\n\\n","tool_calls":[{"id":"call_wwh8d495","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_wwh8d495"}]",
+    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"role":"assistant","content":"<think>\\nOkay, so the user is asking how many times 114514 plus 1919810 equals. Let me break this down. First, I need to calculate the sum of these two numbers. Let me add them. 114514 plus 1919810. Let's do the math step by step. Adding 114514 and 1,919,810. Well, adding them together, 1,919,810 plus 114,514. Adding the numbers: 1,919,810 + 114,514. Let me check that. Hmm, 1,919,810 plus 114,514. Let me add column by column. The hundreds: 1,919,810 has 9 in the millions, 0 in the hundreds. Adding 114,514 would be adding 1 hundred millions and 4 ten thousands, etc. Wait, maybe it's easier to think of it as 1,919,810 + 114,514. Let me add them. The total sum is 1,919,810 + 114,514. Let me calculate that. Let me add 1,919,810 + 100,000 = 2,019,810. Then add 14,514: 2,019,810 + 14,514. So 2,019,810 + 14,514. Let me do that again. 1,919,810 + 114,514. Let me write them: 1,919,810 is 1,919,810. Adding 114,514: 1,919,810 + 114,514. Let me add 1,919,810 to 114,514. Let me do the math. Let me add 1,919,810 + 100,000 = 2,019,810. Then add 14,514: 2,019,810 + 14,514. Adding 14,514 to 2,019,810. Let me break it down: 2,019,810 + 10,000 = 2,029,810. Then add 4,514: 2,029,810 + 4,514. Then add 0. Wait, the original question is how many times? Wait, maybe the user is asking for the sum, not how many times? Wait, the question says \\"How many times does 114514 plus 1919810 equal?\\" So maybe it's asking for the count of times, meaning the sum? But the sum is already a single number. Or maybe there's a misunderstanding here. Wait, no, perhaps there's a typo. Wait, maybe the user actually wants to know the result of adding those two numbers, and that number is the value we're to calculate. Since adding 114514 plus 1919810 is straightforward, but perhaps the user made a typo. Alternatively, maybe there's more context. Wait, but the problem says \\"how many times does... equal\\", which is a bit ambiguous. If it's a math problem, maybe they expect the sum. Let me confirm. The user provided the function 'add' which takes two numbers. So if the question is to compute their sum, perhaps the answer is simply the result, which is 114514 + 1919810. Let me calculate again. 1919810 + 114514. Let me add digits: 1 (from 1,919,810) + 1 (from 114,514) = 2, then 9 + 1 = 10, and so on. Alternatively, using calculator steps: 114514 + 1919810 = ?\\n\\nYes, adding those together: 1919810 + 114514. Let's add: 1919810 + 114514. Adding, we can think of 1919810 as 1,919,810 and 114,514 as 0.0114514 million. So adding to get 2,032, 000? Wait, 1,919,810 + 114,514. Let me do it directly. 1,919,810 + 114,514. Adding the thousandths: 1,919,810 + 114,514. Let me do 1,919,810 + 100,000 = 2,019,810 + 14,514. Then 2,019,810 + 14,514. 2,019,810 + 10,000 = 2,029,810 + 4,514 = 2,034,324. So the total sum is 2,034,324. Therefore, the question might be expecting this number as the answer, and since it's a single calculation, it's the answer. So the tool call would be to add the two numbers, which in this case is 114514 and 1919810. So the answer should be 2,034,324.\\n</think>\\n\\n","tool_calls":[{"id":"call_5ann9oq4","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_5ann9oq4"}]",
     "ai.prompt.toolChoice": "{"type":"auto"}",
     "ai.prompt.tools": [
       "{"description":"Adds two numbers","inputSchema":{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
     ],
     "ai.response.finishReason": "stop",
-    "ai.response.id": "6730d695-e0c4-492a-9830-3a961694cbb3",
+    "ai.response.id": "0554055c-5386-4554-8969-eec81791c555",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{}",
-    "ai.response.text": "<think> Okay, so the user asked how many times 114",
-    "ai.response.timestamp": "2025-08-30T15:53:31.283Z",
-    "ai.usage.completionTokens": 237,
-    "ai.usage.promptTokens": 693,
+    "ai.response.text": "<think> Okay, let me check the calculation again. ",
+    "ai.response.timestamp": "2025-09-04T06:37:32.609Z",
+    "ai.usage.completionTokens": 145,
+    "ai.usage.promptTokens": 1577,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "eedae05d-18e9-42a8-be8f-ed28a83d8d7c",
+    "gen_ai.response.id": "fc82b7cf-0b8b-4a2d-8c07-5a3d502b2990",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
-    "gen_ai.usage.input_tokens": 693,
-    "gen_ai.usage.output_tokens": 237,
+    "gen_ai.usage.input_tokens": 1577,
+    "gen_ai.usage.output_tokens": 145,
     "operation.name": "ai.generateText.doGenerate",
   },
   {
@@ -83,9 +82,9 @@ exports[`generateText with tools > basic 2`] = `
     "ai.prompt": "{"messages":[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]}",
     "ai.response.finishReason": "stop",
     "ai.response.providerMetadata": "{}",
-    "ai.response.text": "<think> Okay, so the user asked how many times 114",
-    "ai.usage.completionTokens": 237,
-    "ai.usage.promptTokens": 693,
+    "ai.response.text": "<think> Okay, let me check the calculation again. ",
+    "ai.usage.completionTokens": 145,
+    "ai.usage.promptTokens": 1577,
     "operation.name": "ai.generateText",
   },
 ]
@@ -105,11 +104,11 @@ exports[`generateText with tools > basic/ai 2`] = `
       "{"type":"function","name":"add","description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false}}",
     ],
     "ai.response.finishReason": "stop",
-    "ai.response.id": "aitxt-y1axMfbbl765FYwshqrTH9gP",
+    "ai.response.id": "aitxt-w0dOsVrVDGQjdJAXFVKUwRNd",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{"ollama":{}}",
-    "ai.response.timestamp": "2025-08-30T15:53:32.544Z",
-    "ai.response.toolCalls": "[{"toolCallId":"WdNUDugLi2MWNjL3","toolName":"add","input":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}]",
+    "ai.response.timestamp": "2025-09-04T06:37:33.408Z",
+    "ai.response.toolCalls": "[{"toolCallId":"YviVlBwW46wpZQhp","toolName":"add","input":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}]",
     "ai.settings.maxRetries": 2,
     "ai.settings.seed": 114514,
     "ai.usage.completionTokens": 36,
@@ -118,7 +117,7 @@ exports[`generateText with tools > basic/ai 2`] = `
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "aitxt-y1axMfbbl765FYwshqrTH9gP",
+    "gen_ai.response.id": "aitxt-w0dOsVrVDGQjdJAXFVKUwRNd",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "ollama.responses",
     "gen_ai.usage.input_tokens": 192,
@@ -128,7 +127,7 @@ exports[`generateText with tools > basic/ai 2`] = `
   {
     "ai.operationId": "ai.toolCall",
     "ai.toolCall.args": "{"a":"114514","b":"1919810"}",
-    "ai.toolCall.id": "WdNUDugLi2MWNjL3",
+    "ai.toolCall.id": "YviVlBwW46wpZQhp",
     "ai.toolCall.name": "add",
     "ai.toolCall.result": ""2034324"",
     "operation.name": "ai.toolCall",
@@ -137,17 +136,17 @@ exports[`generateText with tools > basic/ai 2`] = `
     "ai.model.id": "qwen3:0.6b",
     "ai.model.provider": "ollama.responses",
     "ai.operationId": "ai.generateText.doGenerate",
-    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem."}]},{"role":"assistant","content":[{"type":"tool-call","toolCallId":"WdNUDugLi2MWNjL3","toolName":"add","input":{"a":"114514","b":"1919810"}}]},{"role":"tool","content":[{"type":"tool-result","toolCallId":"WdNUDugLi2MWNjL3","toolName":"add","output":{"type":"text","value":"2034324"}}]}]",
+    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem."}]},{"role":"assistant","content":[{"type":"tool-call","toolCallId":"YviVlBwW46wpZQhp","toolName":"add","input":{"a":"114514","b":"1919810"}}]},{"role":"tool","content":[{"type":"tool-result","toolCallId":"YviVlBwW46wpZQhp","toolName":"add","output":{"type":"text","value":"2034324"}}]}]",
     "ai.prompt.toolChoice": "{"type":"auto"}",
     "ai.prompt.tools": [
       "{"type":"function","name":"add","description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false}}",
     ],
     "ai.response.finishReason": "stop",
-    "ai.response.id": "aitxt-LQFb1FDEQQZUW9MXGGTsLsz8",
+    "ai.response.id": "aitxt-XbVomhGadOfmLxWCO870g0kp",
     "ai.response.model": "qwen3:0.6b",
     "ai.response.providerMetadata": "{"ollama":{}}",
     "ai.response.text": "20,343,24",
-    "ai.response.timestamp": "2025-08-30T15:53:32.750Z",
+    "ai.response.timestamp": "2025-09-04T06:37:33.633Z",
     "ai.settings.maxRetries": 2,
     "ai.settings.seed": 114514,
     "ai.usage.completionTokens": 10,
@@ -156,7 +155,7 @@ exports[`generateText with tools > basic/ai 2`] = `
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "aitxt-LQFb1FDEQQZUW9MXGGTsLsz8",
+    "gen_ai.response.id": "aitxt-XbVomhGadOfmLxWCO870g0kp",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "ollama.responses",
     "gen_ai.usage.input_tokens": 245,
