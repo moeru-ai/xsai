@@ -1,3 +1,4 @@
+import type { TrampolineFn } from '@xsai/shared'
 import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Usage } from '@xsai/shared-chat'
 
 import { clean, responseJSON, trampoline } from '@xsai/shared'
@@ -44,17 +45,10 @@ export interface GenerateTextResult {
 }
 
 /** @internal */
-type RawGenerateText = (options: GenerateTextOptions) => RawGenerateTextTrampoline<GenerateTextResult>
-
-/** @internal */
-type RawGenerateTextTrampoline<T> = Promise<(() => RawGenerateTextTrampoline<T>) | T>
-
-/** @internal */
-const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
+const rawGenerateText = async (options: GenerateTextOptions): Promise<TrampolineFn<GenerateTextResult>> =>
   chat({
     ...options,
     maxSteps: undefined,
-    messages: options.messages,
     steps: undefined,
     stream: false,
   })
@@ -67,6 +61,7 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
 
       const messages: Message[] = structuredClone(options.messages)
       const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
+
       const toolCalls: CompletionToolCall[] = []
       const toolResults: CompletionToolResult[] = []
 
@@ -85,43 +80,18 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
         reasoning_content: undefined,
       }))
 
-      if (finishReason === 'stop' || stepType === 'done') {
-        const step: CompletionStep<true> = {
-          finishReason,
-          stepType,
-          text: message.content,
-          toolCalls,
-          toolResults,
-          usage,
+      if (finishReason !== 'stop' && stepType !== 'done') {
+        for (const toolCall of msgToolCalls) {
+          const { completionToolCall, completionToolResult, message } = await executeTool({
+            abortSignal: options.abortSignal,
+            messages,
+            toolCall,
+            tools: options.tools,
+          })
+          toolCalls.push(completionToolCall)
+          toolResults.push(completionToolResult)
+          messages.push(message)
         }
-
-        steps.push(step)
-
-        if (options.onStepFinish)
-          await options.onStepFinish(step)
-
-        return {
-          finishReason,
-          messages,
-          reasoningText: message.reasoning_content,
-          steps,
-          text: message.content,
-          toolCalls,
-          toolResults,
-          usage,
-        }
-      }
-
-      for (const toolCall of msgToolCalls) {
-        const { completionToolCall, completionToolResult, message } = await executeTool({
-          abortSignal: options.abortSignal,
-          messages,
-          toolCall,
-          tools: options.tools,
-        })
-        toolCalls.push(completionToolCall)
-        toolResults.push(completionToolResult)
-        messages.push(message)
       }
 
       const step: CompletionStep<true> = {
@@ -138,11 +108,25 @@ const rawGenerateText: RawGenerateText = async (options: GenerateTextOptions) =>
       if (options.onStepFinish)
         await options.onStepFinish(step)
 
-      return async () => rawGenerateText({
-        ...options,
-        messages,
-        steps,
-      })
+      if (step.finishReason === 'stop' || step.stepType === 'done') {
+        return {
+          finishReason: step.finishReason,
+          messages,
+          reasoningText: message.reasoning_content,
+          steps,
+          text: step.text,
+          toolCalls: step.toolCalls,
+          toolResults: step.toolResults,
+          usage: step.usage,
+        }
+      }
+      else {
+        return async () => rawGenerateText({
+          ...options,
+          messages,
+          steps,
+        })
+      }
     })
 
 export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> =>

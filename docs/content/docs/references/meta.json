@@ -19,6 +19,7 @@
     "[@xsai-ext/providers-cloud](https://doc.deno.land/https://esm.sh/@xsai-ext/providers-cloud)",
     "[@xsai-ext/providers-local](https://doc.deno.land/https://esm.sh/@xsai-ext/providers-local)",
     "[@xsai-ext/shared-providers](https://doc.deno.land/https://esm.sh/@xsai-ext/shared-providers)",
+    "[@xsai-ext/telemetry](https://doc.deno.land/https://esm.sh/@xsai-ext/telemetry)",
     "[xsai](https://doc.deno.land/https://esm.sh/xsai)",
     "[xsfetch](https://doc.deno.land/https://esm.sh/xsfetch)",
     "[xsschema](https://doc.deno.land/https://esm.sh/xsschema)"

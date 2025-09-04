@@ -1,0 +1,104 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`streamText > basic 1`] = `
+"<think>
+Okay, so the user is asking why the sky is blue. Hmm, I know that the sky is blue, but I want to explain that in a helpful way while making sure I mention all the relevant points. First, I should start by confirming that the sky is indeed blue. Then, I need to think about why it is blue. I remember from physics that the sky is blue because of the dispersion of light. Let me recall how those concepts work. 
+
+When sunlight goes through the atmosphere, it's scattered by molecules and air molecules. This scattering of light causes different colored wavelengths of light to be scattered in various directions. The blue light has a shorter wavelength than red, so it gets scattered more, resulting in the sky appearing blue. Also, in some cases, there might be other factors, like the Earth's rotation and surface temperature influencing this phenomenon. I should mention those factors as well, but make sure to keep the explanation simple and avoid complex terms. Let me check if there's any other relevant point, like the presence of water vapor or other atmospheric components. I think that's covered under scattered light. I should structure the answer clearly, starting with the reason, then explaining the mechanism, and maybe adding a brief note that while the sky is blue, it can be other colors depending on conditions. Wait, but does the user need that knowledge? Maybe just confirm that it's blue, then explain the reason, and mention other factors if needed. Let me put it all together in a smooth, concise paragraph.
+</think>
+
+The sky appears blue because of the Earth's atmosphere. Light from the Sun travels through the air, and when sunlight interacts with air molecules (which are tiny particles), it's scattered. This scattered light results in a color mix that makes the sky appear blue. While other factors like Earth's rotation and temperature may influence the visible sky color, it's primarily due to the scattering of light by the atmosphere. This process, known as Rayleigh scattering, makes blue light spread across the sky more intensely than it does with red or orange light."
+`;
+
+exports[`streamText > basic 2`] = `
+[
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "xsai",
+    "ai.operationId": "ai.streamText.doStream",
+    "ai.prompt.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
+    "ai.response.avgOutputTokensPerSecond": 114.24634897135296,
+    "ai.response.finishReason": "stop",
+    "ai.response.id": "05415a59-283a-418f-ad3a-aacf4c89c02d",
+    "ai.response.model": "qwen3:0.6b",
+    "ai.response.msToFinish": 3685.019292,
+    "ai.response.msToFirstChunk": 269.34108299999997,
+    "ai.response.providerMetadata": "{}",
+    "ai.response.text": "<think> Okay, so the user is asking why the sky is",
+    "ai.response.timestamp": "2025-09-03T15:53:38.572Z",
+    "ai.usage.inputTokens": 14,
+    "ai.usage.outputTokens": 421,
+    "ai.usage.totalTokens": 435,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.response.finish_reasons": [
+      "stop",
+    ],
+    "gen_ai.response.id": "3f03ed88-5881-48e2-b878-12aa9243fbe5",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "xsai",
+    "gen_ai.usage.input_tokens": 14,
+    "gen_ai.usage.output_tokens": 421,
+    "operation.name": "ai.streamText.doStream",
+  },
+]
+`;
+
+exports[`streamText > basic/ai 1`] = `
+"The sky appears blue because it contains a mixture of **water vapor** and **ozone**. These substances absorb most of the visible light, leaving the light to reach our eyes. However, the exact reason behind the blue color is a bit more complex. In reality, the color of the sky is due to the **absorption of sunlight by the atmosphere**. Here's a simplified explanation:
+
+- **Water vapor** (which is a natural component of the atmosphere) absorbs wavelengths of light that are in the **green and red parts of the visible spectrum**.
+- **Ozone** (which is also part of the atmosphere) absorbs **red light**.
+- This means the light that reaches our eyes is mostly in the **blue part**, giving the sky its blue hue.
+
+So, while the sky is not blue in the sense of being a color, it appears blue because of the **absorption of light by the atmosphere**."
+`;
+
+exports[`streamText > basic/ai 2`] = `
+[
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "ollama.responses",
+    "ai.operationId": "ai.streamText.doStream",
+    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
+    "ai.response.avgOutputTokensPerSecond": 44.219067824947906,
+    "ai.response.finishReason": "stop",
+    "ai.response.id": "aitxt-hDYuhqyMW69cIUVMjeqsDaHq",
+    "ai.response.model": "qwen3:0.6b",
+    "ai.response.msToFinish": 4319.403583,
+    "ai.response.msToFirstChunk": 2909.947833,
+    "ai.response.providerMetadata": "{"ollama":{"responseId":null}}",
+    "ai.response.text": "The sky appears blue because it contains a mixture",
+    "ai.response.timestamp": "2025-09-03T15:53:45.171Z",
+    "ai.settings.maxRetries": 2,
+    "ai.settings.seed": 114514,
+    "ai.usage.inputTokens": 22,
+    "ai.usage.outputTokens": 191,
+    "ai.usage.totalTokens": 213,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.response.finish_reasons": [
+      "stop",
+    ],
+    "gen_ai.response.id": "aitxt-hDYuhqyMW69cIUVMjeqsDaHq",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "ollama.responses",
+    "gen_ai.usage.input_tokens": 22,
+    "gen_ai.usage.output_tokens": 191,
+    "operation.name": "ai.streamText.doStream",
+  },
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "ollama.responses",
+    "ai.operationId": "ai.streamText",
+    "ai.prompt": "{"prompt":"Why is the sky blue?"}",
+    "ai.response.finishReason": "stop",
+    "ai.response.providerMetadata": "{"ollama":{"responseId":null}}",
+    "ai.response.text": "The sky appears blue because it contains a mixture",
+    "ai.settings.maxRetries": 2,
+    "ai.settings.seed": 114514,
+    "ai.usage.inputTokens": 22,
+    "ai.usage.outputTokens": 191,
+    "ai.usage.totalTokens": 213,
+    "operation.name": "ai.streamText",
+  },
+]
+`;

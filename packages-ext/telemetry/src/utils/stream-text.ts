@@ -1,44 +1,36 @@
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, ToolCall, Usage } from '@xsai/shared-chat'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage } from 'xsai'
 
-import { objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
+import { chat, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
-import type { StreamTextEvent } from './types/event'
+import { getTracer } from './get-tracer'
+import { now } from './now'
+import { recordSpan, recordSpanSync } from './record-span'
+import { DelayedPromise, transformChunk } from './stream-text-internal'
+import { stringifyTool } from './stringify-tool'
+import { wrapTool } from './wrap-tool'
 
-import { DelayedPromise } from './internal/_delayed-promise'
-import { transformChunk } from './internal/_transform-chunk'
+export const streamText = (options: StreamTextOptions) => {
+  const tracer = getTracer()
 
-export type * from './types/event'
+  const commonAttributes = (operationId: string) => ({
+    'ai.model.id': options.model,
+    // TODO: provider name
+    'ai.model.provider': 'xsai',
+    'ai.operationId': operationId,
+    'ai.response.providerMetadata': '{}',
+    'operation.name': operationId,
+  })
 
-export interface StreamTextOptions extends ChatOptions {
-  /** @default 1 */
-  maxSteps?: number
-  onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
-  onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
-  onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
-  /**
-   * If you want to disable stream, use `@xsai/generate-{text,object}`.
-   */
-  stream?: never
-  streamOptions?: {
-    /**
-     * Return usage.
-     * @default `undefined`
-     */
-    includeUsage?: boolean
+  const idAttributes = () => {
+    const id = crypto.randomUUID()
+
+    return {
+      'ai.response.id': id,
+      'ai.response.timestamp': new Date().toISOString(),
+      'gen_ai.response.id': id,
+    }
   }
-}
 
-export interface StreamTextResult {
-  fullStream: ReadableStream<StreamTextEvent>
-  messages: Promise<Message[]>
-  steps: Promise<CompletionStep[]>
-  textStream: ReadableStream<string>
-  totalUsage: Promise<undefined | Usage>
-  usage: Promise<undefined | Usage>
-}
-
-export const streamText = (options: StreamTextOptions): StreamTextResult => {
   // state
   const steps: CompletionStep[] = []
   const messages: Message[] = structuredClone(options.messages)
@@ -70,7 +62,30 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
     void options.onStepFinish?.(step)
   }
 
-  const doStream = async () => {
+  const tools = options.tools != null && options.tools.length > 0
+    ? options.tools.map(tool => wrapTool(tool, tracer))
+    : undefined
+
+  const doStream = async () => recordSpan({
+    attributes: {
+      ...commonAttributes('ai.streamText.doStream'),
+      ...idAttributes(),
+      ...(tools != null && tools.length > 0 && {
+        'ai.prompt.toolChoice': JSON.stringify(options.toolChoice ?? { type: 'auto' }),
+        'ai.prompt.tools': tools.map(stringifyTool),
+      }),
+      'ai.prompt.messages': JSON.stringify(options.messages),
+      'ai.response.model': options.model,
+      'gen_ai.request.model': options.model,
+      'gen_ai.response.id': crypto.randomUUID(),
+      'gen_ai.response.model': options.model,
+      'gen_ai.system': 'xsai',
+    },
+    name: 'ai.streamText.doStream',
+    tracer,
+  }, async (span) => {
+    const startMs = now()
+
     const { body: stream } = await chat({
       ...options,
       maxSteps: undefined,
@@ -79,6 +94,7 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
       streamOptions: options.streamOptions != null
         ? objCamelToSnake(options.streamOptions)
         : undefined,
+      tools,
     })
 
     // let stepUsage: undefined | Usage
@@ -104,6 +120,7 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
     const toolCalls: CompletionToolCall[] = []
     const toolResults: CompletionToolResult[] = []
     let finishReason: FinishReason = 'other'
+    let firstChunk = true
 
     await stream!
       .pipeThrough(transformChunk())
@@ -115,6 +132,18 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
         close: () => {},
         // eslint-disable-next-line sonarjs/cognitive-complexity
         write: (chunk) => {
+          // Telemetry
+          if (firstChunk) {
+            const msToFirstChunk = now() - startMs
+            span.addEvent('ai.stream.firstChunk', {
+              'ai.response.msToFirstChunk': msToFirstChunk,
+            })
+            span.setAttributes({
+              'ai.response.msToFirstChunk': msToFirstChunk,
+            })
+            firstChunk = false
+          }
+
           if (chunk.usage)
             pushUsage(chunk.usage)
 
@@ -168,7 +197,7 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
           abortSignal: options.abortSignal,
           messages,
           toolCall,
-          tools: options.tools,
+          tools,
         })
 
         toolCalls.push(completionToolCall)
@@ -188,52 +217,102 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
       })
     }
 
-    pushStep({
+    const step = {
       finishReason,
       stepType: determineStepType({ finishReason, maxSteps, stepsLength: steps.length, toolCallsLength: toolCalls.length }),
       text,
       toolCalls,
       toolResults,
       usage,
+    }
+    pushStep(step)
+
+    // Telemetry
+    const msToFinish = now() - startMs
+    span.addEvent('ai.stream.finish')
+    span.setAttributes({
+      'ai.response.msToFinish': msToFinish,
+      ...(step.toolCalls.length > 0 && { 'ai.response.toolCalls': JSON.stringify(step.toolCalls) }),
+      'ai.response.finishReason': step.finishReason,
+      'ai.response.text': step.text != null ? step.text : '',
+      'gen_ai.response.finish_reasons': [step.finishReason],
+      ...step.usage && {
+        'ai.response.avgOutputTokensPerSecond': (1000 * (step.usage.completion_tokens ?? 0)) / msToFinish,
+        'ai.usage.inputTokens': step.usage.prompt_tokens,
+        'ai.usage.outputTokens': step.usage.completion_tokens,
+        'ai.usage.totalTokens': step.usage.total_tokens,
+        'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
+        'gen_ai.usage.output_tokens': step.usage.completion_tokens,
+      },
     })
 
     if (toolCalls.length !== 0 && steps.length < maxSteps)
       return async () => doStream()
-  }
+  })
 
-  void (async () => {
-    try {
-      await trampoline(async () => doStream())
+  return recordSpanSync<StreamTextResult>({
+    attributes: {
+      ...commonAttributes('ai.streamText'),
+      'ai.prompt': JSON.stringify({ messages: options.messages }),
+    },
+    endWhenDone: false,
+    name: 'ai.streamText',
+    tracer,
+  }, (rootSpan) => {
+    void (async () => {
+      try {
+        await trampoline(async () => doStream())
 
-      eventCtrl?.close()
-      textCtrl?.close()
+        eventCtrl?.close()
+        textCtrl?.close()
+      }
+      catch (err) {
+        eventCtrl?.error(err)
+        textCtrl?.error(err)
+
+        resultSteps.reject(err)
+        resultMessages.reject(err)
+        resultUsage.reject(err)
+        resultTotalUsage.reject(err)
+      }
+      finally {
+        resultSteps.resolve(steps)
+        resultMessages.resolve(messages)
+        resultUsage.resolve(usage)
+        resultTotalUsage.resolve(totalUsage)
+
+        const finishStep = steps.at(-1)
+
+        if (finishStep) {
+          rootSpan.setAttributes({
+            ...(finishStep.toolCalls.length > 0 && { 'ai.response.toolCalls': JSON.stringify(finishStep.toolCalls) }),
+            'ai.response.finishReason': finishStep.finishReason,
+            'ai.response.text': finishStep.text != null ? finishStep.text : '',
+          })
+        }
+
+        if (totalUsage) {
+          rootSpan.setAttributes({
+            'ai.usage.inputTokens': totalUsage.prompt_tokens,
+            'ai.usage.outputTokens': totalUsage.completion_tokens,
+            'ai.usage.totalTokens': totalUsage.total_tokens,
+          })
+        }
+
+        // eslint-disable-next-line sonarjs/void-use
+        void options.onFinish?.(finishStep)
+
+        rootSpan.end()
+      }
+    })()
+
+    return {
+      fullStream: eventStream,
+      messages: resultMessages.promise,
+      steps: resultSteps.promise,
+      textStream,
+      totalUsage: resultTotalUsage.promise,
+      usage: resultUsage.promise,
     }
-    catch (err) {
-      eventCtrl?.error(err)
-      textCtrl?.error(err)
-
-      resultSteps.reject(err)
-      resultMessages.reject(err)
-      resultUsage.reject(err)
-      resultTotalUsage.reject(err)
-    }
-    finally {
-      resultSteps.resolve(steps)
-      resultMessages.resolve(messages)
-      resultUsage.resolve(usage)
-      resultTotalUsage.resolve(totalUsage)
-
-      // eslint-disable-next-line sonarjs/void-use
-      void options.onFinish?.(steps.at(-1))
-    }
-  })()
-
-  return {
-    fullStream: eventStream,
-    messages: resultMessages.promise,
-    steps: resultSteps.promise,
-    textStream,
-    totalUsage: resultTotalUsage.promise,
-    usage: resultUsage.promise,
-  }
+  })
 }

@@ -1,0 +1,103 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generateText > basic 1`] = `
+"<think>
+Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from my studies that light is bending when it passes through the atmosphere, which is a key part of the rainbow effect. But I should make sure I'm explaining this clearly. First, let's start with the basic fact: when sunlight reaches Earth's atmosphere, it's refracted. The atmosphere has a mixture of gases like nitrogen and oxygen, and water vapor. So, the light is scattered by those gases, making the sky appear blue. Oh right, the Earth's atmosphere is much thinner than the atmosphere above the ocean, which is why the sky is usually visible without a sunscreen. But maybe the user is interested in how to explain this, not just the basic reason. Also, I should mention the color wavelength of sunlight, which is in the range of blue. So, maybe break it down into parts: refraction, scattering by gases, and the fact that the colors of the sky are due to that refraction. Let me check if I'm missing anything here, like any misconceptions, like maybe the user thinks it's a color that's always there, but the answer is based on why the color is blue. Make sure to use simple terms and avoid technical jargon. Also, perhaps mention that it's not always blue, but when you're near the Earth, it's visible. Oh, and maybe compare it to how rainbows are formed with different colors. So, putting it all together in a clear, concise manner.
+</think>
+
+The sky appears blue because of a process called **refraction**—where sunlight enters the Earth's atmosphere. Here's a breakdown:
+
+1. **Light Refraction**: When sunlight enters the atmosphere, it interacts with gases like nitrogen and oxygen, which cause the light to bend.  
+2. **Scattering by Gases**: These gases scatter the light in all directions, creating a "blue spectrum."  
+3. **Earth's Atmosphere Difference**: The Earth's atmosphere is much thinner than the layers above the ocean (where clouds form), so the sky’s color is visible in the air without a sunscreen.  
+
+In short: The sky appears blue because of refraction and scattering, resulting in the "blue light" we see."
+`;
+
+exports[`generateText > basic 2`] = `
+[
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "xsai",
+    "ai.operationId": "ai.generateText.doGenerate",
+    "ai.prompt.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
+    "ai.response.finishReason": "stop",
+    "ai.response.id": "ae7361ee-4864-458d-bbcd-cebd88ba4860",
+    "ai.response.model": "qwen3:0.6b",
+    "ai.response.providerMetadata": "{}",
+    "ai.response.text": "<think> Okay, so the user is asking, "Why is the s",
+    "ai.response.timestamp": "2025-08-30T15:53:28.359Z",
+    "ai.usage.completionTokens": 472,
+    "ai.usage.promptTokens": 14,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.response.finish_reasons": [
+      "stop",
+    ],
+    "gen_ai.response.id": "196716a1-6ac8-477c-8cb6-ab246f6ee9bf",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "xsai",
+    "gen_ai.usage.input_tokens": 14,
+    "gen_ai.usage.output_tokens": 472,
+    "operation.name": "ai.generateText.doGenerate",
+  },
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "xsai",
+    "ai.operationId": "ai.generateText",
+    "ai.prompt": "{"messages":[{"content":"Why is the sky blue?","role":"user"}]}",
+    "ai.response.finishReason": "stop",
+    "ai.response.providerMetadata": "{}",
+    "ai.response.text": "<think> Okay, so the user is asking, "Why is the s",
+    "ai.usage.completionTokens": 472,
+    "ai.usage.promptTokens": 14,
+    "operation.name": "ai.generateText",
+  },
+]
+`;
+
+exports[`generateText > basic/ai 1`] = `"The sky is blue because it contains a specific type of **water vapor** that reflects a **part of the visible light** in the **blue spectrum**. This phenomenon is called the **dispersion of light** or **scattering of light** by the atmosphere. When sunlight enters the Earth's atmosphere, the water vapor in the air refracts the sunlight, causing it to spread out in a way that makes the sky appear blue. The blue color is the result of this scattering process, which is why the sky appears blue in the visible light."`;
+
+exports[`generateText > basic/ai 2`] = `
+[
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "ollama.responses",
+    "ai.operationId": "ai.generateText.doGenerate",
+    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
+    "ai.response.finishReason": "stop",
+    "ai.response.id": "aitxt-SvhhXW7TsBHuy5nUdYoR9QCN",
+    "ai.response.model": "qwen3:0.6b",
+    "ai.response.providerMetadata": "{"ollama":{}}",
+    "ai.response.text": "The sky is blue because it contains a specific typ",
+    "ai.response.timestamp": "2025-08-30T15:53:31.310Z",
+    "ai.settings.maxRetries": 2,
+    "ai.settings.seed": 114514,
+    "ai.usage.completionTokens": 112,
+    "ai.usage.promptTokens": 22,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.response.finish_reasons": [
+      "stop",
+    ],
+    "gen_ai.response.id": "aitxt-SvhhXW7TsBHuy5nUdYoR9QCN",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "ollama.responses",
+    "gen_ai.usage.input_tokens": 22,
+    "gen_ai.usage.output_tokens": 112,
+    "operation.name": "ai.generateText.doGenerate",
+  },
+  {
+    "ai.model.id": "qwen3:0.6b",
+    "ai.model.provider": "ollama.responses",
+    "ai.operationId": "ai.generateText",
+    "ai.prompt": "{"prompt":"Why is the sky blue?"}",
+    "ai.response.finishReason": "stop",
+    "ai.response.providerMetadata": "{"ollama":{}}",
+    "ai.response.text": "The sky is blue because it contains a specific typ",
+    "ai.settings.maxRetries": 2,
+    "ai.settings.seed": 114514,
+    "ai.usage.completionTokens": 112,
+    "ai.usage.promptTokens": 22,
+    "operation.name": "ai.generateText",
+  },
+]
+`;
