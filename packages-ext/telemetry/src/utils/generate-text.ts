@@ -8,6 +8,10 @@ import { recordSpan } from './record-span'
 import { stringifyTool } from './stringify-tool'
 import { wrapTool } from './wrap-tool'
 
+/**
+ * @experimental
+ * Generating Text with Telemetry.
+ */
 export const generateText = async (options: GenerateTextOptions) => {
   const tracer = getTracer()
 

@@ -9,6 +9,10 @@ import { DelayedPromise, transformChunk } from './stream-text-internal'
 import { stringifyTool } from './stringify-tool'
 import { wrapTool } from './wrap-tool'
 
+/**
+ * @experimental
+ * Streaming Text with Telemetry.
+ */
 export const streamText = (options: StreamTextOptions) => {
   const tracer = getTracer()
 
