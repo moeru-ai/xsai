@@ -93,7 +93,7 @@ const zodJsonSchema = await toJsonSchema(zodSchema)
 
 `toJsonSchema` is async (because it has to `await import` the vendor's dependencies), but we also support a synchronous version: `toJsonSchemaSync`.
 
-<Callout type="important">
+<Callout type="warn">
   Before using `toJsonSchemaSync`, you must call `initToJsonSchemaSyncVendor` with your schema vendor.
 </Callout>
 

@@ -157,6 +157,9 @@ importers:
       '@xsai-ext/providers-local':
         specifier: workspace:^
         version: link:../packages-ext/providers-local
+      '@xsai-ext/telemetry':
+        specifier: workspace:^
+        version: link:../packages-ext/telemetry
       '@xsai/embed':
         specifier: workspace:^
         version: link:../packages/embed

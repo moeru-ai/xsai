@@ -31,6 +31,7 @@
     "@types/react-dom": "^19.1.6",
     "@xsai-ext/providers-cloud": "workspace:^",
     "@xsai-ext/providers-local": "workspace:^",
+    "@xsai-ext/telemetry": "workspace:^",
     "@xsai/embed": "workspace:^",
     "@xsai/generate-image": "workspace:^",
     "@xsai/generate-object": "workspace:^",

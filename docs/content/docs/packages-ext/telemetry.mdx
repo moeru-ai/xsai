@@ -1,0 +1,61 @@
+---
+title: Telemetry
+---
+
+<Callout type="warn">
+  xsAI Telemetry is experimental and may change in the future.
+
+  We may consider discontinuing Vercel AI SDK compatibility in the future and transitioning to full support for GenAI.
+</Callout>
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai-ext/telemetry" />
+
+```package-install
+npm i @xsai-ext/telemetry
+```
+
+## Usage
+
+> `@xsai/telemetry` exports everything from `xsai`, so you can use it for overrides.
+>
+> Currently, telemetry only supports `generateText` and `streamText`.
+
+Simply switch the import.
+
+```diff
+- import { generateText, streamText } from 'xsai'
++ import { generateText, streamText } from '@xsai-ext/telemetry'
+```
+
+You can also configure additional telemetry options:
+
+```ts twoslash
+import { generateText } from '@xsai-ext/telemetry'
+import { env } from 'node:process'
+
+const instructions = 'You\'re a helpful assistant.' // [!code highlight]
+
+const { text } = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  messages: [
+    {
+      content: instructions, // [!code highlight]
+      role: 'system'
+    },
+    {
+      content: 'Why is the sky blue?',
+      role: 'user'
+    }
+  ],
+  model: 'gpt-4o',
+  telemetry: { // [!code highlight]
+    metadata: { // [!code highlight]
+      agentId: 'weather-assistant', // [!code highlight]
+      instructions, // [!code highlight]
+    }, // [!code highlight]
+  }, // [!code highlight]
+})
+```
