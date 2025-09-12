@@ -4,6 +4,15 @@ import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } 
 
 export interface EmbedOptions extends CommonRequestOptions {
   [key: string]: unknown
+  /**
+   * The number of dimensions the resulting output embeddings should have.
+   *
+   * Not every model from every providers supports this parameter, currently
+   * known: OpenAI, Voyage AI.
+   *
+   * @see {@link https://platform.openai.com/docs/api-reference/embeddings/object}
+   */
+  dimensions?: number
   input: string
 }
 
