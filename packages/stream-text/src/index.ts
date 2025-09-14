@@ -164,7 +164,7 @@ export const streamText = (options: StreamTextOptions): StreamTextResult => {
 
     if (tool_calls.length !== 0) {
       for (const toolCall of tool_calls) {
-        if (!toolCall)
+        if (toolCall == null)
           continue
         const { completionToolCall, completionToolResult, message } = await executeTool({
           abortSignal: options.abortSignal,
