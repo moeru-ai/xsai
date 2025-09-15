@@ -1,4 +1,4 @@
-import type { CompletionStep, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn } from 'xsai'
+import type { CompletionStep, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn, WithUnknown } from 'xsai'
 
 import { chat, responseJSON, trampoline } from 'xsai'
 
@@ -15,10 +15,10 @@ import { wrapTool } from './wrap-tool'
  * @experimental
  * Generating Text with Telemetry.
  */
-export const generateText = async (options: WithTelemetry<GenerateTextOptions>) => {
+export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>) => {
   const tracer = getTracer()
 
-  const rawGenerateText = async (options: WithTelemetry<GenerateTextOptions>): Promise<TrampolineFn<GenerateTextResult>> => {
+  const rawGenerateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>): Promise<TrampolineFn<GenerateTextResult>> => {
     const messages: Message[] = structuredClone(options.messages)
     const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
 

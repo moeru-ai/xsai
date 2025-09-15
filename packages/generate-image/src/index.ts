@@ -1,9 +1,8 @@
-import type { CommonRequestOptions } from '@xsai/shared'
+import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
 import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
 export interface GenerateImageOptions extends CommonRequestOptions {
-  [key: string]: unknown
   /**
    * The number of images to generate.
    * @default `1`
@@ -96,7 +95,7 @@ const responseBlobAsDataURL = async (res: Response): Promise<string> =>
     })
 
 /** @experimental */
-export const generateImage = async (options: GenerateImageOptions): Promise<GenerateImageResult> =>
+export const generateImage = async (options: WithUnknown<GenerateImageOptions>): Promise<GenerateImageResult> =>
   (options.fetch ?? globalThis.fetch)(requestURL('images/generations', options.baseURL), {
     body: requestBody(options),
     headers: requestHeaders({

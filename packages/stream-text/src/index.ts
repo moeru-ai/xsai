@@ -1,3 +1,4 @@
+import type { WithUnknown } from '@xsai/shared'
 import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, ToolCall, Usage } from '@xsai/shared-chat'
 
 import { objCamelToSnake, trampoline } from '@xsai/shared'
@@ -38,7 +39,7 @@ export interface StreamTextResult {
   usage: Promise<undefined | Usage>
 }
 
-export const streamText = (options: StreamTextOptions): StreamTextResult => {
+export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextResult => {
   // state
   const steps: CompletionStep[] = []
   const messages: Message[] = structuredClone(options.messages)
