@@ -1,9 +1,8 @@
-import type { CommonRequestOptions } from '@xsai/shared'
+import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
 import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
 export interface EmbedOptions extends CommonRequestOptions {
-  [key: string]: unknown
   input: string
 }
 
@@ -31,7 +30,7 @@ export interface EmbedResult {
   usage: EmbedResponseUsage
 }
 
-export const embed = async (options: EmbedOptions): Promise<EmbedResult> =>
+export const embed = async (options: WithUnknown<EmbedOptions>): Promise<EmbedResult> =>
   (options.fetch ?? globalThis.fetch)(requestURL('embeddings', options.baseURL), {
     body: requestBody(options),
     headers: requestHeaders({

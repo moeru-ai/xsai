@@ -40,10 +40,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@xsai/shared": "workspace:~",
     "@xsai/shared-chat": "workspace:~"
   },
   "devDependencies": {
-    "@xsai/shared": "workspace:~",
     "@xsai/tool": "workspace:~",
     "valibot": "catalog:schema"
   }

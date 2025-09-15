@@ -1,4 +1,4 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage } from 'xsai'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
 import { chat, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
@@ -16,7 +16,7 @@ import { wrapTool } from './wrap-tool'
  * @experimental
  * Streaming Text with Telemetry.
  */
-export const streamText = (options: WithTelemetry<StreamTextOptions>) => {
+export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>>) => {
   const tracer = getTracer()
 
   // state

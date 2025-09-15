@@ -1,4 +1,4 @@
-import type { TrampolineFn } from '@xsai/shared'
+import type { TrampolineFn, WithUnknown } from '@xsai/shared'
 import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Usage } from '@xsai/shared-chat'
 
 import { clean, responseJSON, trampoline } from '@xsai/shared'
@@ -45,7 +45,7 @@ export interface GenerateTextResult {
 }
 
 /** @internal */
-const rawGenerateText = async (options: GenerateTextOptions): Promise<TrampolineFn<GenerateTextResult>> =>
+const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promise<TrampolineFn<GenerateTextResult>> =>
   chat({
     ...options,
     maxSteps: undefined,
@@ -129,5 +129,5 @@ const rawGenerateText = async (options: GenerateTextOptions): Promise<Trampoline
       }
     })
 
-export const generateText = async (options: GenerateTextOptions): Promise<GenerateTextResult> =>
+export const generateText = async (options: WithUnknown<GenerateTextOptions>): Promise<GenerateTextResult> =>
   trampoline<GenerateTextResult>(async () => rawGenerateText(options))

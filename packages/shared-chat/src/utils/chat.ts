@@ -1,4 +1,4 @@
-import type { CommonRequestOptions } from '@xsai/shared'
+import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
 import { clean, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
@@ -6,7 +6,6 @@ import type { Message, Tool, ToolChoice } from '../types'
 
 /** @see {@link https://platform.openai.com/docs/api-reference/chat/create} */
 export interface ChatOptions extends CommonRequestOptions {
-  [key: string]: unknown
   /**
    * number between -2.0 and 2.0.
    * @default 0
@@ -32,7 +31,7 @@ export interface ChatOptions extends CommonRequestOptions {
   topP?: number
 }
 
-export const chat = async <T extends ChatOptions>(options: T) =>
+export const chat = async <T extends WithUnknown<ChatOptions>>(options: T) =>
   (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
     body: requestBody({
       ...options,
