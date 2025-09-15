@@ -16,7 +16,7 @@ import { wrapTool } from './wrap-tool'
  * @experimental
  * Streaming Text with Telemetry.
  */
-export const streamText = (options: WithTelemetry<WithUnknown<StreamTextOptions>>) => {
+export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>>) => {
   const tracer = getTracer()
 
   // state
