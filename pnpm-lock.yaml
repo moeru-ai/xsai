@@ -487,13 +487,13 @@ importers:
 
   packages/stream-text:
     dependencies:
+      '@xsai/shared':
+        specifier: workspace:~
+        version: link:../shared
       '@xsai/shared-chat':
         specifier: workspace:~
         version: link:../shared-chat
     devDependencies:
-      '@xsai/shared':
-        specifier: workspace:~
-        version: link:../shared
       '@xsai/tool':
         specifier: workspace:~
         version: link:../tool
