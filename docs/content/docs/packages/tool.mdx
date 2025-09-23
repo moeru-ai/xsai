@@ -121,7 +121,32 @@ const { text } = await generateText({
 })
 ```
 
-### Object
+You can also use it like this to avoid `tool`'s asynchronous contagion:
+
+```ts twoslash
+import type { RawToolOptions } from '@xsai/tool'
+
+import { rawTool } from '@xsai/tool'
+import * as z from 'zod'
+
+const weatherSchema = z.object({
+  location: z
+    .string()
+    .describe('The location to get the weather for'),
+})
+
+const weather = rawTool<z.input<typeof weatherSchema>>({
+  description: 'Get the weather in a location',
+  execute: ({ location }) => JSON.stringify({
+    location,
+    temperature: 42,
+  }),
+  name: 'weather',
+  parameters: z.toJSONSchema(weatherSchema) as unknown as RawToolOptions['parameters'],
+})
+```
+
+### Tool
 
 You can also pass an object directly without installing `@xsai/tool`.
 
@@ -173,5 +198,65 @@ const { text } = await generateText({
   ],
   model: 'gpt-4o',
   tools: [weather], // [!code highlight]
+})
+```
+
+Zod example:
+
+```ts twoslash
+import type { Tool } from '@xsai/shared-chat' // [!code highlight]
+
+import * as z from 'zod'
+
+const weatherSchema = z.object({
+  location: z
+    .string()
+    .describe('The location to get the weather for'),
+})
+
+const weather = {
+  execute: (input) => JSON.stringify({
+    location: (input as z.input<typeof weatherSchema>).location,
+    temperature: 42,
+  }),
+  function: {
+    description: 'Get the weather in a location',
+    name: 'weather',
+    parameters: z.toJSONSchema(weatherSchema) as unknown as Record<string, unknown>, // [!code highlight]
+  },
+  type: 'function',
+} satisfies Tool // [!code highlight]
+```
+
+### overrides
+
+`await tool()`, `rawTool()` ultimately returns a `Tool` object, so you can modify it freely.
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { tool } from '@xsai/tool'
+import { env } from 'node:process'
+import * as v from 'valibot'
+
+const parameters = v.object({
+  location: v.pipe(
+    v.string(),
+    v.description('The location to get the weather for'),
+  ),
+})
+
+const weather = await tool({
+  description: 'Get the weather in a location',
+  execute: ({ location }) => JSON.stringify({
+    location,
+    temperature: 42,
+  }),
+  name: 'weather',
+  parameters,
+})
+
+weather.execute = (input) => JSON.stringify({
+  location: (input as v.InferInput<typeof parameters>).location,
+  temperature: 5500,
 })
 ```
