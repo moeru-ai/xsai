@@ -6,8 +6,8 @@ import {
 } from '@xsai-ext/shared-providers'
 
 /** @see {@link https://featherless.ai/models} */
-export const createFatherless = (apiKey: string, baseURL = 'https://api.featherless.ai/v1/') => merge(
-  createMetadataProvider('fatherless-ai'),
+export const createFeatherless = (apiKey: string, baseURL = 'https://api.featherless.ai/v1/') => merge(
+  createMetadataProvider('featherless-ai'),
   createChatProvider<
     | 'deepseek-ai/DeepSeek-R1'
     | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B'
@@ -24,3 +24,6 @@ export const createFatherless = (apiKey: string, baseURL = 'https://api.featherl
       .then(data => Response.json({ data, object: 'list' })),
   }),
 )
+
+/** @deprecated Use {@link createFeatherless} instead. */
+export const createFatherless = createFeatherless
