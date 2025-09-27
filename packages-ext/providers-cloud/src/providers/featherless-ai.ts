@@ -26,4 +26,4 @@ export const createFeatherless = (apiKey: string, baseURL = 'https://api.feather
 )
 
 /** @deprecated Use {@link createFeatherless} instead. */
-export const createFatherless = createFeatherless;
+export const createFatherless = createFeatherless
