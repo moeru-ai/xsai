@@ -20,7 +20,7 @@ const create = [
   ...codeGenProviders.map(p => codeGenCreate(p)),
 ].join('\n\n')
 
-await writeFile('./src/generated/create.ts', create, { encoding: 'utf8' })
+await writeFile('./src/generated/create.ts', `${create}\n`, { encoding: 'utf8' })
 
 const creates = codeGenProviders
   .filter(p => p.apiKey != null)
@@ -33,10 +33,10 @@ const index = [
   'import process from \'node:process\'',
   [
     'import {',
-    imp.join(',\n'),
+    imp.map(str => `  ${str},`).join('\n'),
     '} from \'./create\'',
   ].join('\n'),
   ...exp,
 ].join('\n\n')
 
-await writeFile('./src/generated/index.ts', index, { encoding: 'utf8' })
+await writeFile('./src/generated/index.ts', `${index}\n`, { encoding: 'utf8' })
