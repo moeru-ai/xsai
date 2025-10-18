@@ -16,7 +16,8 @@ export const getToJsonSchemaFn = async (): Promise<ToJsonSchemaFn> => {
   try {
     // https://zod.dev/library-authors?id=how-to-support-zod-and-zod-mini-simultaneously#how-to-support-zod-and-zod-mini-simultaneously
     const { toJSONSchema } = await import('zod/v4/core')
-    zodV4toJSONSchema = toJSONSchema as ToJsonSchemaFn
+    // Zod v4 defaults to Draft 2020-12, but we need Draft 07
+    zodV4toJSONSchema = ((schema: unknown) => toJSONSchema(schema as $ZodType, { target: 'draft-7' })) as ToJsonSchemaFn
   }
   catch (err) {
     if (err instanceof Error)
