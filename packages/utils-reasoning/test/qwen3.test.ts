@@ -1,5 +1,5 @@
-import { generateText } from '@xsai/generate-text'
-import { streamText } from '@xsai/stream-text'
+// import { generateText } from '@xsai/generate-text'
+// import { streamText } from '@xsai/stream-text'
 import { describe, expect, it } from 'vitest'
 
 import { extractReasoning, extractReasoningStream } from '../src'
@@ -68,30 +68,30 @@ describe('extractReasoning', () => {
     })
   })
 
-  it('should pass real qwen3 test', async () => {
-    const { text } = await generateText({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [
-        {
-          content: 'You are a helpful assistant.',
-          role: 'system',
-        },
-        {
-          content: 'This is a test, so please answer \'YES\' and nothing else.',
-          role: 'user',
-        },
-      ],
-      model: 'qwen3:0.6b',
-    })
+  // it('should pass real qwen3 test', async () => {
+  //   const { text } = await generateText({
+  //     baseURL: 'http://localhost:11434/v1/',
+  //     messages: [
+  //       {
+  //         content: 'You are a helpful assistant.',
+  //         role: 'system',
+  //       },
+  //       {
+  //         content: 'This is a test, so please answer \'YES\' and nothing else.',
+  //         role: 'user',
+  //       },
+  //     ],
+  //     model: 'qwen3:0.6b',
+  //   })
 
-    const {
-      reasoning,
-      text: textResult,
-    } = extractReasoning(text!, { tagName: 'think' })
+  //   const {
+  //     reasoning,
+  //     text: textResult,
+  //   } = extractReasoning(text!, { tagName: 'think' })
 
-    expect(reasoning).not.toEqual(undefined)
-    expect(textResult.length).to.greaterThan(0)
-  })
+  //   expect(reasoning).not.toEqual(undefined)
+  //   expect(textResult.length).to.greaterThan(0)
+  // })
 })
 
 const randomSplitTextToStream = (text: string): ReadableStream<string> => new ReadableStream<string>({
@@ -269,38 +269,38 @@ describe('extractReasoningStream', () => {
     expect(textResult).toEqual(' This is a test.')
   })
 
-  it('real qwen3 test', async () => {
-    const { textStream } = streamText({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [
-        {
-          content: 'You are a helpful assistant.',
-          role: 'system',
-        },
-        {
-          content: 'This is a test, so please answer \'YES\' and nothing else.',
-          role: 'user',
-        },
-      ],
-      model: 'qwen3:0.6b',
-    })
+  // it('real qwen3 test', async () => {
+  //   const { textStream } = streamText({
+  //     baseURL: 'http://localhost:11434/v1/',
+  //     messages: [
+  //       {
+  //         content: 'You are a helpful assistant.',
+  //         role: 'system',
+  //       },
+  //       {
+  //         content: 'This is a test, so please answer \'YES\' and nothing else.',
+  //         role: 'user',
+  //       },
+  //     ],
+  //     model: 'qwen3:0.6b',
+  //   })
 
-    const {
-      reasoningStream,
-      textStream: textStreamResult,
-    } = extractReasoningStream(textStream, { tagName: 'think' })
+  //   const {
+  //     reasoningStream,
+  //     textStream: textStreamResult,
+  //   } = extractReasoningStream(textStream, { tagName: 'think' })
 
-    let reasoningResult = ''
-    for await (const chunk of reasoningStream) {
-      reasoningResult += chunk
-    }
+  //   let reasoningResult = ''
+  //   for await (const chunk of reasoningStream) {
+  //     reasoningResult += chunk
+  //   }
 
-    let textResult = ''
-    for await (const chunk of textStreamResult) {
-      textResult += chunk
-    }
+  //   let textResult = ''
+  //   for await (const chunk of textStreamResult) {
+  //     textResult += chunk
+  //   }
 
-    expect(reasoningResult.length).to.greaterThan(0)
-    expect(textResult.length).to.greaterThan(0)
-  })
+  //   expect(reasoningResult.length).to.greaterThan(0)
+  //   expect(textResult.length).to.greaterThan(0)
+  // })
 })
