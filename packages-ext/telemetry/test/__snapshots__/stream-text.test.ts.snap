@@ -2,14 +2,20 @@
 
 exports[`streamText > basic 1`] = `
 "<think>
-Okay, so the user is asking, "Why is the sky blue?" I need to explain why the sky appears blue. I remember from my studies that it's part of the atmosphere, right? So I should start by mentioning the Earth's atmosphere. The atmosphere has water vapor, which makes the sky appear blue. Also, different colors in the air play a role, like Rayleigh scattering. Wait, but I should make sure I explain why Rayleigh scattering causes the blue light to be scattered more than other colors. That's right. Rayleigh scattering is a phenomenon where incoming sunlight is scattered into the blue spectrum because the molecules in the air are smaller and more numerous. So the blue part comes from this scattering. I should also mention that there's some nitrogen and oxygen contributing too, but those are more of the gas particles, and Rayleigh scattering dominates in the atmosphere. Make sure the explanation is clear and doesn't get too technical. Let me check if I missed anything. Oh, and maybe add some historical context, like how the blue sky was a natural wonder. Alright, that should cover the topic.
+Okay, so the user is asking why the sky is blue. Hmm, I know that the sky's color is due to air particles scattering sunlight. But wait, where exactly does that come from? Let me think.
+
+First, I remember that when sunlight hits the Earth's atmosphere, it gets scattered. This phenomenon is called Rayleigh scattering. Right? But I need to explain that in simpler terms. Also, maybe mention that it's part of the atmosphere's structure. Oh, right! The ozone layer in the atmosphere also plays a role. But wait, are there other reasons besides Rayleigh scattering?
+
+Wait, sometimes people think the sky is blue because of the way light interacts with the ground or the way light is reflected. But I think that's actually because of the atmosphere's properties. But maybe I should clarify that Rayleigh scattering is the primary reason. Also, some people find that the color is influenced by temperature or humidity, but I don't think that's the main factor here.
+
+I should mention that the blue light is scattered more efficiently by the air particles compared to other colors, which contributes to the overall sky color. Maybe add that it's a result of the atmosphere's natural structure, not just a physical property. Yeah, that makes sense. But wait, is there any other source of blue in the sky? I think the main one is Rayleigh scattering. But just to make sure, I should confirm that and provide a clear explanation.
 </think>
 
-The sky appears blue because of **Rayleigh scattering** in the Earth's atmosphere. Here's how it works:  
+The sky appears blue primarily due to **Rayleigh scattering** of sunlight by the Earth's atmosphere. When sunlight interacts with gas molecules (ozone, nitrogen, etc.) in the upper atmosphere, it bounces in all directions with a predominantly blue component. Since blue light is scattered more than other wavelengths by air molecules, the scattered blue light forms the color we see in the sky.  
 
-When sunlight hits the Earth's atmosphere, the water vapor, nitrogen, and oxygen molecules in the air act like tiny particles. Light, particularly **violet and blue wavelengths**, is scattered more efficiently by these particles than by red or yellow wavelengths. This scattering causes the scattered light to blend into the blue color, making the sky appear blue.  
+This scattering occurs with a wavelength-dependent efficiency: blue light is scattered more than red or orange light. Additionally, the atmosphere's structure contributes to the mixing of colors, and the sunlight's path (from the sun to Earth) further shapes the blue coloration.  
 
-Other components of the atmosphere, like nitrogen and oxygen, also contribute slightly, but Rayleigh scattering is the primary mechanism responsible for the color."
+So, in short: The sky is blue because the Earth's atmosphere scatters sunlight in such a way that the blue light ends up visible to us. 🌇"
 `;
 
 exports[`streamText > basic 2`] = `
@@ -19,96 +25,30 @@ exports[`streamText > basic 2`] = `
     "ai.model.provider": "xsai",
     "ai.operationId": "ai.streamText.doStream",
     "ai.prompt.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
-    "ai.response.avgOutputTokensPerSecond": 108.44371889767521,
+    "ai.response.avgOutputTokensPerSecond": 48.36097189033391,
     "ai.response.finishReason": "stop",
-    "ai.response.id": "f13ef54a-9b6b-491f-bd7d-cf066bbd9377",
+    "ai.response.id": "2f730f80-3cdd-43fd-9c5e-010b9d44e54a",
     "ai.response.model": "qwen3:0.6b",
-    "ai.response.msToFinish": 3236.701983000001,
-    "ai.response.msToFirstChunk": 1398.3784780000005,
+    "ai.response.msToFinish": 9615.191379000002,
+    "ai.response.msToFirstChunk": 2944.94823,
     "ai.response.providerMetadata": "{}",
-    "ai.response.text": "<think> Okay, so the user is asking, "Why is the s",
-    "ai.response.timestamp": "2025-09-04T06:37:22.432Z",
+    "ai.response.text": "<think> Okay, so the user is asking why the sky is",
+    "ai.response.timestamp": "2025-10-19T09:33:20.226Z",
     "ai.telemetry.metadata.agentId": "weather-assistant",
     "ai.telemetry.metadata.instructions": "You are a helpful weather assistant",
     "ai.usage.inputTokens": 14,
-    "ai.usage.outputTokens": 351,
-    "ai.usage.totalTokens": 365,
+    "ai.usage.outputTokens": 465,
+    "ai.usage.totalTokens": 479,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "40fcf333-2ded-4c3e-abad-c24553fd3fb0",
+    "gen_ai.response.id": "f5c22175-23b5-4cba-80d6-af13f9180df7",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
     "gen_ai.usage.input_tokens": 14,
-    "gen_ai.usage.output_tokens": 351,
+    "gen_ai.usage.output_tokens": 465,
     "operation.name": "ai.streamText.doStream",
-  },
-]
-`;
-
-exports[`streamText > basic/ai 1`] = `
-"The sky is blue because of the way light interacts with the atmosphere. Here's a simplified explanation:
-
-1. **Water molecules in the air**: When sunlight passes through the air, it interacts with water vapor, scattering shorter wavelengths (like blue light) and leaving longer wavelengths (like red) to pass through. This scattering causes the sky to appear blue.
-
-2. **The Rayleigh scattering formula**: The blue light is scattered more than red light by the atmosphere, making the sky appear blue.
-
-3. **Other factors**: The color of the sky is also influenced by the temperature, humidity, and the presence of other gases like nitrogen and oxygen.
-
-So, in short: **The sky is blue because of Rayleigh scattering of the sunlight**."
-`;
-
-exports[`streamText > basic/ai 2`] = `
-[
-  {
-    "ai.model.id": "qwen3:0.6b",
-    "ai.model.provider": "ollama.responses",
-    "ai.operationId": "ai.streamText.doStream",
-    "ai.prompt.messages": "[{"role":"user","content":[{"type":"text","text":"Why is the sky blue?"}]}]",
-    "ai.response.avgOutputTokensPerSecond": 36.56198914774592,
-    "ai.response.finishReason": "stop",
-    "ai.response.id": "aitxt-pMxLjb1xhWegBJAVqupEcrur",
-    "ai.response.model": "qwen3:0.6b",
-    "ai.response.msToFinish": 4129.972234000001,
-    "ai.response.msToFirstChunk": 3401.626821,
-    "ai.response.providerMetadata": "{"ollama":{"responseId":null}}",
-    "ai.response.text": "The sky is blue because of the way light interacts",
-    "ai.response.timestamp": "2025-09-04T06:37:29.079Z",
-    "ai.settings.maxRetries": 2,
-    "ai.settings.seed": 114514,
-    "ai.telemetry.metadata.agentId": "weather-assistant",
-    "ai.telemetry.metadata.instructions": "You are a helpful weather assistant",
-    "ai.usage.inputTokens": 22,
-    "ai.usage.outputTokens": 151,
-    "ai.usage.totalTokens": 173,
-    "gen_ai.request.model": "qwen3:0.6b",
-    "gen_ai.response.finish_reasons": [
-      "stop",
-    ],
-    "gen_ai.response.id": "aitxt-pMxLjb1xhWegBJAVqupEcrur",
-    "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.system": "ollama.responses",
-    "gen_ai.usage.input_tokens": 22,
-    "gen_ai.usage.output_tokens": 151,
-    "operation.name": "ai.streamText.doStream",
-  },
-  {
-    "ai.model.id": "qwen3:0.6b",
-    "ai.model.provider": "ollama.responses",
-    "ai.operationId": "ai.streamText",
-    "ai.prompt": "{"prompt":"Why is the sky blue?"}",
-    "ai.response.finishReason": "stop",
-    "ai.response.providerMetadata": "{"ollama":{"responseId":null}}",
-    "ai.response.text": "The sky is blue because of the way light interacts",
-    "ai.settings.maxRetries": 2,
-    "ai.settings.seed": 114514,
-    "ai.telemetry.metadata.agentId": "weather-assistant",
-    "ai.telemetry.metadata.instructions": "You are a helpful weather assistant",
-    "ai.usage.inputTokens": 22,
-    "ai.usage.outputTokens": 151,
-    "ai.usage.totalTokens": 173,
-    "operation.name": "ai.streamText",
   },
 ]
 `;
