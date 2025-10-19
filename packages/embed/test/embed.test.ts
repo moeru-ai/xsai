@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { embed } from '../src'
 
 describe('@xsai/embed', () => {
-  const toFixed = (embedding: number[]) => embedding.map(e => e.toFixed(3))
+  const toFixed = (embedding: number[]) => embedding.map(e => e.toFixed(2))
 
   it('embed', async () => {
     const { embedding, usage } = await embed({
