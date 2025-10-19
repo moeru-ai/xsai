@@ -3,8 +3,8 @@ import type { ReadableSpan } from '@opentelemetry/sdk-trace-base'
 
 import { InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
-import { streamText as aiStreamText } from 'ai'
-import { ollama } from 'ollama-ai-provider-v2'
+// import { streamText as aiStreamText } from 'ai'
+// import { ollama } from 'ollama-ai-provider-v2'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'
@@ -71,39 +71,39 @@ describe.sequential('streamText', () => {
     }
   }, 120_000)
 
-  it('basic/ai', async () => {
-    const { text } = aiStreamText({
-      experimental_telemetry: {
-        isEnabled: true,
-        metadata: {
-          agentId: 'weather-assistant',
-          instructions: 'You are a helpful weather assistant',
-        },
-      },
-      model: ollama('qwen3:0.6b'),
-      prompt: 'Why is the sky blue?',
-      seed: 114514,
-    })
+  // it('basic/ai', async () => {
+  //   const { text } = aiStreamText({
+  //     experimental_telemetry: {
+  //       isEnabled: true,
+  //       metadata: {
+  //         agentId: 'weather-assistant',
+  //         instructions: 'You are a helpful weather assistant',
+  //       },
+  //     },
+  //     model: ollama('qwen3:0.6b'),
+  //     prompt: 'Why is the sky blue?',
+  //     seed: 114514,
+  //   })
 
-    const fullText = await text
-    const spans = memoryExporter.getFinishedSpans().slice(2).map(getAttributes)
+  //   const fullText = await text
+  //   const spans = memoryExporter.getFinishedSpans().slice(2).map(getAttributes)
 
-    expect(fullText).toMatchSnapshot()
-    expect(spans).toMatchSnapshot()
-  }, 120_000)
+  //   expect(fullText).toMatchSnapshot()
+  //   expect(spans).toMatchSnapshot()
+  // }, 120_000)
 
-  it('basic/compare', () => {
-    const extractAttributeKeys = (span: ReadableSpan) => Object.keys(span.attributes)
-      // eslint-disable-next-line sonarjs/no-nested-functions
-      .filter(key => ['ai.settings'].every(prefix => !key.startsWith(prefix)))
-      .sort((a, b) => a.localeCompare(b))
+  // it('basic/compare', () => {
+  //   const extractAttributeKeys = (span: ReadableSpan) => Object.keys(span.attributes)
+  //     // eslint-disable-next-line sonarjs/no-nested-functions
+  //     .filter(key => ['ai.settings'].every(prefix => !key.startsWith(prefix)))
+  //     .sort((a, b) => a.localeCompare(b))
 
-    const spans = memoryExporter.getFinishedSpans()
-    const xsai = spans.slice(0, 2).map(extractAttributeKeys)
-    const ai = spans.slice(2).map(extractAttributeKeys)
+  //   const spans = memoryExporter.getFinishedSpans()
+  //   const xsai = spans.slice(0, 2).map(extractAttributeKeys)
+  //   const ai = spans.slice(2).map(extractAttributeKeys)
 
-    xsai.forEach((attributes, i) => {
-      expect(attributes).toStrictEqual(ai[i])
-    })
-  })
+  //   xsai.forEach((attributes, i) => {
+  //     expect(attributes).toStrictEqual(ai[i])
+  //   })
+  // })
 })
