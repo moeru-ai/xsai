@@ -1,0 +1,49 @@
+{
+  "name": "@xsai-ext/providers",
+  "type": "module",
+  "version": "0.4.0-beta.4",
+  "private": true,
+  "description": "extra-small AI SDK.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages-ext/providers"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "openai",
+    "ai"
+  ],
+  "sideEffects": false,
+  "exports": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "pkgroll",
+    "sync": "tsx scripts/sync.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@xsai-ext/shared-providers": "workspace:~",
+    "@xsai/shared": "workspace:~"
+  },
+  "devDependencies": {
+    "scule": "^1.3.0"
+  }
+}
