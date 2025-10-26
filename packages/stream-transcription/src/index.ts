@@ -1,7 +1,7 @@
 import type { GenerateTranscriptionOptions } from '@xsai/generate-transcription'
-import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
+import type { WithUnknown } from '@xsai/shared'
 
-import { DelayedPromise, requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
+import { DelayedPromise, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
 import { transformChunk } from './internal/_transform-chunk'
 
@@ -33,12 +33,33 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
   let text = ''
 
   const doStream = async () => {
-    const { body: stream } = await (options.fetch ?? globalThis.fetch)(requestURL('audio/transcriptions', options.baseURL), {
-      body: requestBody(options),
+    // Build FormData for file upload
+    const body = new FormData()
+    body.append('model', options.model)
+    body.append('file', options.file, options.fileName)
+    body.append('response_format', 'verbose_json')
+    body.append('stream', 'true')
+
+    if (options.language != null)
+      body.append('language', options.language)
+
+    if (options.prompt != null)
+      body.append('prompt', options.prompt)
+
+    if (options.temperature != null)
+      body.append('temperature', options.temperature)
+
+    const response = await (options.fetch ?? globalThis.fetch)(requestURL('audio/transcriptions', options.baseURL), {
+      body,
       headers: requestHeaders(options.headers, options.apiKey),
       method: 'POST',
       signal: options.abortSignal,
     })
+
+    // Check response status before processing
+    await responseCatch(response)
+
+    const { body: stream } = response
 
     await stream!
       .pipeThrough(transformChunk())
@@ -64,16 +85,14 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
   void (async () => {
     try {
       await doStream()
+      fullText.resolve(text)
+      fullStreamCtrl?.close()
+      textStreamCtrl?.close()
     }
     catch (err) {
       fullStreamCtrl?.error(err)
       textStreamCtrl?.error(err)
       fullText.reject(err)
-    }
-    finally {
-      fullText.resolve(text)
-      fullStreamCtrl?.close()
-      textStreamCtrl?.close()
     }
   })()
   return {
