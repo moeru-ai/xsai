@@ -6,12 +6,10 @@ const parseChunk = (text: string): [StreamTranscriptionDelta | undefined, boolea
     return [undefined, false]
 
   // Extract content after "data:" prefix
-  const content = text.slice('data:'.length)
-  // Remove leading single space if present
+  const content = text.slice('data:'.length) // Remove leading single space if present
   const data = content.startsWith(' ') ? content.slice(1) : content
-
   // Handle special cases
-  if (data === '[DONE]') {
+  if (data.includes('[DONE]')) {
     return [undefined, true]
   }
 

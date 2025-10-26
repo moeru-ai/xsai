@@ -10,7 +10,7 @@ export interface StreamTranscriptionDelta {
   type: StreamTranscriptionDeltaType
 }
 
-export type StreamTranscriptionDeltaType = 'transcription.text.delta' | 'transcription.text.done'
+export type StreamTranscriptionDeltaType = 'transcript.text.delta' | 'transcript.text.done'
 export interface StreamTranscriptionOptions extends GenerateTranscriptionOptions {
   responseFormat?: never
   stream?: never
@@ -37,7 +37,6 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
     const body = new FormData()
     body.append('model', options.model)
     body.append('file', options.file, options.fileName)
-    body.append('response_format', 'verbose_json')
     body.append('stream', 'true')
 
     if (options.language != null)
@@ -70,12 +69,12 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
         },
         close: () => {},
         write: (chunk) => {
-          if (chunk.type === 'transcription.text.delta') {
+          if (chunk.type === 'transcript.text.delta') {
             textStreamCtrl?.enqueue(chunk.delta)
             text += chunk.delta
             fullStreamCtrl?.enqueue(chunk)
           }
-          else if (chunk.type === 'transcription.text.done') {
+          else if (chunk.type === 'transcript.text.done') {
             // TODO: handle usage
           }
         },
