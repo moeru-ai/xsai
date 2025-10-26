@@ -501,6 +501,15 @@ importers:
         specifier: catalog:schema
         version: 1.0.0(typescript@5.8.3)
 
+  packages/stream-transcription:
+    dependencies:
+      '@xsai/generate-transcription':
+        specifier: workspace:~
+        version: link:../generate-transcription
+      '@xsai/shared':
+        specifier: workspace:~
+        version: link:../shared
+
   packages/tool:
     dependencies:
       '@xsai/shared':
