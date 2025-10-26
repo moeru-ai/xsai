@@ -20,7 +20,7 @@ export interface StreamTranscriptionOptions extends GenerateTranscriptionOptions
 
 export interface StreamTranscriptionResult {
   fullStream: ReadableStream<StreamTranscriptionDelta>
-  fullText: DelayedPromise<string>
+  fullText: Promise<string>
   textStream: ReadableStream<string>
 }
 
@@ -96,7 +96,7 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
   })()
   return {
     fullStream,
-    fullText,
+    fullText: fullText.promise,
     textStream,
   }
 }

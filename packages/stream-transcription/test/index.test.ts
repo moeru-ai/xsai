@@ -15,7 +15,7 @@ describe('@xsai/stream-transcription', () => {
       model: 'gpt-4o-transcribe',
     })
 
-    const text = await fullText.promise
+    const text = await fullText
     expect(text).toBe(expectText)
   })
 })
