@@ -503,9 +503,6 @@ importers:
 
   packages/stream-transcription:
     dependencies:
-      '@xsai/generate-transcription':
-        specifier: workspace:~
-        version: link:../generate-transcription
       '@xsai/shared':
         specifier: workspace:~
         version: link:../shared

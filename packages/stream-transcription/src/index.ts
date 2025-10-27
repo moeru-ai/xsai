@@ -1,5 +1,4 @@
-import type { GenerateTranscriptionOptions } from '@xsai/generate-transcription'
-import type { WithUnknown } from '@xsai/shared'
+import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
 import { DelayedPromise, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
@@ -12,12 +11,17 @@ export interface StreamTranscriptionDelta {
 
 export type StreamTranscriptionDeltaType = 'transcript.text.delta' | 'transcript.text.done'
 
-export interface StreamTranscriptionOptions extends GenerateTranscriptionOptions {
+export interface StreamTranscriptionOptions extends CommonRequestOptions {
+  file: Blob
+  fileName?: string
+  language?: string
+  prompt?: string
   responseFormat?: never
   /**
    * If you want to disable stream, use `@xsai/generate-transcription`.
    */
   stream?: never
+  temperature?: string
   timestampGranularities?: never
 }
 

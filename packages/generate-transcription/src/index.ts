@@ -12,6 +12,10 @@ export interface GenerateTranscriptionOptions<
   prompt?: string
   /** @default `json` */
   responseFormat?: T1
+  /**
+   * If you want to enable stream, use `@xsai/stream-transcription`.
+   */
+  stream?: never
   temperature?: string
   /** @default `segment` */
   timestampGranularities?: T2
