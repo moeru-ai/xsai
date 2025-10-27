@@ -21,7 +21,9 @@ const [autoProviders, manualProviders] = processOpenAICompatible(providers)
 
 const forceAutoProviders = [
   // toCodeGenProviderForce(providers, 'cohere', 'https://api.cohere.ai/compatibility/v1/', 'https://docs.cohere.com/docs/compatibility-api', true),
+  toCodeGenProviderForce(providers, 'cerebras', 'https://api.cerebras.ai/v1/', 'https://inference-docs.cerebras.ai/resources/openai', true),
   toCodeGenProviderForce(providers, 'deepinfra', 'https://api.deepinfra.com/v1/openai/', 'https://deepinfra.com/docs/openai_api', true),
+  // toCodeGenProviderForce(providers, 'google', 'https://generativelanguage.googleapis.com/v1beta/openai/', undefined, true),
   toCodeGenProviderForce(providers, 'groq', 'https://api.groq.com/openai/v1/', 'https://console.groq.com/docs/openai'),
   toCodeGenProviderForce(providers, 'mistral', 'https://api.mistral.ai/v1/', undefined, true),
 ]

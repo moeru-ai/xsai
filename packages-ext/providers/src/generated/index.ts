@@ -34,6 +34,7 @@ import {
   createModelscope,
   createLlama,
   createScaleway,
+  createCerebras,
   createDeepinfra,
   createGroq,
   createMistral,
@@ -317,6 +318,15 @@ export const llama = createLlama(process.env.LLAMA_API_KEY!)
  * - apiKey - `SCALEWAY_API_KEY`
  */
 export const scaleway = createScaleway(process.env.SCALEWAY_API_KEY!)
+
+/**
+ * Cerebras Provider
+ * @see {@link https://inference-docs.cerebras.ai/resources/openai}
+ * @remarks
+ * - baseURL - `https://api.cerebras.ai/v1/`
+ * - apiKey - `CEREBRAS_API_KEY`
+ */
+export const cerebras = createCerebras(process.env.CEREBRAS_API_KEY!)
 
 /**
  * Deep Infra Provider

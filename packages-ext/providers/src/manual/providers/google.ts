@@ -13,6 +13,6 @@ import type { GoogleModels } from '../../generated/types'
  */
 export const createGoogleGenerativeAI = (apiKey: string, baseURL = 'https://generativelanguage.googleapis.com/v1beta/openai/') => merge(
   createChatProvider<GoogleModels>({ apiKey, baseURL }),
-  createEmbedProvider<'text-embedding-004'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
 )

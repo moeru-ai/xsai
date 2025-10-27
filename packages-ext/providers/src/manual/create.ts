@@ -1,4 +1,3 @@
 export { createAnthropic } from './providers/anthropic'
-export { createCerebras } from './providers/cerebras'
 export { createGoogleGenerativeAI } from './providers/google'
 export { createOpenRouter } from './providers/openrouter'
