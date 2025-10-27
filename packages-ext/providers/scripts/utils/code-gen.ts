@@ -11,6 +11,7 @@ export const codeGenCreate = (provider: CodeGenProvider) => [
   `export const create${pascalCase(provider.id)} = (apiKey: string, baseURL = '${provider.baseURL}') => merge(`,
   `  createChatProvider<'${provider.models.join('\' | \'')}'>({ apiKey, baseURL }),`,
   '  createModelProvider({ apiKey, baseURL }),',
+  ...(provider.embed === true ? ['  createEmbedProvider({ apiKey, baseURL })'] : []),
   ')',
 ].join('\n')
 

@@ -320,6 +320,16 @@ export const createScaleway = (apiKey: string, baseURL = 'https://api.scaleway.a
 )
 
 /**
+ * Create a Deep Infra Provider
+ * @see {@link https://deepinfra.com/docs/openai_api}
+ */
+export const createDeepinfra = (apiKey: string, baseURL = 'https://api.deepinfra.com/v1/openai/') => merge(
+  createChatProvider<'moonshotai/Kimi-K2-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo' | 'zai-org/GLM-4.5'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL })
+)
+
+/**
  * Create a Groq Provider
  * @see {@link https://console.groq.com/docs/openai}
  */

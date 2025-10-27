@@ -14,13 +14,14 @@ export const processOpenAICompatible = (providers: Provider[]): CodeGenProvider[
     .filter(({ api }) => api != null)
     .map(toCodeGenProvider)
 
-export const toCodeGenProviderForce = (providers: Provider[], id: string, baseURL: string, doc?: string): CodeGenProvider =>
+export const toCodeGenProviderForce = (providers: Provider[], id: string, baseURL: string, doc?: string, embed?: boolean): CodeGenProvider =>
   providers
     .filter(p => p.id === id)
     .map(provider => ({
       apiKey: provider.env.find(v => v.endsWith('_API_KEY')),
       baseURL,
       doc: doc ?? provider.doc,
+      embed,
       id: provider.id,
       models: Object.values(provider.models).map(({ id }) => id),
       name: provider.name,

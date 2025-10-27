@@ -3,6 +3,8 @@ export interface CodeGenProvider {
   apiKey?: string
   baseURL: string
   doc: string
+  /** Generate embed provider */
+  embed?: boolean
   /** used by meta name */
   id: string
   /** used by type-hint */

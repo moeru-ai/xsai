@@ -34,6 +34,7 @@ import {
   createModelscope,
   createLlama,
   createScaleway,
+  createDeepinfra,
   createGroq,
 } from './create'
 
@@ -315,6 +316,15 @@ export const llama = createLlama(process.env.LLAMA_API_KEY!)
  * - apiKey - `SCALEWAY_API_KEY`
  */
 export const scaleway = createScaleway(process.env.SCALEWAY_API_KEY!)
+
+/**
+ * Deep Infra Provider
+ * @see {@link https://deepinfra.com/docs/openai_api}
+ * @remarks
+ * - baseURL - `https://api.deepinfra.com/v1/openai/`
+ * - apiKey - `DEEPINFRA_API_KEY`
+ */
+export const deepinfra = createDeepinfra(process.env.DEEPINFRA_API_KEY!)
 
 /**
  * Groq Provider
