@@ -408,3 +408,13 @@ export const createStepfun = (apiKey: string, baseURL = 'https://api.stepfun.com
   createSpeechProvider({ apiKey, baseURL }),
   createTranscriptionProvider({ apiKey, baseURL }),
 )
+
+/**
+ * Create a Tencent Hunyuan Provider
+ * @see {@link https://cloud.tencent.com/document/product/1729}
+ */
+export const createTencentHunyuan = (apiKey: string, baseURL = 'https://api.hunyuan.cloud.tencent.com/v1/') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+)

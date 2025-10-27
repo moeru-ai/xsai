@@ -43,6 +43,7 @@ import {
   createNovita,
   createSiliconFlow,
   createStepfun,
+  createTencentHunyuan,
 } from './create'
 
 /**
@@ -404,3 +405,12 @@ export const siliconFlow = createSiliconFlow(process.env.SILICON_FLOW_API_KEY!)
  * - apiKey - `STEPFUN_API_KEY`
  */
 export const stepfun = createStepfun(process.env.STEPFUN_API_KEY!)
+
+/**
+ * Tencent Hunyuan Provider
+ * @see {@link https://cloud.tencent.com/document/product/1729}
+ * @remarks
+ * - baseURL - `https://api.hunyuan.cloud.tencent.com/v1/`
+ * - apiKey - `TENCENT_HUNYUAN_API_KEY`
+ */
+export const tencentHunyuan = createTencentHunyuan(process.env.TENCENT_HUNYUAN_API_KEY!)

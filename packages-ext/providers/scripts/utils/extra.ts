@@ -51,4 +51,15 @@ export const extraProviders: CodeGenProvider[] = [
     models: [],
     name: 'StepFun',
   },
+  {
+    apiKey: 'TENCENT_HUNYUAN_API_KEY',
+    baseURL: 'https://api.hunyuan.cloud.tencent.com/v1/',
+    capabilities: {
+      embed: true,
+    },
+    doc: 'https://cloud.tencent.com/document/product/1729',
+    id: 'tencent-hunyuan',
+    models: [],
+    name: 'Tencent Hunyuan',
+  },
 ]
