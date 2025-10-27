@@ -3,15 +3,23 @@ import { writeFile } from 'node:fs/promises'
 import type { CodeGenProvider, Providers } from './utils/types'
 
 import { codeGenCreate, codeGenIndex, codeGenTypes } from './utils/code-gen'
-import { processOpenAICompatible, toCodeGenProvider, toCodeGenProviderForce } from './utils/process'
+import { toCodeGenProvider, toCodeGenProviderForce } from './utils/process'
+
+const manualProviderKeys = [
+  'anthropic',
+  'google',
+  'openrouter',
+]
 
 const providers = await fetch('https://models.dev/api.json')
   .then(async res => res.json() as Promise<Providers>)
   .then(ps => Object.values(ps))
 
-const [autoProviders, manualProviders] = processOpenAICompatible(providers)
+const [autoProviders, manualProviders] = providers
+  .filter(({ api }) => api != null)
+  .map(toCodeGenProvider)
   .reduce(([auto, manual], provider) => {
-    if (['openrouter'].includes(provider.id))
+    if (manualProviderKeys.includes(provider.id))
       manual.push(provider)
     else
       auto.push(provider)
@@ -29,7 +37,7 @@ const forceAutoProviders = [
 ]
 
 const forceManualProviders = providers
-  .filter(p => ['anthropic', 'cerebras', 'deepinfra', 'google'].includes(p.id))
+  .filter(p => p.api == null && manualProviderKeys.includes(p.id))
   .map(toCodeGenProvider)
 
 autoProviders.push(...forceAutoProviders)
