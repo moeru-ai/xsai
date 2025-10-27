@@ -1,4 +1,4 @@
-import type { StreamTranscriptionDelta } from ".."
+import type { StreamTranscriptionDelta } from '..'
 
 /** @internal */
 const parseChunk = (text: string): [StreamTranscriptionDelta | undefined, boolean] => {
