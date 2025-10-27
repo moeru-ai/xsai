@@ -40,6 +40,9 @@ import {
   createMistral,
   createMinimax,
   createMinimaxi,
+  createNovita,
+  createSiliconFlow,
+  createStepfun,
 } from './create'
 
 /**
@@ -374,3 +377,30 @@ export const minimax = createMinimax(process.env.MINIMAX_API_KEY!)
  * - apiKey - `MINIMAX_API_KEY`
  */
 export const minimaxi = createMinimaxi(process.env.MINIMAX_API_KEY!)
+
+/**
+ * Novita AI Provider
+ * @see {@link https://novita.ai/docs/guides/llm-api#api-integration}
+ * @remarks
+ * - baseURL - `https://api.novita.ai/v3/openai/`
+ * - apiKey - `NOVITA_API_KEY`
+ */
+export const novita = createNovita(process.env.NOVITA_API_KEY!)
+
+/**
+ * SiliconFlow Provider
+ * @see {@link https://docs.siliconflow.com/en/userguide/quickstart#4-3-call-via-openai-interface}
+ * @remarks
+ * - baseURL - `https://api.siliconflow.cn/v1/`
+ * - apiKey - `SILICON_FLOW_API_KEY`
+ */
+export const siliconFlow = createSiliconFlow(process.env.SILICON_FLOW_API_KEY!)
+
+/**
+ * StepFun Provider
+ * @see {@link https://www.stepfun.com}
+ * @remarks
+ * - baseURL - `https://api.stepfun.com/v1/`
+ * - apiKey - `STEPFUN_API_KEY`
+ */
+export const stepfun = createStepfun(process.env.STEPFUN_API_KEY!)

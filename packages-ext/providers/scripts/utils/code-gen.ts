@@ -11,8 +11,10 @@ export const codeGenCreate = (provider: CodeGenProvider) => [
   `export const create${pascalCase(provider.id)} = (apiKey: string, baseURL = '${provider.baseURL}') => merge(`,
   // eslint-disable-next-line sonarjs/no-nested-template-literals
   `  createChatProvider${provider.models.length > 0 ? `<'${provider.models.join('\' | \'')}'>` : ''}({ apiKey, baseURL }),`,
-  '  createModelProvider({ apiKey, baseURL }),',
+  ...(provider.capabilities?.model === false ? [] : ['  createModelProvider({ apiKey, baseURL }),']),
   ...(provider.capabilities?.embed === true ? ['  createEmbedProvider({ apiKey, baseURL }),'] : []),
+  ...(provider.capabilities?.speech === true ? ['  createSpeechProvider({ apiKey, baseURL }),'] : []),
+  ...(provider.capabilities?.transcription === true ? ['  createTranscriptionProvider({ apiKey, baseURL }),'] : []),
   ')',
 ].join('\n')
 

@@ -2,7 +2,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/use-type-alias */
 
-import { createChatProvider, createEmbedProvider, createModelProvider, merge } from '@xsai-ext/shared-providers'
+import { createChatProvider, createEmbedProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from '@xsai-ext/shared-providers'
 
 /**
  * Create a Moonshot AI (China) Provider
@@ -374,4 +374,37 @@ export const createMinimax = (apiKey: string, baseURL = 'https://api.minimax.io/
 export const createMinimaxi = (apiKey: string, baseURL = 'https://api.minimaxi.com/v1/') => merge(
   createChatProvider({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a Novita AI Provider
+ * @see {@link https://novita.ai/docs/guides/llm-api#api-integration}
+ */
+export const createNovita = (apiKey: string, baseURL = 'https://api.novita.ai/v3/openai/') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a SiliconFlow Provider
+ * @see {@link https://docs.siliconflow.com/en/userguide/quickstart#4-3-call-via-openai-interface}
+ */
+export const createSiliconFlow = (apiKey: string, baseURL = 'https://api.siliconflow.cn/v1/') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+  createSpeechProvider({ apiKey, baseURL }),
+  createTranscriptionProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a StepFun Provider
+ * @see {@link https://www.stepfun.com}
+ */
+export const createStepfun = (apiKey: string, baseURL = 'https://api.stepfun.com/v1/') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+  createSpeechProvider({ apiKey, baseURL }),
+  createTranscriptionProvider({ apiKey, baseURL }),
 )

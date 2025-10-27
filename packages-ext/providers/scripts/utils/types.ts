@@ -6,6 +6,8 @@ export interface CodeGenProvider {
     embed?: boolean
     /** @default true */
     model?: boolean
+    speech?: boolean
+    transcription?: boolean
   }
   doc: string
   /** used by meta name */
