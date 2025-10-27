@@ -43,6 +43,7 @@
     "@xsai/shared-chat": "workspace:^",
     "@xsai/stream-object": "workspace:^",
     "@xsai/stream-text": "workspace:^",
+    "@xsai/stream-transcription": "workspace:^",
     "@xsai/tool": "workspace:^",
     "@xsai/utils-chat": "workspace:^",
     "@xsai/utils-reasoning": "workspace:^",

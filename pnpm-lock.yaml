@@ -193,6 +193,9 @@ importers:
       '@xsai/stream-text':
         specifier: workspace:^
         version: link:../packages/stream-text
+      '@xsai/stream-transcription':
+        specifier: workspace:^
+        version: link:../packages/stream-transcription
       '@xsai/tool':
         specifier: workspace:^
         version: link:../packages/tool
