@@ -1,12 +1,11 @@
 import type { WithUnknown } from '@xsai/shared'
 import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, ToolCall, Usage } from '@xsai/shared-chat'
 
-import { objCamelToSnake, trampoline } from '@xsai/shared'
+import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
 
 import type { StreamTextEvent } from './types/event'
 
-import { DelayedPromise } from './internal/_delayed-promise'
 import { transformChunk } from './internal/_transform-chunk'
 
 export type * from './types/event'

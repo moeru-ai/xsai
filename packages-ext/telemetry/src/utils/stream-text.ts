@@ -1,6 +1,6 @@
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
-import { chat, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
+import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 
@@ -8,7 +8,7 @@ import { commonAttributes, idAttributes, metadataAttributes } from './attributes
 import { getTracer } from './get-tracer'
 import { now } from './now'
 import { recordSpan, recordSpanSync } from './record-span'
-import { DelayedPromise, transformChunk } from './stream-text-internal'
+import { transformChunk } from './stream-text-internal'
 import { stringifyTool } from './stringify-tool'
 import { wrapTool } from './wrap-tool'
 
