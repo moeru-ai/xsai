@@ -38,6 +38,8 @@ import {
   createDeepinfra,
   createGroq,
   createMistral,
+  createMinimax,
+  createMinimaxi,
 } from './create'
 
 /**
@@ -354,3 +356,21 @@ export const groq = createGroq(process.env.GROQ_API_KEY!)
  * - apiKey - `MISTRAL_API_KEY`
  */
 export const mistral = createMistral(process.env.MISTRAL_API_KEY!)
+
+/**
+ * Minimax Provider
+ * @see {@link https://platform.minimax.io/docs/api-reference/text-openai-api}
+ * @remarks
+ * - baseURL - `https://api.minimax.io/v1/`
+ * - apiKey - `MINIMAX_API_KEY`
+ */
+export const minimax = createMinimax(process.env.MINIMAX_API_KEY!)
+
+/**
+ * Minimaxi Provider
+ * @see {@link https://platform.minimaxi.com/docs/api-reference/text-openai-api}
+ * @remarks
+ * - baseURL - `https://api.minimaxi.com/v1/`
+ * - apiKey - `MINIMAX_API_KEY`
+ */
+export const minimaxi = createMinimaxi(process.env.MINIMAX_API_KEY!)

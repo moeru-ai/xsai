@@ -3,6 +3,7 @@ import { writeFile } from 'node:fs/promises'
 import type { CodeGenProvider, Providers } from './utils/types'
 
 import { codeGenCreate, codeGenIndex, codeGenTypes } from './utils/code-gen'
+import { extraProviders } from './utils/extra'
 import { toCodeGenProvider, toCodeGenProviderForce } from './utils/process'
 
 const manualProviderKeys = [
@@ -43,6 +44,8 @@ const forceManualProviders = providers
 
 autoProviders.push(...forceAutoProviders)
 manualProviders.push(...forceManualProviders)
+
+autoProviders.push(...extraProviders)
 
 const create = [
   [

@@ -357,3 +357,21 @@ export const createMistral = (apiKey: string, baseURL = 'https://api.mistral.ai/
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
 )
+
+/**
+ * Create a Minimax Provider
+ * @see {@link https://platform.minimax.io/docs/api-reference/text-openai-api}
+ */
+export const createMinimax = (apiKey: string, baseURL = 'https://api.minimax.io/v1/') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a Minimaxi Provider
+ * @see {@link https://platform.minimaxi.com/docs/api-reference/text-openai-api}
+ */
+export const createMinimaxi = (apiKey: string, baseURL = 'https://api.minimaxi.com/v1/') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
