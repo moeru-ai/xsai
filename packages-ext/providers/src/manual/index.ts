@@ -1,9 +1,9 @@
 import process from 'node:process'
 
-import { createAnthropic, createCerebras, createGoogleGenerativeAI, createOpenRouter } from './create'
+import { createAnthropic, createCerebras, createDeepInfra, createGoogleGenerativeAI, createOpenRouter } from './create'
 
 /**
- * Create a Anthropic Provider
+ * Anthropic Provider
  * @see {@link https://docs.claude.com/en/api/openai-sdk}
  * @remarks
  * - baseURL - `https://api.anthropic.com/v1/`
@@ -12,7 +12,7 @@ import { createAnthropic, createCerebras, createGoogleGenerativeAI, createOpenRo
 export const anthropic = createAnthropic(process.env.ANTHROPIC_API_KEY!)
 
 /**
- * Create a Cerebras Provider
+ * Cerebras Provider
  * @see {@link https://inference-docs.cerebras.ai/resources/openai}
  * @remarks
  * - baseURL - `https://api.cerebras.ai/v1/`
@@ -21,7 +21,16 @@ export const anthropic = createAnthropic(process.env.ANTHROPIC_API_KEY!)
 export const cerebras = createCerebras(process.env.CEREBRAS_KEY!)
 
 /**
- * Create a Google Provider
+ * DeepInfra Provider
+ * @see {@link https://api.deepinfra.com/v1/openai/}
+ * @remarks
+ * - baseURL - `https://api.cerebras.ai/v1/`
+ * - apiKey - `DEEPINFRA_API_KEY`
+ */
+export const deepinfra = createDeepInfra(process.env.DEEPINFRA_API_KEY!)
+
+/**
+ * Google Provider
  * @see {@link https://ai.google.dev/gemini-api/docs/pricing}
  * @remarks
  * - baseURL - `https://generativelanguage.googleapis.com/v1beta/openai/`

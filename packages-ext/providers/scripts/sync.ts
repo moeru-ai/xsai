@@ -3,16 +3,13 @@ import { writeFile } from 'node:fs/promises'
 import type { CodeGenProvider, Providers } from './utils/types'
 
 import { codeGenCreate, codeGenIndex, codeGenTypes } from './utils/code-gen'
-import { processOpenAICompatible, toCodeGenProvider } from './utils/process'
+import { processOpenAICompatible, toCodeGenProvider, toCodeGenProviderForce } from './utils/process'
 
 const providers = await fetch('https://models.dev/api.json')
-  .then(async res => res.json()) as Providers
+  .then(async res => res.json() as Promise<Providers>)
+  .then(ps => Object.values(ps))
 
-const specialProviders = Object.values(providers)
-  .filter(p => ['anthropic', 'cerebras', 'google'].includes(p.id))
-  .map(toCodeGenProvider)
-
-const [autoProviders, manualProviders] = processOpenAICompatible(Object.values(providers))
+const [autoProviders, manualProviders] = processOpenAICompatible(providers)
   .reduce(([auto, manual], provider) => {
     if (['openrouter'].includes(provider.id))
       manual.push(provider)
@@ -21,6 +18,17 @@ const [autoProviders, manualProviders] = processOpenAICompatible(Object.values(p
 
     return [auto, manual]
   }, [[], []] as [CodeGenProvider[], CodeGenProvider[]])
+
+const forceAutoProviders = [
+  toCodeGenProviderForce(providers, 'groq', 'https://api.groq.com/openai/v1/', 'https://console.groq.com/docs/openai'),
+]
+
+const forceManualProviders = providers
+  .filter(p => ['anthropic', 'cerebras', 'deepinfra', 'google'].includes(p.id))
+  .map(toCodeGenProvider)
+
+autoProviders.push(...forceAutoProviders)
+manualProviders.push(...forceManualProviders)
 
 const create = [
   [
@@ -56,7 +64,7 @@ await writeFile('./src/generated/index.ts', `${index}\n`, { encoding: 'utf8' })
 const types = [
   '/* eslint-disable perfectionist/sort-modules */',
   '/* eslint-disable perfectionist/sort-union-types */',
-  ...[...specialProviders, ...manualProviders].map(codeGenTypes),
+  ...manualProviders.map(codeGenTypes),
 ]
   .join('\n\n')
 

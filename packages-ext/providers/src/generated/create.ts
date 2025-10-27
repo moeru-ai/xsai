@@ -318,3 +318,12 @@ export const createScaleway = (apiKey: string, baseURL = 'https://api.scaleway.a
   createChatProvider<'qwen3-235b-a22b-instruct-2507' | 'pixtral-12b-2409' | 'llama-3.1-8b-instruct' | 'mistral-nemo-instruct-2407' | 'mistral-small-3.2-24b-instruct-2506' | 'qwen3-coder-30b-a3b-instruct' | 'llama-3.3-70b-instruct' | 'whisper-large-v3' | 'deepseek-r1-distill-llama-70b' | 'voxtral-small-24b-2507' | 'gpt-oss-120b' | 'bge-multilingual-gemma2' | 'gemma-3-27b-it'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
+
+/**
+ * Create a Groq Provider
+ * @see {@link https://console.groq.com/docs/openai}
+ */
+export const createGroq = (apiKey: string, baseURL = 'https://api.groq.com/openai/v1/') => merge(
+  createChatProvider<'llama-3.1-8b-instant' | 'mistral-saba-24b' | 'llama3-8b-8192' | 'qwen-qwq-32b' | 'llama3-70b-8192' | 'deepseek-r1-distill-llama-70b' | 'llama-guard-3-8b' | 'gemma2-9b-it' | 'llama-3.3-70b-versatile' | 'moonshotai/kimi-k2-instruct-0905' | 'moonshotai/kimi-k2-instruct' | 'openai/gpt-oss-20b' | 'openai/gpt-oss-120b' | 'qwen/qwen3-32b' | 'meta-llama/llama-4-scout-17b-16e-instruct' | 'meta-llama/llama-4-maverick-17b-128e-instruct' | 'meta-llama/llama-guard-4-12b'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
