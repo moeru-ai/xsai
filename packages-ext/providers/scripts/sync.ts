@@ -23,6 +23,7 @@ const forceAutoProviders = [
   // toCodeGenProviderForce(providers, 'cohere', 'https://api.cohere.ai/compatibility/v1/', 'https://docs.cohere.com/docs/compatibility-api', true),
   toCodeGenProviderForce(providers, 'deepinfra', 'https://api.deepinfra.com/v1/openai/', 'https://deepinfra.com/docs/openai_api', true),
   toCodeGenProviderForce(providers, 'groq', 'https://api.groq.com/openai/v1/', 'https://console.groq.com/docs/openai'),
+  toCodeGenProviderForce(providers, 'mistral', 'https://api.mistral.ai/v1/', undefined, true),
 ]
 
 const forceManualProviders = providers
@@ -38,7 +39,7 @@ const create = [
     '/* eslint-disable sonarjs/no-identical-functions */',
     '/* eslint-disable sonarjs/use-type-alias */',
   ].join('\n'),
-  'import { createChatProvider, createModelProvider, merge } from \'@xsai-ext/shared-providers\'',
+  'import { createChatProvider, createEmbedProvider, createModelProvider, merge } from \'@xsai-ext/shared-providers\'',
   ...autoProviders.map(codeGenCreate),
 ].join('\n\n')
 

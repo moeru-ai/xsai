@@ -2,7 +2,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/use-type-alias */
 
-import { createChatProvider, createModelProvider, merge } from '@xsai-ext/shared-providers'
+import { createChatProvider, createEmbedProvider, createModelProvider, merge } from '@xsai-ext/shared-providers'
 
 /**
  * Create a Moonshot AI (China) Provider
@@ -336,4 +336,14 @@ export const createDeepinfra = (apiKey: string, baseURL = 'https://api.deepinfra
 export const createGroq = (apiKey: string, baseURL = 'https://api.groq.com/openai/v1/') => merge(
   createChatProvider<'llama-3.1-8b-instant' | 'mistral-saba-24b' | 'llama3-8b-8192' | 'qwen-qwq-32b' | 'llama3-70b-8192' | 'deepseek-r1-distill-llama-70b' | 'llama-guard-3-8b' | 'gemma2-9b-it' | 'llama-3.3-70b-versatile' | 'moonshotai/kimi-k2-instruct-0905' | 'moonshotai/kimi-k2-instruct' | 'openai/gpt-oss-20b' | 'openai/gpt-oss-120b' | 'qwen/qwen3-32b' | 'meta-llama/llama-4-scout-17b-16e-instruct' | 'meta-llama/llama-4-maverick-17b-128e-instruct' | 'meta-llama/llama-guard-4-12b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a Mistral Provider
+ * @see {@link https://docs.mistral.ai/getting-started/models/}
+ */
+export const createMistral = (apiKey: string, baseURL = 'https://api.mistral.ai/v1/') => merge(
+  createChatProvider<'devstral-medium-2507' | 'open-mixtral-8x22b' | 'ministral-8b-latest' | 'pixtral-large-latest' | 'ministral-3b-latest' | 'pixtral-12b' | 'mistral-medium-2505' | 'devstral-small-2505' | 'mistral-medium-2508' | 'mistral-small-latest' | 'magistral-small' | 'devstral-small-2507' | 'codestral-latest' | 'open-mixtral-8x7b' | 'mistral-nemo' | 'open-mistral-7b' | 'mistral-large-latest' | 'mistral-medium-latest' | 'magistral-medium-latest'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL })
 )

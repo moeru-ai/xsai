@@ -36,6 +36,7 @@ import {
   createScaleway,
   createDeepinfra,
   createGroq,
+  createMistral,
 } from './create'
 
 /**
@@ -334,3 +335,12 @@ export const deepinfra = createDeepinfra(process.env.DEEPINFRA_API_KEY!)
  * - apiKey - `GROQ_API_KEY`
  */
 export const groq = createGroq(process.env.GROQ_API_KEY!)
+
+/**
+ * Mistral Provider
+ * @see {@link https://docs.mistral.ai/getting-started/models/}
+ * @remarks
+ * - baseURL - `https://api.mistral.ai/v1/`
+ * - apiKey - `MISTRAL_API_KEY`
+ */
+export const mistral = createMistral(process.env.MISTRAL_API_KEY!)
