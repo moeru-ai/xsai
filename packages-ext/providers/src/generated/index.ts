@@ -8,8 +8,10 @@ import {
   createMoonshotai,
   createZaiCodingPlan,
   createAlibaba,
+  createVultr,
   createNvidia,
   createUpstage,
+  createNebius,
   createDeepseek,
   createAlibabaCn,
   createVenice,
@@ -21,7 +23,6 @@ import {
   createInception,
   createWandb,
   createZhipuaiCodingPlan,
-  createOpenrouter,
   createSynthetic,
   createZhipuai,
   createZai,
@@ -32,6 +33,7 @@ import {
   createFireworksAi,
   createModelscope,
   createLlama,
+  createScaleway,
 } from './create'
 
 /**
@@ -80,6 +82,15 @@ export const zaiCodingPlan = createZaiCodingPlan(process.env.ZHIPU_API_KEY!)
 export const alibaba = createAlibaba(process.env.DASHSCOPE_API_KEY!)
 
 /**
+ * Vultr Provider
+ * @see {@link https://api.vultrinference.com/}
+ * @remarks
+ * baseURL - `https://api.vultrinference.com/v1`
+ * apiKey - `import('node:process').env.VULTR_API_KEY`
+ */
+export const vultr = createVultr(process.env.VULTR_API_KEY!)
+
+/**
  * Nvidia Provider
  * @see {@link https://docs.api.nvidia.com/nim/}
  * @remarks
@@ -96,6 +107,15 @@ export const nvidia = createNvidia(process.env.NVIDIA_API_KEY!)
  * apiKey - `import('node:process').env.UPSTAGE_API_KEY`
  */
 export const upstage = createUpstage(process.env.UPSTAGE_API_KEY!)
+
+/**
+ * Nebius AI Studio Provider
+ * @see {@link https://docs.studio.nebius.com/quickstart}
+ * @remarks
+ * baseURL - `https://api.studio.nebius.com/v1/`
+ * apiKey - `import('node:process').env.NEBIUS_API_KEY`
+ */
+export const nebius = createNebius(process.env.NEBIUS_API_KEY!)
 
 /**
  * DeepSeek Provider
@@ -152,8 +172,8 @@ export const cortecs = createCortecs(process.env.CORTECS_API_KEY!)
 export const baseten = createBaseten(process.env.BASETEN_API_KEY!)
 
 /**
- * opencode zen Provider
- * @see {@link https://opencode.ai/docs}
+ * OpenCode Zen Provider
+ * @see {@link https://opencode.ai/docs/zen}
  * @remarks
  * baseURL - `https://opencode.ai/zen/v1`
  * apiKey - `import('node:process').env.OPENCODE_API_KEY`
@@ -195,15 +215,6 @@ export const wandb = createWandb(process.env.WANDB_API_KEY!)
  * apiKey - `import('node:process').env.ZHIPU_API_KEY`
  */
 export const zhipuaiCodingPlan = createZhipuaiCodingPlan(process.env.ZHIPU_API_KEY!)
-
-/**
- * OpenRouter Provider
- * @see {@link https://openrouter.ai/models}
- * @remarks
- * baseURL - `https://openrouter.ai/api/v1`
- * apiKey - `import('node:process').env.OPENROUTER_API_KEY`
- */
-export const openrouter = createOpenrouter(process.env.OPENROUTER_API_KEY!)
 
 /**
  * Synthetic Provider
@@ -294,3 +305,12 @@ export const modelscope = createModelscope(process.env.MODELSCOPE_API_KEY!)
  * apiKey - `import('node:process').env.LLAMA_API_KEY`
  */
 export const llama = createLlama(process.env.LLAMA_API_KEY!)
+
+/**
+ * Scaleway Provider
+ * @see {@link https://www.scaleway.com/en/docs/generative-apis/}
+ * @remarks
+ * baseURL - `https://api.scaleway.ai/v1`
+ * apiKey - `import('node:process').env.SCALEWAY_API_KEY`
+ */
+export const scaleway = createScaleway(process.env.SCALEWAY_API_KEY!)

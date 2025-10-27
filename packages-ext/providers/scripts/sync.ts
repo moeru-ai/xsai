@@ -1,14 +1,22 @@
 import { writeFile } from 'node:fs/promises'
 
-import type { Providers } from './utils/types'
+import type { CodeGenProvider, Providers } from './utils/types'
 
-import { codeGenCreate, codeGenIndex } from './utils/code-gen'
+import { codeGenCreate, codeGenIndex, codeGenTypes } from './utils/code-gen'
 import { processOpenAICompatible } from './utils/process-openai-compatible'
 
 const providers = await fetch('https://models.dev/api.json')
   .then(async res => res.json()) as Providers
 
-const codeGenProviders = processOpenAICompatible(Object.values(providers))
+const [autoProviders, manualProviders] = processOpenAICompatible(Object.values(providers))
+  .reduce(([auto, manual], provider) => {
+    if (['openrouter'].includes(provider.id))
+      manual.push(provider)
+    else
+      auto.push(provider)
+
+    return [auto, manual]
+  }, [[], []] as [CodeGenProvider[], CodeGenProvider[]])
 
 const create = [
   [
@@ -17,14 +25,14 @@ const create = [
     '/* eslint-disable sonarjs/use-type-alias */',
   ].join('\n'),
   'import { createChatProvider, createModelProvider, merge } from \'@xsai-ext/shared-providers\'',
-  ...codeGenProviders.map(p => codeGenCreate(p)),
+  ...autoProviders.map(codeGenCreate),
 ].join('\n\n')
 
 await writeFile('./src/generated/create.ts', `${create}\n`, { encoding: 'utf8' })
 
-const creates = codeGenProviders
+const creates = autoProviders
   .filter(p => p.apiKey != null)
-  .map(p => codeGenIndex(p))
+  .map(codeGenIndex)
 const imp = creates.map(({ im }) => im)
 const exp = creates.map(({ ex }) => ex)
 
@@ -40,3 +48,9 @@ const index = [
 ].join('\n\n')
 
 await writeFile('./src/generated/index.ts', `${index}\n`, { encoding: 'utf8' })
+
+const types = manualProviders
+  .map(codeGenTypes)
+  .join('\n\n')
+
+await writeFile('./src/generated/types.ts', `${types}\n`, { encoding: 'utf8' })

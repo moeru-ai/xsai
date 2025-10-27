@@ -28,3 +28,6 @@ export const codeGenIndex = (provider: CodeGenProvider) => ({
   ].join('\n'),
   im: `create${pascalCase(provider.id)}`,
 })
+
+/** code gen for internal use */
+export const codeGenTypes = (provider: CodeGenProvider) => `export type ${pascalCase(provider.id)}Models = '${provider.models.join('\' | \'')}'`
