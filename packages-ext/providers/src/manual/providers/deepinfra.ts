@@ -1,4 +1,5 @@
 import { createChatProvider, createEmbedProvider, createModelProvider, merge } from '@xsai-ext/shared-providers'
+
 import type { DeepinfraModels } from '../../generated/types'
 
 /**

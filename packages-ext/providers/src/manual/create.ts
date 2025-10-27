@@ -1,5 +1,5 @@
 export { createAnthropic } from './providers/anthropic'
 export { createCerebras } from './providers/cerebras'
+export { createDeepInfra } from './providers/deepinfra'
 export { createGoogleGenerativeAI } from './providers/google'
 export { createOpenRouter } from './providers/openrouter'
-export { createDeepInfra } from './providers/deepinfra'
