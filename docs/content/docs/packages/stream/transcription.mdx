@@ -1,0 +1,34 @@
+---
+title: Transcription
+description: Transcribes audio into the input language.
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/stream-transcription" />
+
+```package-install
+npm i @xsai/stream-transcription
+```
+
+## Examples
+
+<Callout type="warn">
+  Before using this package, please verify that your provider supports `"stream": true`.
+</Callout>
+
+### Basic
+
+```ts twoslash
+import { streamTranscription } from '@xsai/stream-transcription'
+import { openAsBlob } from 'node:fs'
+
+const { textStream } = streamTranscription({
+  apiKey: '',
+  baseURL: 'https://api.openai.com/v1/',
+  file: await openAsBlob('./test/fixtures/basic.wav', { type: 'audio/wav' }),
+  fileName: 'basic.wav',
+  language: 'en',
+  model: 'gpt-4o-transcribe',
+})
+```
