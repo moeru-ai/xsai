@@ -9,7 +9,7 @@ const providers = await fetch('https://models.dev/api.json')
   .then(async res => res.json()) as Providers
 
 const specialProviders = Object.values(providers)
-  .filter(p => ['anthropic', 'google'].includes(p.id))
+  .filter(p => ['anthropic', 'cerebras', 'google'].includes(p.id))
   .map(toCodeGenProvider)
 
 const [autoProviders, manualProviders] = processOpenAICompatible(Object.values(providers))

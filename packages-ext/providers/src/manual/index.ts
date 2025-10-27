@@ -1,6 +1,6 @@
 import process from 'node:process'
 
-import { createAnthropic, createGoogleGenerativeAI, createOpenRouter } from './create'
+import { createAnthropic, createCerebras, createGoogleGenerativeAI, createOpenRouter } from './create'
 
 /**
  * Create a Anthropic Provider
@@ -10,6 +10,15 @@ import { createAnthropic, createGoogleGenerativeAI, createOpenRouter } from './c
  * - apiKey - `ANTHROPIC_API_KEY`
  */
 export const anthropic = createAnthropic(process.env.ANTHROPIC_API_KEY!)
+
+/**
+ * Create a Cerebras Provider
+ * @see {@link https://inference-docs.cerebras.ai/resources/openai}
+ * @remarks
+ * - baseURL - `https://api.cerebras.ai/v1/`
+ * - apiKey - `CEREBRAS_API_KEY`
+ */
+export const cerebras = createCerebras(process.env.CEREBRAS_KEY!)
 
 /**
  * Create a Google Provider
