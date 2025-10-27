@@ -17,4 +17,12 @@ export const extraProviders: CodeGenProvider[] = [
     models: [],
     name: 'Minimaxi',
   },
+  {
+    apiKey: 'NOVITA_API_KEY',
+    baseURL: 'https://api.novita.ai/v3/openai/',
+    doc: 'https://novita.ai/docs/guides/llm-api#api-integration',
+    id: 'novita',
+    models: [],
+    name: 'Novita AI',
+  },
 ]
