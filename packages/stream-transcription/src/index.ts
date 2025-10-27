@@ -11,19 +11,23 @@ export interface StreamTranscriptionDelta {
 }
 
 export type StreamTranscriptionDeltaType = 'transcript.text.delta' | 'transcript.text.done'
+
 export interface StreamTranscriptionOptions extends GenerateTranscriptionOptions {
   responseFormat?: never
+  /**
+   * If you want to disable stream, use `@xsai/generate-transcription`.
+   */
   stream?: never
-
   timestampGranularities?: never
 }
 
 export interface StreamTranscriptionResult {
   fullStream: ReadableStream<StreamTranscriptionDelta>
-  fullText: Promise<string>
+  text: Promise<string>
   textStream: ReadableStream<string>
 }
 
+/** @experimental */
 export const streamTranscription = (options: WithUnknown<StreamTranscriptionOptions>): StreamTranscriptionResult => {
   let textStreamCtrl: ReadableStreamDefaultController<string> | undefined
   let fullStreamCtrl: ReadableStreamDefaultController<StreamTranscriptionDelta> | undefined
@@ -96,7 +100,7 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
   })()
   return {
     fullStream,
-    fullText: fullText.promise,
+    text: fullText.promise,
     textStream,
   }
 }
