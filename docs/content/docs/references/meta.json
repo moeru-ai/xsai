@@ -12,6 +12,7 @@
     "[@xsai/shared-chat](https://doc.deno.land/https://esm.sh/@xsai/shared-chat)",
     "[@xsai/stream-object](https://doc.deno.land/https://esm.sh/@xsai/stream-object)",
     "[@xsai/stream-text](https://doc.deno.land/https://esm.sh/@xsai/stream-text)",
+    "[@xsai/stream-transcription](https://doc.deno.land/https://esm.sh/@xsai/stream-transcription)",
     "[@xsai/tool](https://doc.deno.land/https://esm.sh/@xsai/tool)",
     "[@xsai/utils-chat](https://doc.deno.land/https://esm.sh/@xsai/utils-chat)",
     "[@xsai/utils-reasoning](https://doc.deno.land/https://esm.sh/@xsai/utils-reasoning)",
