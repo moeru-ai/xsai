@@ -7,6 +7,7 @@ import { toCodeGenProvider, toCodeGenProviderForce } from './utils/process'
 
 const manualProviderKeys = [
   'anthropic',
+  'azure',
   'google',
   'openrouter',
 ]
