@@ -12,7 +12,7 @@ export const codeGenCreate = (provider: CodeGenProvider) => [
   // eslint-disable-next-line sonarjs/no-nested-template-literals
   `  createChatProvider${provider.models.length > 0 ? `<'${provider.models.join('\' | \'')}'>` : ''}({ apiKey, baseURL }),`,
   '  createModelProvider({ apiKey, baseURL }),',
-  ...(provider.embed === true ? ['  createEmbedProvider({ apiKey, baseURL }),'] : []),
+  ...(provider.capabilities?.embed === true ? ['  createEmbedProvider({ apiKey, baseURL }),'] : []),
   ')',
 ].join('\n')
 

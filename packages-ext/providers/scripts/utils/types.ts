@@ -2,9 +2,12 @@ export interface CodeGenProvider {
   /** api key env name */
   apiKey?: string
   baseURL: string
+  capabilities?: {
+    embed?: boolean
+    /** @default true */
+    model?: boolean
+  }
   doc: string
-  /** Generate embed provider */
-  embed?: boolean
   /** used by meta name */
   id: string
   /** used by type-hint */
