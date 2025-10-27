@@ -3,10 +3,14 @@ import { writeFile } from 'node:fs/promises'
 import type { CodeGenProvider, Providers } from './utils/types'
 
 import { codeGenCreate, codeGenIndex, codeGenTypes } from './utils/code-gen'
-import { processOpenAICompatible } from './utils/process-openai-compatible'
+import { processOpenAICompatible, toCodeGenProvider } from './utils/process'
 
 const providers = await fetch('https://models.dev/api.json')
   .then(async res => res.json()) as Providers
+
+const specialProviders = Object.values(providers)
+  .filter(p => ['anthropic', 'google'].includes(p.id))
+  .map(toCodeGenProvider)
 
 const [autoProviders, manualProviders] = processOpenAICompatible(Object.values(providers))
   .reduce(([auto, manual], provider) => {
@@ -49,8 +53,11 @@ const index = [
 
 await writeFile('./src/generated/index.ts', `${index}\n`, { encoding: 'utf8' })
 
-const types = manualProviders
-  .map(codeGenTypes)
+const types = [
+  '/* eslint-disable perfectionist/sort-modules */',
+  '/* eslint-disable perfectionist/sort-union-types */',
+  ...[...specialProviders, ...manualProviders].map(codeGenTypes),
+]
   .join('\n\n')
 
 await writeFile('./src/generated/types.ts', `${types}\n`, { encoding: 'utf8' })
