@@ -7,7 +7,7 @@ describe('@xsai/stream-transcription', () => {
   const expectText = 'Hello, I am your AI assistant. Just let me know how I can help bring your ideas to life.'
 
   it('basic', async () => {
-    const { fullText } = streamTranscription({
+    const { text } = streamTranscription({
       apiKey: 'a',
       baseURL: 'https://api.openai.com/v1/',
       file: await openAsBlob('./test/fixtures/basic.wav', { type: 'audio/wav' }),
@@ -15,7 +15,7 @@ describe('@xsai/stream-transcription', () => {
       model: 'gpt-4o-transcribe',
     })
 
-    const text = await fullText
-    expect(text).toBe(expectText)
+    const transcript = await text
+    expect(transcript).toBe(expectText)
   })
 })
