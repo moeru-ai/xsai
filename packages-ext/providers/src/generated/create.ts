@@ -326,7 +326,7 @@ export const createScaleway = (apiKey: string, baseURL = 'https://api.scaleway.a
 export const createCerebras = (apiKey: string, baseURL = 'https://api.cerebras.ai/v1/') => merge(
   createChatProvider<'qwen-3-235b-a22b-instruct-2507' | 'qwen-3-coder-480b' | 'gpt-oss-120b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
-  createEmbedProvider({ apiKey, baseURL })
+  createEmbedProvider({ apiKey, baseURL }),
 )
 
 /**
@@ -336,7 +336,7 @@ export const createCerebras = (apiKey: string, baseURL = 'https://api.cerebras.a
 export const createDeepinfra = (apiKey: string, baseURL = 'https://api.deepinfra.com/v1/openai/') => merge(
   createChatProvider<'moonshotai/Kimi-K2-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo' | 'zai-org/GLM-4.5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
-  createEmbedProvider({ apiKey, baseURL })
+  createEmbedProvider({ apiKey, baseURL }),
 )
 
 /**
@@ -355,5 +355,5 @@ export const createGroq = (apiKey: string, baseURL = 'https://api.groq.com/opena
 export const createMistral = (apiKey: string, baseURL = 'https://api.mistral.ai/v1/') => merge(
   createChatProvider<'devstral-medium-2507' | 'open-mixtral-8x22b' | 'ministral-8b-latest' | 'pixtral-large-latest' | 'ministral-3b-latest' | 'pixtral-12b' | 'mistral-medium-2505' | 'devstral-small-2505' | 'mistral-medium-2508' | 'mistral-small-latest' | 'magistral-small' | 'devstral-small-2507' | 'codestral-latest' | 'open-mixtral-8x7b' | 'mistral-nemo' | 'open-mistral-7b' | 'mistral-large-latest' | 'mistral-medium-latest' | 'magistral-medium-latest'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
-  createEmbedProvider({ apiKey, baseURL })
+  createEmbedProvider({ apiKey, baseURL }),
 )
