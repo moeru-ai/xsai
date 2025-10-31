@@ -6,8 +6,8 @@
   "packageManager": "pnpm@10.10.0",
   "repository": "github:moeru-ai/xsai",
   "scripts": {
-    "build": "turbo build",
-    "build:packages": "turbo -F=!./docs build",
+    "build": "turbo build --concurrency=1",
+    "build:packages": "turbo -F=!./docs build --concurrency=1",
     "bump": "bumpp",
     "docs:dev": "pnpm -rF @xsai/docs dev",
     "lint": "eslint --flag unstable_native_nodejs_ts_config --cache .",
