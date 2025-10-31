@@ -9,7 +9,7 @@ import { createAnthropic, createOpenRouter, createTogetherAI } from './create'
  * - baseURL - `https://api.anthropic.com/v1/`
  * - apiKey - `ANTHROPIC_API_KEY`
  */
-export const anthropic = createAnthropic(process.env.ANTHROPIC_API_KEY!)
+export const anthropic = createAnthropic(process.env.ANTHROPIC_API_KEY ?? '')
 
 /**
  * OpenRouter Provider
@@ -18,7 +18,7 @@ export const anthropic = createAnthropic(process.env.ANTHROPIC_API_KEY!)
  * - baseURL - `https://openrouter.ai/api/v1`
  * - apiKey - `OPENROUTER_API_KEY`
  */
-export const openrouter = createOpenRouter(process.env.OPENROUTER_API_KEY!)
+export const openrouter = createOpenRouter(process.env.OPENROUTER_API_KEY ?? '')
 
 /**
  * Together AI Provider
@@ -27,4 +27,4 @@ export const openrouter = createOpenRouter(process.env.OPENROUTER_API_KEY!)
  * - baseURL - `https://api.together.xyz/v1/`
  * - apiKey - `TOGETHER_API_KEY`
  */
-export const togetherai = createTogetherAI(process.env.TOGETHER_API_KEY!)
+export const togetherai = createTogetherAI(process.env.TOGETHER_API_KEY ?? '')

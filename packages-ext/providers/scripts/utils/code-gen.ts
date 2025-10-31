@@ -35,7 +35,7 @@ export const codeGenIndex = (provider: CodeGenProvider) => {
       ` * - baseURL - \`${provider.baseURL}\``,
       ` * - apiKey - \`${provider.apiKey}\``,
       ' */',
-      `export const ${codeGenConstEntry(provider)} = ${create}(process.env.${provider.apiKey}!)`,
+      `export const ${codeGenConstEntry(provider)} = ${create}(process.env.${provider.apiKey} ?? '')`,
     ].join('\n'),
     im: create,
   }
