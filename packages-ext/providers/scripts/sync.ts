@@ -11,6 +11,7 @@ const manualProviderKeys = [
   'azure',
   'google',
   'openrouter',
+  'togetherai',
 ]
 
 const providers = await fetch('https://models.dev/api.json')
@@ -36,6 +37,7 @@ const forceAutoProviders = [
   // toCodeGenProviderForce(providers, 'google', 'https://generativelanguage.googleapis.com/v1beta/openai/', undefined, true),
   toCodeGenProviderForce(providers, 'groq', 'https://api.groq.com/openai/v1/', 'https://console.groq.com/docs/openai'),
   toCodeGenProviderForce(providers, 'mistral', 'https://api.mistral.ai/v1/', undefined, true),
+  toCodeGenProviderForce(providers, 'perplexity', 'https://api.perplexity.ai/', undefined, true),
 ]
 
 const forceManualProviders = providers

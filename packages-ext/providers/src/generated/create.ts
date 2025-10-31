@@ -162,7 +162,7 @@ export const createBaseten = (apiKey: string, baseURL = 'https://inference.baset
  * @see {@link https://huggingface.co/docs/inference-providers}
  */
 export const createHuggingface = (apiKey: string, baseURL = 'https://router.huggingface.co/v1') => merge(
-  createChatProvider<'moonshotai/Kimi-K2-Instruct' | 'moonshotai/Kimi-K2-Instruct-0905' | 'Qwen/Qwen3-Embedding-8B' | 'Qwen/Qwen3-Embedding-4B' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'Qwen/Qwen3-Next-80B-A3B-Thinking' | 'zai-org/GLM-4.5' | 'zai-org/GLM-4.6' | 'zai-org/GLM-4.5-Air' | 'deepseek-ai/Deepseek-V3-0324' | 'deepseek-ai/DeepSeek-R1-0528'>({ apiKey, baseURL }),
+  createChatProvider<'moonshotai/Kimi-K2-Instruct' | 'moonshotai/Kimi-K2-Instruct-0905' | 'MiniMaxAI/MiniMax-M2' | 'Qwen/Qwen3-Embedding-8B' | 'Qwen/Qwen3-Embedding-4B' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'Qwen/Qwen3-Next-80B-A3B-Thinking' | 'zai-org/GLM-4.5' | 'zai-org/GLM-4.6' | 'zai-org/GLM-4.5-Air' | 'deepseek-ai/Deepseek-V3-0324' | 'deepseek-ai/DeepSeek-R1-0528'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -171,7 +171,7 @@ export const createHuggingface = (apiKey: string, baseURL = 'https://router.hugg
  * @see {@link https://opencode.ai/docs/zen}
  */
 export const createOpencode = (apiKey: string, baseURL = 'https://opencode.ai/zen/v1') => merge(
-  createChatProvider<'qwen3-coder' | 'claude-opus-4-1' | 'kimi-k2' | 'claude-haiku-4-5' | 'claude-sonnet-4-5' | 'gpt-5-codex' | 'an-gbt' | 'big-pickle' | 'claude-3-5-haiku' | 'glm-4.6' | 'grok-code' | 'code-supernova' | 'claude-sonnet-4' | 'gpt-5'>({ apiKey, baseURL }),
+  createChatProvider<'qwen3-coder' | 'claude-opus-4-1' | 'kimi-k2' | 'claude-haiku-4-5' | 'minimax-m2' | 'claude-sonnet-4-5' | 'gpt-5-codex' | 'an-gbt' | 'big-pickle' | 'claude-3-5-haiku' | 'glm-4.6' | 'grok-code' | 'claude-sonnet-4' | 'gpt-5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -208,6 +208,15 @@ export const createWandb = (apiKey: string, baseURL = 'https://api.inference.wan
  */
 export const createZhipuaiCodingPlan = (apiKey: string, baseURL = 'https://open.bigmodel.cn/api/coding/paas/v4') => merge(
   createChatProvider<'glm-4.6' | 'glm-4.5v' | 'glm-4.5-air' | 'glm-4.5' | 'glm-4.5-flash'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a ZenMux Provider
+ * @see {@link https://docs.zenmux.ai}
+ */
+export const createZenmux = (apiKey: string, baseURL = 'https://zenmux.ai/api/v1') => merge(
+  createChatProvider<'moonshotai/kimi-k2-0905' | 'x-ai/grok-4-fast-non-reasoning' | 'x-ai/grok-4' | 'x-ai/grok-code-fast-1' | 'x-ai/grok-4-fast' | 'deepseek/deepseek-chat' | 'google/gemini-2.5-pro' | 'openai/gpt-5-codex' | 'openai/gpt-5' | 'inclusionai/ring-1t' | 'inclusionai/lint-1t' | 'z-ai/glm-4.5-air' | 'z-ai/glm-4.6' | 'qwen/qwen3-coder-plus' | 'kuaishou/kat-coder-pro-v1' | 'anthropic/claude-haiku-4.5' | 'anthropic/claude-opus-4.1' | 'anthropic/claude-sonnet-4.5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -324,7 +333,7 @@ export const createScaleway = (apiKey: string, baseURL = 'https://api.scaleway.a
  * @see {@link https://inference-docs.cerebras.ai/resources/openai}
  */
 export const createCerebras = (apiKey: string, baseURL = 'https://api.cerebras.ai/v1/') => merge(
-  createChatProvider<'qwen-3-235b-a22b-instruct-2507' | 'qwen-3-coder-480b' | 'gpt-oss-120b'>({ apiKey, baseURL }),
+  createChatProvider<'qwen-3-235b-a22b-instruct-2507' | 'zai-glm-4.6' | 'qwen-3-coder-480b' | 'gpt-oss-120b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
 )
@@ -354,6 +363,16 @@ export const createGroq = (apiKey: string, baseURL = 'https://api.groq.com/opena
  */
 export const createMistral = (apiKey: string, baseURL = 'https://api.mistral.ai/v1/') => merge(
   createChatProvider<'devstral-medium-2507' | 'open-mixtral-8x22b' | 'ministral-8b-latest' | 'pixtral-large-latest' | 'ministral-3b-latest' | 'pixtral-12b' | 'mistral-medium-2505' | 'devstral-small-2505' | 'mistral-medium-2508' | 'mistral-small-latest' | 'magistral-small' | 'devstral-small-2507' | 'codestral-latest' | 'open-mixtral-8x7b' | 'mistral-nemo' | 'open-mistral-7b' | 'mistral-large-latest' | 'mistral-medium-latest' | 'magistral-medium-latest'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a Perplexity Provider
+ * @see {@link https://docs.perplexity.ai}
+ */
+export const createPerplexity = (apiKey: string, baseURL = 'https://api.perplexity.ai/') => merge(
+  createChatProvider<'sonar-reasoning' | 'sonar' | 'sonar-pro' | 'sonar-reasoning-pro'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
 )

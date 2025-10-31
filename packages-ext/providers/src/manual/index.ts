@@ -1,6 +1,6 @@
 import process from 'node:process'
 
-import { createAnthropic, createGoogleGenerativeAI, createOpenRouter } from './create'
+import { createAnthropic, createGoogleGenerativeAI, createOpenRouter, createTogetherAI } from './create'
 
 /**
  * Anthropic Provider
@@ -28,3 +28,12 @@ export const google = createGoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_
  * - apiKey - `OPENROUTER_API_KEY`
  */
 export const openrouter = createOpenRouter(process.env.OPENROUTER_API_KEY!)
+
+/**
+ * Create a Together AI Provider
+ * @see {@link https://docs.together.ai/docs/serverless-models}
+ * @remarks
+ * - baseURL - `https://api.together.xyz/v1/`
+ * - apiKey - `TOGETHER_API_KEY`
+ */
+export const togetherai = createTogetherAI(process.env.TOGETHER_API_KEY!)

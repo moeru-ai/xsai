@@ -23,6 +23,7 @@ import {
   createInception,
   createWandb,
   createZhipuaiCodingPlan,
+  createZenmux,
   createSynthetic,
   createZhipuai,
   createZai,
@@ -38,6 +39,7 @@ import {
   createDeepinfra,
   createGroq,
   createMistral,
+  createPerplexity,
   createMinimax,
   createMinimaxi,
   createNovita,
@@ -227,6 +229,15 @@ export const wandb = createWandb(process.env.WANDB_API_KEY!)
 export const zhipuaiCodingPlan = createZhipuaiCodingPlan(process.env.ZHIPU_API_KEY!)
 
 /**
+ * ZenMux Provider
+ * @see {@link https://docs.zenmux.ai}
+ * @remarks
+ * - baseURL - `https://zenmux.ai/api/v1`
+ * - apiKey - `ZENMUX_API_KEY`
+ */
+export const zenmux = createZenmux(process.env.ZENMUX_API_KEY!)
+
+/**
  * Synthetic Provider
  * @see {@link https://synthetic.new/pricing}
  * @remarks
@@ -360,6 +371,15 @@ export const groq = createGroq(process.env.GROQ_API_KEY!)
  * - apiKey - `MISTRAL_API_KEY`
  */
 export const mistral = createMistral(process.env.MISTRAL_API_KEY!)
+
+/**
+ * Perplexity Provider
+ * @see {@link https://docs.perplexity.ai}
+ * @remarks
+ * - baseURL - `https://api.perplexity.ai/`
+ * - apiKey - `PERPLEXITY_API_KEY`
+ */
+export const perplexity = createPerplexity(process.env.PERPLEXITY_API_KEY!)
 
 /**
  * Minimax Provider
