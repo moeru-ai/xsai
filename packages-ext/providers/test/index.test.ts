@@ -7,7 +7,7 @@ describe('@xsai-ext/providers', () => {
     const model = 'openai/gpt-oss-120b'
     const result = nvidia.chat(model)
 
-    expect(result.apiKey).toBeUndefined()
+    expect(result.apiKey).toBe('')
     expect(result.baseURL).toBe('https://integrate.api.nvidia.com/v1')
     expect(result.model).toBe(model)
   })
