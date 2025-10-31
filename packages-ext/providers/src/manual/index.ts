@@ -1,6 +1,6 @@
 import process from 'node:process'
 
-import { createAnthropic, createOpenRouter, createTogetherAI } from './create'
+import { createAnthropic, createFeatherless, createOpenRouter, createTogetherAI } from './create'
 
 /**
  * Anthropic Provider
@@ -12,10 +12,19 @@ import { createAnthropic, createOpenRouter, createTogetherAI } from './create'
 export const anthropic = createAnthropic(process.env.ANTHROPIC_API_KEY ?? '')
 
 /**
+ * Featherless AI Provider
+ * @see {@link https://featherless.ai/models}
+ * @remarks
+ * - baseURL - `https://api.featherless.ai/v1/`
+ * - apiKey - `FEATHERLESS_API_KEY`
+ */
+export const featherless = createFeatherless(process.env.FEATHERLESS_API_KEY ?? '')
+
+/**
  * OpenRouter Provider
  * @see {@link https://openrouter.ai/models}
  * @remarks
- * - baseURL - `https://openrouter.ai/api/v1`
+ * - baseURL - `https://openrouter.ai/api/v1/`
  * - apiKey - `OPENROUTER_API_KEY`
  */
 export const openrouter = createOpenRouter(process.env.OPENROUTER_API_KEY ?? '')
