@@ -1,4 +1,4 @@
-import type { PartialDeep } from 'type-fest'
+import type { PartialDeep } from 'type-fest/source/partial-deep'
 
 import { parse } from 'best-effort-json-parser'
 
