@@ -30,7 +30,7 @@ export const google = createGoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_
 export const openrouter = createOpenRouter(process.env.OPENROUTER_API_KEY!)
 
 /**
- * Create a Together AI Provider
+ * Together AI Provider
  * @see {@link https://docs.together.ai/docs/serverless-models}
  * @remarks
  * - baseURL - `https://api.together.xyz/v1/`

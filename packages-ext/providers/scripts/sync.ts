@@ -12,6 +12,7 @@ const manualProviderKeys = [
   'google',
   'openrouter',
   'togetherai',
+  'cloudflare-workers-ai',
 ]
 
 const providers = await fetch('https://models.dev/api.json')
