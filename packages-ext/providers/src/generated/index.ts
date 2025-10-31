@@ -8,9 +8,12 @@ import {
   createMoonshotai,
   createZaiCodingPlan,
   createAlibaba,
+  createXai,
   createVultr,
   createNvidia,
   createUpstage,
+  createGroq,
+  createMistral,
   createNebius,
   createDeepSeek,
   createAlibabaCn,
@@ -24,8 +27,10 @@ import {
   createInception,
   createWandb,
   createZhipuaiCodingPlan,
+  createPerplexity,
   createZenmux,
   createSynthetic,
+  createDeepinfra,
   createZhipuai,
   createZai,
   createInference,
@@ -37,11 +42,6 @@ import {
   createLlama,
   createScaleway,
   createCerebras,
-  createDeepinfra,
-  createGroq,
-  createMistral,
-  createPerplexity,
-  createXai,
   createMinimax,
   createMinimaxi,
   createNovita,
@@ -96,6 +96,15 @@ export const zaiCodingPlan = createZaiCodingPlan(process.env.ZHIPU_API_KEY ?? ''
 export const alibaba = createAlibaba(process.env.DASHSCOPE_API_KEY ?? '')
 
 /**
+ * xAI Provider
+ * @see {@link https://docs.x.ai/docs/models}
+ * @remarks
+ * - baseURL - `https://api.x.ai/v1/`
+ * - apiKey - `XAI_API_KEY`
+ */
+export const xai = createXai(process.env.XAI_API_KEY ?? '')
+
+/**
  * Vultr Provider
  * @see {@link https://api.vultrinference.com/}
  * @remarks
@@ -121,6 +130,24 @@ export const nvidia = createNvidia(process.env.NVIDIA_API_KEY ?? '')
  * - apiKey - `UPSTAGE_API_KEY`
  */
 export const upstage = createUpstage(process.env.UPSTAGE_API_KEY ?? '')
+
+/**
+ * Groq Provider
+ * @see {@link https://console.groq.com/docs/models}
+ * @remarks
+ * - baseURL - `https://api.groq.com/openai/v1/`
+ * - apiKey - `GROQ_API_KEY`
+ */
+export const groq = createGroq(process.env.GROQ_API_KEY ?? '')
+
+/**
+ * Mistral Provider
+ * @see {@link https://docs.mistral.ai/getting-started/models/}
+ * @remarks
+ * - baseURL - `https://api.mistral.ai/v1/`
+ * - apiKey - `MISTRAL_API_KEY`
+ */
+export const mistral = createMistral(process.env.MISTRAL_API_KEY ?? '')
 
 /**
  * Nebius AI Studio Provider
@@ -240,6 +267,15 @@ export const wandb = createWandb(process.env.WANDB_API_KEY ?? '')
 export const zhipuaiCodingPlan = createZhipuaiCodingPlan(process.env.ZHIPU_API_KEY ?? '')
 
 /**
+ * Perplexity Provider
+ * @see {@link https://docs.perplexity.ai}
+ * @remarks
+ * - baseURL - `https://api.perplexity.ai/`
+ * - apiKey - `PERPLEXITY_API_KEY`
+ */
+export const perplexity = createPerplexity(process.env.PERPLEXITY_API_KEY ?? '')
+
+/**
  * ZenMux Provider
  * @see {@link https://docs.zenmux.ai}
  * @remarks
@@ -256,6 +292,15 @@ export const zenmux = createZenmux(process.env.ZENMUX_API_KEY ?? '')
  * - apiKey - `SYNTHETIC_API_KEY`
  */
 export const synthetic = createSynthetic(process.env.SYNTHETIC_API_KEY ?? '')
+
+/**
+ * Deep Infra Provider
+ * @see {@link https://deepinfra.com/models}
+ * @remarks
+ * - baseURL - `https://api.deepinfra.com/v1/openai/`
+ * - apiKey - `DEEPINFRA_API_KEY`
+ */
+export const deepinfra = createDeepinfra(process.env.DEEPINFRA_API_KEY ?? '')
 
 /**
  * Zhipu AI Provider
@@ -349,57 +394,12 @@ export const scaleway = createScaleway(process.env.SCALEWAY_API_KEY ?? '')
 
 /**
  * Cerebras Provider
- * @see {@link https://inference-docs.cerebras.ai/resources/openai}
+ * @see {@link https://inference-docs.cerebras.ai/models/overview}
  * @remarks
  * - baseURL - `https://api.cerebras.ai/v1/`
  * - apiKey - `CEREBRAS_API_KEY`
  */
 export const cerebras = createCerebras(process.env.CEREBRAS_API_KEY ?? '')
-
-/**
- * Deep Infra Provider
- * @see {@link https://deepinfra.com/docs/openai_api}
- * @remarks
- * - baseURL - `https://api.deepinfra.com/v1/openai/`
- * - apiKey - `DEEPINFRA_API_KEY`
- */
-export const deepinfra = createDeepinfra(process.env.DEEPINFRA_API_KEY ?? '')
-
-/**
- * Groq Provider
- * @see {@link https://console.groq.com/docs/openai}
- * @remarks
- * - baseURL - `https://api.groq.com/openai/v1/`
- * - apiKey - `GROQ_API_KEY`
- */
-export const groq = createGroq(process.env.GROQ_API_KEY ?? '')
-
-/**
- * Mistral Provider
- * @see {@link https://docs.mistral.ai/getting-started/models/}
- * @remarks
- * - baseURL - `https://api.mistral.ai/v1/`
- * - apiKey - `MISTRAL_API_KEY`
- */
-export const mistral = createMistral(process.env.MISTRAL_API_KEY ?? '')
-
-/**
- * Perplexity Provider
- * @see {@link https://docs.perplexity.ai}
- * @remarks
- * - baseURL - `https://api.perplexity.ai/`
- * - apiKey - `PERPLEXITY_API_KEY`
- */
-export const perplexity = createPerplexity(process.env.PERPLEXITY_API_KEY ?? '')
-
-/**
- * xAI Provider
- * @see {@link https://docs.x.ai/docs/models}
- * @remarks
- * - baseURL - `https://api.x.ai/v1/`
- * - apiKey - `XAI_API_KEY`
- */
-export const xai = createXai(process.env.XAI_API_KEY ?? '')
 
 /**
  * Minimax Provider
