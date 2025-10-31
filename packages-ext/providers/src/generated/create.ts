@@ -378,6 +378,16 @@ export const createPerplexity = (apiKey: string, baseURL = 'https://api.perplexi
 )
 
 /**
+ * Create a xAI Provider
+ * @see {@link https://docs.x.ai/docs/models}
+ */
+export const createXai = (apiKey: string, baseURL = 'https://api.x.ai/v1/') => merge(
+  createChatProvider<'grok-4-fast-non-reasoning' | 'grok-3-fast' | 'grok-4' | 'grok-2-vision' | 'grok-code-fast-1' | 'grok-2' | 'grok-3-mini-fast-latest' | 'grok-2-vision-1212' | 'grok-3' | 'grok-4-fast' | 'grok-2-latest' | 'grok-2-1212' | 'grok-3-fast-latest' | 'grok-3-latest' | 'grok-2-vision-latest' | 'grok-vision-beta' | 'grok-3-mini' | 'grok-beta' | 'grok-3-mini-latest' | 'grok-3-mini-fast'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+)
+
+/**
  * Create a Minimax Provider
  * @see {@link https://platform.minimax.io/docs/api-reference/text-openai-api}
  */

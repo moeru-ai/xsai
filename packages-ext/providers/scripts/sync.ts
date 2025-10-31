@@ -39,6 +39,7 @@ const forceAutoProviders = [
   toCodeGenProviderForce(providers, 'groq', 'https://api.groq.com/openai/v1/', 'https://console.groq.com/docs/openai'),
   toCodeGenProviderForce(providers, 'mistral', 'https://api.mistral.ai/v1/', undefined, true),
   toCodeGenProviderForce(providers, 'perplexity', 'https://api.perplexity.ai/', undefined, true),
+  toCodeGenProviderForce(providers, 'xai', 'https://api.x.ai/v1/', undefined, true),
 ]
 
 const forceManualProviders = providers

@@ -40,6 +40,7 @@ import {
   createGroq,
   createMistral,
   createPerplexity,
+  createXai,
   createMinimax,
   createMinimaxi,
   createNovita,
@@ -380,6 +381,15 @@ export const mistral = createMistral(process.env.MISTRAL_API_KEY!)
  * - apiKey - `PERPLEXITY_API_KEY`
  */
 export const perplexity = createPerplexity(process.env.PERPLEXITY_API_KEY!)
+
+/**
+ * xAI Provider
+ * @see {@link https://docs.x.ai/docs/models}
+ * @remarks
+ * - baseURL - `https://api.x.ai/v1/`
+ * - apiKey - `XAI_API_KEY`
+ */
+export const xai = createXai(process.env.XAI_API_KEY!)
 
 /**
  * Minimax Provider
