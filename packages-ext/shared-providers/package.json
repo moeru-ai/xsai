@@ -34,7 +34,7 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll"
+    "build": "tsdown"
   },
   "dependencies": {
     "@xsai/shared": "workspace:~"
