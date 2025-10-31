@@ -20,6 +20,7 @@ import {
   createBaseten,
   createOpencode,
   createFastrouter,
+  createGoogleGenerativeAI,
   createInception,
   createWandb,
   createZhipuaiCodingPlan,
@@ -201,6 +202,15 @@ export const opencode = createOpencode(process.env.OPENCODE_API_KEY!)
  * - apiKey - `FASTROUTER_API_KEY`
  */
 export const fastrouter = createFastrouter(process.env.FASTROUTER_API_KEY!)
+
+/**
+ * Google Provider
+ * @see {@link https://ai.google.dev/gemini-api/docs/pricing}
+ * @remarks
+ * - baseURL - `https://generativelanguage.googleapis.com/v1beta/openai/`
+ * - apiKey - `GOOGLE_GENERATIVE_AI_API_KEY`
+ */
+export const google = createGoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!)
 
 /**
  * Inception Provider

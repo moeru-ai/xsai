@@ -185,6 +185,15 @@ export const createFastrouter = (apiKey: string, baseURL = 'https://go.fastroute
 )
 
 /**
+ * Create a Google Provider
+ * @see {@link https://ai.google.dev/gemini-api/docs/pricing}
+ */
+export const createGoogleGenerativeAI = (apiKey: string, baseURL = 'https://generativelanguage.googleapis.com/v1beta/openai/') => merge(
+  createChatProvider<'gemini-embedding-001' | 'gemini-2.5-flash-image' | 'gemini-2.5-flash-preview-05-20' | 'gemini-flash-lite-latest' | 'gemini-2.5-flash' | 'gemini-flash-latest' | 'gemini-2.5-pro-preview-05-06' | 'gemini-2.5-flash-preview-tts' | 'gemini-2.0-flash-lite' | 'gemini-live-2.5-flash-preview-native-audio' | 'gemini-2.0-flash' | 'gemini-2.5-flash-lite' | 'gemini-2.5-pro-preview-06-05' | 'gemini-live-2.5-flash' | 'gemini-2.5-flash-lite-preview-06-17' | 'gemini-2.5-flash-image-preview' | 'gemini-2.5-flash-preview-09-2025' | 'gemini-2.5-flash-preview-04-17' | 'gemini-2.5-pro-preview-tts' | 'gemini-2.5-pro' | 'gemini-1.5-flash' | 'gemini-1.5-flash-8b' | 'gemini-2.5-flash-lite-preview-09-2025' | 'gemini-1.5-pro'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
  * Create a Inception Provider
  * @see {@link https://platform.inceptionlabs.ai/docs}
  */

@@ -10,7 +10,7 @@ import { toCodeGenProvider, toCodeGenProviderForce } from './utils/process'
 const manualProviderKeys = [
   'anthropic',
   'azure',
-  'google',
+  // 'google',
   'openrouter',
   'togetherai',
   'cloudflare-workers-ai',

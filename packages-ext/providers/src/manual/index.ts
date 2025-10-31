@@ -1,6 +1,6 @@
 import process from 'node:process'
 
-import { createAnthropic, createGoogleGenerativeAI, createOpenRouter, createTogetherAI } from './create'
+import { createAnthropic, createOpenRouter, createTogetherAI } from './create'
 
 /**
  * Anthropic Provider
@@ -10,15 +10,6 @@ import { createAnthropic, createGoogleGenerativeAI, createOpenRouter, createToge
  * - apiKey - `ANTHROPIC_API_KEY`
  */
 export const anthropic = createAnthropic(process.env.ANTHROPIC_API_KEY!)
-
-/**
- * Google Provider
- * @see {@link https://ai.google.dev/gemini-api/docs/pricing}
- * @remarks
- * - baseURL - `https://generativelanguage.googleapis.com/v1beta/openai/`
- * - apiKey - `GOOGLE_GENERATIVE_AI_API_KEY` or `GEMINI_API_KEY`
- */
-export const google = createGoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? process.env.GEMINI_API_KEY!)
 
 /**
  * OpenRouter Provider
