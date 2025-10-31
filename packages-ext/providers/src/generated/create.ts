@@ -98,7 +98,7 @@ export const createNebius = (apiKey: string, baseURL = 'https://api.studio.nebiu
  * Create a DeepSeek Provider
  * @see {@link https://platform.deepseek.com/api-docs/pricing}
  */
-export const createDeepseek = (apiKey: string, baseURL = 'https://api.deepseek.com') => merge(
+export const createDeepSeek = (apiKey: string, baseURL = 'https://api.deepseek.com') => merge(
   createChatProvider<'deepseek-chat' | 'deepseek-reasoner'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )

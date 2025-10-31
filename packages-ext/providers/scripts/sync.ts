@@ -4,6 +4,7 @@ import type { CodeGenProvider, Providers } from './utils/types'
 
 import { codeGenCreate, codeGenIndex, codeGenTypes } from './utils/code-gen'
 import { extraProviders } from './utils/extra'
+import { overrides } from './utils/overrides'
 import { toCodeGenProvider, toCodeGenProviderForce } from './utils/process'
 
 const manualProviderKeys = [
@@ -18,6 +19,10 @@ const manualProviderKeys = [
 const providers = await fetch('https://models.dev/api.json')
   .then(async res => res.json() as Promise<Providers>)
   .then(ps => Object.values(ps))
+  .then(providers => providers.map(provider => ({
+    ...provider,
+    ...overrides[provider.id] ?? {},
+  })))
 
 const [autoProviders, manualProviders] = providers
   .filter(({ api }) => api != null)

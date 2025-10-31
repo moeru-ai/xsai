@@ -12,7 +12,7 @@ import {
   createNvidia,
   createUpstage,
   createNebius,
-  createDeepseek,
+  createDeepSeek,
   createAlibabaCn,
   createVenice,
   createChutes,
@@ -137,7 +137,7 @@ export const nebius = createNebius(process.env.NEBIUS_API_KEY!)
  * - baseURL - `https://api.deepseek.com`
  * - apiKey - `DEEPSEEK_API_KEY`
  */
-export const deepseek = createDeepseek(process.env.DEEPSEEK_API_KEY!)
+export const deepseek = createDeepSeek(process.env.DEEPSEEK_API_KEY!)
 
 /**
  * Alibaba (China) Provider
