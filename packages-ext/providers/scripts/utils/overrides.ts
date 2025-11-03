@@ -1,24 +1,30 @@
 import type { Provider } from './types'
 
 export const overrides: Record<string, Partial<Provider>> = {
-  cerebras: {
+  'cerebras': {
     _capabilities: {
       embed: true,
     },
     api: 'https://api.cerebras.ai/v1/',
   },
-  deepinfra: {
+  'deepinfra': {
     _capabilities: {
       embed: true,
     },
     api: 'https://api.deepinfra.com/v1/openai/',
   },
-  deepseek: {
+  'deepseek': {
     _overrides: {
       create: 'DeepSeek',
     },
   },
-  google: {
+  'fireworks-ai': {
+    _overrides: {
+      create: 'Fireworks',
+      id: 'fireworks',
+    },
+  },
+  'google': {
     _capabilities: {
       embed: true,
     },
@@ -27,31 +33,34 @@ export const overrides: Record<string, Partial<Provider>> = {
     },
     api: 'https://generativelanguage.googleapis.com/v1beta/openai/',
   },
-  groq: {
+  'groq': {
     _capabilities: {
       embed: true,
     },
     api: 'https://api.groq.com/openai/v1/',
   },
-  mistral: {
+  'mistral': {
     _capabilities: {
       embed: true,
     },
     api: 'https://api.mistral.ai/v1/',
   },
-  openai: {
+  'openai': {
     _capabilities: {
       embed: true,
       image: true,
       speech: true,
       transcription: true,
     },
+    _overrides: {
+      create: 'OpenAI',
+    },
     api: 'https://api.openai.com/v1/',
   },
-  perplexity: {
+  'perplexity': {
     api: 'https://api.perplexity.ai/',
   },
-  xai: {
+  'xai': {
     api: 'https://api.x.ai/v1/',
   },
 }

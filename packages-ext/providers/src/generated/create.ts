@@ -245,7 +245,7 @@ export const createWandb = (apiKey: string, baseURL = 'https://api.inference.wan
  * Create a OpenAI Provider
  * @see {@link https://platform.openai.com/docs/models}
  */
-export const createOpenai = (apiKey: string, baseURL = 'https://api.openai.com/v1/') => merge(
+export const createOpenAI = (apiKey: string, baseURL = 'https://api.openai.com/v1/') => merge(
   createChatProvider<'gpt-4.1-nano' | 'text-embedding-3-small' | 'gpt-4' | 'o1-pro' | 'gpt-4o-2024-05-13' | 'gpt-4o-2024-08-06' | 'gpt-4.1-mini' | 'o3-deep-research' | 'gpt-3.5-turbo' | 'text-embedding-3-large' | 'gpt-4-turbo' | 'o1-preview' | 'o3-mini' | 'codex-mini-latest' | 'gpt-5-nano' | 'gpt-5-codex' | 'gpt-4o' | 'gpt-4.1' | 'o4-mini' | 'o1' | 'gpt-5-mini' | 'o1-mini' | 'text-embedding-ada-002' | 'o3-pro' | 'gpt-4o-2024-11-20' | 'o3' | 'o4-mini-deep-research' | 'gpt-5-chat-latest' | 'gpt-4o-mini' | 'gpt-5' | 'gpt-5-pro'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
@@ -376,7 +376,7 @@ export const createLmstudio = (apiKey: string, baseURL = 'http://127.0.0.1:1234/
  * Create a Fireworks AI Provider
  * @see {@link https://fireworks.ai/docs/}
  */
-export const createFireworksAi = (apiKey: string, baseURL = 'https://api.fireworks.ai/inference/v1/') => merge(
+export const createFireworks = (apiKey: string, baseURL = 'https://api.fireworks.ai/inference/v1/') => merge(
   createChatProvider<'accounts/fireworks/models/deepseek-r1-0528' | 'accounts/fireworks/models/deepseek-v3p1' | 'accounts/fireworks/models/minimax-m2' | 'accounts/fireworks/models/deepseek-v3-0324' | 'accounts/fireworks/models/kimi-k2-instruct' | 'accounts/fireworks/models/qwen3-235b-a22b' | 'accounts/fireworks/models/gpt-oss-20b' | 'accounts/fireworks/models/gpt-oss-120b' | 'accounts/fireworks/models/glm-4p5-air' | 'accounts/fireworks/models/qwen3-coder-480b-a35b-instruct' | 'accounts/fireworks/models/glm-4p5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )

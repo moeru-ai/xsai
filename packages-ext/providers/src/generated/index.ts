@@ -29,7 +29,7 @@ import {
   createGoogleGenerativeAI,
   createInception,
   createWandb,
-  createOpenai,
+  createOpenAI,
   createZhipuaiCodingPlan,
   createPerplexity,
   createZenmux,
@@ -43,7 +43,7 @@ import {
   createRequesty,
   createMorph,
   createLmstudio,
-  createFireworksAi,
+  createFireworks,
   createModelscope,
   createLlama,
   createScaleway,
@@ -297,7 +297,7 @@ export const wandb = createWandb(process.env.WANDB_API_KEY ?? '')
  * - baseURL - `https://api.openai.com/v1/`
  * - apiKey - `OPENAI_API_KEY`
  */
-export const openai = createOpenai(process.env.OPENAI_API_KEY ?? '')
+export const openai = createOpenAI(process.env.OPENAI_API_KEY ?? '')
 
 /**
  * Zhipu AI Coding Plan Provider
@@ -423,7 +423,7 @@ export const lmstudio = createLmstudio(process.env.LMSTUDIO_API_KEY ?? '')
  * - baseURL - `https://api.fireworks.ai/inference/v1/`
  * - apiKey - `FIREWORKS_API_KEY`
  */
-export const fireworksAi = createFireworksAi(process.env.FIREWORKS_API_KEY ?? '')
+export const fireworks = createFireworks(process.env.FIREWORKS_API_KEY ?? '')
 
 /**
  * ModelScope Provider
