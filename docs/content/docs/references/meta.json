@@ -17,6 +17,7 @@
     "[@xsai/utils-chat](https://doc.deno.land/https://esm.sh/@xsai/utils-chat)",
     "[@xsai/utils-reasoning](https://doc.deno.land/https://esm.sh/@xsai/utils-reasoning)",
     "[@xsai/utils-stream](https://doc.deno.land/https://esm.sh/@xsai/utils-stream)",
+    "[@xsai-ext/providers](https://doc.deno.land/https://esm.sh/@xsai-ext/providers)",
     "[@xsai-ext/providers-cloud](https://doc.deno.land/https://esm.sh/@xsai-ext/providers-cloud)",
     "[@xsai-ext/providers-local](https://doc.deno.land/https://esm.sh/@xsai-ext/providers-local)",
     "[@xsai-ext/shared-providers](https://doc.deno.land/https://esm.sh/@xsai-ext/shared-providers)",
