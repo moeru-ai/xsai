@@ -1,6 +1,6 @@
 export interface CodeGenProvider {
   /** api key env name */
-  apiKey?: string
+  apiKey: string[]
   baseURL: string
   capabilities?: CodeGenProviderCapabilities
   doc: string
