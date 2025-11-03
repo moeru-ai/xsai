@@ -1,1 +1,1 @@
-https://xsai.js.org/docs/packages/generate/transcription
+https://xsai.js.org/docs/packages/stream/transcription
