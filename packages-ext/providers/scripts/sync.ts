@@ -49,7 +49,7 @@ const create = [
     '/* eslint-disable sonarjs/no-identical-functions */',
     '/* eslint-disable sonarjs/use-type-alias */',
   ].join('\n'),
-  'import { createChatProvider, createEmbedProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from \'@xsai-ext/shared-providers\'',
+  'import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from \'@xsai-ext/shared-providers\'',
   ...autoProviders.map(codeGenCreate),
 ].join('\n\n')
 

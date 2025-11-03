@@ -2,7 +2,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/use-type-alias */
 
-import { createChatProvider, createEmbedProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from '@xsai-ext/shared-providers'
+import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from '@xsai-ext/shared-providers'
 
 /**
  * Create a Moonshot AI (China) Provider
@@ -72,7 +72,7 @@ export const createVultr = (apiKey: string, baseURL = 'https://api.vultrinferenc
  * @see {@link https://docs.api.nvidia.com/nim/}
  */
 export const createNvidia = (apiKey: string, baseURL = 'https://integrate.api.nvidia.com/v1') => merge(
-  createChatProvider<'moonshotai/kimi-k2-instruct-0905' | 'moonshotai/kimi-k2-instruct' | 'nvidia/cosmos-nemotron-34b' | 'nvidia/llama-embed-nemotron-8b' | 'nvidia/parakeet-tdt-0.6b-v2' | 'nvidia/nemoretriever-ocr-v1' | 'nvidia/llama-3.1-nemotron-ultra-253b-v1' | 'google/gemma-3-27b-it' | 'microsoft/phi-4-mini-instruct' | 'openai/whisper-large-v3' | 'openai/gpt-oss-120b' | 'qwen/qwen3-235b-a22b' | 'qwen/qwen3-coder-480b-a35b-instruct' | 'deepseek-ai/deepseek-v3.1-terminus' | 'deepseek-ai/deepseek-v3.1' | 'black-forest-labs/flux.1-dev'>({ apiKey, baseURL }),
+  createChatProvider<'moonshotai/kimi-k2-instruct-0905' | 'moonshotai/kimi-k2-instruct' | 'nvidia/cosmos-nemotron-34b' | 'nvidia/llama-embed-nemotron-8b' | 'nvidia/parakeet-tdt-0.6b-v2' | 'nvidia/nemoretriever-ocr-v1' | 'nvidia/llama-3.1-nemotron-ultra-253b-v1' | 'minimaxai/minimax-m2' | 'google/gemma-3-27b-it' | 'microsoft/phi-4-mini-instruct' | 'openai/whisper-large-v3' | 'openai/gpt-oss-120b' | 'qwen/qwen3-235b-a22b' | 'qwen/qwen3-coder-480b-a35b-instruct' | 'deepseek-ai/deepseek-v3.1-terminus' | 'deepseek-ai/deepseek-v3.1' | 'black-forest-labs/flux.1-dev'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -155,7 +155,7 @@ export const createVenice = (apiKey: string, baseURL = 'https://api.venice.ai/ap
  * @see {@link https://llm.chutes.ai/v1/models}
  */
 export const createChutes = (apiKey: string, baseURL = 'https://llm.chutes.ai/v1') => merge(
-  createChatProvider<'moonshotai/Kimi-Dev-72B' | 'moonshotai/Kimi-K2-Instruct-75k' | 'moonshotai/Kimi-K2-Instruct-0905' | 'moonshotai/Kimi-VL-A3B-Thinking' | 'meituan-longcat/LongCat-Flash-Chat-FP8' | 'tngtech/DeepSeek-R1T-Chimera' | 'tngtech/DeepSeek-TNG-R1T2-Chimera' | 'openai/gpt-oss-120b' | 'chutesai/Devstral-Small-2505' | 'chutesai/Mistral-Small-3.2-24B-Instruct-2506' | 'Qwen/Qwen3-30B-A3B' | 'Qwen/Qwen3-30B-A3B-Thinking-2507' | 'Qwen/Qwen3-235B-A22B-Instruct-2507' | 'Qwen/Qwen3-Coder-30B-A3B-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8' | 'Qwen/Qwen3-30B-A3B-Instruct-2507' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'Qwen/Qwen3-Next-80B-A3B-Thinking' | 'zai-org/GLM-4.5-turbo' | 'zai-org/GLM-4.6-FP8' | 'zai-org/GLM-4.6-turbo' | 'zai-org/GLM-4.5-FP8' | 'zai-org/GLM-4.5-Air' | 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B' | 'deepseek-ai/DeepSeek-R1-0528' | 'deepseek-ai/DeepSeek-V3.2-Exp' | 'deepseek-ai/DeepSeek-V3.1-Terminus' | 'deepseek-ai/DeepSeek-V3.1-turbo' | 'deepseek-ai/DeepSeek-V3.1:THINKING' | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B' | 'deepseek-ai/DeepSeek-V3.1' | 'deepseek-ai/DeepSeek-V3-0324'>({ apiKey, baseURL }),
+  createChatProvider<'moonshotai/Kimi-K2-Instruct-75k' | 'moonshotai/Kimi-K2-Instruct-0905' | 'moonshotai/Kimi-VL-A3B-Thinking' | 'MiniMaxAI/MiniMax-M2' | 'meituan-longcat/LongCat-Flash-Chat-FP8' | 'tngtech/DeepSeek-R1T-Chimera' | 'tngtech/DeepSeek-TNG-R1T2-Chimera' | 'openai/gpt-oss-120b' | 'chutesai/Mistral-Small-3.2-24B-Instruct-2506' | 'Qwen/Qwen3-30B-A3B' | 'Qwen/Qwen3-235B-A22B-Instruct-2507' | 'Qwen/Qwen3-Coder-30B-A3B-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8' | 'Qwen/Qwen3-30B-A3B-Instruct-2507' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'Qwen/Qwen3-Next-80B-A3B-Thinking' | 'zai-org/GLM-4.5' | 'zai-org/GLM-4.6-FP8' | 'zai-org/GLM-4.6-turbo' | 'zai-org/GLM-4.6' | 'zai-org/GLM-4.5-FP8' | 'zai-org/GLM-4.5-Air' | 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B' | 'deepseek-ai/DeepSeek-R1-0528' | 'deepseek-ai/DeepSeek-V3.2-Exp' | 'deepseek-ai/DeepSeek-V3.1-Terminus' | 'deepseek-ai/DeepSeek-V3.1:THINKING' | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B' | 'deepseek-ai/DeepSeek-V3.1' | 'deepseek-ai/DeepSeek-V3-0324'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -242,6 +242,19 @@ export const createWandb = (apiKey: string, baseURL = 'https://api.inference.wan
 )
 
 /**
+ * Create a OpenAI Provider
+ * @see {@link https://platform.openai.com/docs/models}
+ */
+export const createOpenai = (apiKey: string, baseURL = 'https://api.openai.com/v1/') => merge(
+  createChatProvider<'gpt-4.1-nano' | 'text-embedding-3-small' | 'gpt-4' | 'o1-pro' | 'gpt-4o-2024-05-13' | 'gpt-4o-2024-08-06' | 'gpt-4.1-mini' | 'o3-deep-research' | 'gpt-3.5-turbo' | 'text-embedding-3-large' | 'gpt-4-turbo' | 'o1-preview' | 'o3-mini' | 'codex-mini-latest' | 'gpt-5-nano' | 'gpt-5-codex' | 'gpt-4o' | 'gpt-4.1' | 'o4-mini' | 'o1' | 'gpt-5-mini' | 'o1-mini' | 'text-embedding-ada-002' | 'o3-pro' | 'gpt-4o-2024-11-20' | 'o3' | 'o4-mini-deep-research' | 'gpt-5-chat-latest' | 'gpt-4o-mini' | 'gpt-5' | 'gpt-5-pro'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+  createImageProvider({ apiKey, baseURL }),
+  createSpeechProvider({ apiKey, baseURL }),
+  createTranscriptionProvider({ apiKey, baseURL }),
+)
+
+/**
  * Create a Zhipu AI Coding Plan Provider
  * @see {@link https://docs.bigmodel.cn/cn/coding-plan/overview}
  */
@@ -265,6 +278,15 @@ export const createPerplexity = (apiKey: string, baseURL = 'https://api.perplexi
  */
 export const createZenmux = (apiKey: string, baseURL = 'https://zenmux.ai/api/v1') => merge(
   createChatProvider<'moonshotai/kimi-k2-0905' | 'x-ai/grok-4-fast-non-reasoning' | 'x-ai/grok-4' | 'x-ai/grok-code-fast-1' | 'x-ai/grok-4-fast' | 'deepseek/deepseek-chat' | 'google/gemini-2.5-pro' | 'openai/gpt-5-codex' | 'openai/gpt-5' | 'inclusionai/ring-1t' | 'inclusionai/lint-1t' | 'z-ai/glm-4.5-air' | 'z-ai/glm-4.6' | 'qwen/qwen3-coder-plus' | 'kuaishou/kat-coder-pro-v1' | 'anthropic/claude-haiku-4.5' | 'anthropic/claude-opus-4.1' | 'anthropic/claude-sonnet-4.5'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a iFlow Provider
+ * @see {@link https://platform.iflow.cn/en/docs}
+ */
+export const createIflowcn = (apiKey: string, baseURL = 'https://apis.iflow.cn/v1') => merge(
+  createChatProvider<'qwen3-coder' | 'deepseek-v3' | 'kimi-k2' | 'deepseek-r1' | 'deepseek-v3.1' | 'qwen3-235b' | 'kimi-k2-0905' | 'qwen3-235b-a22b-thinking-2507' | 'qwen3-vl-plus' | 'glm-4.6' | 'tstars2.0' | 'qwen3-235b-a22b-instruct' | 'qwen3-max' | 'deepseek-v3.2' | 'qwen3-max-preview' | 'qwen3-coder-plus' | 'qwen3-32b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -355,7 +377,7 @@ export const createLmstudio = (apiKey: string, baseURL = 'http://127.0.0.1:1234/
  * @see {@link https://fireworks.ai/docs/}
  */
 export const createFireworksAi = (apiKey: string, baseURL = 'https://api.fireworks.ai/inference/v1/') => merge(
-  createChatProvider<'accounts/fireworks/models/deepseek-r1-0528' | 'accounts/fireworks/models/deepseek-v3p1' | 'accounts/fireworks/models/deepseek-v3-0324' | 'accounts/fireworks/models/kimi-k2-instruct' | 'accounts/fireworks/models/qwen3-235b-a22b' | 'accounts/fireworks/models/gpt-oss-20b' | 'accounts/fireworks/models/gpt-oss-120b' | 'accounts/fireworks/models/glm-4p5-air' | 'accounts/fireworks/models/qwen3-coder-480b-a35b-instruct' | 'accounts/fireworks/models/glm-4p5'>({ apiKey, baseURL }),
+  createChatProvider<'accounts/fireworks/models/deepseek-r1-0528' | 'accounts/fireworks/models/deepseek-v3p1' | 'accounts/fireworks/models/minimax-m2' | 'accounts/fireworks/models/deepseek-v3-0324' | 'accounts/fireworks/models/kimi-k2-instruct' | 'accounts/fireworks/models/qwen3-235b-a22b' | 'accounts/fireworks/models/gpt-oss-20b' | 'accounts/fireworks/models/gpt-oss-120b' | 'accounts/fireworks/models/glm-4p5-air' | 'accounts/fireworks/models/qwen3-coder-480b-a35b-instruct' | 'accounts/fireworks/models/glm-4p5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 

@@ -26,9 +26,11 @@ import {
   createGoogleGenerativeAI,
   createInception,
   createWandb,
+  createOpenai,
   createZhipuaiCodingPlan,
   createPerplexity,
   createZenmux,
+  createIflowcn,
   createSynthetic,
   createDeepinfra,
   createZhipuai,
@@ -258,6 +260,15 @@ export const inception = createInception(process.env.INCEPTION_API_KEY ?? '')
 export const wandb = createWandb(process.env.WANDB_API_KEY ?? '')
 
 /**
+ * OpenAI Provider
+ * @see {@link https://platform.openai.com/docs/models}
+ * @remarks
+ * - baseURL - `https://api.openai.com/v1/`
+ * - apiKey - `OPENAI_API_KEY`
+ */
+export const openai = createOpenai(process.env.OPENAI_API_KEY ?? '')
+
+/**
  * Zhipu AI Coding Plan Provider
  * @see {@link https://docs.bigmodel.cn/cn/coding-plan/overview}
  * @remarks
@@ -283,6 +294,15 @@ export const perplexity = createPerplexity(process.env.PERPLEXITY_API_KEY ?? '')
  * - apiKey - `ZENMUX_API_KEY`
  */
 export const zenmux = createZenmux(process.env.ZENMUX_API_KEY ?? '')
+
+/**
+ * iFlow Provider
+ * @see {@link https://platform.iflow.cn/en/docs}
+ * @remarks
+ * - baseURL - `https://apis.iflow.cn/v1`
+ * - apiKey - `IFLOW_API_KEY`
+ */
+export const iflowcn = createIflowcn(process.env.IFLOW_API_KEY ?? '')
 
 /**
  * Synthetic Provider

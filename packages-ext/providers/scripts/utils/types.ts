@@ -14,6 +14,7 @@ export interface CodeGenProvider {
 
 export interface CodeGenProviderCapabilities {
   embed?: boolean
+  image?: boolean
   /** @default true */
   model?: boolean
   speech?: boolean

@@ -17,6 +17,7 @@ export const codeGenCreate = (provider: CodeGenProvider) => [
   `  createChatProvider${provider.models.length > 0 ? `<'${provider.models.join('\' | \'')}'>` : ''}({ apiKey, baseURL }),`,
   ...(provider.capabilities?.model === false ? [] : ['  createModelProvider({ apiKey, baseURL }),']),
   ...(provider.capabilities?.embed === true ? ['  createEmbedProvider({ apiKey, baseURL }),'] : []),
+  ...(provider.capabilities?.image === true ? ['  createImageProvider({ apiKey, baseURL }),'] : []),
   ...(provider.capabilities?.speech === true ? ['  createSpeechProvider({ apiKey, baseURL }),'] : []),
   ...(provider.capabilities?.transcription === true ? ['  createTranscriptionProvider({ apiKey, baseURL }),'] : []),
   ')',
