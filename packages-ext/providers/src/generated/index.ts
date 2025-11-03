@@ -13,6 +13,7 @@ import {
   createNvidia,
   createUpstage,
   createGroq,
+  createGithubCopilot,
   createMistral,
   createNebius,
   createDeepSeek,
@@ -20,7 +21,9 @@ import {
   createVenice,
   createChutes,
   createCortecs,
+  createGithubModels,
   createBaseten,
+  createHuggingface,
   createOpencode,
   createFastrouter,
   createGoogleGenerativeAI,
@@ -34,6 +37,7 @@ import {
   createSynthetic,
   createDeepinfra,
   createZhipuai,
+  createSubmodel,
   createZai,
   createInference,
   createRequesty,
@@ -143,6 +147,15 @@ export const upstage = createUpstage(process.env.UPSTAGE_API_KEY ?? '')
 export const groq = createGroq(process.env.GROQ_API_KEY ?? '')
 
 /**
+ * GitHub Copilot Provider
+ * @see {@link https://docs.github.com/en/copilot}
+ * @remarks
+ * - baseURL - `https://api.githubcopilot.com`
+ * - apiKey - `GITHUB_TOKEN`
+ */
+export const githubCopilot = createGithubCopilot(process.env.GITHUB_TOKEN ?? '')
+
+/**
  * Mistral Provider
  * @see {@link https://docs.mistral.ai/getting-started/models/}
  * @remarks
@@ -206,6 +219,15 @@ export const chutes = createChutes(process.env.CHUTES_API_KEY ?? '')
 export const cortecs = createCortecs(process.env.CORTECS_API_KEY ?? '')
 
 /**
+ * GitHub Models Provider
+ * @see {@link https://docs.github.com/en/github-models}
+ * @remarks
+ * - baseURL - `https://models.github.ai/inference`
+ * - apiKey - `GITHUB_TOKEN`
+ */
+export const githubModels = createGithubModels(process.env.GITHUB_TOKEN ?? '')
+
+/**
  * Baseten Provider
  * @see {@link https://docs.baseten.co/development/model-apis/overview}
  * @remarks
@@ -213,6 +235,15 @@ export const cortecs = createCortecs(process.env.CORTECS_API_KEY ?? '')
  * - apiKey - `BASETEN_API_KEY`
  */
 export const baseten = createBaseten(process.env.BASETEN_API_KEY ?? '')
+
+/**
+ * Hugging Face Provider
+ * @see {@link https://huggingface.co/docs/inference-providers}
+ * @remarks
+ * - baseURL - `https://router.huggingface.co/v1`
+ * - apiKey - `HF_TOKEN`
+ */
+export const huggingface = createHuggingface(process.env.HF_TOKEN ?? '')
 
 /**
  * OpenCode Zen Provider
@@ -237,9 +268,9 @@ export const fastrouter = createFastrouter(process.env.FASTROUTER_API_KEY ?? '')
  * @see {@link https://ai.google.dev/gemini-api/docs/pricing}
  * @remarks
  * - baseURL - `https://generativelanguage.googleapis.com/v1beta/openai/`
- * - apiKey - `GOOGLE_GENERATIVE_AI_API_KEY`
+ * - apiKey - `GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY`
  */
-export const google = createGoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? '')
+export const google = createGoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? process.env.GEMINI_API_KEY ?? '')
 
 /**
  * Inception Provider
@@ -330,6 +361,15 @@ export const deepinfra = createDeepinfra(process.env.DEEPINFRA_API_KEY ?? '')
  * - apiKey - `ZHIPU_API_KEY`
  */
 export const zhipuai = createZhipuai(process.env.ZHIPU_API_KEY ?? '')
+
+/**
+ * submodel Provider
+ * @see {@link https://submodel.gitbook.io}
+ * @remarks
+ * - baseURL - `https://llm.submodel.ai/v1`
+ * - apiKey - `SUBMODEL_INSTAGEN_ACCESS_KEY`
+ */
+export const submodel = createSubmodel(process.env.SUBMODEL_INSTAGEN_ACCESS_KEY ?? '')
 
 /**
  * Z.AI Provider
