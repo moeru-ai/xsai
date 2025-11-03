@@ -19,7 +19,10 @@
     "ai"
   ],
   "sideEffects": false,
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./create": "./src/create.ts"
+  },
   "files": [
     "dist"
   ],
@@ -28,6 +31,10 @@
       ".": {
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
+      },
+      "./create": {
+        "types": "./dist/create.d.ts",
+        "default": "./dist/create.js"
       },
       "./package.json": "./package.json"
     },

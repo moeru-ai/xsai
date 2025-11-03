@@ -10,7 +10,60 @@ which can increase the size of the installation.
 
 import { PkgSizeBadge } from '@/components/pkg-size-badge'
 
-## Cloud
+```package-install
+npm i @xsai-ext/providers
+```
+
+## Usage
+
+### Predefined
+
+> It reads the API Key from the environment variables via `process.env`, so it cannot be used in a browser.
+
+```ts twoslash
+import { google } from '@xsai-ext/providers' // [!code ++]
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process' // [!code --]
+
+const { text } = await generateText({
+  ...google.chat('gemini-2.5-flash'), // [!code ++]
+  apiKey: env.GEMINI_API_KEY!, // [!code --]
+  baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/', // [!code --]
+  messages: [{
+    content: 'Why is the sky blue?',
+    role: 'user'
+  }],
+  model: 'gemini-2.5-flash', // [!code --]
+})
+```
+
+### Create
+
+You can also import a create function instead of a predefined provider, making it runtime-agnostic:
+
+```ts twoslash
+// import { google } from '@xsai-ext/providers' // [!code --]
+import { createGoogleGenerativeAI } from '@xsai-ext/providers/create' // [!code ++]
+import { generateText } from '@xsai/generate-text'
+
+const google = createGoogleGenerativeAI('YOUR_API_KEY_HERE') // [!code ++]
+
+const { text } = await generateText({
+  ...google.chat('gemini-2.5-flash'),
+  messages: [{
+    content: 'Why is the sky blue?',
+    role: 'user'
+  }],
+})
+```
+
+## Deprecated
+
+<Callout type="warn">
+Please migrate to the Providers package as soon as possible. The legacy packages will be officially deprecated in `v0.4.0`.
+</Callout>
+
+### Cloud
 
 <PkgSizeBadge pkg="@xsai-ext/providers-cloud" />
 
@@ -18,9 +71,9 @@ import { PkgSizeBadge } from '@/components/pkg-size-badge'
 npm i @xsai-ext/providers-cloud
 ```
 
-### Examples
+#### Examples
 
-#### Keys
+##### Keys
 
 Checkout all supported providers [here](https://github.com/moeru-ai/xsai/tree/main/packages-ext/providers-cloud/src/providers).
 
@@ -30,7 +83,7 @@ import * as providers from '@xsai-ext/providers-cloud'
 type Keys = keyof typeof providers
 ```
 
-#### OpenAI
+##### OpenAI
 
 ```ts twoslash
 import { createOpenAI } from '@xsai-ext/providers-cloud' // [!code ++]
@@ -51,7 +104,7 @@ const { text } = await generateText({
 })
 ```
 
-## Local
+### Local
 
 <PkgSizeBadge pkg="@xsai-ext/providers-local" />
 
@@ -59,9 +112,9 @@ const { text } = await generateText({
 npm i @xsai-ext/providers-local
 ```
 
-### Examples
+#### Examples
 
-#### Keys
+##### Keys
 
 Checkout all supported providers [here](https://github.com/moeru-ai/xsai/tree/main/packages-ext/providers-local/src/providers).
 
@@ -71,7 +124,7 @@ import * as providers from '@xsai-ext/providers-local'
 type Keys = keyof typeof providers
 ```
 
-#### Ollama
+##### Ollama
 
 ```ts twoslash
 import { createOllama } from '@xsai-ext/providers-local' // [!code ++]
