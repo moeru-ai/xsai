@@ -39,6 +39,15 @@ export const overrides: Record<string, Partial<Provider>> = {
     },
     api: 'https://api.mistral.ai/v1/',
   },
+  openai: {
+    _capabilities: {
+      embed: true,
+      image: true,
+      speech: true,
+      transcription: true,
+    },
+    api: 'https://api.openai.com/v1/',
+  },
   perplexity: {
     api: 'https://api.perplexity.ai/',
   },

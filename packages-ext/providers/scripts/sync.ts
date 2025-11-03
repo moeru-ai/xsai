@@ -5,7 +5,7 @@ import type { CodeGenProvider, Providers } from './utils/types'
 import { codeGenCreate, codeGenIndex, codeGenTypes } from './utils/code-gen'
 import { extraProviders } from './utils/extra'
 import { overrides } from './utils/overrides'
-import { toCodeGenProvider } from './utils/process'
+import { SUFFIX, toCodeGenProvider } from './utils/process'
 
 const manualProviderKeys = [
   'anthropic',
@@ -24,7 +24,7 @@ const providers = await fetch('https://models.dev/api.json')
   })))
 
 const [autoProviders, manualProviders] = providers
-  .filter(({ api }) => api != null)
+  .filter(({ api, env }) => api != null && env.some(e => SUFFIX.some(s => e.endsWith(s))))
   .map(toCodeGenProvider)
   .reduce(([auto, manual], provider) => {
     if (manualProviderKeys.includes(provider.id))
@@ -49,7 +49,7 @@ const create = [
     '/* eslint-disable sonarjs/no-identical-functions */',
     '/* eslint-disable sonarjs/use-type-alias */',
   ].join('\n'),
-  'import { createChatProvider, createEmbedProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from \'@xsai-ext/shared-providers\'',
+  'import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from \'@xsai-ext/shared-providers\'',
   ...autoProviders.map(codeGenCreate),
 ].join('\n\n')
 
