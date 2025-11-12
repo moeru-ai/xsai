@@ -146,14 +146,21 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
             // https://platform.openai.com/docs/guides/function-calling?api-mode=chat&lang=javascript#streaming
             for (const toolCall of choice.delta.tool_calls) {
               const { index } = toolCall
+              const toolName = toolCall.function.name!
 
               if (!tool_calls.at(index)) {
-                tool_calls[index] = toolCall
-                pushEvent({ toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-streaming-start' })
+                tool_calls[index] = {
+                  ...toolCall,
+                  function: {
+                    ...toolCall.function,
+                    arguments: toolCall.function.arguments!,
+                  },
+                }
+                pushEvent({ toolCallId: toolCall.id, toolName, type: 'tool-call-streaming-start' })
               }
               else {
-                tool_calls[index].function.arguments += toolCall.function.arguments
-                pushEvent({ argsTextDelta: toolCall.function.arguments, toolCallId: toolCall.id, toolName: toolCall.function.name, type: 'tool-call-delta' })
+                tool_calls[index].function.arguments! += toolCall.function.arguments
+                pushEvent({ argsTextDelta: toolCall.function.arguments!, toolCallId: toolCall.id, toolName: toolCall.function.name ?? tool_calls[index].function.name!, type: 'tool-call-delta' })
               }
             }
           }

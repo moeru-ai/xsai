@@ -1,8 +1,20 @@
 export interface ToolCall {
-  function: {
-    arguments: string
-    name: string
-  }
+  function: ToolCallFunction | ToolCallFunctionWithoutArguments | ToolCallFunctionWithoutName
   id: string
   type: 'function'
+}
+
+interface ToolCallFunction {
+  arguments: string
+  name: string
+}
+
+interface ToolCallFunctionWithoutArguments {
+  arguments?: never
+  name: string
+}
+
+interface ToolCallFunctionWithoutName {
+  arguments: string
+  name?: never
 }
