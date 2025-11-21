@@ -152,7 +152,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
                   ...toolCall,
                   function: {
                     ...toolCall.function,
-                    arguments: toolCall.function.arguments!,
+                    arguments: toolCall.function.arguments ?? '',
                   },
                 }
                 pushEvent({ toolCallId: toolCall.id, toolName: toolCall.function.name!, type: 'tool-call-streaming-start' })
