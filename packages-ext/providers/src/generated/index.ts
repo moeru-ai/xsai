@@ -26,6 +26,7 @@ import {
   createHuggingface,
   createOpencode,
   createFastrouter,
+  createMinimax,
   createGoogleGenerativeAI,
   createInception,
   createWandb,
@@ -33,6 +34,7 @@ import {
   createZhipuaiCodingPlan,
   createPerplexity,
   createZenmux,
+  createOvhcloud,
   createIflowcn,
   createSynthetic,
   createDeepinfra,
@@ -47,8 +49,8 @@ import {
   createModelscope,
   createLlama,
   createScaleway,
+  createPoe,
   createCerebras,
-  createMinimax,
   createMinimaxi,
   createNovita,
   createSiliconFlow,
@@ -165,10 +167,10 @@ export const githubCopilot = createGithubCopilot(process.env.GITHUB_TOKEN ?? '')
 export const mistral = createMistral(process.env.MISTRAL_API_KEY ?? '')
 
 /**
- * Nebius AI Studio Provider
- * @see {@link https://docs.studio.nebius.com/quickstart}
+ * Nebius Token Factory Provider
+ * @see {@link https://docs.tokenfactory.nebius.com/}
  * @remarks
- * - baseURL - `https://api.studio.nebius.com/v1/`
+ * - baseURL - `https://api.tokenfactory.nebius.com/v1`
  * - apiKey - `NEBIUS_API_KEY`
  */
 export const nebius = createNebius(process.env.NEBIUS_API_KEY ?? '')
@@ -264,6 +266,15 @@ export const opencode = createOpencode(process.env.OPENCODE_API_KEY ?? '')
 export const fastrouter = createFastrouter(process.env.FASTROUTER_API_KEY ?? '')
 
 /**
+ * Minimax Provider
+ * @see {@link https://platform.minimax.io/docs/guides/quickstart}
+ * @remarks
+ * - baseURL - `https://api.minimax.io/v1/`
+ * - apiKey - `MINIMAX_API_KEY`
+ */
+export const minimax = createMinimax(process.env.MINIMAX_API_KEY ?? '')
+
+/**
  * Google Provider
  * @see {@link https://ai.google.dev/gemini-api/docs/pricing}
  * @remarks
@@ -325,6 +336,15 @@ export const perplexity = createPerplexity(process.env.PERPLEXITY_API_KEY ?? '')
  * - apiKey - `ZENMUX_API_KEY`
  */
 export const zenmux = createZenmux(process.env.ZENMUX_API_KEY ?? '')
+
+/**
+ * OVHcloud AI Endpoints Provider
+ * @see {@link https://www.ovhcloud.com/en/public-cloud/ai-endpoints/catalog//}
+ * @remarks
+ * - baseURL - `https://oai.endpoints.kepler.ai.cloud.ovh.net/v1`
+ * - apiKey - `OVHCLOUD_API_KEY`
+ */
+export const ovhcloud = createOvhcloud(process.env.OVHCLOUD_API_KEY ?? '')
 
 /**
  * iFlow Provider
@@ -453,6 +473,15 @@ export const llama = createLlama(process.env.LLAMA_API_KEY ?? '')
 export const scaleway = createScaleway(process.env.SCALEWAY_API_KEY ?? '')
 
 /**
+ * Poe Provider
+ * @see {@link https://creator.poe.com/docs/external-applications/openai-compatible-api}
+ * @remarks
+ * - baseURL - `https://api.poe.com/v1`
+ * - apiKey - `POE_API_KEY`
+ */
+export const poe = createPoe(process.env.POE_API_KEY ?? '')
+
+/**
  * Cerebras Provider
  * @see {@link https://inference-docs.cerebras.ai/models/overview}
  * @remarks
@@ -460,15 +489,6 @@ export const scaleway = createScaleway(process.env.SCALEWAY_API_KEY ?? '')
  * - apiKey - `CEREBRAS_API_KEY`
  */
 export const cerebras = createCerebras(process.env.CEREBRAS_API_KEY ?? '')
-
-/**
- * Minimax Provider
- * @see {@link https://platform.minimax.io/docs/api-reference/text-openai-api}
- * @remarks
- * - baseURL - `https://api.minimax.io/v1/`
- * - apiKey - `MINIMAX_API_KEY`
- */
-export const minimax = createMinimax(process.env.MINIMAX_API_KEY ?? '')
 
 /**
  * Minimaxi Provider

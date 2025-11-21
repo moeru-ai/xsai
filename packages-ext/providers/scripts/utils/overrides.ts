@@ -39,6 +39,9 @@ export const overrides: Record<string, Partial<Provider>> = {
     },
     api: 'https://api.groq.com/openai/v1/',
   },
+  'minimax': {
+    api: 'https://api.minimax.io/v1/',
+  },
   'mistral': {
     _capabilities: {
       embed: true,

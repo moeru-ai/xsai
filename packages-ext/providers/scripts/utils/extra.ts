@@ -2,14 +2,14 @@ import type { CodeGenProvider } from './types'
 
 // TODO: cohere 'https://api.cohere.ai/compatibility/v1/'
 export const extraProviders: CodeGenProvider[] = [
-  {
-    apiKey: ['MINIMAX_API_KEY'],
-    baseURL: 'https://api.minimax.io/v1/',
-    doc: 'https://platform.minimax.io/docs/api-reference/text-openai-api',
-    id: 'minimax',
-    models: [],
-    name: 'Minimax',
-  },
+  // {
+  //   apiKey: ['MINIMAX_API_KEY'],
+  //   baseURL: 'https://api.minimax.io/v1/',
+  //   doc: 'https://platform.minimax.io/docs/api-reference/text-openai-api',
+  //   id: 'minimax',
+  //   models: [],
+  //   name: 'Minimax',
+  // },
   {
     apiKey: ['MINIMAX_API_KEY'],
     baseURL: 'https://api.minimaxi.com/v1/',

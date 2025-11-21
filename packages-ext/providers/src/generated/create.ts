@@ -9,7 +9,7 @@ import { createChatProvider, createEmbedProvider, createImageProvider, createMod
  * @see {@link https://platform.moonshot.cn/docs/api/chat}
  */
 export const createMoonshotaiCn = (apiKey: string, baseURL = 'https://api.moonshot.cn/v1') => merge(
-  createChatProvider<'kimi-k2-0905-preview' | 'kimi-k2-0711-preview' | 'kimi-k2-turbo-preview'>({ apiKey, baseURL }),
+  createChatProvider<'kimi-k2-thinking-turbo' | 'kimi-k2-thinking' | 'kimi-k2-0905-preview' | 'kimi-k2-0711-preview' | 'kimi-k2-turbo-preview'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -27,7 +27,7 @@ export const createLucidquery = (apiKey: string, baseURL = 'https://lucidquery.c
  * @see {@link https://platform.moonshot.ai/docs/api/chat}
  */
 export const createMoonshotai = (apiKey: string, baseURL = 'https://api.moonshot.ai/v1') => merge(
-  createChatProvider<'kimi-k2-turbo-preview' | 'kimi-k2-0711-preview' | 'kimi-k2-0905-preview'>({ apiKey, baseURL }),
+  createChatProvider<'kimi-k2-thinking-turbo' | 'kimi-k2-turbo-preview' | 'kimi-k2-0711-preview' | 'kimi-k2-thinking' | 'kimi-k2-0905-preview'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -54,7 +54,7 @@ export const createAlibaba = (apiKey: string, baseURL = 'https://dashscope-intl.
  * @see {@link https://docs.x.ai/docs/models}
  */
 export const createXai = (apiKey: string, baseURL = 'https://api.x.ai/v1/') => merge(
-  createChatProvider<'grok-4-fast-non-reasoning' | 'grok-3-fast' | 'grok-4' | 'grok-2-vision' | 'grok-code-fast-1' | 'grok-2' | 'grok-3-mini-fast-latest' | 'grok-2-vision-1212' | 'grok-3' | 'grok-4-fast' | 'grok-2-latest' | 'grok-2-1212' | 'grok-3-fast-latest' | 'grok-3-latest' | 'grok-2-vision-latest' | 'grok-vision-beta' | 'grok-3-mini' | 'grok-beta' | 'grok-3-mini-latest' | 'grok-3-mini-fast'>({ apiKey, baseURL }),
+  createChatProvider<'grok-4-fast-non-reasoning' | 'grok-3-fast' | 'grok-4' | 'grok-2-vision' | 'grok-code-fast-1' | 'grok-2' | 'grok-3-mini-fast-latest' | 'grok-2-vision-1212' | 'grok-3' | 'grok-4-fast' | 'grok-2-latest' | 'grok-4-1-fast' | 'grok-2-1212' | 'grok-3-fast-latest' | 'grok-3-latest' | 'grok-2-vision-latest' | 'grok-vision-beta' | 'grok-3-mini' | 'grok-beta' | 'grok-3-mini-latest' | 'grok-4-1-fast-non-reasoning' | 'grok-3-mini-fast'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -72,7 +72,7 @@ export const createVultr = (apiKey: string, baseURL = 'https://api.vultrinferenc
  * @see {@link https://docs.api.nvidia.com/nim/}
  */
 export const createNvidia = (apiKey: string, baseURL = 'https://integrate.api.nvidia.com/v1') => merge(
-  createChatProvider<'moonshotai/kimi-k2-instruct-0905' | 'moonshotai/kimi-k2-instruct' | 'nvidia/cosmos-nemotron-34b' | 'nvidia/llama-embed-nemotron-8b' | 'nvidia/parakeet-tdt-0.6b-v2' | 'nvidia/nemoretriever-ocr-v1' | 'nvidia/llama-3.1-nemotron-ultra-253b-v1' | 'minimaxai/minimax-m2' | 'google/gemma-3-27b-it' | 'microsoft/phi-4-mini-instruct' | 'openai/whisper-large-v3' | 'openai/gpt-oss-120b' | 'qwen/qwen3-235b-a22b' | 'qwen/qwen3-coder-480b-a35b-instruct' | 'deepseek-ai/deepseek-v3.1-terminus' | 'deepseek-ai/deepseek-v3.1' | 'black-forest-labs/flux.1-dev'>({ apiKey, baseURL }),
+  createChatProvider<'moonshotai/kimi-k2-instruct-0905' | 'moonshotai/kimi-k2-instruct' | 'nvidia/nvidia-nemotron-nano-9b-v2' | 'nvidia/cosmos-nemotron-34b' | 'nvidia/llama-embed-nemotron-8b' | 'nvidia/parakeet-tdt-0.6b-v2' | 'nvidia/nemoretriever-ocr-v1' | 'nvidia/llama-3.1-nemotron-ultra-253b-v1' | 'minimaxai/minimax-m2' | 'google/gemma-3-27b-it' | 'microsoft/phi-4-mini-instruct' | 'openai/whisper-large-v3' | 'openai/gpt-oss-120b' | 'qwen/qwen3-next-80b-a3b-instruct' | 'qwen/qwen3-235b-a22b' | 'qwen/qwen3-coder-480b-a35b-instruct' | 'qwen/qwen3-next-80b-a3b-thinking' | 'deepseek-ai/deepseek-v3.1-terminus' | 'deepseek-ai/deepseek-v3.1' | 'black-forest-labs/flux.1-dev'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -100,7 +100,7 @@ export const createGroq = (apiKey: string, baseURL = 'https://api.groq.com/opena
  * @see {@link https://docs.github.com/en/copilot}
  */
 export const createGithubCopilot = (apiKey: string, baseURL = 'https://api.githubcopilot.com') => merge(
-  createChatProvider<'gemini-2.0-flash-001' | 'claude-opus-4' | 'grok-code-fast-1' | 'claude-haiku-4.5' | 'claude-3.5-sonnet' | 'o3-mini' | 'gpt-5-codex' | 'gpt-4o' | 'gpt-4.1' | 'o4-mini' | 'claude-opus-41' | 'gpt-5-mini' | 'claude-3.7-sonnet' | 'gemini-2.5-pro' | 'o3' | 'claude-sonnet-4' | 'gpt-5' | 'claude-3.7-sonnet-thought' | 'claude-sonnet-4.5'>({ apiKey, baseURL }),
+  createChatProvider<'gemini-2.0-flash-001' | 'claude-opus-4' | 'grok-code-fast-1' | 'gpt-5.1-codex' | 'claude-haiku-4.5' | 'gemini-3-pro-preview' | 'oswe-vscode-prime' | 'claude-3.5-sonnet' | 'gpt-5.1-codex-mini' | 'o3-mini' | 'gpt-5.1' | 'gpt-5-codex' | 'gpt-4o' | 'gpt-4.1' | 'o4-mini' | 'claude-opus-41' | 'gpt-5-mini' | 'claude-3.7-sonnet' | 'gemini-2.5-pro' | 'o3' | 'claude-sonnet-4' | 'gpt-5' | 'claude-3.7-sonnet-thought' | 'claude-sonnet-4.5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -115,10 +115,10 @@ export const createMistral = (apiKey: string, baseURL = 'https://api.mistral.ai/
 )
 
 /**
- * Create a Nebius AI Studio Provider
- * @see {@link https://docs.studio.nebius.com/quickstart}
+ * Create a Nebius Token Factory Provider
+ * @see {@link https://docs.tokenfactory.nebius.com/}
  */
-export const createNebius = (apiKey: string, baseURL = 'https://api.studio.nebius.com/v1/') => merge(
+export const createNebius = (apiKey: string, baseURL = 'https://api.tokenfactory.nebius.com/v1') => merge(
   createChatProvider<'NousResearch/hermes-4-70b' | 'NousResearch/hermes-4-405b' | 'moonshotai/kimi-k2-instruct' | 'nvidia/llama-3_1-nemotron-ultra-253b-v1' | 'openai/gpt-oss-20b' | 'openai/gpt-oss-120b' | 'qwen/qwen3-235b-a22b-instruct-2507' | 'qwen/qwen3-235b-a22b-thinking-2507' | 'qwen/qwen3-coder-480b-a35b-instruct' | 'meta-llama/llama-3_1-405b-instruct' | 'meta-llama/llama-3.3-70b-instruct-fast' | 'meta-llama/llama-3.3-70b-instruct-base' | 'zai-org/glm-4.5' | 'zai-org/glm-4.5-air' | 'deepseek-ai/deepseek-v3'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
@@ -146,7 +146,7 @@ export const createAlibabaCn = (apiKey: string, baseURL = 'https://dashscope.ali
  * @see {@link https://docs.venice.ai}
  */
 export const createVenice = (apiKey: string, baseURL = 'https://api.venice.ai/api/v1') => merge(
-  createChatProvider<'dolphin-2.9.2-qwen2-72b' | 'mistral-31-24b' | 'venice-uncensored' | 'qwen-2.5-vl' | 'qwen3-235b' | 'qwen-2.5-qwq-32b' | 'deepseek-coder-v2-lite' | 'qwen3-4b' | 'llama-3.3-70b' | 'qwen-2.5-coder-32b' | 'deepseek-r1-671b' | 'llama-3.2-3b' | 'llama-3.1-405b'>({ apiKey, baseURL }),
+  createChatProvider<'dolphin-2.9.2-qwen2-72b' | 'mistral-31-24b' | 'venice-uncensored' | 'qwen-2.5-vl' | 'qwen3-235b' | 'qwen-2.5-qwq-32b' | 'deepseek-coder-v2-lite' | 'qwen3-4b' | 'llama-3.3-70b' | 'qwen-2.5-coder-32b' | 'deepseek-r1-671b' | 'llama-3.2-3b' | 'llama-3.1-405b' | 'zai-org-glm-4.6'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -155,7 +155,7 @@ export const createVenice = (apiKey: string, baseURL = 'https://api.venice.ai/ap
  * @see {@link https://llm.chutes.ai/v1/models}
  */
 export const createChutes = (apiKey: string, baseURL = 'https://llm.chutes.ai/v1') => merge(
-  createChatProvider<'moonshotai/Kimi-K2-Instruct-75k' | 'moonshotai/Kimi-K2-Instruct-0905' | 'moonshotai/Kimi-VL-A3B-Thinking' | 'MiniMaxAI/MiniMax-M2' | 'meituan-longcat/LongCat-Flash-Chat-FP8' | 'tngtech/DeepSeek-R1T-Chimera' | 'tngtech/DeepSeek-TNG-R1T2-Chimera' | 'openai/gpt-oss-120b' | 'chutesai/Mistral-Small-3.2-24B-Instruct-2506' | 'Qwen/Qwen3-30B-A3B' | 'Qwen/Qwen3-235B-A22B-Instruct-2507' | 'Qwen/Qwen3-Coder-30B-A3B-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8' | 'Qwen/Qwen3-30B-A3B-Instruct-2507' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'Qwen/Qwen3-Next-80B-A3B-Thinking' | 'zai-org/GLM-4.5' | 'zai-org/GLM-4.6-FP8' | 'zai-org/GLM-4.6-turbo' | 'zai-org/GLM-4.6' | 'zai-org/GLM-4.5-FP8' | 'zai-org/GLM-4.5-Air' | 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B' | 'deepseek-ai/DeepSeek-R1-0528' | 'deepseek-ai/DeepSeek-V3.2-Exp' | 'deepseek-ai/DeepSeek-V3.1-Terminus' | 'deepseek-ai/DeepSeek-V3.1:THINKING' | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B' | 'deepseek-ai/DeepSeek-V3.1' | 'deepseek-ai/DeepSeek-V3-0324'>({ apiKey, baseURL }),
+  createChatProvider<'NousResearch/Hermes-4-70B' | 'NousResearch/Hermes-4-14B' | 'NousResearch/Hermes-4-405B-FP8' | 'NousResearch/DeepHermes-3-Mistral-24B-Preview' | 'rednote-hilab/dots.ocr' | 'moonshotai/Kimi-K2-Instruct-0905' | 'moonshotai/Kimi-K2-Thinking' | 'MiniMaxAI/MiniMax-M2' | 'ArliAI/QwQ-32B-ArliAI-RpR-v1' | 'meituan-longcat/LongCat-Flash-Chat-FP8' | 'tngtech/DeepSeek-R1T-Chimera' | 'tngtech/DeepSeek-TNG-R1T2-Chimera' | 'OpenGVLab/InternVL3-78B' | 'microsoft/MAI-DS-R1-FP8' | 'openai/gpt-oss-20b' | 'openai/gpt-oss-120b' | 'chutesai/Mistral-Small-3.1-24B-Instruct-2503' | 'chutesai/Mistral-Small-3.2-24B-Instruct-2506' | 'Alibaba-NLP/Tongyi-DeepResearch-30B-A3B' | 'unsloth/Mistral-Nemo-Instruct-2407' | 'unsloth/gemma-3-4b-it' | 'unsloth/Mistral-Small-24B-Instruct-2501' | 'unsloth/gemma-3-12b-it' | 'unsloth/gemma-3-27b-it' | 'Qwen/Qwen3-30B-A3B' | 'Qwen/Qwen3-14B' | 'Qwen/Qwen2.5-VL-32B-Instruct' | 'Qwen/Qwen3-235B-A22B-Instruct-2507' | 'Qwen/Qwen2.5-Coder-32B-Instruct' | 'Qwen/Qwen2.5-72B-Instruct' | 'Qwen/Qwen3-Coder-30B-A3B-Instruct' | 'Qwen/Qwen3-235B-A22B' | 'Qwen/Qwen2.5-VL-72B-Instruct' | 'Qwen/Qwen3-32B' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8' | 'Qwen/Qwen3-VL-235B-A22B-Instruct' | 'Qwen/Qwen3-VL-235B-A22B-Thinking' | 'Qwen/Qwen3-30B-A3B-Instruct-2507' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'zai-org/GLM-4.5' | 'zai-org/GLM-4.6' | 'zai-org/GLM-4.5-Air' | 'deepseek-ai/DeepSeek-R1' | 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B' | 'deepseek-ai/DeepSeek-R1-0528' | 'deepseek-ai/DeepSeek-V3.2-Exp' | 'deepseek-ai/DeepSeek-V3.1-Terminus' | 'deepseek-ai/DeepSeek-V3' | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B' | 'deepseek-ai/DeepSeek-V3.1' | 'deepseek-ai/DeepSeek-V3-0324'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -182,7 +182,7 @@ export const createGithubModels = (apiKey: string, baseURL = 'https://models.git
  * @see {@link https://docs.baseten.co/development/model-apis/overview}
  */
 export const createBaseten = (apiKey: string, baseURL = 'https://inference.baseten.co/v1') => merge(
-  createChatProvider<'moonshotai/Kimi-K2-Instruct-0905' | 'Qwen3/Qwen3-Coder-480B-A35B-Instruct' | 'zai-org/GLM-4.6'>({ apiKey, baseURL }),
+  createChatProvider<'moonshotai/Kimi-K2-Instruct-0905' | 'moonshotai/Kimi-K2-Thinking' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'zai-org/GLM-4.6'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -200,7 +200,7 @@ export const createHuggingface = (apiKey: string, baseURL = 'https://router.hugg
  * @see {@link https://opencode.ai/docs/zen}
  */
 export const createOpencode = (apiKey: string, baseURL = 'https://opencode.ai/zen/v1') => merge(
-  createChatProvider<'qwen3-coder' | 'claude-opus-4-1' | 'kimi-k2' | 'claude-haiku-4-5' | 'minimax-m2' | 'claude-sonnet-4-5' | 'gpt-5-codex' | 'an-gbt' | 'big-pickle' | 'claude-3-5-haiku' | 'glm-4.6' | 'grok-code' | 'claude-sonnet-4' | 'gpt-5'>({ apiKey, baseURL }),
+  createChatProvider<'qwen3-coder' | 'claude-opus-4-1' | 'kimi-k2' | 'gpt-5.1-codex' | 'claude-haiku-4-5' | 'gemini-3-pro' | 'claude-sonnet-4-5' | 'alpha-gd4' | 'alpha-kimi-k2-thinking' | 'gpt-5.1' | 'alpha-minimax-m2' | 'gpt-5-nano' | 'gpt-5-codex' | 'big-pickle' | 'claude-3-5-haiku' | 'glm-4.6' | 'grok-code' | 'alpha-doubao-seed-code' | 'claude-sonnet-4' | 'gpt-5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -214,11 +214,20 @@ export const createFastrouter = (apiKey: string, baseURL = 'https://go.fastroute
 )
 
 /**
+ * Create a Minimax Provider
+ * @see {@link https://platform.minimax.io/docs/guides/quickstart}
+ */
+export const createMinimax = (apiKey: string, baseURL = 'https://api.minimax.io/v1/') => merge(
+  createChatProvider<'MiniMax-M2'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
  * Create a Google Provider
  * @see {@link https://ai.google.dev/gemini-api/docs/pricing}
  */
 export const createGoogleGenerativeAI = (apiKey: string, baseURL = 'https://generativelanguage.googleapis.com/v1beta/openai/') => merge(
-  createChatProvider<'gemini-embedding-001' | 'gemini-2.5-flash-image' | 'gemini-2.5-flash-preview-05-20' | 'gemini-flash-lite-latest' | 'gemini-2.5-flash' | 'gemini-flash-latest' | 'gemini-2.5-pro-preview-05-06' | 'gemini-2.5-flash-preview-tts' | 'gemini-2.0-flash-lite' | 'gemini-live-2.5-flash-preview-native-audio' | 'gemini-2.0-flash' | 'gemini-2.5-flash-lite' | 'gemini-2.5-pro-preview-06-05' | 'gemini-live-2.5-flash' | 'gemini-2.5-flash-lite-preview-06-17' | 'gemini-2.5-flash-image-preview' | 'gemini-2.5-flash-preview-09-2025' | 'gemini-2.5-flash-preview-04-17' | 'gemini-2.5-pro-preview-tts' | 'gemini-2.5-pro' | 'gemini-1.5-flash' | 'gemini-1.5-flash-8b' | 'gemini-2.5-flash-lite-preview-09-2025' | 'gemini-1.5-pro'>({ apiKey, baseURL }),
+  createChatProvider<'gemini-embedding-001' | 'gemini-2.5-flash-image' | 'gemini-2.5-flash-preview-05-20' | 'gemini-flash-lite-latest' | 'gemini-3-pro-preview' | 'gemini-2.5-flash' | 'gemini-flash-latest' | 'gemini-2.5-pro-preview-05-06' | 'gemini-2.5-flash-preview-tts' | 'gemini-2.0-flash-lite' | 'gemini-live-2.5-flash-preview-native-audio' | 'gemini-2.0-flash' | 'gemini-2.5-flash-lite' | 'gemini-2.5-pro-preview-06-05' | 'gemini-live-2.5-flash' | 'gemini-2.5-flash-lite-preview-06-17' | 'gemini-2.5-flash-image-preview' | 'gemini-2.5-flash-preview-09-2025' | 'gemini-2.5-flash-preview-04-17' | 'gemini-2.5-pro-preview-tts' | 'gemini-2.5-pro' | 'gemini-1.5-flash' | 'gemini-1.5-flash-8b' | 'gemini-2.5-flash-lite-preview-09-2025' | 'gemini-1.5-pro'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
 )
@@ -246,7 +255,7 @@ export const createWandb = (apiKey: string, baseURL = 'https://api.inference.wan
  * @see {@link https://platform.openai.com/docs/models}
  */
 export const createOpenAI = (apiKey: string, baseURL = 'https://api.openai.com/v1/') => merge(
-  createChatProvider<'gpt-4.1-nano' | 'text-embedding-3-small' | 'gpt-4' | 'o1-pro' | 'gpt-4o-2024-05-13' | 'gpt-4o-2024-08-06' | 'gpt-4.1-mini' | 'o3-deep-research' | 'gpt-3.5-turbo' | 'text-embedding-3-large' | 'gpt-4-turbo' | 'o1-preview' | 'o3-mini' | 'codex-mini-latest' | 'gpt-5-nano' | 'gpt-5-codex' | 'gpt-4o' | 'gpt-4.1' | 'o4-mini' | 'o1' | 'gpt-5-mini' | 'o1-mini' | 'text-embedding-ada-002' | 'o3-pro' | 'gpt-4o-2024-11-20' | 'o3' | 'o4-mini-deep-research' | 'gpt-5-chat-latest' | 'gpt-4o-mini' | 'gpt-5' | 'gpt-5-pro'>({ apiKey, baseURL }),
+  createChatProvider<'gpt-4.1-nano' | 'text-embedding-3-small' | 'gpt-4' | 'o1-pro' | 'gpt-4o-2024-05-13' | 'gpt-5.1-codex' | 'gpt-4o-2024-08-06' | 'gpt-4.1-mini' | 'o3-deep-research' | 'gpt-3.5-turbo' | 'text-embedding-3-large' | 'gpt-4-turbo' | 'o1-preview' | 'gpt-5.1-codex-mini' | 'o3-mini' | 'gpt-5.1' | 'codex-mini-latest' | 'gpt-5-nano' | 'gpt-5-codex' | 'gpt-4o' | 'gpt-4.1' | 'o4-mini' | 'o1' | 'gpt-5-mini' | 'o1-mini' | 'text-embedding-ada-002' | 'o3-pro' | 'gpt-4o-2024-11-20' | 'o3' | 'o4-mini-deep-research' | 'gpt-5-chat-latest' | 'gpt-4o-mini' | 'gpt-5' | 'gpt-5-pro' | 'gpt-5.1-chat-latest'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
   createImageProvider({ apiKey, baseURL }),
@@ -277,7 +286,16 @@ export const createPerplexity = (apiKey: string, baseURL = 'https://api.perplexi
  * @see {@link https://docs.zenmux.ai}
  */
 export const createZenmux = (apiKey: string, baseURL = 'https://zenmux.ai/api/v1') => merge(
-  createChatProvider<'moonshotai/kimi-k2-0905' | 'x-ai/grok-4-fast-non-reasoning' | 'x-ai/grok-4' | 'x-ai/grok-code-fast-1' | 'x-ai/grok-4-fast' | 'deepseek/deepseek-chat' | 'google/gemini-2.5-pro' | 'openai/gpt-5-codex' | 'openai/gpt-5' | 'inclusionai/ring-1t' | 'inclusionai/lint-1t' | 'z-ai/glm-4.5-air' | 'z-ai/glm-4.6' | 'qwen/qwen3-coder-plus' | 'kuaishou/kat-coder-pro-v1' | 'anthropic/claude-haiku-4.5' | 'anthropic/claude-opus-4.1' | 'anthropic/claude-sonnet-4.5'>({ apiKey, baseURL }),
+  createChatProvider<'moonshotai/kimi-k2-thinking-turbo' | 'moonshotai/kimi-k2-0905' | 'moonshotai/kimi-k2-thinking' | 'x-ai/grok-4-fast-non-reasoning' | 'x-ai/grok-4' | 'x-ai/grok-code-fast-1' | 'x-ai/grok-4-fast' | 'deepseek/deepseek-chat' | 'minimax/minimax-m2' | 'google/gemini-2.5-pro' | 'openai/gpt-5-codex' | 'openai/gpt-5' | 'inclusionai/ring-1t' | 'inclusionai/lint-1t' | 'z-ai/glm-4.5-air' | 'z-ai/glm-4.6' | 'qwen/qwen3-coder-plus' | 'kuaishou/kat-coder-pro-v1' | 'anthropic/claude-haiku-4.5' | 'anthropic/claude-opus-4.1' | 'anthropic/claude-sonnet-4.5'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a OVHcloud AI Endpoints Provider
+ * @see {@link https://www.ovhcloud.com/en/public-cloud/ai-endpoints/catalog//}
+ */
+export const createOvhcloud = (apiKey: string, baseURL = 'https://oai.endpoints.kepler.ai.cloud.ovh.net/v1') => merge(
+  createChatProvider<'mixtral-8x7b-instruct-v0.1' | 'mistral-7b-instruct-v0.3' | 'llama-3.1-8b-instruct' | 'qwen2.5-vl-72b-instruct' | 'mistral-nemo-instruct-2407' | 'mistral-small-3.2-24b-instruct-2506' | 'qwen2.5-coder-32b-instruct' | 'qwen3-coder-30b-a3b-instruct' | 'llava-next-mistral-7b' | 'deepseek-r1-distill-llama-70b' | 'meta-llama-3_1-70b-instruct' | 'gpt-oss-20b' | 'gpt-oss-120b' | 'meta-llama-3_3-70b-instruct' | 'qwen3-32b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -286,7 +304,7 @@ export const createZenmux = (apiKey: string, baseURL = 'https://zenmux.ai/api/v1
  * @see {@link https://platform.iflow.cn/en/docs}
  */
 export const createIflowcn = (apiKey: string, baseURL = 'https://apis.iflow.cn/v1') => merge(
-  createChatProvider<'qwen3-coder' | 'deepseek-v3' | 'kimi-k2' | 'deepseek-r1' | 'deepseek-v3.1' | 'qwen3-235b' | 'kimi-k2-0905' | 'qwen3-235b-a22b-thinking-2507' | 'qwen3-vl-plus' | 'glm-4.6' | 'tstars2.0' | 'qwen3-235b-a22b-instruct' | 'qwen3-max' | 'deepseek-v3.2' | 'qwen3-max-preview' | 'qwen3-coder-plus' | 'qwen3-32b'>({ apiKey, baseURL }),
+  createChatProvider<'qwen3-coder' | 'deepseek-v3' | 'kimi-k2' | 'deepseek-r1' | 'deepseek-v3.1' | 'minimax-m2' | 'qwen3-235b' | 'kimi-k2-0905' | 'qwen3-235b-a22b-thinking-2507' | 'qwen3-vl-plus' | 'glm-4.6' | 'tstars2.0' | 'qwen3-235b-a22b-instruct' | 'qwen3-max' | 'deepseek-v3.2' | 'qwen3-max-preview' | 'qwen3-coder-plus' | 'qwen3-32b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -295,7 +313,7 @@ export const createIflowcn = (apiKey: string, baseURL = 'https://apis.iflow.cn/v
  * @see {@link https://synthetic.new/pricing}
  */
 export const createSynthetic = (apiKey: string, baseURL = 'https://api.synthetic.new/v1') => merge(
-  createChatProvider<'hf:Qwen/Qwen3-235B-A22B-Instruct-2507' | 'hf:Qwen/Qwen2.5-Coder-32B-Instruct' | 'hf:Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'hf:Qwen/Qwen3-235B-A22B-Thinking-2507' | 'hf:MiniMaxAI/MiniMax-M2' | 'hf:meta-llama/Llama-3.1-70B-Instruct' | 'hf:meta-llama/Llama-3.1-8B-Instruct' | 'hf:meta-llama/Llama-3.3-70B-Instruct' | 'hf:meta-llama/Llama-4-Scout-17B-16E-Instruct' | 'hf:meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8' | 'hf:meta-llama/Llama-3.1-405B-Instruct' | 'hf:moonshotai/Kimi-K2-Instruct' | 'hf:moonshotai/Kimi-K2-Instruct-0905' | 'hf:zai-org/GLM-4.5' | 'hf:zai-org/GLM-4.6' | 'hf:deepseek-ai/DeepSeek-R1' | 'hf:deepseek-ai/DeepSeek-R1-0528' | 'hf:deepseek-ai/DeepSeek-V3.1-Terminus' | 'hf:deepseek-ai/DeepSeek-V3' | 'hf:deepseek-ai/DeepSeek-V3.1' | 'hf:deepseek-ai/DeepSeek-V3-0324' | 'hf:openai/gpt-oss-120b'>({ apiKey, baseURL }),
+  createChatProvider<'hf:Qwen/Qwen3-235B-A22B-Instruct-2507' | 'hf:Qwen/Qwen2.5-Coder-32B-Instruct' | 'hf:Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'hf:Qwen/Qwen3-235B-A22B-Thinking-2507' | 'hf:MiniMaxAI/MiniMax-M2' | 'hf:meta-llama/Llama-3.1-70B-Instruct' | 'hf:meta-llama/Llama-3.1-8B-Instruct' | 'hf:meta-llama/Llama-3.3-70B-Instruct' | 'hf:meta-llama/Llama-4-Scout-17B-16E-Instruct' | 'hf:meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8' | 'hf:meta-llama/Llama-3.1-405B-Instruct' | 'hf:moonshotai/Kimi-K2-Instruct' | 'hf:moonshotai/Kimi-K2-Instruct-0905' | 'hf:moonshotai/Kimi-K2-Thinking' | 'hf:zai-org/GLM-4.5' | 'hf:zai-org/GLM-4.6' | 'hf:deepseek-ai/DeepSeek-R1' | 'hf:deepseek-ai/DeepSeek-R1-0528' | 'hf:deepseek-ai/DeepSeek-V3.1-Terminus' | 'hf:deepseek-ai/DeepSeek-V3' | 'hf:deepseek-ai/DeepSeek-V3.1' | 'hf:deepseek-ai/DeepSeek-V3-0324' | 'hf:openai/gpt-oss-120b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -304,7 +322,7 @@ export const createSynthetic = (apiKey: string, baseURL = 'https://api.synthetic
  * @see {@link https://deepinfra.com/models}
  */
 export const createDeepinfra = (apiKey: string, baseURL = 'https://api.deepinfra.com/v1/openai/') => merge(
-  createChatProvider<'moonshotai/Kimi-K2-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo' | 'zai-org/GLM-4.5'>({ apiKey, baseURL }),
+  createChatProvider<'moonshotai/Kimi-K2-Instruct' | 'openai/gpt-oss-20b' | 'openai/gpt-oss-120b' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo' | 'zai-org/GLM-4.5'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
 )
@@ -350,7 +368,7 @@ export const createInference = (apiKey: string, baseURL = 'https://inference.net
  * @see {@link https://requesty.ai/solution/llm-routing/models}
  */
 export const createRequesty = (apiKey: string, baseURL = 'https://router.requesty.ai/v1') => merge(
-  createChatProvider<'google/gemini-2.5-flash' | 'google/gemini-2.5-pro' | 'openai/gpt-4.1-mini' | 'openai/gpt-5-nano' | 'openai/gpt-4.1' | 'openai/o4-mini' | 'openai/gpt-5-mini' | 'openai/gpt-4o-mini' | 'openai/gpt-5' | 'anthropic/claude-opus-4' | 'anthropic/claude-3-7-sonnet' | 'anthropic/claude-4-sonnet-20250522' | 'anthropic/claude-opus-4-1-20250805'>({ apiKey, baseURL }),
+  createChatProvider<'xai/grok-4' | 'xai/grok-4-fast' | 'google/gemini-2.5-flash' | 'google/gemini-2.5-pro' | 'openai/gpt-4.1-mini' | 'openai/gpt-5-nano' | 'openai/gpt-4.1' | 'openai/o4-mini' | 'openai/gpt-5-mini' | 'openai/gpt-4o-mini' | 'openai/gpt-5' | 'anthropic/claude-opus-4' | 'anthropic/claude-opus-4-1' | 'anthropic/claude-haiku-4-5' | 'anthropic/claude-sonnet-4-5' | 'anthropic/claude-3-7-sonnet' | 'anthropic/claude-sonnet-4'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -409,6 +427,15 @@ export const createScaleway = (apiKey: string, baseURL = 'https://api.scaleway.a
 )
 
 /**
+ * Create a Poe Provider
+ * @see {@link https://creator.poe.com/docs/external-applications/openai-compatible-api}
+ */
+export const createPoe = (apiKey: string, baseURL = 'https://api.poe.com/v1') => merge(
+  createChatProvider<'facebook/llama-3.1-8b' | 'facebook/llama-3.1-405b' | 'facebook/llama-3.1-70b' | 'xai/grok-4-fast-non-reasoning' | 'xai/grok-4-fast-reasoning' | 'xai/grok-4' | 'xai/grok-code-fast-1' | 'xai/grok-2' | 'xai/grok-3' | 'xai/grok-3-mini' | 'ideogramai/ideogram' | 'ideogramai/ideogram-v2a' | 'ideogramai/ideogram-v2a-turbo' | 'ideogramai/ideogram-v2' | 'runwayml/runway' | 'runwayml/runway-gen-4-turbo' | 'openAi/gpt-4.1-nano' | 'openAi/sora-2' | 'openAi/o1-pro' | 'openAi/gpt-3.5-turbo-raw' | 'openAi/gpt-4-classic' | 'openAi/gpt-4.1-mini' | 'openAi/gpt-5-chat' | 'openAi/o3-deep-research' | 'openAi/gpt-4o-search' | 'openAi/gpt-image-1-mini' | 'openAi/gpt-3.5-turbo' | 'openAi/o3-mini-high' | 'openAi/chatgpt-4o-latest' | 'openAi/gpt-4-turbo' | 'openAi/o3-mini' | 'openAi/gpt-5-nano' | 'openAi/gpt-5-codex' | 'openAi/gpt-4o' | 'openAi/gpt-4.1' | 'openAi/o4-mini' | 'openAi/o1' | 'openAi/gpt-5-mini' | 'openAi/gpt-4o-aug' | 'openAi/o3-pro' | 'openAi/gpt-image-1' | 'openAi/gpt-3.5-turbo-instruct' | 'openAi/o3' | 'openAi/o4-mini-deep-research' | 'openAi/gpt-4-classic-0314' | 'openAi/gpt-4o-mini' | 'openAi/gpt-5' | 'openAi/dall-e-3' | 'openAi/sora-2-pro' | 'openAi/gpt-5-pro' | 'openAi/gpt-4o-mini-search' | 'elevenlabs/elevenlabs-v3' | 'elevenlabs/elevenlabs-music' | 'elevenlabs/elevenlabs-v2.5-turbo' | 'google/nano-banana' | 'google/imagen-4' | 'google/imagen-3' | 'google/imagen-4-ultra' | 'google/gemini-2.5-flash' | 'google/gemini-3.0-pro' | 'google/gemini-2.0-flash-lite' | 'google/veo-3.1' | 'google/imagen-3-fast' | 'google/lyria' | 'google/gemini-2.0-flash' | 'google/gemini-2.5-flash-lite' | 'google/veo-3' | 'google/veo-3-fast' | 'google/imagen-4-fast' | 'google/veo-2' | 'google/gemini-2.5-pro' | 'google/veo-3.1-fast' | 'openai/gpt-5.1-codex' | 'openai/gpt-5.1-codex-mini' | 'openai/gpt-5.1-instant' | 'openai/gpt-5.1' | 'stabilityai/stablediffusionxl' | 'topazlabs-co/topazlabs' | 'lumalabs/ray2' | 'lumalabs/dream-machine' | 'anthropic/claude-opus-3' | 'anthropic/claude-opus-4' | 'anthropic/claude-sonnet-3.7-reasoning' | 'anthropic/claude-opus-4-search' | 'anthropic/claude-sonnet-3.7' | 'anthropic/claude-haiku-3.5-search' | 'anthropic/claude-haiku-4.5' | 'anthropic/claude-sonnet-4-reasoning' | 'anthropic/claude-haiku-3' | 'anthropic/claude-opus-4.1' | 'anthropic/claude-sonnet-3.7-search' | 'anthropic/claude-opus-4-reasoning' | 'anthropic/claude-sonnet-3.5' | 'anthropic/claude-sonnet-4' | 'anthropic/claude-haiku-3.5' | 'anthropic/claude-sonnet-3.5-june' | 'anthropic/claude-sonnet-4.5' | 'anthropic/claude-sonnet-4-search' | 'trytako/tako' | 'novita/glm-4.6'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
  * Create a Cerebras Provider
  * @see {@link https://inference-docs.cerebras.ai/models/overview}
  */
@@ -416,15 +443,6 @@ export const createCerebras = (apiKey: string, baseURL = 'https://api.cerebras.a
   createChatProvider<'qwen-3-235b-a22b-instruct-2507' | 'zai-glm-4.6' | 'qwen-3-coder-480b' | 'gpt-oss-120b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
-)
-
-/**
- * Create a Minimax Provider
- * @see {@link https://platform.minimax.io/docs/api-reference/text-openai-api}
- */
-export const createMinimax = (apiKey: string, baseURL = 'https://api.minimax.io/v1/') => merge(
-  createChatProvider({ apiKey, baseURL }),
-  createModelProvider({ apiKey, baseURL }),
 )
 
 /**
