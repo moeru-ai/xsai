@@ -193,3 +193,7 @@ xsAI is currently in an early stage of development and may introduce breaking ch
 [MIT](LICENSE.md)
 
 Moeru AI / xsAI is not affiliated with OpenAI.
+
+## Sponsors
+
+![sponsors](https://github.com/kwaa/sponsors/blob/main/public/sponsors.svg?raw=true)
