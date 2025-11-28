@@ -63,6 +63,16 @@ export const overrides: Record<string, Partial<Provider>> = {
   'perplexity': {
     api: 'https://api.perplexity.ai/',
   },
+  'siliconflow': {
+    _capabilities: {
+      embed: true,
+      speech: true,
+      transcription: true,
+    },
+    _overrides: {
+      create: 'SiliconFlow',
+    },
+  },
   'xai': {
     api: 'https://api.x.ai/v1/',
   },

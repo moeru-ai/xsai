@@ -13,6 +13,7 @@ import {
   createNvidia,
   createUpstage,
   createGroq,
+  createBailing,
   createGithubCopilot,
   createMistral,
   createNebius,
@@ -20,9 +21,11 @@ import {
   createAlibabaCn,
   createVenice,
   createChutes,
+  createAgentrouter,
   createCortecs,
   createGithubModels,
   createBaseten,
+  createSiliconFlow,
   createHuggingface,
   createOpencode,
   createFastrouter,
@@ -45,6 +48,7 @@ import {
   createRequesty,
   createMorph,
   createLmstudio,
+  createIoIntelligence,
   createFireworks,
   createModelscope,
   createLlama,
@@ -53,7 +57,6 @@ import {
   createCerebras,
   createMinimaxi,
   createNovita,
-  createSiliconFlow,
   createStepfun,
   createTencentHunyuan,
 } from './create'
@@ -149,6 +152,15 @@ export const upstage = createUpstage(process.env.UPSTAGE_API_KEY ?? '')
 export const groq = createGroq(process.env.GROQ_API_KEY ?? '')
 
 /**
+ * Bailing Provider
+ * @see {@link https://alipaytbox.yuque.com/sxs0ba/ling/intro}
+ * @remarks
+ * - baseURL - `https://api.tbox.cn/api/llm/v1/chat/completions`
+ * - apiKey - `BAILING_API_TOKEN`
+ */
+export const bailing = createBailing(process.env.BAILING_API_TOKEN ?? '')
+
+/**
  * GitHub Copilot Provider
  * @see {@link https://docs.github.com/en/copilot}
  * @remarks
@@ -212,6 +224,15 @@ export const venice = createVenice(process.env.VENICE_API_KEY ?? '')
 export const chutes = createChutes(process.env.CHUTES_API_KEY ?? '')
 
 /**
+ * AgentRouter Provider
+ * @see {@link https://docs.agentrouter.org}
+ * @remarks
+ * - baseURL - `https://agentrouter.org/v1`
+ * - apiKey - `AGENTROUTER_API_KEY`
+ */
+export const agentrouter = createAgentrouter(process.env.AGENTROUTER_API_KEY ?? '')
+
+/**
  * Cortecs Provider
  * @see {@link https://api.cortecs.ai/v1/models}
  * @remarks
@@ -237,6 +258,15 @@ export const githubModels = createGithubModels(process.env.GITHUB_TOKEN ?? '')
  * - apiKey - `BASETEN_API_KEY`
  */
 export const baseten = createBaseten(process.env.BASETEN_API_KEY ?? '')
+
+/**
+ * SiliconFlow Provider
+ * @see {@link https://cloud.siliconflow.com/models}
+ * @remarks
+ * - baseURL - `https://api.siliconflow.com/v1`
+ * - apiKey - `SILICONFLOW_API_KEY`
+ */
+export const siliconflow = createSiliconFlow(process.env.SILICONFLOW_API_KEY ?? '')
 
 /**
  * Hugging Face Provider
@@ -437,6 +467,15 @@ export const morph = createMorph(process.env.MORPH_API_KEY ?? '')
 export const lmstudio = createLmstudio(process.env.LMSTUDIO_API_KEY ?? '')
 
 /**
+ * IO Intelligence Provider
+ * @see {@link https://io.net/docs/guides/intelligence/io-intelligence}
+ * @remarks
+ * - baseURL - `https://api.intelligence.io.solutions/api/v1`
+ * - apiKey - `IOINTELLIGENCE_API_KEY`
+ */
+export const ioIntelligence = createIoIntelligence(process.env.IOINTELLIGENCE_API_KEY ?? '')
+
+/**
  * Fireworks AI Provider
  * @see {@link https://fireworks.ai/docs/}
  * @remarks
@@ -507,15 +546,6 @@ export const minimaxi = createMinimaxi(process.env.MINIMAX_API_KEY ?? '')
  * - apiKey - `NOVITA_API_KEY`
  */
 export const novita = createNovita(process.env.NOVITA_API_KEY ?? '')
-
-/**
- * SiliconFlow Provider
- * @see {@link https://docs.siliconflow.com/en/userguide/quickstart#4-3-call-via-openai-interface}
- * @remarks
- * - baseURL - `https://api.siliconflow.cn/v1/`
- * - apiKey - `SILICON_FLOW_API_KEY`
- */
-export const siliconFlow = createSiliconFlow(process.env.SILICON_FLOW_API_KEY ?? '')
 
 /**
  * StepFun Provider
