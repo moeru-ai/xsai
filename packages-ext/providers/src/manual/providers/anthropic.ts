@@ -1,17 +1,24 @@
 import {
-  createChatProvider,
+  createChatProviderWithExtraOptions,
   createModelProvider,
   merge,
 } from '@xsai-ext/shared-providers'
 
 import type { AnthropicModels } from '../../generated/types'
 
+export interface AnthropicOptions {
+  /** @see {@link https://docs.claude.com/en/api/openai-sdk#extended-thinking-support} */
+  thinking?: {
+    budget_tokens: number
+    type: 'enabled'
+  }
+}
+
 /**
  * Create a Anthropic Provider
  * @see {@link https://docs.claude.com/en/api/openai-sdk}
  */
 export const createAnthropic = (apiKey: string, baseURL = 'https://api.anthropic.com/v1/') => merge(
-  /** TODO: {@link https://docs.claude.com/en/api/openai-sdk#extended-thinking-support} */
-  createChatProvider<AnthropicModels>({ apiKey, baseURL }),
+  createChatProviderWithExtraOptions<AnthropicModels, AnthropicOptions>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
