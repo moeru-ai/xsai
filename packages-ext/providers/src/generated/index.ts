@@ -21,7 +21,7 @@ import {
   createAlibabaCn,
   createVenice,
   createChutes,
-  createAgentrouter,
+  createKimiForCoding,
   createCortecs,
   createGithubModels,
   createBaseten,
@@ -35,6 +35,7 @@ import {
   createWandb,
   createOpenAI,
   createZhipuaiCodingPlan,
+  createMinimaxCn,
   createPerplexity,
   createZenmux,
   createOvhcloud,
@@ -48,14 +49,13 @@ import {
   createRequesty,
   createMorph,
   createLmstudio,
-  createIoIntelligence,
   createFireworks,
+  createIoNet,
   createModelscope,
   createLlama,
   createScaleway,
   createPoe,
   createCerebras,
-  createMinimaxi,
   createNovita,
   createStepfun,
   createTencentHunyuan,
@@ -224,13 +224,13 @@ export const venice = createVenice(process.env.VENICE_API_KEY ?? '')
 export const chutes = createChutes(process.env.CHUTES_API_KEY ?? '')
 
 /**
- * AgentRouter Provider
- * @see {@link https://docs.agentrouter.org}
+ * Kimi For Coding Provider
+ * @see {@link https://www.kimi.com/coding/docs/en/third-party-agents.html}
  * @remarks
- * - baseURL - `https://agentrouter.org/v1`
- * - apiKey - `AGENTROUTER_API_KEY`
+ * - baseURL - `https://api.kimi.com/coding/v1`
+ * - apiKey - `KIMI_API_KEY`
  */
-export const agentrouter = createAgentrouter(process.env.AGENTROUTER_API_KEY ?? '')
+export const kimiForCoding = createKimiForCoding(process.env.KIMI_API_KEY ?? '')
 
 /**
  * Cortecs Provider
@@ -296,7 +296,7 @@ export const opencode = createOpencode(process.env.OPENCODE_API_KEY ?? '')
 export const fastrouter = createFastrouter(process.env.FASTROUTER_API_KEY ?? '')
 
 /**
- * Minimax Provider
+ * MiniMax Provider
  * @see {@link https://platform.minimax.io/docs/guides/quickstart}
  * @remarks
  * - baseURL - `https://api.minimax.io/v1/`
@@ -348,6 +348,15 @@ export const openai = createOpenAI(process.env.OPENAI_API_KEY ?? '')
  * - apiKey - `ZHIPU_API_KEY`
  */
 export const zhipuaiCodingPlan = createZhipuaiCodingPlan(process.env.ZHIPU_API_KEY ?? '')
+
+/**
+ * MiniMax (China) Provider
+ * @see {@link https://platform.minimaxi.com/docs/guides/quickstart}
+ * @remarks
+ * - baseURL - `https://api.minimaxi.com/v1/`
+ * - apiKey - `MINIMAX_API_KEY`
+ */
+export const minimaxCn = createMinimaxCn(process.env.MINIMAX_API_KEY ?? '')
 
 /**
  * Perplexity Provider
@@ -467,15 +476,6 @@ export const morph = createMorph(process.env.MORPH_API_KEY ?? '')
 export const lmstudio = createLmstudio(process.env.LMSTUDIO_API_KEY ?? '')
 
 /**
- * IO Intelligence Provider
- * @see {@link https://io.net/docs/guides/intelligence/io-intelligence}
- * @remarks
- * - baseURL - `https://api.intelligence.io.solutions/api/v1`
- * - apiKey - `IOINTELLIGENCE_API_KEY`
- */
-export const ioIntelligence = createIoIntelligence(process.env.IOINTELLIGENCE_API_KEY ?? '')
-
-/**
  * Fireworks AI Provider
  * @see {@link https://fireworks.ai/docs/}
  * @remarks
@@ -483,6 +483,15 @@ export const ioIntelligence = createIoIntelligence(process.env.IOINTELLIGENCE_AP
  * - apiKey - `FIREWORKS_API_KEY`
  */
 export const fireworks = createFireworks(process.env.FIREWORKS_API_KEY ?? '')
+
+/**
+ * IO.NET Provider
+ * @see {@link https://io.net/docs/guides/intelligence/io-intelligence}
+ * @remarks
+ * - baseURL - `https://api.intelligence.io.solutions/api/v1`
+ * - apiKey - `IOINTELLIGENCE_API_KEY`
+ */
+export const ioNet = createIoNet(process.env.IOINTELLIGENCE_API_KEY ?? '')
 
 /**
  * ModelScope Provider
@@ -528,15 +537,6 @@ export const poe = createPoe(process.env.POE_API_KEY ?? '')
  * - apiKey - `CEREBRAS_API_KEY`
  */
 export const cerebras = createCerebras(process.env.CEREBRAS_API_KEY ?? '')
-
-/**
- * Minimaxi Provider
- * @see {@link https://platform.minimaxi.com/docs/api-reference/text-openai-api}
- * @remarks
- * - baseURL - `https://api.minimaxi.com/v1/`
- * - apiKey - `MINIMAX_API_KEY`
- */
-export const minimaxi = createMinimaxi(process.env.MINIMAX_API_KEY ?? '')
 
 /**
  * Novita AI Provider

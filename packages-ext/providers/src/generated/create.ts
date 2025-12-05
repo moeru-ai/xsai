@@ -155,7 +155,7 @@ export const createAlibabaCn = (apiKey: string, baseURL = 'https://dashscope.ali
  * @see {@link https://docs.venice.ai}
  */
 export const createVenice = (apiKey: string, baseURL = 'https://api.venice.ai/api/v1') => merge(
-  createChatProvider<'dolphin-2.9.2-qwen2-72b' | 'mistral-31-24b' | 'venice-uncensored' | 'qwen-2.5-vl' | 'qwen3-235b' | 'qwen-2.5-qwq-32b' | 'deepseek-coder-v2-lite' | 'qwen3-4b' | 'llama-3.3-70b' | 'qwen-2.5-coder-32b' | 'deepseek-r1-671b' | 'llama-3.2-3b' | 'llama-3.1-405b' | 'zai-org-glm-4.6'>({ apiKey, baseURL }),
+  createChatProvider<'grok-41-fast' | 'dolphin-2.9.2-qwen2-72b' | 'mistral-31-24b' | 'venice-uncensored' | 'gemini-3-pro-preview' | 'qwen-2.5-vl' | 'qwen3-235b' | 'qwen-2.5-qwq-32b' | 'deepseek-coder-v2-lite' | 'qwen3-4b' | 'llama-3.3-70b' | 'qwen-2.5-coder-32b' | 'kimi-k2-thinking' | 'deepseek-r1-671b' | 'llama-3.2-3b' | 'llama-3.1-405b' | 'zai-org-glm-4.6'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -164,16 +164,16 @@ export const createVenice = (apiKey: string, baseURL = 'https://api.venice.ai/ap
  * @see {@link https://llm.chutes.ai/v1/models}
  */
 export const createChutes = (apiKey: string, baseURL = 'https://llm.chutes.ai/v1') => merge(
-  createChatProvider<'NousResearch/Hermes-4-70B' | 'NousResearch/Hermes-4-14B' | 'NousResearch/Hermes-4-405B-FP8' | 'NousResearch/DeepHermes-3-Mistral-24B-Preview' | 'rednote-hilab/dots.ocr' | 'moonshotai/Kimi-K2-Instruct-0905' | 'moonshotai/Kimi-K2-Thinking' | 'MiniMaxAI/MiniMax-M2' | 'ArliAI/QwQ-32B-ArliAI-RpR-v1' | 'meituan-longcat/LongCat-Flash-Chat-FP8' | 'tngtech/DeepSeek-R1T-Chimera' | 'tngtech/DeepSeek-TNG-R1T2-Chimera' | 'OpenGVLab/InternVL3-78B' | 'microsoft/MAI-DS-R1-FP8' | 'openai/gpt-oss-20b' | 'openai/gpt-oss-120b' | 'chutesai/Mistral-Small-3.1-24B-Instruct-2503' | 'chutesai/Mistral-Small-3.2-24B-Instruct-2506' | 'Alibaba-NLP/Tongyi-DeepResearch-30B-A3B' | 'unsloth/Mistral-Nemo-Instruct-2407' | 'unsloth/gemma-3-4b-it' | 'unsloth/Mistral-Small-24B-Instruct-2501' | 'unsloth/gemma-3-12b-it' | 'unsloth/gemma-3-27b-it' | 'Qwen/Qwen3-30B-A3B' | 'Qwen/Qwen3-14B' | 'Qwen/Qwen2.5-VL-32B-Instruct' | 'Qwen/Qwen3-235B-A22B-Instruct-2507' | 'Qwen/Qwen2.5-Coder-32B-Instruct' | 'Qwen/Qwen2.5-72B-Instruct' | 'Qwen/Qwen3-Coder-30B-A3B-Instruct' | 'Qwen/Qwen3-235B-A22B' | 'Qwen/Qwen2.5-VL-72B-Instruct' | 'Qwen/Qwen3-32B' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8' | 'Qwen/Qwen3-VL-235B-A22B-Instruct' | 'Qwen/Qwen3-VL-235B-A22B-Thinking' | 'Qwen/Qwen3-30B-A3B-Instruct-2507' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'zai-org/GLM-4.5' | 'zai-org/GLM-4.6' | 'zai-org/GLM-4.5-Air' | 'deepseek-ai/DeepSeek-R1' | 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B' | 'deepseek-ai/DeepSeek-R1-0528' | 'deepseek-ai/DeepSeek-V3.2-Exp' | 'deepseek-ai/DeepSeek-V3.1-Terminus' | 'deepseek-ai/DeepSeek-V3' | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B' | 'deepseek-ai/DeepSeek-V3.1' | 'deepseek-ai/DeepSeek-V3-0324'>({ apiKey, baseURL }),
+  createChatProvider<'NousResearch/Hermes-4-70B' | 'NousResearch/Hermes-4-14B' | 'NousResearch/Hermes-4-405B-FP8' | 'NousResearch/DeepHermes-3-Mistral-24B-Preview' | 'rednote-hilab/dots.ocr' | 'moonshotai/Kimi-K2-Instruct-0905' | 'moonshotai/Kimi-K2-Thinking' | 'MiniMaxAI/MiniMax-M2' | 'ArliAI/QwQ-32B-ArliAI-RpR-v1' | 'meituan-longcat/LongCat-Flash-Chat-FP8' | 'tngtech/DeepSeek-R1T-Chimera' | 'tngtech/DeepSeek-TNG-R1T2-Chimera' | 'tngtech/TNG-R1T-Chimera' | 'OpenGVLab/InternVL3-78B' | 'microsoft/MAI-DS-R1-FP8' | 'openai/gpt-oss-20b' | 'openai/gpt-oss-120b' | 'chutesai/Mistral-Small-3.1-24B-Instruct-2503' | 'chutesai/Mistral-Small-3.2-24B-Instruct-2506' | 'Alibaba-NLP/Tongyi-DeepResearch-30B-A3B' | 'unsloth/Mistral-Nemo-Instruct-2407' | 'unsloth/gemma-3-4b-it' | 'unsloth/Mistral-Small-24B-Instruct-2501' | 'unsloth/gemma-3-12b-it' | 'unsloth/gemma-3-27b-it' | 'Qwen/Qwen3-30B-A3B' | 'Qwen/Qwen3-14B' | 'Qwen/Qwen2.5-VL-32B-Instruct' | 'Qwen/Qwen3-235B-A22B-Instruct-2507' | 'Qwen/Qwen2.5-Coder-32B-Instruct' | 'Qwen/Qwen2.5-72B-Instruct' | 'Qwen/Qwen3-Coder-30B-A3B-Instruct' | 'Qwen/Qwen3-235B-A22B' | 'Qwen/Qwen2.5-VL-72B-Instruct' | 'Qwen/Qwen3-32B' | 'Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8' | 'Qwen/Qwen3-VL-235B-A22B-Instruct' | 'Qwen/Qwen3-VL-235B-A22B-Thinking' | 'Qwen/Qwen3-30B-A3B-Instruct-2507' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'zai-org/GLM-4.5' | 'zai-org/GLM-4.6' | 'zai-org/GLM-4.5-Air' | 'deepseek-ai/DeepSeek-R1' | 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B' | 'deepseek-ai/DeepSeek-R1-0528' | 'deepseek-ai/DeepSeek-V3.1-Terminus' | 'deepseek-ai/DeepSeek-V3.2' | 'deepseek-ai/DeepSeek-V3.2-Speciale' | 'deepseek-ai/DeepSeek-V3' | 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B' | 'deepseek-ai/DeepSeek-V3.1' | 'deepseek-ai/DeepSeek-V3-0324'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
 /**
- * Create a AgentRouter Provider
- * @see {@link https://docs.agentrouter.org}
+ * Create a Kimi For Coding Provider
+ * @see {@link https://www.kimi.com/coding/docs/en/third-party-agents.html}
  */
-export const createAgentrouter = (apiKey: string, baseURL = 'https://agentrouter.org/v1') => merge(
-  createChatProvider<'claude-3-5-sonnet-20241022' | 'deepseek-r1-0528' | 'claude-sonnet-4-20250514-thinking' | 'glm-4.5' | 'claude-3-5-sonnet-20240620' | 'gemini-3-pro-preview' | 'claude-3-7-sonnet-20250219-thinking' | 'deepseek-v3.1' | 'claude-sonnet-4-5-20250929' | 'kimi-k2-thinking' | 'gpt-5.1' | 'claude-sonnet-4-20250514' | 'glm-4.6' | 'claude-opus-4-20250514' | 'claude-3-5-haiku-20241022' | 'claude-3-7-sonnet-20250219' | 'gpt-5' | 'claude-opus-4-20250514-thinking' | 'deepseek-v3.2' | 'claude-haiku-4-5-20251001'>({ apiKey, baseURL }),
+export const createKimiForCoding = (apiKey: string, baseURL = 'https://api.kimi.com/coding/v1') => merge(
+  createChatProvider<'kimi-k2-thinking'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -244,7 +244,7 @@ export const createFastrouter = (apiKey: string, baseURL = 'https://go.fastroute
 )
 
 /**
- * Create a Minimax Provider
+ * Create a MiniMax Provider
  * @see {@link https://platform.minimax.io/docs/guides/quickstart}
  */
 export const createMinimax = (apiKey: string, baseURL = 'https://api.minimax.io/v1/') => merge(
@@ -285,7 +285,7 @@ export const createWandb = (apiKey: string, baseURL = 'https://api.inference.wan
  * @see {@link https://platform.openai.com/docs/models}
  */
 export const createOpenAI = (apiKey: string, baseURL = 'https://api.openai.com/v1/') => merge(
-  createChatProvider<'gpt-4.1-nano' | 'text-embedding-3-small' | 'gpt-4' | 'o1-pro' | 'gpt-4o-2024-05-13' | 'gpt-5.1-codex' | 'gpt-4o-2024-08-06' | 'gpt-4.1-mini' | 'o3-deep-research' | 'gpt-3.5-turbo' | 'text-embedding-3-large' | 'gpt-4-turbo' | 'o1-preview' | 'gpt-5.1-codex-mini' | 'o3-mini' | 'gpt-5.1' | 'codex-mini-latest' | 'gpt-5-nano' | 'gpt-5-codex' | 'gpt-4o' | 'gpt-4.1' | 'o4-mini' | 'o1' | 'gpt-5-mini' | 'o1-mini' | 'text-embedding-ada-002' | 'o3-pro' | 'gpt-4o-2024-11-20' | 'o3' | 'o4-mini-deep-research' | 'gpt-5-chat-latest' | 'gpt-4o-mini' | 'gpt-5' | 'gpt-5-pro' | 'gpt-5.1-chat-latest'>({ apiKey, baseURL }),
+  createChatProvider<'gpt-4.1-nano' | 'text-embedding-3-small' | 'gpt-4' | 'o1-pro' | 'gpt-4o-2024-05-13' | 'gpt-5.1-codex' | 'gpt-4o-2024-08-06' | 'gpt-4.1-mini' | 'o3-deep-research' | 'gpt-3.5-turbo' | 'text-embedding-3-large' | 'gpt-4-turbo' | 'o1-preview' | 'gpt-5.1-codex-mini' | 'o3-mini' | 'gpt-5.1' | 'codex-mini-latest' | 'gpt-5-nano' | 'gpt-5-codex' | 'gpt-4o' | 'gpt-4.1' | 'o4-mini' | 'o1' | 'gpt-5-mini' | 'o1-mini' | 'text-embedding-ada-002' | 'o3-pro' | 'gpt-4o-2024-11-20' | 'gpt-5.1-codex-max' | 'o3' | 'o4-mini-deep-research' | 'gpt-5-chat-latest' | 'gpt-4o-mini' | 'gpt-5' | 'gpt-5-pro' | 'gpt-5.1-chat-latest'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
   createImageProvider({ apiKey, baseURL }),
@@ -299,6 +299,15 @@ export const createOpenAI = (apiKey: string, baseURL = 'https://api.openai.com/v
  */
 export const createZhipuaiCodingPlan = (apiKey: string, baseURL = 'https://open.bigmodel.cn/api/coding/paas/v4') => merge(
   createChatProvider<'glm-4.6' | 'glm-4.5v' | 'glm-4.5-air' | 'glm-4.5' | 'glm-4.5-flash'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a MiniMax (China) Provider
+ * @see {@link https://platform.minimaxi.com/docs/guides/quickstart}
+ */
+export const createMinimaxCn = (apiKey: string, baseURL = 'https://api.minimaxi.com/v1/') => merge(
+  createChatProvider<'MiniMax-M2'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -334,7 +343,7 @@ export const createOvhcloud = (apiKey: string, baseURL = 'https://oai.endpoints.
  * @see {@link https://platform.iflow.cn/en/docs}
  */
 export const createIflowcn = (apiKey: string, baseURL = 'https://apis.iflow.cn/v1') => merge(
-  createChatProvider<'qwen3-coder' | 'deepseek-v3' | 'kimi-k2' | 'deepseek-r1' | 'deepseek-v3.1' | 'minimax-m2' | 'qwen3-235b' | 'kimi-k2-0905' | 'qwen3-235b-a22b-thinking-2507' | 'qwen3-vl-plus' | 'glm-4.6' | 'tstars2.0' | 'qwen3-235b-a22b-instruct' | 'qwen3-max' | 'deepseek-v3.2' | 'qwen3-max-preview' | 'qwen3-coder-plus' | 'qwen3-32b'>({ apiKey, baseURL }),
+  createChatProvider<'qwen3-coder' | 'deepseek-v3' | 'kimi-k2' | 'deepseek-r1' | 'deepseek-v3.1' | 'minimax-m2' | 'qwen3-235b' | 'deepseek-v3.2-chat' | 'kimi-k2-0905' | 'kimi-k2-thinking' | 'qwen3-235b-a22b-thinking-2507' | 'qwen3-vl-plus' | 'glm-4.6' | 'tstars2.0' | 'qwen3-235b-a22b-instruct' | 'qwen3-max' | 'deepseek-v3.2' | 'qwen3-max-preview' | 'qwen3-coder-plus' | 'qwen3-32b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -343,7 +352,7 @@ export const createIflowcn = (apiKey: string, baseURL = 'https://apis.iflow.cn/v
  * @see {@link https://synthetic.new/pricing}
  */
 export const createSynthetic = (apiKey: string, baseURL = 'https://api.synthetic.new/v1') => merge(
-  createChatProvider<'hf:Qwen/Qwen3-235B-A22B-Instruct-2507' | 'hf:Qwen/Qwen2.5-Coder-32B-Instruct' | 'hf:Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'hf:Qwen/Qwen3-235B-A22B-Thinking-2507' | 'hf:MiniMaxAI/MiniMax-M2' | 'hf:meta-llama/Llama-3.1-70B-Instruct' | 'hf:meta-llama/Llama-3.1-8B-Instruct' | 'hf:meta-llama/Llama-3.3-70B-Instruct' | 'hf:meta-llama/Llama-4-Scout-17B-16E-Instruct' | 'hf:meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8' | 'hf:meta-llama/Llama-3.1-405B-Instruct' | 'hf:moonshotai/Kimi-K2-Instruct' | 'hf:moonshotai/Kimi-K2-Instruct-0905' | 'hf:moonshotai/Kimi-K2-Thinking' | 'hf:zai-org/GLM-4.5' | 'hf:zai-org/GLM-4.6' | 'hf:deepseek-ai/DeepSeek-R1' | 'hf:deepseek-ai/DeepSeek-R1-0528' | 'hf:deepseek-ai/DeepSeek-V3.1-Terminus' | 'hf:deepseek-ai/DeepSeek-V3' | 'hf:deepseek-ai/DeepSeek-V3.1' | 'hf:deepseek-ai/DeepSeek-V3-0324' | 'hf:openai/gpt-oss-120b'>({ apiKey, baseURL }),
+  createChatProvider<'hf:Qwen/Qwen3-235B-A22B-Instruct-2507' | 'hf:Qwen/Qwen2.5-Coder-32B-Instruct' | 'hf:Qwen/Qwen3-Coder-480B-A35B-Instruct' | 'hf:Qwen/Qwen3-235B-A22B-Thinking-2507' | 'hf:MiniMaxAI/MiniMax-M2' | 'hf:meta-llama/Llama-3.1-70B-Instruct' | 'hf:meta-llama/Llama-3.1-8B-Instruct' | 'hf:meta-llama/Llama-3.3-70B-Instruct' | 'hf:meta-llama/Llama-4-Scout-17B-16E-Instruct' | 'hf:meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8' | 'hf:meta-llama/Llama-3.1-405B-Instruct' | 'hf:moonshotai/Kimi-K2-Instruct' | 'hf:moonshotai/Kimi-K2-Instruct-0905' | 'hf:moonshotai/Kimi-K2-Thinking' | 'hf:zai-org/GLM-4.5' | 'hf:zai-org/GLM-4.6' | 'hf:deepseek-ai/DeepSeek-R1' | 'hf:deepseek-ai/DeepSeek-R1-0528' | 'hf:deepseek-ai/DeepSeek-V3.1-Terminus' | 'hf:deepseek-ai/DeepSeek-V3.2' | 'hf:deepseek-ai/DeepSeek-V3' | 'hf:deepseek-ai/DeepSeek-V3.1' | 'hf:deepseek-ai/DeepSeek-V3-0324' | 'hf:openai/gpt-oss-120b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -421,20 +430,20 @@ export const createLmstudio = (apiKey: string, baseURL = 'http://127.0.0.1:1234/
 )
 
 /**
- * Create a IO Intelligence Provider
- * @see {@link https://io.net/docs/guides/intelligence/io-intelligence}
- */
-export const createIoIntelligence = (apiKey: string, baseURL = 'https://api.intelligence.io.solutions/api/v1') => merge(
-  createChatProvider<'deepseek-ai-deepseek-r1-0528' | 'mistralai-magistral-small-2506' | 'intel-qwen3-coder-480b-a35b-instruct-int4-mixed-ar' | 'qwen-qwen3-235b-a22b-thinking-2507' | 'mistralai-devstral-small-2505' | 'qwen-qwen2-5-vl-32b-instruct' | 'moonshotai-kimi-k2-instruct-0905' | 'meta-llama-llama-4-maverick-17b-128e-instruct-fp8' | 'openai-gpt-oss-120b' | 'meta-llama-llama-3-3-70b-instruct' | 'zai-org-glm-4-6' | 'openai-gpt-oss-20b' | 'mistralai-mistral-large-instruct-2411' | 'meta-llama-llama-3-2-90b-vision-instruct' | 'mistralai-mistral-nemo-instruct-2407' | 'qwen-qwen3-next-80b-a3b-instruct' | 'moonshotai-kimi-k2-thinking'>({ apiKey, baseURL }),
-  createModelProvider({ apiKey, baseURL }),
-)
-
-/**
  * Create a Fireworks AI Provider
  * @see {@link https://fireworks.ai/docs/}
  */
 export const createFireworks = (apiKey: string, baseURL = 'https://api.fireworks.ai/inference/v1/') => merge(
   createChatProvider<'accounts/fireworks/models/deepseek-r1-0528' | 'accounts/fireworks/models/deepseek-v3p1' | 'accounts/fireworks/models/minimax-m2' | 'accounts/fireworks/models/deepseek-v3-0324' | 'accounts/fireworks/models/kimi-k2-thinking' | 'accounts/fireworks/models/kimi-k2-instruct' | 'accounts/fireworks/models/qwen3-235b-a22b' | 'accounts/fireworks/models/gpt-oss-20b' | 'accounts/fireworks/models/gpt-oss-120b' | 'accounts/fireworks/models/glm-4p5-air' | 'accounts/fireworks/models/qwen3-coder-480b-a35b-instruct' | 'accounts/fireworks/models/glm-4p5'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a IO.NET Provider
+ * @see {@link https://io.net/docs/guides/intelligence/io-intelligence}
+ */
+export const createIoNet = (apiKey: string, baseURL = 'https://api.intelligence.io.solutions/api/v1') => merge(
+  createChatProvider<'moonshotai/Kimi-K2-Instruct-0905' | 'moonshotai/Kimi-K2-Thinking' | 'openai/gpt-oss-20b' | 'openai/gpt-oss-120b' | 'mistralai/Devstral-Small-2505' | 'mistralai/Mistral-Nemo-Instruct-2407' | 'mistralai/Magistral-Small-2506' | 'mistralai/Mistral-Large-Instruct-2411' | 'meta-llama/Llama-3.3-70B-Instruct' | 'meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8' | 'meta-llama/Llama-3.2-90B-Vision-Instruct' | 'Intel/Qwen3-Coder-480B-A35B-Instruct-int4-mixed-ar' | 'Qwen/Qwen2.5-VL-32B-Instruct' | 'Qwen/Qwen3-235B-A22B-Thinking-2507' | 'Qwen/Qwen3-Next-80B-A3B-Instruct' | 'zai-org/GLM-4.6' | 'deepseek-ai/DeepSeek-R1-0528'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
 )
 
@@ -482,15 +491,6 @@ export const createCerebras = (apiKey: string, baseURL = 'https://api.cerebras.a
   createChatProvider<'qwen-3-235b-a22b-instruct-2507' | 'zai-glm-4.6' | 'gpt-oss-120b'>({ apiKey, baseURL }),
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
-)
-
-/**
- * Create a Minimaxi Provider
- * @see {@link https://platform.minimaxi.com/docs/api-reference/text-openai-api}
- */
-export const createMinimaxi = (apiKey: string, baseURL = 'https://api.minimaxi.com/v1/') => merge(
-  createChatProvider({ apiKey, baseURL }),
-  createModelProvider({ apiKey, baseURL }),
 )
 
 /**

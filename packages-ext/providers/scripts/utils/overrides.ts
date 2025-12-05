@@ -42,6 +42,9 @@ export const overrides: Record<string, Partial<Provider>> = {
   'minimax': {
     api: 'https://api.minimax.io/v1/',
   },
+  'minimax-cn': {
+    api: 'https://api.minimaxi.com/v1/',
+  },
   'mistral': {
     _capabilities: {
       embed: true,

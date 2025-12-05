@@ -1,6 +1,6 @@
 import process from 'node:process'
 
-import { siliconflow } from '../generated'
+import { minimaxCn, siliconflow } from '../generated'
 import { createAnthropic, createFeatherless, createOpenRouter, createTogetherAI } from './create'
 
 /**
@@ -41,3 +41,6 @@ export const togetherai = createTogetherAI(process.env.TOGETHER_API_KEY ?? '')
 
 /** @deprecated use `siliconflow` instead. */
 export const siliconFlow = siliconflow
+
+/** @deprecated use `minimaxCn` instead. */
+export const minimaxi = minimaxCn
