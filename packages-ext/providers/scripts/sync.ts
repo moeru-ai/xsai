@@ -18,10 +18,13 @@ const manualProviderKeys = [
 const providers = await fetch('https://models.dev/api.json')
   .then(async res => res.json() as Promise<Providers>)
   .then(ps => Object.values(ps))
-  .then(providers => providers.map(provider => ({
-    ...provider,
-    ...overrides[provider.id] ?? {},
-  })))
+  .then(providers => providers
+    .map(provider => ({
+      ...provider,
+      ...overrides[provider.id] ?? {},
+    }))
+    .toSorted((a, b) => a.id.localeCompare(b.id)),
+  )
 
 const [autoProviders, manualProviders] = providers
   .filter(({ api, env }) => api != null && env.some(e => SUFFIX.some(s => e.endsWith(s))))
