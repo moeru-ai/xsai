@@ -69,7 +69,7 @@
     }
   },
   "devDependencies": {
-    "@standard-schema/spec": "^1.0.0",
+    "@standard-schema/spec": "^1.1.0",
     "@types/json-schema": "^7.0.15",
     "@valibot/to-json-schema": "catalog:schema",
     "arktype": "catalog:schema",
