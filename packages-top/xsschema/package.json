@@ -69,14 +69,14 @@
     }
   },
   "devDependencies": {
-    "@standard-schema/spec": "^1.0.0",
+    "@standard-schema/spec": "^1.1.0",
     "@types/json-schema": "^7.0.15",
     "@valibot/to-json-schema": "catalog:schema",
-    "arktype": "catalog:schema",
-    "effect": "catalog:schema",
-    "sury": "catalog:schema",
+    "arktype": "^2.1.29",
+    "effect": "^3.19.13",
+    "sury": "^11.0.0-alpha.4",
     "valibot": "catalog:schema",
-    "zod": "catalog:schema",
+    "zod": "^4.2.1",
     "zod-to-json-schema": "catalog:schema"
   }
 }
