@@ -18,6 +18,7 @@ import {
   createGithubModels,
   createGoogleGenerativeAI,
   createGroq,
+  createHelicone,
   createHuggingface,
   createIflowcn,
   createInception,
@@ -36,6 +37,7 @@ import {
   createMorph,
   createNebius,
   createNvidia,
+  createOllamaCloud,
   createOpenAI,
   createOpencode,
   createOvhcloud,
@@ -44,6 +46,7 @@ import {
   createRequesty,
   createScaleway,
   createSiliconFlow,
+  createSiliconflowCn,
   createSubmodel,
   createSynthetic,
   createUpstage,
@@ -51,6 +54,7 @@ import {
   createVultr,
   createWandb,
   createXai,
+  createXiaomi,
   createZai,
   createZaiCodingPlan,
   createZenmux,
@@ -195,6 +199,15 @@ export const google = createGoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_
  * - apiKey - `GROQ_API_KEY`
  */
 export const groq = createGroq(process.env.GROQ_API_KEY ?? '')
+
+/**
+ * Helicone Provider
+ * @see {@link https://helicone.ai/models}
+ * @remarks
+ * - baseURL - `https://ai-gateway.helicone.ai/v1`
+ * - apiKey - `HELICONE_API_KEY`
+ */
+export const helicone = createHelicone(process.env.HELICONE_API_KEY ?? '')
 
 /**
  * Hugging Face Provider
@@ -359,6 +372,15 @@ export const nebius = createNebius(process.env.NEBIUS_API_KEY ?? '')
 export const nvidia = createNvidia(process.env.NVIDIA_API_KEY ?? '')
 
 /**
+ * Ollama Cloud Provider
+ * @see {@link https://docs.ollama.com/cloud}
+ * @remarks
+ * - baseURL - `https://ollama.com/v1`
+ * - apiKey - `OLLAMA_API_KEY`
+ */
+export const ollamaCloud = createOllamaCloud(process.env.OLLAMA_API_KEY ?? '')
+
+/**
  * OpenAI Provider
  * @see {@link https://platform.openai.com/docs/models}
  * @remarks
@@ -431,6 +453,15 @@ export const scaleway = createScaleway(process.env.SCALEWAY_API_KEY ?? '')
 export const siliconflow = createSiliconFlow(process.env.SILICONFLOW_API_KEY ?? '')
 
 /**
+ * SiliconFlow (China) Provider
+ * @see {@link https://cloud.siliconflow.com/models}
+ * @remarks
+ * - baseURL - `https://api.siliconflow.cn/v1`
+ * - apiKey - `SILICONFLOW_API_KEY`
+ */
+export const siliconflowCn = createSiliconflowCn(process.env.SILICONFLOW_API_KEY ?? '')
+
+/**
  * submodel Provider
  * @see {@link https://submodel.gitbook.io}
  * @remarks
@@ -492,6 +523,15 @@ export const wandb = createWandb(process.env.WANDB_API_KEY ?? '')
  * - apiKey - `XAI_API_KEY`
  */
 export const xai = createXai(process.env.XAI_API_KEY ?? '')
+
+/**
+ * Xiaomi Provider
+ * @see {@link https://platform.xiaomimimo.com/#/docs}
+ * @remarks
+ * - baseURL - `https://api.xiaomimimo.com/v1`
+ * - apiKey - `XIAOMI_API_KEY`
+ */
+export const xiaomi = createXiaomi(process.env.XIAOMI_API_KEY ?? '')
 
 /**
  * Z.AI Provider
