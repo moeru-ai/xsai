@@ -7,12 +7,12 @@ import { getToJsonSchemaFn } from './vendors'
 
 const ToJsonSchemaVendors = new Map<string, ToJsonSchemaFn>()
 
-/** @experimental */
+/** @deprecated */
 export const initToJsonSchemaSyncVendor = async (vendor: string) =>
   getToJsonSchemaFn(vendor)
     .then(fn => ToJsonSchemaVendors.set(vendor, fn))
 
-/** @experimental */
+/** @deprecated - use `toJsonSchema` instead. */
 export const toJsonSchemaSync = (schema: StandardSchemaV1): JSONSchema7 => {
   const { vendor } = schema['~standard']
   const toJsonSchema = ToJsonSchemaVendors.get(vendor)

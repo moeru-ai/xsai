@@ -108,7 +108,7 @@ const zodSchema = z.object({
 const zodJsonSchema = await toJsonSchema(zodSchema)
 ```
 
-### toJsonSchemaSync (experimental)
+### toJsonSchemaSync (deprecated)
 
 `toJsonSchema` is async (because it has to `await import` the vendor's dependencies), but we also support a synchronous version: `toJsonSchemaSync`.
 
@@ -244,11 +244,11 @@ Pre-bundled version of `StandardSchemaV1` in `@standard-schema/spec`. You can av
 
 Pre-bundled version of `JsonSchema7` in `@types/json-schema`. You can avoid installing `@types/json-schema` to save some bulk.
 
-### Infer
+### Infer (deprecated)
 
 Alias for `StandardSchemaV1.Infer`.
 
-### InferIn
+### InferIn (deprecated)
 
 Alias for `StandardSchemaV1.InferInput`.
 

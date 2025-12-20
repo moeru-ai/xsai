@@ -1,6 +1,6 @@
 import type { StreamTextOptions, StreamTextResult } from '@xsai/stream-text'
 import type { PartialDeep } from 'type-fest/source/partial-deep'
-import type { Infer, Schema } from 'xsschema'
+import type { Schema } from 'xsschema'
 
 import { streamText } from '@xsai/stream-text'
 import { strictJsonSchema, toJsonSchema } from 'xsschema'
@@ -10,7 +10,7 @@ import { toElementStream } from './to-element-stream'
 import { toPartialObjectStream } from './to-partial-object-stream'
 
 export interface StreamObjectOnFinishResult<T extends Schema> {
-  object?: Infer<T>
+  object?: Schema.InferOutput<T>
 }
 
 export interface StreamObjectOptions<T extends Schema> extends StreamTextOptions {
@@ -22,21 +22,21 @@ export interface StreamObjectOptions<T extends Schema> extends StreamTextOptions
 }
 
 export interface StreamObjectResult<T extends Schema> extends StreamTextResult {
-  elementStream?: ReadableStream<Infer<T>>
-  partialObjectStream?: ReadableStream<PartialDeep<Infer<T>>>
+  elementStream?: ReadableStream<Schema.InferOutput<T>>
+  partialObjectStream?: ReadableStream<PartialDeep<Schema.InferOutput<T>>>
 }
 
 export async function streamObject<T extends Schema>(
   options: StreamObjectOptions<T>
     & { output: 'array' }
-): Promise<StreamObjectResult<T> & { elementStream: ReadableStream<Infer<T>>, partialObjectStream: undefined }>
+): Promise<StreamObjectResult<T> & { elementStream: ReadableStream<Schema.InferOutput<T>>, partialObjectStream: undefined }>
 export async function streamObject<T extends Schema>(
   options: StreamObjectOptions<T>
     & { output: 'object' }
-): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> }>
+): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Schema.InferOutput<T>>> }>
 export async function streamObject<T extends Schema>(
   options: StreamObjectOptions<T>
-): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> }>
+): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Schema.InferOutput<T>>> }>
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export async function streamObject<T extends Schema>(
   options: StreamObjectOptions<T>
@@ -67,20 +67,20 @@ export async function streamObject<T extends Schema>(
     strict: undefined,
   })
 
-  let elementStream: ReadableStream<Infer<T>> | undefined
-  let partialObjectStream: ReadableStream<PartialDeep<Infer<T>>> | undefined
+  let elementStream: ReadableStream<Schema.InferOutput<T>> | undefined
+  let partialObjectStream: ReadableStream<PartialDeep<Schema.InferOutput<T>>> | undefined
 
   if (options.output === 'array') {
     let rawElementStream;
     [rawElementStream, textStream] = textStream.tee()
 
-    elementStream = toElementStream<Infer<T>>(rawElementStream)
+    elementStream = toElementStream<Schema.InferOutput<T>>(rawElementStream)
   }
   else {
     let rawPartialObjectStream;
     [textStream, rawPartialObjectStream] = textStream.tee()
 
-    partialObjectStream = toPartialObjectStream<Infer<T>>(rawPartialObjectStream)
+    partialObjectStream = toPartialObjectStream<Schema.InferOutput<T>>(rawPartialObjectStream)
   }
 
   return {

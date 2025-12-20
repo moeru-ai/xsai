@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/deprecation */
 import { type } from 'arktype'
 import { Schema } from 'effect'
 import * as S from 'sury'
