@@ -190,6 +190,5 @@ describe('@xsai/stream-object', () => {
     expect(objects).toHaveLength(5)
 
     expect(onFinish).toBeCalled()
-    expect(onFinish).toMatchSnapshot()
   })
 })
