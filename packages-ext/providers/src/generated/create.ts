@@ -1,6 +1,5 @@
 /* eslint-disable perfectionist/sort-union-types */
 /* eslint-disable sonarjs/no-identical-functions */
-/* eslint-disable sonarjs/use-type-alias */
 
 import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from '@xsai-ext/shared-providers'
 
