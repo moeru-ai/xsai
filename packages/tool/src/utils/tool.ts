@@ -1,11 +1,11 @@
 import type { Tool, ToolExecuteOptions, ToolExecuteResult } from '@xsai/shared-chat'
-import type { InferIn, Schema } from 'xsschema'
+import type { Schema } from 'xsschema'
 
 import { strictJsonSchema, toJsonSchema } from 'xsschema'
 
 export interface ToolOptions<T extends Schema> {
   description?: string
-  execute: (input: InferIn<T>, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
+  execute: (input: Schema.InferInput<T>, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
   name: string
   parameters: T
   /** @default true */

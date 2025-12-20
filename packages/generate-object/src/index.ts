@@ -1,5 +1,5 @@
 import type { GenerateTextOptions, GenerateTextResult } from '@xsai/generate-text'
-import type { Infer, InferIn, Schema } from 'xsschema'
+import type { Schema } from 'xsschema'
 
 import { generateText } from '@xsai/generate-text'
 import { strictJsonSchema, toJsonSchema, validate } from 'xsschema'
@@ -18,9 +18,9 @@ export type GenerateObjectResult<O> = GenerateTextResult & { object: O }
 
 type GenerateObjectOutputOption = 'array' | 'object'
 
-export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'array' }): Promise<GenerateObjectResult<Array<Infer<T>>>>
-export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'object' }): Promise<GenerateObjectResult<Infer<T>>>
-export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<Infer<T>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'array' }): Promise<GenerateObjectResult<Array<Schema.InferOutput<T>>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output: 'object' }): Promise<GenerateObjectResult<Schema.InferOutput<T>>>
+export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T>): Promise<GenerateObjectResult<Schema.InferOutput<T>>>
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export async function generateObject<T extends Schema>(options: GenerateObjectOptions<T> & { output?: GenerateObjectOutputOption }) {
   let schema = await toJsonSchema(options.schema)
@@ -53,7 +53,7 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
       return {
         finishReason,
         messages,
-        object: await Promise.all((json as { elements: InferIn<T>[] })
+        object: await Promise.all((json as { elements: Schema.InferInput<T>[] })
           .elements
           .map(async element => validate(options.schema, element))),
         steps,
@@ -67,7 +67,7 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
       return {
         finishReason,
         messages,
-        object: await validate(options.schema, json as InferIn<T>),
+        object: await validate(options.schema, json as Schema.InferInput<T>),
         steps,
         text,
         toolCalls,
