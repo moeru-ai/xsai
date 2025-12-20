@@ -13,7 +13,7 @@ describe('@xsai/embed', () => {
     })
 
     expect(embeddings.map(toFixed)).toMatchSnapshot()
-    expect(usage.prompt_tokens).toBe(12)
-    expect(usage.total_tokens).toBe(12)
+    expect(usage.prompt_tokens).toBe(16)
+    expect(usage.total_tokens).toBe(16)
   })
 })
