@@ -34,4 +34,30 @@ export const extraProviders: CodeGenProvider[] = [
     models: [],
     name: 'Tencent Hunyuan',
   },
+  // LOCAL PROVIDERS
+  {
+    apiKey: ['OLLAMA_API_KEY'],
+    baseURL: 'http://localhost:11434/v1/',
+    capabilities: {
+      embed: true,
+    },
+    doc: 'https://docs.ollama.com',
+    id: 'ollama',
+    models: [],
+    name: 'Ollama',
+  },
+  {
+    apiKey: ['LITELLM_API_KEY'],
+    baseURL: 'http://localhost:4000/v1/',
+    capabilities: {
+      embed: true,
+      speech: true,
+      transcription: true,
+    },
+    doc: 'https://docs.litellm.ai',
+    id: 'litellm',
+    models: [],
+    name: 'LiteLLM',
+  },
+  // TODO: speaches / player2 (special)
 ]

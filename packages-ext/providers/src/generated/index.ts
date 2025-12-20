@@ -63,6 +63,8 @@ import {
   createNovita,
   createStepfun,
   createTencentHunyuan,
+  createOllama,
+  createLitellm,
 } from './create'
 
 /**
@@ -604,3 +606,21 @@ export const stepfun = createStepfun(process.env.STEPFUN_API_KEY ?? '')
  * - apiKey - `TENCENT_HUNYUAN_API_KEY`
  */
 export const tencentHunyuan = createTencentHunyuan(process.env.TENCENT_HUNYUAN_API_KEY ?? '')
+
+/**
+ * Ollama Provider
+ * @see {@link https://docs.ollama.com}
+ * @remarks
+ * - baseURL - `http://localhost:11434/v1/`
+ * - apiKey - `OLLAMA_API_KEY`
+ */
+export const ollama = createOllama(process.env.OLLAMA_API_KEY ?? '')
+
+/**
+ * LiteLLM Provider
+ * @see {@link https://docs.litellm.ai}
+ * @remarks
+ * - baseURL - `http://localhost:4000/v1/`
+ * - apiKey - `LITELLM_API_KEY`
+ */
+export const litellm = createLitellm(process.env.LITELLM_API_KEY ?? '')

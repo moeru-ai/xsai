@@ -558,3 +558,25 @@ export const createTencentHunyuan = (apiKey: string, baseURL = 'https://api.huny
   createModelProvider({ apiKey, baseURL }),
   createEmbedProvider({ apiKey, baseURL }),
 )
+
+/**
+ * Create a Ollama Provider
+ * @see {@link https://docs.ollama.com}
+ */
+export const createOllama = (apiKey: string, baseURL = 'http://localhost:11434/v1/') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+)
+
+/**
+ * Create a LiteLLM Provider
+ * @see {@link https://docs.litellm.ai}
+ */
+export const createLitellm = (apiKey: string, baseURL = 'http://localhost:4000/v1/') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+  createSpeechProvider({ apiKey, baseURL }),
+  createTranscriptionProvider({ apiKey, baseURL }),
+)
