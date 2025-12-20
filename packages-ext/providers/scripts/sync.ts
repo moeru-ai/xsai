@@ -27,7 +27,7 @@ const providers = await fetch('https://models.dev/api.json')
   )
 
 const [autoProviders, manualProviders] = providers
-  .filter(({ api, env }) => api != null && env.some(e => SUFFIX.some(s => e.endsWith(s))))
+  .filter(({ api, env }) => api != null && !api.includes('${') && env.some(e => SUFFIX.some(s => e.endsWith(s))))
   .map(toCodeGenProvider)
   .reduce(([auto, manual], provider) => {
     if (manualProviderKeys.includes(provider.id))
