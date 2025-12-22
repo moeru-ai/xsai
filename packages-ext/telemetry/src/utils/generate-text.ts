@@ -59,7 +59,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
       ...options,
       messages,
       steps,
-    }, msgToolCalls)
+    }, msgToolCalls, tracer)
 
     const step = { ...stepWithoutToolCalls, toolResults }
 

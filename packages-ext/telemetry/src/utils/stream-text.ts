@@ -1,9 +1,10 @@
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
-import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
+import { chat, DelayedPromise, determineStepType, objCamelToSnake, trampoline } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 
+import { executeTool } from './execute-tool'
 import { chatAttributes, metadataAttributes } from './attributes'
 import { getTracer } from './get-tracer'
 import { recordSpan, recordSpanSync } from './record-span'
@@ -193,7 +194,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
           messages,
           toolCall,
           tools,
-        })
+        }, tracer)
 
         toolCalls.push(completionToolCall)
         toolResults.push(completionToolResult)

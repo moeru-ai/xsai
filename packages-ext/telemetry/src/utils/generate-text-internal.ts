@@ -1,6 +1,9 @@
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, Message, ToolCall } from 'xsai'
 
-import { determineStepType, executeTool } from 'xsai'
+import { determineStepType } from 'xsai'
+
+import { executeTool } from './execute-tool'
+import type { Tracer } from '@opentelemetry/api'
 
 /** @internal */
 export interface RunGenerateTextStepResult {
@@ -68,6 +71,7 @@ export const extractGenerateTextStep = async (
 export const extractGenerateTextStepPost = async (
   options: GenerateTextOptions,
   msgToolCalls: ToolCall[],
+  tracer: Tracer,
 ): Promise<[CompletionStep<true>['toolResults'], Message[]]> => {
   const inputMessages: Message[] = structuredClone(options.messages)
 
@@ -80,7 +84,7 @@ export const extractGenerateTextStepPost = async (
       messages: inputMessages,
       toolCall,
       tools: options.tools,
-    })
+    }, tracer)
     toolResults.push(completionToolResult)
     outputMessages.push(message)
   }
