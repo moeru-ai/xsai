@@ -8,7 +8,6 @@ import { metadataAttributes } from './attributes'
 import { extractGenerateTextStep, extractGenerateTextStepPost } from './generate-text-internal'
 import { getTracer } from './get-tracer'
 import { recordSpan } from './record-span'
-import { stringifyTool } from './stringify-tool'
 import { wrapTool } from './wrap-tool'
 
 /**
@@ -25,12 +24,6 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
     const [stepWithoutToolCalls, { messages: msgs1, msgToolCalls, reasoningText }] = await recordSpan({
       attributes: {
         ...metadataAttributes(options.telemetry?.metadata),
-        ...(options.tools != null && options.tools.length > 0
-          ? {
-              'ai.prompt.toolChoice': JSON.stringify(options.toolChoice ?? { type: 'auto' }),
-              'ai.prompt.tools': options.tools.map(stringifyTool),
-            }
-          : {}),
         'gen_ai.input.messages': JSON.stringify(messages),
         'gen_ai.operation.name': 'chat',
         'gen_ai.request.choice.count': 1,
@@ -109,24 +102,8 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
     }
   }
 
-  return recordSpan<GenerateTextResult>({
-    attributes: metadataAttributes(options.telemetry?.metadata),
-    name: 'xsai.generateText',
-    tracer,
-  }, async (span) => {
-    const result = await trampoline<GenerateTextResult>(async () => rawGenerateText({
-      ...options,
-      tools: options.tools?.map(tool => wrapTool(tool, tracer)),
-    }))
-
-    span.setAttributes({
-      ...(result.toolCalls.length > 0 ? { 'ai.response.toolCalls': JSON.stringify(result.toolCalls) } : {}),
-      ...(result.text != null ? { 'ai.response.text': result.text } : {}),
-      'ai.response.finishReason': result.finishReason,
-      'ai.usage.completionTokens': result.usage.completion_tokens,
-      'ai.usage.promptTokens': result.usage.prompt_tokens,
-    })
-
-    return result
-  })
+  return trampoline<GenerateTextResult>(async () => rawGenerateText({
+    ...options,
+    tools: options.tools?.map(tool => wrapTool(tool, tracer)),
+  }))
 }
