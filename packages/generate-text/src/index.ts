@@ -18,11 +18,7 @@ export interface GenerateTextResponse {
   choices: {
     finish_reason: FinishReason
     index: number
-    message: Omit<AssistantMessage, 'content' | 'name'> & {
-      content?: string
-      /** @remarks OpenAI does not support this, but LiteLLM / DeepSeek does. */
-      reasoning_content?: string
-    }
+    message: Omit<AssistantMessage, 'name'>
     refusal?: string
   }[]
   created: number
@@ -94,7 +90,9 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
       const step: CompletionStep<true> = {
         finishReason,
         stepType,
-        text: message.content,
+        text: Array.isArray(message.content)
+          ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
+          : message.content,
         toolCalls,
         toolResults,
         usage,

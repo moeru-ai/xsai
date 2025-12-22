@@ -32,6 +32,7 @@ export interface StreamTextOptions extends ChatOptions {
 export interface StreamTextResult {
   fullStream: ReadableStream<StreamTextEvent>
   messages: Promise<Message[]>
+  reasoningTextStream: ReadableStream<string>
   steps: Promise<CompletionStep[]>
   textStream: ReadableStream<string>
   totalUsage: Promise<undefined | Usage>
@@ -55,8 +56,10 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   // output
   let eventCtrl: ReadableStreamDefaultController<StreamTextEvent> | undefined
   let textCtrl: ReadableStreamDefaultController<string> | undefined
+  let reasoningTextCtrl: ReadableStreamDefaultController<string> | undefined
   const eventStream = new ReadableStream<StreamTextEvent>({ start: controller => eventCtrl = controller })
   const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
+  const reasoningTextStream = new ReadableStream<string>({ start: controller => reasoningTextCtrl = controller })
 
   const pushEvent = (stepEvent: StreamTextEvent) => {
     eventCtrl?.enqueue(stepEvent)
@@ -95,9 +98,17 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     }
 
     let text: string = ''
+    let reasoningText: string | undefined
     const pushText = (content?: string) => {
       textCtrl?.enqueue(content)
       text += content
+    }
+    const pushReasoningText = (reasoningContent?: string) => {
+      if (reasoningText == null)
+        reasoningText = ''
+
+      reasoningTextCtrl?.enqueue(reasoningContent)
+      reasoningText += reasoningContent
     }
 
     const tool_calls: ToolCall[] = []
@@ -124,8 +135,10 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
 
           const choice = chunk.choices[0]
 
-          if (choice.delta.reasoning_content != null)
+          if (choice.delta.reasoning_content != null) {
             pushEvent({ text: choice.delta.reasoning_content, type: 'reasoning-delta' })
+            pushReasoningText(choice.delta.reasoning_content)
+          }
 
           if (choice.finish_reason != null)
             finishReason = choice.finish_reason
@@ -166,7 +179,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
         },
       }))
 
-    messages.push({ content: text, role: 'assistant', tool_calls })
+    messages.push({ content: text, reasoning_content: reasoningText, role: 'assistant', tool_calls })
 
     if (tool_calls.length !== 0) {
       for (const toolCall of tool_calls) {
@@ -239,6 +252,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   return {
     fullStream: eventStream,
     messages: resultMessages.promise,
+    reasoningTextStream,
     steps: resultSteps.promise,
     textStream,
     totalUsage: resultTotalUsage.promise,
