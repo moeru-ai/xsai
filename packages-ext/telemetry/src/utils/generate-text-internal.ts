@@ -33,18 +33,15 @@ export const extractGenerateTextStep = async (
     toolCallsLength: msgToolCalls.length,
   })
 
-  messages.push(clean({
-    ...message,
-    reasoning_content: undefined,
-  }))
+  messages.push(message)
 
   if (finishReason !== 'stop' || stepType !== 'done') {
     for (const toolCall of msgToolCalls) {
       toolCalls.push({
-        args: toolCall.function.arguments,
+        args: toolCall.function.arguments!,
         toolCallId: toolCall.id,
         toolCallType: toolCall.type,
-        toolName: toolCall.function.name,
+        toolName: toolCall.function.name!,
       })
     }
   }
@@ -53,7 +50,9 @@ export const extractGenerateTextStep = async (
     {
       finishReason,
       stepType,
-      text: message.content,
+      text: Array.isArray(message.content)
+        ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
+        : message.content,
       toolCalls,
       usage,
     },
