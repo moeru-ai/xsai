@@ -172,14 +172,24 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
               }
               else {
                 tool_calls[index].function.arguments! += toolCall.function.arguments
-                pushEvent({ argsTextDelta: toolCall.function.arguments!, toolCallId: toolCall.id, toolName: toolCall.function.name ?? tool_calls[index].function.name!, type: 'tool-call-delta' })
+                pushEvent({
+                  argsTextDelta: toolCall.function.arguments!,
+                  toolCallId: toolCall.id,
+                  toolName: toolCall.function.name ?? tool_calls[index].function.name!,
+                  type: 'tool-call-delta',
+                })
               }
             }
           }
         },
       }))
 
-    messages.push({ content: text, reasoning_content: reasoningText, role: 'assistant', tool_calls })
+    messages.push({
+      content: text,
+      reasoning_content: reasoningText,
+      role: 'assistant',
+      tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
+    })
 
     if (tool_calls.length !== 0) {
       for (const toolCall of tool_calls) {
