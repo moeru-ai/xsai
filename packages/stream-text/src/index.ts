@@ -99,11 +99,11 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
 
     let text: string = ''
     let reasoningText: string | undefined
-    const pushText = (content?: string) => {
+    const pushText = (content: string) => {
       textCtrl?.enqueue(content)
       text += content
     }
-    const pushReasoningText = (reasoningContent?: string) => {
+    const pushReasoningText = (reasoningContent: string) => {
       if (reasoningText == null)
         reasoningText = ''
 
