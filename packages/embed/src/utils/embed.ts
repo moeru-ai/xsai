@@ -3,6 +3,9 @@ import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
 export interface EmbedOptions extends CommonRequestOptions {
+  /** The number of dimensions the resulting output embeddings should have. */
+  dimensions?: number
+  /** Input text to embed. */
   input: string
 }
 
@@ -13,8 +16,7 @@ export interface EmbedResponse {
     object: 'embedding'
   }[]
   model: string
-  // eslint-disable-next-line sonarjs/no-useless-intersection
-  object: 'list' | (string & {})
+  object: 'list'
   system_fingerprint?: string
   usage: EmbedResponseUsage
 }

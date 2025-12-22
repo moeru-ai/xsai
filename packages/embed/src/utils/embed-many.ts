@@ -1,10 +1,11 @@
-import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
+import type { WithUnknown } from '@xsai/shared'
 
 import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
-import type { EmbedResponse, EmbedResponseUsage } from './embed'
+import type { EmbedOptions, EmbedResponse, EmbedResponseUsage } from './embed'
 
-export interface EmbedManyOptions extends CommonRequestOptions {
+export interface EmbedManyOptions extends Omit<EmbedOptions, 'input'> {
+  /** Input text to embed. */
   input: string[]
 }
 
