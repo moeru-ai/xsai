@@ -4,7 +4,7 @@ import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, 
 
 import type { WithTelemetry } from '../types/options'
 
-import { commonAttributes, idAttributes, metadataAttributes } from './attributes'
+import { metadataAttributes } from './attributes'
 import { getTracer } from './get-tracer'
 import { now } from './now'
 import { recordSpan, recordSpanSync } from './record-span'
@@ -58,8 +58,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
   const doStream = async () => recordSpan({
     attributes: {
-      ...idAttributes(),
-      ...commonAttributes('ai.streamText.doStream', options.model),
       ...metadataAttributes(options.telemetry?.metadata),
       ...(tools != null && tools.length > 0 && {
         'ai.prompt.toolChoice': JSON.stringify(options.toolChoice ?? { type: 'auto' }),
@@ -274,13 +272,9 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   })
 
   return recordSpanSync<StreamTextResult>({
-    attributes: {
-      ...commonAttributes('ai.streamText', options.model),
-      ...metadataAttributes(options.telemetry?.metadata),
-      'ai.prompt': JSON.stringify({ messages: options.messages }),
-    },
+    attributes: metadataAttributes(options.telemetry?.metadata),
     endWhenDone: false,
-    name: 'ai.streamText',
+    name: 'xsai.streamText',
     tracer,
   }, (rootSpan) => {
     void (async () => {
