@@ -35,8 +35,10 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   // output
   let eventCtrl: ReadableStreamDefaultController<StreamTextEvent> | undefined
   let textCtrl: ReadableStreamDefaultController<string> | undefined
+  let reasoningTextCtrl: ReadableStreamDefaultController<string> | undefined
   const eventStream = new ReadableStream<StreamTextEvent>({ start: controller => eventCtrl = controller })
   const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
+  const reasoningTextStream = new ReadableStream<string>({ start: controller => reasoningTextCtrl = controller })
 
   const pushEvent = (stepEvent: StreamTextEvent) => {
     eventCtrl?.enqueue(stepEvent)
@@ -100,9 +102,17 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     }
 
     let text: string = ''
-    const pushText = (content?: string) => {
+    let reasoningText: string | undefined
+    const pushText = (content: string) => {
       textCtrl?.enqueue(content)
       text += content
+    }
+    const pushReasoningText = (reasoningContent: string) => {
+      if (reasoningText == null)
+        reasoningText = ''
+
+      reasoningTextCtrl?.enqueue(reasoningContent)
+      reasoningText += reasoningContent
     }
 
     const tool_calls: ToolCall[] = []
@@ -142,8 +152,10 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
           const choice = chunk.choices[0]
 
-          if (choice.delta.reasoning_content != null)
+          if (choice.delta.reasoning_content != null) {
             pushEvent({ text: choice.delta.reasoning_content, type: 'reasoning-delta' })
+            pushReasoningText(choice.delta.reasoning_content)
+          }
 
           if (choice.finish_reason != null)
             finishReason = choice.finish_reason
@@ -173,18 +185,32 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
                     arguments: toolCall.function.arguments ?? '',
                   },
                 }
-                pushEvent({ toolCallId: toolCall.id, toolName: toolCall.function.name!, type: 'tool-call-streaming-start' })
+                pushEvent({
+                  toolCallId: toolCall.id,
+                  toolName: toolCall.function.name!,
+                  type: 'tool-call-streaming-start',
+                })
               }
               else {
                 tool_calls[index].function.arguments! += toolCall.function.arguments
-                pushEvent({ argsTextDelta: toolCall.function.arguments!, toolCallId: toolCall.id, toolName: toolCall.function.name ?? tool_calls[index].function.name!, type: 'tool-call-delta' })
+                pushEvent({
+                  argsTextDelta: toolCall.function.arguments!,
+                  toolCallId: toolCall.id,
+                  toolName: toolCall.function.name ?? tool_calls[index].function.name!,
+                  type: 'tool-call-delta',
+                })
               }
             }
           }
         },
       }))
 
-    messages.push({ content: text, role: 'assistant', tool_calls })
+    messages.push({
+      content: text,
+      reasoning_content: reasoningText,
+      role: 'assistant',
+      tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
+    })
 
     if (tool_calls.length !== 0) {
       for (const toolCall of tool_calls) {
@@ -263,10 +289,12 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
         eventCtrl?.close()
         textCtrl?.close()
+        reasoningTextCtrl?.close()
       }
       catch (err) {
         eventCtrl?.error(err)
         textCtrl?.error(err)
+        reasoningTextCtrl?.error(err)
 
         resultSteps.reject(err)
         resultMessages.reject(err)
@@ -307,6 +335,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     return {
       fullStream: eventStream,
       messages: resultMessages.promise,
+      reasoningTextStream,
       steps: resultSteps.promise,
       textStream,
       totalUsage: resultTotalUsage.promise,
