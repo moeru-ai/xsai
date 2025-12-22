@@ -1,6 +1,6 @@
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, Message, ToolCall } from 'xsai'
 
-import { clean, determineStepType, executeTool } from 'xsai'
+import { determineStepType, executeTool } from 'xsai'
 
 /** @internal */
 export interface RunGenerateTextStepResult {
