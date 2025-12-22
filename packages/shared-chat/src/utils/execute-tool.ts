@@ -26,34 +26,37 @@ export const executeTool = async ({ abortSignal, messages, toolCall, tools }: Ex
     throw new Error(`Model tried to call unavailable tool "${toolCall.function.name}", ${availableToolsErrorMsg}.`)
   }
 
-  const toolCallId = toolCall.id
-  const toolName = toolCall.function.name
+  if (toolCall.function.name == null)
+    throw new Error(`Missing toolCall.function.name: ${JSON.stringify(toolCall)}`)
+
+  if (toolCall.function.arguments == null)
+    throw new Error(`Missing toolCall.function.arguments: ${JSON.stringify(toolCall)}`)
 
   const parsedArgs = JSON.parse(toolCall.function.arguments) as Record<string, unknown>
   const result = wrapToolResult(await tool.execute(parsedArgs, {
     abortSignal,
     messages,
-    toolCallId,
+    toolCallId: toolCall.id,
   }))
 
   const completionToolCall: CompletionToolCall = {
     args: toolCall.function.arguments,
-    toolCallId,
+    toolCallId: toolCall.id,
     toolCallType: toolCall.type,
-    toolName,
+    toolName: toolCall.function.name,
   }
 
   const completionToolResult: CompletionToolResult = {
     args: parsedArgs,
     result,
-    toolCallId,
-    toolName,
+    toolCallId: toolCall.id,
+    toolName: toolCall.function.name,
   }
 
   const message: ToolMessage = {
     content: result,
     role: 'tool',
-    tool_call_id: toolCallId,
+    tool_call_id: toolCall.id,
   }
 
   return {
