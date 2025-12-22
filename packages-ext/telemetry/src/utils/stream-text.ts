@@ -4,12 +4,10 @@ import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, 
 
 import type { WithTelemetry } from '../types/options'
 
-import { metadataAttributes } from './attributes'
+import { chatAttributes, metadataAttributes } from './attributes'
 import { getTracer } from './get-tracer'
-import { now } from './now'
 import { recordSpan, recordSpanSync } from './record-span'
 import { transformChunk } from './stream-text-internal'
-import { stringifyTool } from './stringify-tool'
 import { wrapTool } from './wrap-tool'
 
 /**
@@ -59,22 +57,11 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   const doStream = async () => recordSpan({
     attributes: {
       ...metadataAttributes(options.telemetry?.metadata),
-      ...(tools != null && tools.length > 0 && {
-        'ai.prompt.toolChoice': JSON.stringify(options.toolChoice ?? { type: 'auto' }),
-        'ai.prompt.tools': tools.map(stringifyTool),
-      }),
-      'ai.prompt.messages': JSON.stringify(options.messages),
-      'ai.response.model': options.model,
-      'gen_ai.request.model': options.model,
-      'gen_ai.response.id': crypto.randomUUID(),
-      'gen_ai.response.model': options.model,
-      'gen_ai.system': 'xsai',
+      ...chatAttributes(options),
     },
-    name: 'ai.streamText.doStream',
+    name: 'xsai.streamText.doStream',
     tracer,
   }, async (span) => {
-    const startMs = now()
-
     const { body: stream } = await chat({
       ...options,
       maxSteps: undefined,
@@ -117,7 +104,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     const toolCalls: CompletionToolCall[] = []
     const toolResults: CompletionToolResult[] = []
     let finishReason: FinishReason = 'other'
-    let firstChunk = true
 
     await stream!
       .pipeThrough(transformChunk())
@@ -129,18 +115,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         close: () => {},
         // eslint-disable-next-line sonarjs/cognitive-complexity
         write: (chunk) => {
-          // Telemetry
-          if (firstChunk) {
-            const msToFirstChunk = now() - startMs
-            span.addEvent('ai.stream.firstChunk', {
-              'ai.response.msToFirstChunk': msToFirstChunk,
-            })
-            span.setAttributes({
-              'ai.response.msToFirstChunk': msToFirstChunk,
-            })
-            firstChunk = false
-          }
-
           if (chunk.usage)
             pushUsage(chunk.usage)
 
@@ -249,16 +223,13 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     pushStep(step)
 
     // Telemetry
-    const msToFinish = now() - startMs
-    span.addEvent('ai.stream.finish')
+    // span.addEvent('ai.stream.finish')
     span.setAttributes({
-      'ai.response.msToFinish': msToFinish,
       ...(step.toolCalls.length > 0 && { 'ai.response.toolCalls': JSON.stringify(step.toolCalls) }),
       'ai.response.finishReason': step.finishReason,
       'ai.response.text': step.text != null ? step.text : '',
       'gen_ai.response.finish_reasons': [step.finishReason],
       ...step.usage && {
-        'ai.response.avgOutputTokensPerSecond': (1000 * (step.usage.completion_tokens ?? 0)) / msToFinish,
         'ai.usage.inputTokens': step.usage.prompt_tokens,
         'ai.usage.outputTokens': step.usage.completion_tokens,
         'ai.usage.totalTokens': step.usage.total_tokens,
