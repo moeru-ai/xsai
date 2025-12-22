@@ -5,7 +5,7 @@ import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } 
 import type { EmbedOptions, EmbedResponse, EmbedResponseUsage } from './embed'
 
 export interface EmbedManyOptions extends Omit<EmbedOptions, 'input'> {
-  /** Input text to embed, encoded as a array of tokens. */
+  /** Input text to embed. */
   input: string[]
 }
 

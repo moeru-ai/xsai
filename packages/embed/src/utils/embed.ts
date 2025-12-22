@@ -5,7 +5,7 @@ import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } 
 export interface EmbedOptions extends CommonRequestOptions {
   /** The number of dimensions the resulting output embeddings should have. */
   dimensions?: number
-  /** Input text to embed, encoded as a string of tokens. */
+  /** Input text to embed. */
   input: string
 }
 
