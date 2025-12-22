@@ -228,10 +228,12 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
 
       eventCtrl?.close()
       textCtrl?.close()
+      reasoningTextCtrl?.close()
     }
     catch (err) {
       eventCtrl?.error(err)
       textCtrl?.error(err)
+      reasoningTextCtrl?.error(err)
 
       resultSteps.reject(err)
       resultMessages.reject(err)
