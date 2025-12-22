@@ -4,8 +4,8 @@ import { chat, DelayedPromise, determineStepType, objCamelToSnake, trampoline } 
 
 import type { WithTelemetry } from '../types/options'
 
-import { executeTool } from './execute-tool'
 import { chatAttributes, metadataAttributes } from './attributes'
+import { executeTool } from './execute-tool'
 import { getTracer } from './get-tracer'
 import { recordSpan, recordSpanSync } from './record-span'
 import { transformChunk } from './stream-text-internal'

@@ -1,9 +1,9 @@
+import type { Tracer } from '@opentelemetry/api'
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, Message, ToolCall } from 'xsai'
 
 import { determineStepType } from 'xsai'
 
 import { executeTool } from './execute-tool'
-import type { Tracer } from '@opentelemetry/api'
 
 /** @internal */
 export interface RunGenerateTextStepResult {
