@@ -22,9 +22,8 @@ exports[`generateText > basic 3`] = `
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "52050336-dda8-4ec8-b92b-d95203fd0866",
+    "gen_ai.response.id": "652f7791-e7e0-4a53-97b4-d30429c539c0",
     "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.system": "xsai",
     "gen_ai.usage.input_tokens": 16,
     "gen_ai.usage.output_tokens": 417,
     "instructions": "You are a helpful weather assistant",
@@ -40,9 +39,8 @@ exports[`generateText > basic 3`] = `
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "8b5a3484-c3e8-4963-a6b5-c0c60a07c8d1",
+    "gen_ai.response.id": "188dcc72-256c-42a1-b823-528bc8a77f48",
     "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.system": "xsai",
     "gen_ai.usage.input_tokens": 16,
     "gen_ai.usage.output_tokens": 417,
     "instructions": "You are a helpful weather assistant",

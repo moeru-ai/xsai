@@ -18,9 +18,8 @@ exports[`streamText > basic 3`] = `
     "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.request.seed": 114514,
-    "gen_ai.response.id": "e2ba64c8-0e4e-4329-8ae5-0af4b8c99650",
+    "gen_ai.response.id": "7fc51396-7a3b-43a6-ac12-017cf72bbb0e",
     "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.system": "xsai",
     "instructions": "You are a helpful weather assistant",
   },
   {
@@ -34,9 +33,8 @@ exports[`streamText > basic 3`] = `
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "e1553391-9af0-4220-abc4-229d3e578e40",
+    "gen_ai.response.id": "cbf4b391-f862-41f7-b6d9-734c86ada6af",
     "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.system": "xsai",
     "gen_ai.usage.input_tokens": 16,
     "gen_ai.usage.output_tokens": 417,
     "instructions": "You are a helpful weather assistant",
