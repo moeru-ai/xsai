@@ -12,16 +12,21 @@ export const wrapTool = (tool: Tool, tracer: Tracer): Tool => ({
         'gen_ai.tool.call.description': tool.function.description,
         'gen_ai.tool.call.id': options.toolCallId,
         'gen_ai.tool.call.name': tool.function.name,
-        'gen_ai.tool.definitions': JSON.stringify([{ function: tool.function, type: tool.type }]),
       },
-      name: 'xsai.executeTool',
+      name: `execute_tool ${tool.function.name}`,
       tracer,
     }, async (span) => {
-      const result = await tool.execute(input, options)
+      try {
+        const result = await tool.execute(input, options)
+        span.setAttribute('gen_ai.tool.call.result', JSON.stringify(result))
+        return result
+      }
+      catch (err) {
+        if (err instanceof Error)
+          span.setAttribute('error.type', err.message)
 
-      span.setAttribute('gen_ai.tool.call.result', JSON.stringify(result))
-
-      return result
+        throw err
+      }
     }),
   function: tool.function,
   type: tool.type,

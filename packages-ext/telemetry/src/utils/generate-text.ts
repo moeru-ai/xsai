@@ -22,7 +22,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
         ...metadataAttributes(options.telemetry?.metadata),
         ...chatAttributes(options),
       },
-      name: 'xsai.generateText.doGenerate',
+      name: `chat ${options.model}`,
       tracer,
     }, async span =>
       chat({
@@ -55,6 +55,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
           })
 
           messages.push(message)
+          span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
 
           if (finishReason !== 'stop' && stepType !== 'done') {
             for (const toolCall of msgToolCalls) {
@@ -86,7 +87,6 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
 
           // TODO: metrics counter
           span.setAttributes({
-            'gen_ai.output.messages': JSON.stringify(messages),
             'gen_ai.response.finish_reasons': [step.finishReason],
             'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
             'gen_ai.usage.output_tokens': step.usage.completion_tokens,
@@ -117,26 +117,30 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
           }
         }))
 
-  return recordSpan<GenerateTextResult>({
-    attributes: {
-      ...metadataAttributes(options.telemetry?.metadata),
-      ...chatAttributes(options),
-    },
-    name: 'xsai.generateText',
-    tracer,
-  }, async (span) => {
-    const result = await trampoline<GenerateTextResult>(async () => rawGenerateText({
-      ...options,
-      tools: options.tools?.map(tool => wrapTool(tool, tracer)),
-    }))
+  return trampoline<GenerateTextResult>(async () => rawGenerateText({
+    ...options,
+    tools: options.tools?.map(tool => wrapTool(tool, tracer)),
+  }))
+  // return recordSpan<GenerateTextResult>({
+  //   attributes: {
+  //     ...metadataAttributes(options.telemetry?.metadata),
+  //     ...chatAttributes(options),
+  //   },
+  //   name: `chat ${options.model}`,
+  //   tracer,
+  // }, async (span) => {
+  //   const result = await trampoline<GenerateTextResult>(async () => rawGenerateText({
+  //     ...options,
+  //     tools: options.tools?.map(tool => wrapTool(tool, tracer)),
+  //   }))
 
-    span.setAttributes({
-      'gen_ai.output.messages': JSON.stringify(result.messages),
-      'gen_ai.response.finish_reasons': [result.finishReason],
-      'gen_ai.usage.input_tokens': result.usage.prompt_tokens,
-      'gen_ai.usage.output_tokens': result.usage.completion_tokens,
-    })
+  //   span.setAttributes({
+  //     'gen_ai.output.messages': JSON.stringify(result.messages),
+  //     'gen_ai.response.finish_reasons': [result.finishReason],
+  //     'gen_ai.usage.input_tokens': result.usage.prompt_tokens,
+  //     'gen_ai.usage.output_tokens': result.usage.completion_tokens,
+  //   })
 
-    return result
-  })
+  //   return result
+  // })
 }

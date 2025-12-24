@@ -1,4 +1,4 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
+import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
 import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
@@ -59,7 +59,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       ...metadataAttributes(options.telemetry?.metadata),
       ...chatAttributes(options),
     },
-    name: 'xsai.streamText.doStream',
+    name: `chat ${options.model}`,
     tracer,
   }, async (span) => {
     const { body: stream } = await chat({
@@ -177,12 +177,14 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         },
       }))
 
-    messages.push({
+    const message: AssistantMessage = {
       content: text,
       reasoning_content: reasoningText,
       role: 'assistant',
       tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
-    })
+    }
+    messages.push(message)
+    span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
 
     if (tool_calls.length !== 0) {
       for (const toolCall of tool_calls) {
@@ -225,7 +227,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     // Telemetry
     // span.addEvent('ai.stream.finish')
     span.setAttributes({
-      'gen_ai.output.messages': JSON.stringify(messages),
       'gen_ai.response.finish_reasons': [step.finishReason],
       ...step.usage && {
         'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
@@ -242,8 +243,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       ...metadataAttributes(options.telemetry?.metadata),
       ...chatAttributes(options),
     },
-    // endWhenDone: false,
-    name: 'xsai.streamText',
+    name: 'xsai.streamText', // TODO: remove
     tracer,
   }, (rootSpan) => {
     void (async () => {
