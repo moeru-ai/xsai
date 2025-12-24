@@ -1,11 +1,10 @@
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
-import { chat, DelayedPromise, determineStepType, objCamelToSnake, trampoline } from 'xsai'
+import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 
 import { chatAttributes, metadataAttributes } from './attributes'
-import { executeTool } from './execute-tool'
 import { getTracer } from './get-tracer'
 import { recordSpan, recordSpanSync } from './record-span'
 import { transformChunk } from './stream-text-internal'
@@ -194,7 +193,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
           messages,
           toolCall,
           tools,
-        }, tracer)
+        })
 
         toolCalls.push(completionToolCall)
         toolResults.push(completionToolResult)
@@ -226,14 +225,9 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     // Telemetry
     // span.addEvent('ai.stream.finish')
     span.setAttributes({
-      ...(step.toolCalls.length > 0 && { 'ai.response.toolCalls': JSON.stringify(step.toolCalls) }),
-      'ai.response.finishReason': step.finishReason,
-      'ai.response.text': step.text != null ? step.text : '',
+      'gen_ai.output.messages': JSON.stringify(messages),
       'gen_ai.response.finish_reasons': [step.finishReason],
       ...step.usage && {
-        'ai.usage.inputTokens': step.usage.prompt_tokens,
-        'ai.usage.outputTokens': step.usage.completion_tokens,
-        'ai.usage.totalTokens': step.usage.total_tokens,
         'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
         'gen_ai.usage.output_tokens': step.usage.completion_tokens,
       },
@@ -244,8 +238,11 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   })
 
   return recordSpanSync<StreamTextResult>({
-    attributes: metadataAttributes(options.telemetry?.metadata),
-    endWhenDone: false,
+    attributes: {
+      ...metadataAttributes(options.telemetry?.metadata),
+      ...chatAttributes(options),
+    },
+    // endWhenDone: false,
     name: 'xsai.streamText',
     tracer,
   }, (rootSpan) => {
@@ -277,17 +274,15 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
         if (finishStep) {
           rootSpan.setAttributes({
-            ...(finishStep.toolCalls.length > 0 && { 'ai.response.toolCalls': JSON.stringify(finishStep.toolCalls) }),
-            'ai.response.finishReason': finishStep.finishReason,
-            'ai.response.text': finishStep.text != null ? finishStep.text : '',
+            'gen_ai.output.messages': JSON.stringify(messages),
+            'gen_ai.response.finish_reasons': [finishStep.finishReason],
           })
         }
 
         if (totalUsage) {
           rootSpan.setAttributes({
-            'ai.usage.inputTokens': totalUsage.prompt_tokens,
-            'ai.usage.outputTokens': totalUsage.completion_tokens,
-            'ai.usage.totalTokens': totalUsage.total_tokens,
+            'gen_ai.usage.input_tokens': totalUsage.prompt_tokens,
+            'gen_ai.usage.output_tokens': totalUsage.completion_tokens,
           })
         }
 

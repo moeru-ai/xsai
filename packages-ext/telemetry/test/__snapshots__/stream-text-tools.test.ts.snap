@@ -1,99 +1,68 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`streamText with tools > basic 1`] = `
-"<think>
-Okay, so the user is asking how many times 114514 plus 1919810 equals. Let me try to parse that. The question seems to be asking for the product of those two numbers. Wait, but the way it's phrased is "How many times does X equal Y?" So it's Y divided by X? Or is it X plus Y? Let me check the exact sentence again: "How many times does 114514 plus 1919810 equal?" So, if I take the sum of 114514 and 1919810, is that the quantity we're looking for? The word "how many times" implies multiplication, but here it's a sum. Unless there's a misinterpretation.
-
-Wait, maybe there's a typo. Let me re-express it. If the user wants to know the product, it's 114514 multiplied by 1919810. But the question is a bit unclear. Is it possible they meant to write "how many times does X plus Y equal Z" or something else? But since the user wrote "How many times does 114514 plus 1919810 equal?" perhaps they meant the product. Alternatively, maybe it's a translation issue. Let me think. If I convert that into math, adding those two numbers is straightforward. But if the user is asking for the sum divided by something else, but no, the way it's written, it's a direct sum.
-
-Wait, but the provided tools only include the add function. The user says to use the add tool. So regardless of the math, I should use the add function with a and b. Let me try that. The parameters are a and b. So a is 114514, b is 1919810. But wait, the question is phrased as "How many times does ... equal?" So perhaps they want the value of (114514 + 1919810), which would be 2034324. But the user is asking how many times, which typically means division by something. Unless there's a misunderstanding here.
-
-Alternatively, maybe there's a specific context I'm missing. But given the tools, I can only use add. So I'll compute 114514 + 1919810 using the add function, and that's the answer.
-</think>
-
-<think>
-Okay, let me check the user's question again. They asked "How many times does 114514 plus 1919810 equal?" So it's a bit confusing. Adding those two numbers gives 2034324, but if they meant multiplying 114514 by 1919810, that's a huge number. But since the tools here only allow the add function, and the user's original question is phrased as asking for the result of the addition, I have to use the add tool. So, the answer is 2034324.
-</think>
-
-The result of adding 114514 and 1919810 is **2034324**. 
-
-Let me know if you need further clarification!"
-`;
+exports[`streamText with tools > basic 1`] = `"2034324."`;
 
 exports[`streamText with tools > basic 2`] = `
 [
+  "xsai.streamText",
+  "xsai.executeTool",
+  "xsai.streamText.doStream",
+  "xsai.streamText.doStream",
+]
+`;
+
+exports[`streamText with tools > basic 3`] = `
+[
   {
-    "ai.operationId": "ai.toolCall",
-    "ai.toolCall.args": "{"a":"114514","b":"1919810"}",
-    "ai.toolCall.id": "call_hxg74h3m",
-    "ai.toolCall.name": "add",
-    "ai.toolCall.result": ""2034324"",
-    "operation.name": "ai.toolCall",
+    "gen_ai.input.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "gen_ai.operation.name": "chat",
+    "gen_ai.request.choice.count": 1,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.seed": 114514,
+    "gen_ai.response.id": "6a00679e-725c-43ac-a75f-2414bed2ef9f",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "xsai",
   },
   {
-    "ai.model.id": "qwen3:0.6b",
-    "ai.model.provider": "xsai",
-    "ai.operationId": "ai.streamText.doStream",
-    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
-    "ai.prompt.toolChoice": "{"type":"auto"}",
-    "ai.prompt.tools": [
-      "{"description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
-    ],
-    "ai.response.avgOutputTokensPerSecond": 22.489393204584776,
-    "ai.response.finishReason": "tool_calls",
-    "ai.response.id": "b1b52cfb-7075-4030-be38-f83384cb3c5f",
-    "ai.response.model": "qwen3:0.6b",
-    "ai.response.msToFinish": 25834.400898,
-    "ai.response.msToFirstChunk": 17141.756877,
-    "ai.response.providerMetadata": "{}",
-    "ai.response.text": "<think> Okay, so the user is asking how many times",
-    "ai.response.timestamp": "2025-10-19T09:33:20.757Z",
-    "ai.response.toolCalls": "[{"args":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}","toolCallId":"call_hxg74h3m","toolCallType":"function","toolName":"add"}]",
-    "ai.usage.inputTokens": 180,
-    "ai.usage.outputTokens": 581,
-    "ai.usage.totalTokens": 761,
+    "gen_ai.operation.name": "execute_tool",
+    "gen_ai.tool.call.arguments": "{"a":"114514","b":"1919810"}",
+    "gen_ai.tool.call.description": "Adds two numbers",
+    "gen_ai.tool.call.id": "call_9y2viv08",
+    "gen_ai.tool.call.name": "add",
+    "gen_ai.tool.call.result": ""2034324"",
+    "gen_ai.tool.definitions": "[{"function":{"description":"Adds two numbers","name":"add","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false},"strict":true},"type":"function"}]",
+  },
+  {
+    "gen_ai.input.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "gen_ai.operation.name": "chat",
+    "gen_ai.output.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"content":"","role":"assistant","tool_calls":[{"id":"call_9y2viv08","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_9y2viv08"}]",
+    "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "tool_calls",
     ],
-    "gen_ai.response.id": "2d914ee0-d7b2-4c86-94be-8799e575088a",
+    "gen_ai.response.id": "787b285e-d549-418c-8215-00f40b9fa30e",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
-    "gen_ai.usage.input_tokens": 180,
-    "gen_ai.usage.output_tokens": 581,
-    "operation.name": "ai.streamText.doStream",
+    "gen_ai.usage.input_tokens": 186,
+    "gen_ai.usage.output_tokens": 341,
   },
   {
-    "ai.model.id": "qwen3:0.6b",
-    "ai.model.provider": "xsai",
-    "ai.operationId": "ai.streamText.doStream",
-    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
-    "ai.prompt.toolChoice": "{"type":"auto"}",
-    "ai.prompt.tools": [
-      "{"description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
-    ],
-    "ai.response.avgOutputTokensPerSecond": 12.204896245549765,
-    "ai.response.finishReason": "stop",
-    "ai.response.id": "dd756e5d-9163-4d07-b248-f18348545c6e",
-    "ai.response.model": "qwen3:0.6b",
-    "ai.response.msToFinish": 14993.982441,
-    "ai.response.msToFirstChunk": 11978.728365000003,
-    "ai.response.providerMetadata": "{}",
-    "ai.response.text": "<think> Okay, let me check the user's question aga",
-    "ai.response.timestamp": "2025-10-19T09:33:46.594Z",
-    "ai.usage.inputTokens": 746,
-    "ai.usage.outputTokens": 183,
-    "ai.usage.totalTokens": 929,
+    "gen_ai.input.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "gen_ai.operation.name": "chat",
+    "gen_ai.output.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"content":"","role":"assistant","tool_calls":[{"id":"call_9y2viv08","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_9y2viv08"},{"content":"2034324.","role":"assistant"}]",
+    "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "647c7dc4-612e-4bcf-b97c-d8f0dd0d55e9",
+    "gen_ai.response.id": "8c8d03a0-e904-4cd0-a298-5b8d44acaa3c",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
-    "gen_ai.usage.input_tokens": 746,
-    "gen_ai.usage.output_tokens": 183,
-    "operation.name": "ai.streamText.doStream",
+    "gen_ai.usage.input_tokens": 239,
+    "gen_ai.usage.output_tokens": 239,
   },
 ]
 `;

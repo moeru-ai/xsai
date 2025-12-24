@@ -1,11 +1,10 @@
-import type { CompletionStep, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn, WithUnknown } from 'xsai'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn, WithUnknown } from 'xsai'
 
-import { chat, responseJSON, trampoline } from 'xsai'
+import { chat, determineStepType, executeTool, responseJSON, trampoline } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 
 import { chatAttributes, metadataAttributes } from './attributes'
-import { extractGenerateTextStep, extractGenerateTextStepPost } from './generate-text-internal'
 import { getTracer } from './get-tracer'
 import { recordSpan } from './record-span'
 import { wrapTool } from './wrap-tool'
@@ -17,81 +16,127 @@ import { wrapTool } from './wrap-tool'
 export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>) => {
   const tracer = getTracer()
 
-  const rawGenerateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>): Promise<TrampolineFn<GenerateTextResult>> => {
-    const messages: Message[] = structuredClone(options.messages)
-    const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
-
-    const [stepWithoutToolCalls, { messages: msgs1, msgToolCalls, reasoningText }] = await recordSpan({
+  const rawGenerateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>): Promise<TrampolineFn<GenerateTextResult>> =>
+    recordSpan({
       attributes: {
         ...metadataAttributes(options.telemetry?.metadata),
         ...chatAttributes(options),
       },
       name: 'xsai.generateText.doGenerate',
       tracer,
-    }, async (span) => {
-      const res = await chat({
+    }, async span =>
+      chat({
         ...options,
         maxSteps: undefined,
         steps: undefined,
         stream: false,
-        telemetry: undefined,
       })
         .then(responseJSON<GenerateTextResponse>)
+        .then(async (res) => {
+          const { choices, usage } = res
 
-      const [step, { messages: msgs, msgToolCalls, reasoningText }] = await extractGenerateTextStep({
-        ...options,
-        messages,
-        steps,
-      }, res)
+          if (!choices?.length)
+            throw new Error(`No choices returned, response body: ${JSON.stringify(res)}`)
 
-      // TODO: metrics counter
-      span.setAttributes({
-        'gen_ai.output.messages': JSON.stringify(msgs),
-        'gen_ai.response.finish_reasons': [step.finishReason],
-        'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
-        'gen_ai.usage.output_tokens': step.usage.completion_tokens,
-      })
+          const messages: Message[] = structuredClone(options.messages)
+          const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
 
-      return [step, { messages: msgs, msgToolCalls, reasoningText }]
+          const toolCalls: CompletionToolCall[] = []
+          const toolResults: CompletionToolResult[] = []
+
+          const { finish_reason: finishReason, message } = choices[0]
+          const msgToolCalls = message?.tool_calls ?? []
+
+          const stepType = determineStepType({
+            finishReason,
+            maxSteps: options.maxSteps ?? 1,
+            stepsLength: steps.length,
+            toolCallsLength: msgToolCalls.length,
+          })
+
+          messages.push(message)
+
+          if (finishReason !== 'stop' && stepType !== 'done') {
+            for (const toolCall of msgToolCalls) {
+              const { completionToolCall, completionToolResult, message } = await executeTool({
+                abortSignal: options.abortSignal,
+                messages,
+                toolCall,
+                tools: options.tools,
+              })
+              toolCalls.push(completionToolCall)
+              toolResults.push(completionToolResult)
+              messages.push(message)
+            }
+          }
+
+          const step: CompletionStep<true> = {
+            finishReason,
+            stepType,
+            text: Array.isArray(message.content)
+              // eslint-disable-next-line sonarjs/no-nested-functions
+              ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
+              : message.content,
+            toolCalls,
+            toolResults,
+            usage,
+          }
+
+          steps.push(step)
+
+          // TODO: metrics counter
+          span.setAttributes({
+            'gen_ai.output.messages': JSON.stringify(messages),
+            'gen_ai.response.finish_reasons': [step.finishReason],
+            'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
+            'gen_ai.usage.output_tokens': step.usage.completion_tokens,
+          })
+
+          if (options.onStepFinish)
+            await options.onStepFinish(step)
+
+          if (step.finishReason === 'stop' || step.stepType === 'done') {
+            return {
+              finishReason: step.finishReason,
+              messages,
+              reasoningText: message.reasoning_content,
+              steps,
+              text: step.text,
+              toolCalls: step.toolCalls,
+              toolResults: step.toolResults,
+              usage: step.usage,
+            }
+          }
+          else {
+            // eslint-disable-next-line sonarjs/no-nested-functions
+            return async () => rawGenerateText({
+              ...options,
+              messages,
+              steps,
+            })
+          }
+        }))
+
+  return recordSpan<GenerateTextResult>({
+    attributes: {
+      ...metadataAttributes(options.telemetry?.metadata),
+      ...chatAttributes(options),
+    },
+    name: 'xsai.generateText',
+    tracer,
+  }, async (span) => {
+    const result = await trampoline<GenerateTextResult>(async () => rawGenerateText({
+      ...options,
+      tools: options.tools?.map(tool => wrapTool(tool, tracer)),
+    }))
+
+    span.setAttributes({
+      'gen_ai.output.messages': JSON.stringify(result.messages),
+      'gen_ai.response.finish_reasons': [result.finishReason],
+      'gen_ai.usage.input_tokens': result.usage.prompt_tokens,
+      'gen_ai.usage.output_tokens': result.usage.completion_tokens,
     })
 
-    const [toolResults, msgs2] = await extractGenerateTextStepPost({
-      ...options,
-      messages,
-      steps,
-    }, msgToolCalls, tracer)
-
-    const step = { ...stepWithoutToolCalls, toolResults }
-
-    steps.push(step)
-    messages.push(...msgs1, ...msgs2)
-
-    if (options.onStepFinish)
-      await options.onStepFinish(step)
-
-    if (step.finishReason === 'stop' || step.stepType === 'done') {
-      return {
-        finishReason: step.finishReason,
-        messages,
-        reasoningText,
-        steps,
-        text: step.text,
-        toolCalls: step.toolCalls,
-        toolResults: step.toolResults,
-        usage: step.usage,
-      }
-    }
-    else {
-      return async () => rawGenerateText({
-        ...options,
-        messages,
-        steps,
-      })
-    }
-  }
-
-  return trampoline<GenerateTextResult>(async () => rawGenerateText({
-    ...options,
-    tools: options.tools?.map(tool => wrapTool(tool, tracer)),
-  }))
+    return result
+  })
 }

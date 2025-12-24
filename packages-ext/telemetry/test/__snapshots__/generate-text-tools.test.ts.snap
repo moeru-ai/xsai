@@ -1,90 +1,78 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`generateText with tools > basic 1`] = `
-"<think>
-Okay, let me see. The user asked how many times 114514 plus 1919810 equals. Wait, that still sounds like they want the sum of those two numbers. But maybe there's confusion here. Let me check the original problem again. It says, "How many times does 114514 plus 1919810 equal?" The phrasing 'how many times does X equal Y' usually implies Y is X multiplied by something. Unless it's a code or mathematical problem, I don't think there's a multiplication involved here. But given the tools available, maybe the user expects a simple arithmetic result. Let me calculate the sum again to be sure. Adding 114514 and 1919810 gives 2034324, so the answer should be 2034324. Since the question is unclear, but the tools provided require using the add function, I'll return that result.
-</think>
+"The result of adding 114514 and 1919810 is **2,934,324**. 
 
-The sum of 114514 and 1919810 is 2,034,324. Therefore, the answer is 2,034,324."
+If you have more questions or need further clarification, feel free to ask!"
 `;
 
 exports[`generateText with tools > basic 2`] = `
 [
+  "xsai.executeTool",
+  "xsai.generateText.doGenerate",
+  "xsai.generateText.doGenerate",
+  "xsai.generateText",
+]
+`;
+
+exports[`generateText with tools > basic 3`] = `
+[
   {
-    "ai.model.id": "qwen3:0.6b",
-    "ai.model.provider": "xsai",
-    "ai.operationId": "ai.generateText.doGenerate",
-    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
-    "ai.prompt.toolChoice": "{"type":"auto"}",
-    "ai.prompt.tools": [
-      "{"description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
-    ],
-    "ai.response.finishReason": "tool_calls",
-    "ai.response.id": "964e311b-3909-45f3-9f47-d661ad9cdd5f",
-    "ai.response.model": "qwen3:0.6b",
-    "ai.response.providerMetadata": "{}",
-    "ai.response.timestamp": "2025-10-19T09:33:20.761Z",
-    "ai.response.toolCalls": "[{"args":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}","toolCallId":"call_nf33i9f3","toolCallType":"function","toolName":"add"}]",
-    "ai.usage.completionTokens": 645,
-    "ai.usage.promptTokens": 180,
+    "gen_ai.operation.name": "execute_tool",
+    "gen_ai.tool.call.arguments": "{"a":"114514","b":"1919810"}",
+    "gen_ai.tool.call.description": "Adds two numbers",
+    "gen_ai.tool.call.id": "call_xn7pqeey",
+    "gen_ai.tool.call.name": "add",
+    "gen_ai.tool.call.result": ""2034324"",
+    "gen_ai.tool.definitions": "[{"function":{"description":"Adds two numbers","name":"add","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false},"strict":true},"type":"function"}]",
+  },
+  {
+    "gen_ai.input.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "gen_ai.operation.name": "chat",
+    "gen_ai.output.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"role":"assistant","content":"","reasoning":"Okay, the user is asking how many times 114514 plus 1919810 equals. Hmm, wait. Let me parse that. The user wrote \\"How many times does 114514 plus 1919810 equal?\\" So they want the result of adding those two numbers. But they mentioned using the add tool. So maybe they want me to compute the sum first and then check how many times that sum is. Wait, but if it's just adding the numbers, maybe there's a mistake in the question. Let me check again. Wait, the user wrote \\"114514 plus 1919810\\" – that's the sum. But why ask how many times? Maybe there's a misinterpretation here. Unless they meant how many times each number is added, but that seems unclear. Alternatively, could there be a typo? For example, if it's 114514 plus 1919810, the sum is 114514 + 1919810. Let me calculate that. Adding those numbers: 114514 + 1919810. Well, 114514 plus 1919810... Let me do the math. 1919810 + 114514. Let's add them step by step. 1919810 + 1000000 = 2919810, plus 14514 = 2934324. So the sum is 2,934,324. But the user's question is phrased as \\"how many times does... equal?\\" which doesn't make sense with this sum. Unless they want to know if that sum is a multiple of something. Wait, maybe they want the result of the addition? Like if adding gives a certain number, then how many times... but without more context, it's unclear. Alternatively, perhaps there's a formatting error. Maybe they meant 114514 + 1919810 equals... which is what I calculated as 2,934,324. So maybe the user expects a numerical answer. But since they said to try using the add tool, perhaps the correct approach is to compute that sum. So the answer would be the result of adding 114514 and 1919810, which is 2,934,324. But the user's question structure is confusing. Maybe they want to verify if this sum is correct, so I should explain that it's obtained by adding the numbers as per the tool. So proceed to calculate it.\\n","tool_calls":[{"id":"call_xn7pqeey","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_xn7pqeey"}]",
+    "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "tool_calls",
     ],
-    "gen_ai.response.id": "11da26ad-a287-4463-860f-ad35cd75f063",
+    "gen_ai.response.id": "3013d0b1-5b71-4ef6-98b0-10434460306e",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
-    "gen_ai.usage.input_tokens": 180,
+    "gen_ai.usage.input_tokens": 186,
     "gen_ai.usage.output_tokens": 645,
-    "operation.name": "ai.generateText.doGenerate",
   },
   {
-    "ai.operationId": "ai.toolCall",
-    "ai.toolCall.args": "{"a":"114514","b":"1919810"}",
-    "ai.toolCall.id": "call_nf33i9f3",
-    "ai.toolCall.name": "add",
-    "ai.toolCall.result": ""2034324"",
-    "operation.name": "ai.toolCall",
-  },
-  {
-    "ai.model.id": "qwen3:0.6b",
-    "ai.model.provider": "xsai",
-    "ai.operationId": "ai.generateText.doGenerate",
-    "ai.prompt.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"role":"assistant","content":"<think>\\nOkay, so the user is asking how many times 114514 plus 1919810 equals. Wait, that seems like just adding those two numbers. Let me check the question again. It says \\"How many times does 114514 plus 1919810 equal?\\" So the question is phrased as a mathematical operation. But maybe the user is confused how to write it? Let me break it down.\\n\\nFirst, I need to compute 114514 + 1919810. Let's do that. Adding the two numbers: 114514 plus 1919810. Adding them gives... Let me calculate. 114514 + 1919810. Let's see, adding 114,514 to 1,919,810. Let me add the numbers step by step. 1,919,810 plus 100,000 is 2,019,810. Then plus 14,514, so total is 2,019,810 + 14,514 = 2,034,324. So the sum is 2,034,324. Then the question is how many times does that sum equal? Wait, maybe there's a typo? Because \\"how many times does something equal\\" usually implies multiplication. Unless it's a code or math problem, but the phrasing here is unclear. Or maybe it's a translation error? Let me check again.\\n\\nWait, maybe the user intended to ask for the product of 114514 and 1919810, which would be a very large number. But the original problem says \\"adds\\" and then asks \\"How many times does... equal?\\" So perhaps the user made a mistake in wording. But given that the tools provided are only the add function, maybe I need to use that. But regardless, the user is asking to call the add tool. Let me confirm: the question is to add 114514 and 1919810, which is a simple math problem. Since we can use the add function, I should call that function with a and b as the numbers given.\\n\\nSo the parameters are a=114514 and b=1919810. Then, the function will return the sum, which is 2,034,324. But the user's question is phrased as \\"how many times does... equal?\\" which might be a translation issue. But since the tools provided allow adding, I should proceed by calling the add function with the numbers provided.\\n</think>\\n\\n","tool_calls":[{"id":"call_nf33i9f3","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_nf33i9f3"}]",
-    "ai.prompt.toolChoice": "{"type":"auto"}",
-    "ai.prompt.tools": [
-      "{"description":"Adds two numbers","inputSchema":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"}},"required":["a","b"],"additionalProperties":false},"name":"add","type":"function"}",
-    ],
-    "ai.response.finishReason": "stop",
-    "ai.response.id": "d0398d64-93d6-434c-9f51-f6d02d1c59b8",
-    "ai.response.model": "qwen3:0.6b",
-    "ai.response.providerMetadata": "{}",
-    "ai.response.text": "<think> Okay, let me see. The user asked how many ",
-    "ai.response.timestamp": "2025-10-19T09:33:56.277Z",
-    "ai.usage.completionTokens": 267,
-    "ai.usage.promptTokens": 810,
+    "gen_ai.input.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"role":"assistant","content":"","reasoning":"Okay, the user is asking how many times 114514 plus 1919810 equals. Hmm, wait. Let me parse that. The user wrote \\"How many times does 114514 plus 1919810 equal?\\" So they want the result of adding those two numbers. But they mentioned using the add tool. So maybe they want me to compute the sum first and then check how many times that sum is. Wait, but if it's just adding the numbers, maybe there's a mistake in the question. Let me check again. Wait, the user wrote \\"114514 plus 1919810\\" – that's the sum. But why ask how many times? Maybe there's a misinterpretation here. Unless they meant how many times each number is added, but that seems unclear. Alternatively, could there be a typo? For example, if it's 114514 plus 1919810, the sum is 114514 + 1919810. Let me calculate that. Adding those numbers: 114514 + 1919810. Well, 114514 plus 1919810... Let me do the math. 1919810 + 114514. Let's add them step by step. 1919810 + 1000000 = 2919810, plus 14514 = 2934324. So the sum is 2,934,324. But the user's question is phrased as \\"how many times does... equal?\\" which doesn't make sense with this sum. Unless they want to know if that sum is a multiple of something. Wait, maybe they want the result of the addition? Like if adding gives a certain number, then how many times... but without more context, it's unclear. Alternatively, perhaps there's a formatting error. Maybe they meant 114514 + 1919810 equals... which is what I calculated as 2,934,324. So maybe the user expects a numerical answer. But since they said to try using the add tool, perhaps the correct approach is to compute that sum. So the answer would be the result of adding 114514 and 1919810, which is 2,934,324. But the user's question structure is confusing. Maybe they want to verify if this sum is correct, so I should explain that it's obtained by adding the numbers as per the tool. So proceed to calculate it.\\n","tool_calls":[{"id":"call_xn7pqeey","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_xn7pqeey"}]",
+    "gen_ai.operation.name": "chat",
+    "gen_ai.output.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"role":"assistant","content":"","reasoning":"Okay, the user is asking how many times 114514 plus 1919810 equals. Hmm, wait. Let me parse that. The user wrote \\"How many times does 114514 plus 1919810 equal?\\" So they want the result of adding those two numbers. But they mentioned using the add tool. So maybe they want me to compute the sum first and then check how many times that sum is. Wait, but if it's just adding the numbers, maybe there's a mistake in the question. Let me check again. Wait, the user wrote \\"114514 plus 1919810\\" – that's the sum. But why ask how many times? Maybe there's a misinterpretation here. Unless they meant how many times each number is added, but that seems unclear. Alternatively, could there be a typo? For example, if it's 114514 plus 1919810, the sum is 114514 + 1919810. Let me calculate that. Adding those numbers: 114514 + 1919810. Well, 114514 plus 1919810... Let me do the math. 1919810 + 114514. Let's add them step by step. 1919810 + 1000000 = 2919810, plus 14514 = 2934324. So the sum is 2,934,324. But the user's question is phrased as \\"how many times does... equal?\\" which doesn't make sense with this sum. Unless they want to know if that sum is a multiple of something. Wait, maybe they want the result of the addition? Like if adding gives a certain number, then how many times... but without more context, it's unclear. Alternatively, perhaps there's a formatting error. Maybe they meant 114514 + 1919810 equals... which is what I calculated as 2,934,324. So maybe the user expects a numerical answer. But since they said to try using the add tool, perhaps the correct approach is to compute that sum. So the answer would be the result of adding 114514 and 1919810, which is 2,934,324. But the user's question structure is confusing. Maybe they want to verify if this sum is correct, so I should explain that it's obtained by adding the numbers as per the tool. So proceed to calculate it.\\n","tool_calls":[{"id":"call_xn7pqeey","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_xn7pqeey"},{"role":"assistant","content":"The result of adding 114514 and 1919810 is **2,934,324**. \\n\\nIf you have more questions or need further clarification, feel free to ask!","reasoning":"Okay, let me see. The user asked how many times 114514 plus 1919810 equals. They want me to use the add tool to solve this. So first, I need to calculate the sum of those two numbers. Let me add them together. 114514 plus 1919810. Let's do that step by step. Adding the last two numbers first: 1919810 + 1000000 gives 2919810, then add the remaining 14514. 2919810 plus 14,514 equals 2,934,324. So the result is 2,934,324. The user might be expecting this number, but the way they phrase it is confusing. Maybe they meant to check if the sum is a multiple of something else or to find how many times a certain number repeats, but with the given numbers, it's straightforward. Since the question is phrased in a way that suggests a numerical answer, I'll present the result as the sum, which is 2,934,324.\\n"}]",
+    "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "9b2a0724-053a-40ab-96f7-5c832ecc4394",
+    "gen_ai.response.id": "75343d38-e6dd-4e92-94c6-89f4fda2190c",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.system": "xsai",
-    "gen_ai.usage.input_tokens": 810,
-    "gen_ai.usage.output_tokens": 267,
-    "operation.name": "ai.generateText.doGenerate",
+    "gen_ai.usage.input_tokens": 847,
+    "gen_ai.usage.output_tokens": 319,
   },
   {
-    "ai.model.id": "qwen3:0.6b",
-    "ai.model.provider": "xsai",
-    "ai.operationId": "ai.generateText",
-    "ai.prompt": "{"messages":[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]}",
-    "ai.response.finishReason": "stop",
-    "ai.response.providerMetadata": "{}",
-    "ai.response.text": "<think> Okay, let me see. The user asked how many ",
-    "ai.usage.completionTokens": 267,
-    "ai.usage.promptTokens": 810,
-    "operation.name": "ai.generateText",
+    "gen_ai.input.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "gen_ai.operation.name": "chat",
+    "gen_ai.output.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"role":"assistant","content":"","reasoning":"Okay, the user is asking how many times 114514 plus 1919810 equals. Hmm, wait. Let me parse that. The user wrote \\"How many times does 114514 plus 1919810 equal?\\" So they want the result of adding those two numbers. But they mentioned using the add tool. So maybe they want me to compute the sum first and then check how many times that sum is. Wait, but if it's just adding the numbers, maybe there's a mistake in the question. Let me check again. Wait, the user wrote \\"114514 plus 1919810\\" – that's the sum. But why ask how many times? Maybe there's a misinterpretation here. Unless they meant how many times each number is added, but that seems unclear. Alternatively, could there be a typo? For example, if it's 114514 plus 1919810, the sum is 114514 + 1919810. Let me calculate that. Adding those numbers: 114514 + 1919810. Well, 114514 plus 1919810... Let me do the math. 1919810 + 114514. Let's add them step by step. 1919810 + 1000000 = 2919810, plus 14514 = 2934324. So the sum is 2,934,324. But the user's question is phrased as \\"how many times does... equal?\\" which doesn't make sense with this sum. Unless they want to know if that sum is a multiple of something. Wait, maybe they want the result of the addition? Like if adding gives a certain number, then how many times... but without more context, it's unclear. Alternatively, perhaps there's a formatting error. Maybe they meant 114514 + 1919810 equals... which is what I calculated as 2,934,324. So maybe the user expects a numerical answer. But since they said to try using the add tool, perhaps the correct approach is to compute that sum. So the answer would be the result of adding 114514 and 1919810, which is 2,934,324. But the user's question structure is confusing. Maybe they want to verify if this sum is correct, so I should explain that it's obtained by adding the numbers as per the tool. So proceed to calculate it.\\n","tool_calls":[{"id":"call_xn7pqeey","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_xn7pqeey"},{"role":"assistant","content":"The result of adding 114514 and 1919810 is **2,934,324**. \\n\\nIf you have more questions or need further clarification, feel free to ask!","reasoning":"Okay, let me see. The user asked how many times 114514 plus 1919810 equals. They want me to use the add tool to solve this. So first, I need to calculate the sum of those two numbers. Let me add them together. 114514 plus 1919810. Let's do that step by step. Adding the last two numbers first: 1919810 + 1000000 gives 2919810, then add the remaining 14514. 2919810 plus 14,514 equals 2,934,324. So the result is 2,934,324. The user might be expecting this number, but the way they phrase it is confusing. Maybe they meant to check if the sum is a multiple of something else or to find how many times a certain number repeats, but with the given numbers, it's straightforward. Since the question is phrased in a way that suggests a numerical answer, I'll present the result as the sum, which is 2,934,324.\\n"}]",
+    "gen_ai.request.choice.count": 1,
+    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.seed": 114514,
+    "gen_ai.response.finish_reasons": [
+      "stop",
+    ],
+    "gen_ai.response.id": "ab80fa07-125a-4935-a402-052a4f19cc77",
+    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.system": "xsai",
+    "gen_ai.usage.input_tokens": 847,
+    "gen_ai.usage.output_tokens": 319,
   },
 ]
 `;
