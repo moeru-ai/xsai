@@ -1,3 +1,4 @@
+import { LangfuseSpanProcessor } from '@langfuse/otel'
 import { InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { describe, expect, it } from 'vitest'
@@ -9,6 +10,7 @@ describe.sequential('generateText', () => {
   const tracerProvider = new NodeTracerProvider({
     spanProcessors: [
       new SimpleSpanProcessor(memoryExporter),
+      new LangfuseSpanProcessor(),
     ],
   })
   tracerProvider.register()
