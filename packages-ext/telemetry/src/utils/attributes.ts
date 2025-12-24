@@ -22,5 +22,4 @@ export const chatAttributes = (options: ChatOptions) => ({
   'gen_ai.request.top_p': options.topP, // TODO: top_k
   'gen_ai.response.id': crypto.randomUUID(),
   'gen_ai.response.model': options.model,
-  'gen_ai.system': 'xsai',
 })
