@@ -5,7 +5,7 @@ exports[`streamText > basic 1`] = `"The sky appears blue because sunlight, which
 exports[`streamText > basic 2`] = `
 [
   "xsai.streamText",
-  "xsai.streamText.doStream",
+  "chat qwen3:0.6b",
 ]
 `;
 
@@ -18,7 +18,7 @@ exports[`streamText > basic 3`] = `
     "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.request.seed": 114514,
-    "gen_ai.response.id": "7fc51396-7a3b-43a6-ac12-017cf72bbb0e",
+    "gen_ai.response.id": "4a4643e1-c35b-4efe-a803-fa0796d3e1dd",
     "gen_ai.response.model": "qwen3:0.6b",
     "instructions": "You are a helpful weather assistant",
   },
@@ -26,14 +26,14 @@ exports[`streamText > basic 3`] = `
     "agentId": "weather-assistant",
     "gen_ai.input.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
     "gen_ai.operation.name": "chat",
-    "gen_ai.output.messages": "[{"content":"Why is the sky blue?","role":"user"},{"content":"The sky appears blue because sunlight, which travels through the Earth's atmosphere, is refracted or scattered when it reaches the Earth's atmosphere. This happens through water vapor (especially in the atmosphere above clouds) and other gases. Light, when it reaches the Earth's surface, undergoes refraction – bending as it travels through the air – and this bending causes the different wavelengths of light to spread out, making the sky appear blue. The exact reason is related to how Earth's atmosphere refracts light, causing shorter wavelengths (like blue) to appear prominently.","role":"assistant"}]",
+    "gen_ai.output.messages": "[{"content":"The sky appears blue because sunlight, which travels through the Earth's atmosphere, is refracted or scattered when it reaches the Earth's atmosphere. This happens through water vapor (especially in the atmosphere above clouds) and other gases. Light, when it reaches the Earth's surface, undergoes refraction – bending as it travels through the air – and this bending causes the different wavelengths of light to spread out, making the sky appear blue. The exact reason is related to how Earth's atmosphere refracts light, causing shorter wavelengths (like blue) to appear prominently.","role":"assistant"}]",
     "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "cbf4b391-f862-41f7-b6d9-734c86ada6af",
+    "gen_ai.response.id": "1049b66f-84fd-4859-a51a-9a4c4c657bd9",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.usage.input_tokens": 16,
     "gen_ai.usage.output_tokens": 417,
