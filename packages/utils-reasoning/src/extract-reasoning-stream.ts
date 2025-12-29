@@ -35,7 +35,7 @@ export const extractReasoningStream = (stream: ReadableStream<string>, options: 
       return
     }
     const prefix = switchBlock
-      // eslint-disable-next-line sonarjs/no-nested-conditional
+
       && (isReasoning ? !isFirstReasoningMode : !isFirstTextMode)
       ? separator
       : ''

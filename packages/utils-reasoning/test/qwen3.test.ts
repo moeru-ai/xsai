@@ -98,7 +98,6 @@ const randomSplitTextToStream = (text: string): ReadableStream<string> => new Re
   start: (controller) => {
     let index = 0
     while (index < text.length) {
-      // eslint-disable-next-line sonarjs/pseudo-random
       const chunk = text.slice(index, index + Math.random() * 5 + 1)
       controller.enqueue(chunk)
       index += chunk.length

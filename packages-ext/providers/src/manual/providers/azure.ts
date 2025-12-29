@@ -1,5 +1,7 @@
 import type { Fetch } from '@xsai/shared'
 
+import type { AzureModels } from '../../generated/types'
+
 import {
   createChatProvider,
   createEmbedProvider,
@@ -8,8 +10,6 @@ import {
   createTranscriptionProvider,
   merge,
 } from '@xsai-ext/shared-providers'
-
-import type { AzureModels } from '../../generated/types'
 
 export interface CreateAzureOptions {
   /**

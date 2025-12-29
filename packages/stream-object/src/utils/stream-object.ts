@@ -28,14 +28,14 @@ export interface StreamObjectResult<T extends Schema> extends StreamTextResult {
 
 export async function streamObject<T extends Schema>(
   options: StreamObjectOptions<T>
-    & { output: 'array' }
+    & { output: 'array' },
 ): Promise<StreamObjectResult<T> & { elementStream: ReadableStream<Schema.InferOutput<T>>, partialObjectStream: undefined }>
 export async function streamObject<T extends Schema>(
   options: StreamObjectOptions<T>
-    & { output: 'object' }
+    & { output: 'object' },
 ): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Schema.InferOutput<T>>> }>
 export async function streamObject<T extends Schema>(
-  options: StreamObjectOptions<T>
+  options: StreamObjectOptions<T>,
 ): Promise<StreamObjectResult<T> & { elementStream: undefined, partialObjectStream: ReadableStream<PartialDeep<Schema.InferOutput<T>>> }>
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export async function streamObject<T extends Schema>(

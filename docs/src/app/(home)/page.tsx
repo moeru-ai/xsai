@@ -1,10 +1,11 @@
 import Link from 'fumadocs-core/link'
+import React from 'react'
+
 import {
   DocsBody,
   DocsDescription,
   DocsTitle,
 } from 'fumadocs-ui/page'
-import React from 'react'
 
 export default () => (
   <div className="flex w-full h-[80vh] justify-center">

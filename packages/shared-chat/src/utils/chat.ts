@@ -1,8 +1,8 @@
 import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
-import { clean, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
-
 import type { Message, Tool, ToolChoice } from '../types'
+
+import { clean, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
 /** @see {@link https://platform.openai.com/docs/api-reference/chat/create} */
 export interface ChatOptions extends CommonRequestOptions {

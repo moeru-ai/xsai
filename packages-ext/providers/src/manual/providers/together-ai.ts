@@ -1,11 +1,11 @@
+import type { TogetheraiModels } from '../../generated/types'
+
 import {
   createChatProvider,
   createEmbedProvider,
   createModelProvider,
   merge,
 } from '@xsai-ext/shared-providers'
-
-import type { TogetheraiModels } from '../../generated/types'
 
 /**
  * Create a Together AI Provider

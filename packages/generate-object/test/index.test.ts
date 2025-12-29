@@ -1,5 +1,6 @@
-import * as v from 'valibot'
 import { describe, expect, it } from 'vitest'
+
+import * as v from 'valibot'
 
 import { generateObject } from '../src'
 

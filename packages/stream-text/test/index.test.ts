@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
-
 import type { StreamTextEvent } from '../src/types/event'
+
+import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'
 

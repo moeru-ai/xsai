@@ -14,7 +14,7 @@ export const chatSpan = (options: WithTelemetry<ChatOptions>, tracer: Tracer): R
     'gen_ai.request.model': options.model,
     'gen_ai.request.presence_penalty': options.presencePenalty,
     'gen_ai.request.seed': options.seed,
-    // eslint-disable-next-line sonarjs/no-nested-conditional
+
     'gen_ai.request.stop_sequences': options.stop == null ? undefined : Array.isArray(options.stop) ? options.stop : [options.stop],
     'gen_ai.request.temperature': options.temperature,
     'gen_ai.request.top_p': options.topP, // TODO: top_k

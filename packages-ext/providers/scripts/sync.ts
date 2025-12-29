@@ -1,6 +1,6 @@
-import { writeFile } from 'node:fs/promises'
-
 import type { CodeGenProvider, Providers } from './utils/types'
+
+import { writeFile } from 'node:fs/promises'
 
 import { codeGenCreate, codeGenIndex, codeGenTypes } from './utils/code-gen'
 import { extraProviders } from './utils/extra'
