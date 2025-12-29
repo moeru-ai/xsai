@@ -15,6 +15,6 @@ jobs:
   deploy:
     uses: importantimport/.github/.github/workflows/pnpm-gh-pages-artifact.yml@main
     with:
-      build: pnpm -r build
+      build: pnpm -rF @xsai/docs build
       path: docs/out
-      node-version: 24
+      node-version: latest
