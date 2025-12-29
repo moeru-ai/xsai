@@ -91,7 +91,7 @@ describe('@xsai/generate-object', () => {
       schema: v.object({
         answer: v.string(),
       }),
-      seed: 39,
+      seed: 721,
     })
 
     expect(object).toHaveProperty('length')
