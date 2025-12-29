@@ -2,7 +2,7 @@ import {
   createChatProvider,
   createSpeechProvider,
   merge,
-} from '@xsai-ext/shared-providers'
+} from '../../utils'
 
 declare global {
   interface Uint8ArrayConstructor {

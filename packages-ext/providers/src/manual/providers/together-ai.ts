@@ -5,7 +5,7 @@ import {
   createEmbedProvider,
   createModelProvider,
   merge,
-} from '@xsai-ext/shared-providers'
+} from '../../utils'
 
 /**
  * Create a Together AI Provider

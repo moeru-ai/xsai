@@ -4,7 +4,7 @@ import {
   createChatProviderWithExtraOptions,
   createModelProvider,
   merge,
-} from '@xsai-ext/shared-providers'
+} from '../../utils'
 
 export interface AnthropicOptions {
   /** @see {@link https://docs.claude.com/en/api/openai-sdk#extended-thinking-support} */

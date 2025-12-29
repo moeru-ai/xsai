@@ -1,10 +1,11 @@
-import type { ChatProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 import type { CommonRequestOptions } from '@xsai/shared'
 
 import type { OpenrouterModels } from '../../generated/types'
+import type { ChatProviderWithExtraOptions } from '../../utils'
 
-import { createModelProvider, merge } from '@xsai-ext/shared-providers'
 import { objCamelToSnake } from '@xsai/shared'
+
+import { createModelProvider, merge } from '../../utils'
 
 export interface OpenRouterOptions {
   extraHeaders?: (Headers | Record<string, string>) & {
