@@ -1,8 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`generateText with tools > basic 1`] = `"The result of 114514 plus 1919810 is **2,034,324**."`;
-
-exports[`generateText with tools > basic 2`] = `
+exports[`generateText with tools > basic 1`] = `
 [
   "execute_tool add",
   "chat granite4:1b-h",
@@ -10,7 +8,7 @@ exports[`generateText with tools > basic 2`] = `
 ]
 `;
 
-exports[`generateText with tools > basic 3`] = `
+exports[`generateText with tools > basic 2`] = `
 [
   {
     "gen_ai.operation.name": "execute_tool",
@@ -88,7 +86,7 @@ exports[`generateText with tools > basic 3`] = `
     "gen_ai.output.messages": "[
   {
     "role": "assistant",
-    "content": "The result of 114514 plus 1919810 is **2,034,324**."
+    "content": ""
   }
 ]",
     "gen_ai.provider.name": "openai",

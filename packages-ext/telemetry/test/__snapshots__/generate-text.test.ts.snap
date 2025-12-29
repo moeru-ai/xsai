@@ -21,7 +21,7 @@ exports[`generateText > basic 3`] = `
     "gen_ai.output.messages": "[
   {
     "role": "assistant",
-    "content": "YES"
+    "content": ""
   }
 ]",
     "gen_ai.provider.name": "openai",

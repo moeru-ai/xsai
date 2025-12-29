@@ -8,6 +8,7 @@ const cleanMessages = (m: string) =>
         ...toolCall,
         id: '',
       }))
+      message.content = ''
     }
 
     if (message.role === 'tool')

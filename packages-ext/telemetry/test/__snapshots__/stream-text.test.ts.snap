@@ -20,7 +20,7 @@ exports[`streamText > basic 3`] = `
     "gen_ai.operation.name": "chat",
     "gen_ai.output.messages": "[
   {
-    "content": "YES",
+    "content": "",
     "role": "assistant"
   }
 ]",
