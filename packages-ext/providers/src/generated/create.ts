@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-union-types */
 /* eslint-disable sonarjs/no-identical-functions */
 
-import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from '@xsai-ext/shared-providers'
+import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from '../utils'
 
 /**
  * Create a Alibaba Provider

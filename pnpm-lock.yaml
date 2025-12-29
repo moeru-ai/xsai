@@ -401,9 +401,6 @@ importers:
 
   packages-ext/providers:
     dependencies:
-      '@xsai-ext/shared-providers':
-        specifier: workspace:~
-        version: link:../shared-providers
       '@xsai/shared':
         specifier: workspace:~
         version: link:../../packages/shared
@@ -411,6 +408,9 @@ importers:
       scule:
         specifier: 'catalog:'
         version: 1.3.0
+      type-fest:
+        specifier: 'catalog:'
+        version: 5.3.1
 
   packages-ext/providers-cloud:
     dependencies:

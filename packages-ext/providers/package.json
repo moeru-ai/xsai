@@ -43,6 +43,10 @@
         "types": "./dist/special/create.d.ts",
         "default": "./dist/special/create.js"
       },
+      "./utils": {
+        "types": "./dist/utils/index.d.ts",
+        "default": "./dist/utils/index.js"
+      },
       "./package.json": "./package.json"
     },
     "main": "./dist/index.js",
@@ -54,10 +58,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@xsai-ext/shared-providers": "workspace:~",
     "@xsai/shared": "workspace:~"
   },
   "devDependencies": {
-    "scule": "catalog:"
+    "scule": "catalog:",
+    "type-fest": "catalog:"
   }
 }

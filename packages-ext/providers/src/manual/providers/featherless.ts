@@ -2,7 +2,7 @@ import {
   createChatProvider,
   createModelProvider,
   merge,
-} from '@xsai-ext/shared-providers'
+} from '../../utils'
 
 /**
  * Create a Featherless AI Provider

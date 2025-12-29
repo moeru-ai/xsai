@@ -9,7 +9,7 @@ import {
   createSpeechProvider,
   createTranscriptionProvider,
   merge,
-} from '@xsai-ext/shared-providers'
+} from '../../utils'
 
 export interface CreateAzureOptions {
   /**

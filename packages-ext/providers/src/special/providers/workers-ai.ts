@@ -1,6 +1,6 @@
 import type { CloudflareWorkersAiModels } from '../../generated/types'
 
-import { createChatProvider, createEmbedProvider, merge } from '@xsai-ext/shared-providers'
+import { createChatProvider, createEmbedProvider, merge } from '../../utils'
 
 /**
  * Create a Workers AI Provider
