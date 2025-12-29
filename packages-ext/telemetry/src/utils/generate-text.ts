@@ -4,7 +4,7 @@ import { chat, determineStepType, executeTool, responseJSON, trampoline } from '
 
 import type { WithTelemetry } from '../types/options'
 
-import { chatAttributes, metadataAttributes } from './attributes'
+import { chatSpan } from './attributes'
 import { getTracer } from './get-tracer'
 import { recordSpan } from './record-span'
 import { wrapTool } from './wrap-tool'
@@ -17,14 +17,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
   const tracer = getTracer()
 
   const rawGenerateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>): Promise<TrampolineFn<GenerateTextResult>> =>
-    recordSpan({
-      attributes: {
-        ...metadataAttributes(options.telemetry?.metadata),
-        ...chatAttributes(options),
-      },
-      name: `chat ${options.model}`,
-      tracer,
-    }, async span =>
+    recordSpan(chatSpan(options, tracer), async span =>
       chat({
         ...options,
         maxSteps: undefined,

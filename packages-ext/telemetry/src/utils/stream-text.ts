@@ -4,9 +4,9 @@ import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, 
 
 import type { WithTelemetry } from '../types/options'
 
-import { chatAttributes, metadataAttributes } from './attributes'
+import { chatSpan } from './attributes'
 import { getTracer } from './get-tracer'
-import { recordSpan, recordSpanSync } from './record-span'
+import { recordSpan } from './record-span'
 import { transformChunk } from './stream-text-internal'
 import { wrapTool } from './wrap-tool'
 
@@ -14,7 +14,7 @@ import { wrapTool } from './wrap-tool'
  * @experimental
  * Streaming Text with Telemetry.
  */
-export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>>) => {
+export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>>): StreamTextResult => {
   const tracer = getTracer()
 
   // state
@@ -54,14 +54,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     ? options.tools.map(tool => wrapTool(tool, tracer))
     : undefined
 
-  const doStream = async () => recordSpan({
-    attributes: {
-      ...metadataAttributes(options.telemetry?.metadata),
-      ...chatAttributes(options),
-    },
-    name: `chat ${options.model}`,
-    tracer,
-  }, async (span) => {
+  const doStream = async () => recordSpan(chatSpan(options, tracer), async (span) => {
     const { body: stream } = await chat({
       ...options,
       maxSteps: undefined,
@@ -238,69 +231,69 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       return async () => doStream()
   })
 
-  return recordSpanSync<StreamTextResult>({
-    attributes: {
-      ...metadataAttributes(options.telemetry?.metadata),
-      ...chatAttributes(options),
-    },
-    name: 'xsai.streamText', // TODO: remove
-    tracer,
-  }, (rootSpan) => {
-    void (async () => {
-      try {
-        await trampoline(async () => doStream())
+  // return recordSpanSync<StreamTextResult>({
+  //   attributes: {
+  //     ...metadataAttributes(options.telemetry?.metadata),
+  //     ...chatAttributes(options),
+  //   },
+  //   name: 'xsai.streamText', // TODO: remove
+  //   tracer,
+  // }, (rootSpan) => {
+  void (async () => {
+    try {
+      await trampoline(async () => doStream())
 
-        eventCtrl?.close()
-        textCtrl?.close()
-        reasoningTextCtrl?.close()
-      }
-      catch (err) {
-        eventCtrl?.error(err)
-        textCtrl?.error(err)
-        reasoningTextCtrl?.error(err)
-
-        resultSteps.reject(err)
-        resultMessages.reject(err)
-        resultUsage.reject(err)
-        resultTotalUsage.reject(err)
-      }
-      finally {
-        resultSteps.resolve(steps)
-        resultMessages.resolve(messages)
-        resultUsage.resolve(usage)
-        resultTotalUsage.resolve(totalUsage)
-
-        const finishStep = steps.at(-1)
-
-        if (finishStep) {
-          rootSpan.setAttributes({
-            'gen_ai.output.messages': JSON.stringify(messages),
-            'gen_ai.response.finish_reasons': [finishStep.finishReason],
-          })
-        }
-
-        if (totalUsage) {
-          rootSpan.setAttributes({
-            'gen_ai.usage.input_tokens': totalUsage.prompt_tokens,
-            'gen_ai.usage.output_tokens': totalUsage.completion_tokens,
-          })
-        }
-
-        // eslint-disable-next-line sonarjs/void-use
-        void options.onFinish?.(finishStep)
-
-        rootSpan.end()
-      }
-    })()
-
-    return {
-      fullStream: eventStream,
-      messages: resultMessages.promise,
-      reasoningTextStream,
-      steps: resultSteps.promise,
-      textStream,
-      totalUsage: resultTotalUsage.promise,
-      usage: resultUsage.promise,
+      eventCtrl?.close()
+      textCtrl?.close()
+      reasoningTextCtrl?.close()
     }
-  })
+    catch (err) {
+      eventCtrl?.error(err)
+      textCtrl?.error(err)
+      reasoningTextCtrl?.error(err)
+
+      resultSteps.reject(err)
+      resultMessages.reject(err)
+      resultUsage.reject(err)
+      resultTotalUsage.reject(err)
+    }
+    finally {
+      resultSteps.resolve(steps)
+      resultMessages.resolve(messages)
+      resultUsage.resolve(usage)
+      resultTotalUsage.resolve(totalUsage)
+
+      const finishStep = steps.at(-1)
+
+      // if (finishStep) {
+      //   rootSpan.setAttributes({
+      //     'gen_ai.output.messages': JSON.stringify(messages),
+      //     'gen_ai.response.finish_reasons': [finishStep.finishReason],
+      //   })
+      // }
+
+      // if (totalUsage) {
+      //   rootSpan.setAttributes({
+      //     'gen_ai.usage.input_tokens': totalUsage.prompt_tokens,
+      //     'gen_ai.usage.output_tokens': totalUsage.completion_tokens,
+      //   })
+      // }
+
+      // eslint-disable-next-line sonarjs/void-use
+      void options.onFinish?.(finishStep)
+
+      // rootSpan.end()
+    }
+  })()
+
+  return {
+    fullStream: eventStream,
+    messages: resultMessages.promise,
+    reasoningTextStream,
+    steps: resultSteps.promise,
+    textStream,
+    totalUsage: resultTotalUsage.promise,
+    usage: resultUsage.promise,
+  }
+  // })
 }

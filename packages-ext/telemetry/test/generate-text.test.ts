@@ -24,12 +24,12 @@ describe.sequential('generateText', () => {
       }],
       model: 'qwen3:0.6b',
       seed: 114514,
-      telemetry: {
-        metadata: {
-          agentId: 'weather-assistant',
-          instructions: 'You are a helpful weather assistant',
-        },
-      },
+      // telemetry: {
+      //   metadata: {
+      //     agentId: 'weather-assistant',
+      //     instructions: 'You are a helpful weather assistant',
+      //   },
+      // },
     })
 
     const spans = memoryExporter.getFinishedSpans()

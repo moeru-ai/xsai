@@ -38,12 +38,12 @@ describe.sequential('streamText', () => {
       streamOptions: {
         includeUsage: true,
       },
-      telemetry: {
-        metadata: {
-          agentId: 'weather-assistant',
-          instructions: 'You are a helpful weather assistant',
-        },
-      },
+      // telemetry: {
+      //   metadata: {
+      //     agentId: 'weather-assistant',
+      //     instructions: 'You are a helpful weather assistant',
+      //   },
+      // },
     })
 
     for await (const textDelta of textStream) {

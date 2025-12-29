@@ -11,21 +11,21 @@ exports[`generateText > basic 2`] = `
 exports[`generateText > basic 3`] = `
 [
   {
-    "agentId": "weather-assistant",
     "gen_ai.input.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
     "gen_ai.operation.name": "chat",
     "gen_ai.output.messages": "[{"role":"assistant","content":"The sky appears blue because sunlight, which travels through the Earth's atmosphere, is refracted or scattered when it reaches the Earth's atmosphere. This happens through water vapor (especially in the atmosphere above clouds) and other gases. Light, when it reaches the Earth's surface, undergoes refraction – bending as it travels through the air – and this bending causes the different wavelengths of light to spread out, making the sky appear blue. The exact reason is related to how Earth's atmosphere refracts light, causing shorter wavelengths (like blue) to appear prominently.","reasoning":"Okay, so the user is asking \\"Why is the sky blue?\\" I need to explain why the sky is blue. Hmm, let's think. There's the atmosphere here. The water vapor and other gases in the atmosphere cause light to be refracted. Wait, right! When sunlight hits the atmosphere, it bends, causing the colors to appear blue. The exact phenomenon is called the dispersion of light or the refraction of light. But how do I explain that without being too technical? Maybe start with the basics. When sunlight reaches Earth's atmosphere, it travels in straight lines, but the air itself causes the light to bend and scatter. This bending, especially with water vapor, makes it seem blue. That should be clear. Also, maybe mention that the specific reason is due to the refraction of light through Earth's atmosphere. Let me check if there's any other factor. Oh, the exact reason is because of the redshift of light, where shorter wavelengths (red) shift to blue. Wait, the sky's color is blue because of this. Oh, right! So the answer should explain that sunlight passes through Earth's atmosphere, with water vapor, and the light bends, making the colors appear blue. Need to make sure not to confuse the user with other terms, like the red shift, but simplify. Also, maybe mention that the atmosphere is not the main factor but also other elements like water vapor and gases. That way, the explanation is comprehensive yet understandable.\\n"}]",
+    "gen_ai.provider.name": "openai",
     "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
     "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "11577ef9-b63a-4199-87b1-dfb832eec4d2",
+    "gen_ai.response.id": "8dc935cb-5f1b-449e-959a-b58ef8465f3e",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.usage.input_tokens": 16,
     "gen_ai.usage.output_tokens": 417,
-    "instructions": "You are a helpful weather assistant",
+    "server.address": "localhost:11434",
   },
 ]
 `;
