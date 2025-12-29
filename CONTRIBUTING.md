@@ -25,7 +25,7 @@ The model used may change as needed, currently `granite3.3:2b` (chat completion,
 
 ```bash
 ollama pull all-minilm
-ollama pull granite3.3:2b
+ollama pull granite4:350m-h
 ollama pull qwen3:0.6b
 ollama serve
 ```
