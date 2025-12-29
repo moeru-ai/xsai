@@ -23,7 +23,7 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'granite4:350m-h',
+      model: 'granite4:1b-h',
       onStepFinish: result => (step = result),
       seed: 114514,
     })
