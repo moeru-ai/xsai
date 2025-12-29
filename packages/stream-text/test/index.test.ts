@@ -18,7 +18,7 @@ describe('@xsai/stream-text basic', async () => {
           role: 'user',
         },
       ],
-      model: 'granite4:350m-h',
+      model: 'granite4:1b-h',
       seed: 114514,
     })
 
