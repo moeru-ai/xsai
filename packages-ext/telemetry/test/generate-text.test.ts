@@ -4,6 +4,7 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { describe, expect, it } from 'vitest'
 
 import { generateText } from '../src'
+import { cleanAttributes } from './fixtures/clean-attributes'
 
 describe.sequential('generateText', () => {
   const memoryExporter = new InMemorySpanExporter()
@@ -24,17 +25,11 @@ describe.sequential('generateText', () => {
       }],
       model: 'granite4:350m-h',
       seed: 114514,
-      // telemetry: {
-      //   metadata: {
-      //     agentId: 'weather-assistant',
-      //     instructions: 'You are a helpful weather assistant',
-      //   },
-      // },
     })
 
     const spans = memoryExporter.getFinishedSpans()
     const names = spans.map(s => s.name)
-    const attributes = spans.map(s => s.attributes)
+    const attributes = spans.map(s => cleanAttributes(s.attributes))
 
     expect(text).toMatchSnapshot()
     expect(names).toMatchSnapshot()

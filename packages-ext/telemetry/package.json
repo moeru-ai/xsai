@@ -35,7 +35,7 @@
   },
   "scripts": {
     "build": "pkgroll",
-    "test:update": "vitest run --update"
+    "test": "vitest run"
   },
   "dependencies": {
     "@opentelemetry/api": "catalog:",

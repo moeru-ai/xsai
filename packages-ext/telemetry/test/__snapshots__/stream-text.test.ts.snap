@@ -1,35 +1,49 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`streamText > basic 1`] = `
-"The sky appears blue due to **Rayleigh scattering** of light. When sunlight interacts with the Earth's atmosphere, water vapor and other molecules scatter shorter wavelengths of light (like blue) more than longer ones (like red). As a result, the blue color of the sun shines on the earth’s surface, and since these blue wavelengths are scattered in the atmosphere, they are reflected back into our eyes, making the sky appear blue. 
+"The phenomenon of observing or feeling the blue color of the sky can be attributed to Rayleigh scattering. This occurs when sunlight passes through Earth's atmosphere, where it collides with water molecules in the gas layers. These particles scatter the light energy in all directions as shorter wavelengths (blue and violet) are more easily scattered than longer wavelengths like red.
 
-A simple explanation is:  
-**The blue light from the sun is scattered more by the atmosphere than the red light, which is why we see the sky in hues of blue.**"
+The most significant factors that affect this phenomenon include:
+
+1. Atmospheric composition: The presence of gases such as nitrogenand oxygen is crucial.
+2. Irradiance: How much sunlight enters the atmosphere directly can also influence scattering.
+3. Temperature and angle: These variables help determine how strongly particles scatter light, with higher temperatures generally causing more scattering.
+
+Overall, these factors lead to the blue color we observe in our sky each day."
 `;
 
 exports[`streamText > basic 2`] = `
 [
-  "chat qwen3:0.6b",
+  "chat granite4:350m-h",
 ]
 `;
 
 exports[`streamText > basic 3`] = `
 [
   {
-    "gen_ai.input.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
+    "gen_ai.input.messages": "[
+  {
+    "content": "Why is the sky blue?",
+    "role": "user"
+  }
+]",
     "gen_ai.operation.name": "chat",
-    "gen_ai.output.messages": "[{"content":"The sky appears blue due to **Rayleigh scattering** of light. When sunlight interacts with the Earth's atmosphere, water vapor and other molecules scatter shorter wavelengths of light (like blue) more than longer ones (like red). As a result, the blue color of the sun shines on the earth’s surface, and since these blue wavelengths are scattered in the atmosphere, they are reflected back into our eyes, making the sky appear blue. \\n\\nA simple explanation is:  \\n**The blue light from the sun is scattered more by the atmosphere than the red light, which is why we see the sky in hues of blue.**","role":"assistant"}]",
+    "gen_ai.output.messages": "[
+  {
+    "content": "The phenomenon of observing or feeling the blue color of the sky can be attributed to Rayleigh scattering. This occurs when sunlight passes through Earth's atmosphere, where it collides with water molecules in the gas layers. These particles scatter the light energy in all directions as shorter wavelengths (blue and violet) are more easily scattered than longer wavelengths like red.\\n\\nThe most significant factors that affect this phenomenon include:\\n\\n1. Atmospheric composition: The presence of gases such as nitrogenand oxygen is crucial.\\n2. Irradiance: How much sunlight enters the atmosphere directly can also influence scattering.\\n3. Temperature and angle: These variables help determine how strongly particles scatter light, with higher temperatures generally causing more scattering.\\n\\nOverall, these factors lead to the blue color we observe in our sky each day.",
+    "role": "assistant"
+  }
+]",
     "gen_ai.provider.name": "openai",
     "gen_ai.request.choice.count": 1,
-    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.model": "granite4:350m-h",
     "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "c1927e4d-9b07-4fe3-be76-08f9b4662c76",
-    "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.usage.input_tokens": 16,
-    "gen_ai.usage.output_tokens": 405,
+    "gen_ai.response.model": "granite4:350m-h",
+    "gen_ai.usage.input_tokens": 36,
+    "gen_ai.usage.output_tokens": 156,
     "server.address": "localhost:11434",
   },
 ]

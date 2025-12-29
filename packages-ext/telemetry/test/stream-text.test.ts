@@ -4,6 +4,7 @@ import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'
+import { cleanAttributes } from './fixtures/clean-attributes'
 
 describe.sequential('streamText', () => {
   const memoryExporter = new InMemorySpanExporter()
@@ -28,7 +29,7 @@ describe.sequential('streamText', () => {
       onFinish: async () => {
         const spans = memoryExporter.getFinishedSpans()
         const names = spans.map(s => s.name)
-        const attributes = spans.map(s => s.attributes)
+        const attributes = spans.map(s => cleanAttributes(s.attributes))
 
         expect(text).toMatchSnapshot()
         expect(names).toMatchSnapshot()
@@ -38,12 +39,6 @@ describe.sequential('streamText', () => {
       streamOptions: {
         includeUsage: true,
       },
-      // telemetry: {
-      //   metadata: {
-      //     agentId: 'weather-assistant',
-      //     instructions: 'You are a helpful weather assistant',
-      //   },
-      // },
     })
 
     for await (const textDelta of textStream) {
