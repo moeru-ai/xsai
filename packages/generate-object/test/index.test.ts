@@ -49,6 +49,30 @@ describe('@xsai/generate-object', () => {
     await expect(g).rejects.toThrowError()
   })
 
+  it('object', async () => {
+    const { object } = await generateObject({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          role: 'user',
+        },
+      ],
+      model: 'granite4:1b-h',
+      output: 'object',
+      schema: v.object({
+        answer: v.string(),
+      }),
+      seed: 39,
+    })
+
+    expect(object.answer).toBe('YES')
+  })
+
   it('array', async () => {
     const { object } = await generateObject({
       baseURL: 'http://localhost:11434/v1/',
