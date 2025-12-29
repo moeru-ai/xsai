@@ -33,7 +33,6 @@ exports[`streamText > basic 3`] = `
     ],
     "gen_ai.response.model": "granite4:1b-h",
     "gen_ai.usage.input_tokens": 45,
-    "gen_ai.usage.output_tokens": 2,
     "server.address": "localhost:11434",
   },
 ]

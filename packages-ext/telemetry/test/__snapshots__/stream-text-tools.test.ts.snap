@@ -52,7 +52,6 @@ exports[`streamText with tools > basic 2`] = `
     "gen_ai.response.model": "granite4:1b-h",
     "gen_ai.tool.definitions": "[{"function":{"description":"Adds two numbers","name":"add","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false},"strict":true},"type":"function"}]",
     "gen_ai.usage.input_tokens": 207,
-    "gen_ai.usage.output_tokens": 37,
     "server.address": "localhost:11434",
   },
   {
@@ -99,7 +98,6 @@ exports[`streamText with tools > basic 2`] = `
     "gen_ai.response.model": "granite4:1b-h",
     "gen_ai.tool.definitions": "[{"function":{"description":"Adds two numbers","name":"add","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false},"strict":true},"type":"function"}]",
     "gen_ai.usage.input_tokens": 249,
-    "gen_ai.usage.output_tokens": 21,
     "server.address": "localhost:11434",
   },
 ]
