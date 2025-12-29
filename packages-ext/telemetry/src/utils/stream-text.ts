@@ -1,8 +1,8 @@
 import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
-import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
-
 import type { WithTelemetry } from '../types/options'
+
+import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
 import { chatSpan } from './chat-span'
 import { getTracer } from './get-tracer'
@@ -40,13 +40,13 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
   const pushEvent = (stepEvent: StreamTextEvent) => {
     eventCtrl?.enqueue(stepEvent)
-    // eslint-disable-next-line sonarjs/void-use
+
     void options.onEvent?.(stepEvent)
   }
 
   const pushStep = (step: CompletionStep) => {
     steps.push(step)
-    // eslint-disable-next-line sonarjs/void-use
+
     void options.onStepFinish?.(step)
   }
 
@@ -279,7 +279,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       //   })
       // }
 
-      // eslint-disable-next-line sonarjs/void-use
       void options.onFinish?.(finishStep)
 
       // rootSpan.end()

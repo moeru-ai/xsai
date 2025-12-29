@@ -1,9 +1,9 @@
+import type { GenerateTextResult } from '../src'
+
 import { clean } from '@xsai/shared'
 import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
-
-import type { GenerateTextResult } from '../src'
 
 import { generateText } from '../src'
 

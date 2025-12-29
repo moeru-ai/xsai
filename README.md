@@ -14,8 +14,9 @@ extra-small AI SDK.
 xsAI is a series of utils to help you use OpenAI or OpenAI-compatible API.
 
 ```ts
-import { generateText } from '@xsai/generate-text'
 import { env } from 'node:process'
+
+import { generateText } from '@xsai/generate-text'
 
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
@@ -100,8 +101,9 @@ Read the [documentation](https://xsai.js.org/docs) to get started.
 ###### Streaming Text
 
 ```ts
-import { streamText } from '@xsai/stream-text'
 import { env } from 'node:process'
+
+import { streamText } from '@xsai/stream-text'
 
 const { textStream } = streamText({
   apiKey: env.OPENAI_API_KEY!,
@@ -132,9 +134,10 @@ console.log(text)
 ###### Generating Text w/ Tool Calling
 
 ```ts
+import { env } from 'node:process'
+
 import { generateText } from '@xsai/generate-text'
 import { tool } from '@xsai/tool'
-import { env } from 'node:process'
 import { description, object, pipe, string } from 'valibot'
 
 const weather = await tool({

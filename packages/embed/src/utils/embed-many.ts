@@ -1,8 +1,8 @@
 import type { WithUnknown } from '@xsai/shared'
 
-import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
-
 import type { EmbedOptions, EmbedResponse, EmbedResponseUsage } from './embed'
+
+import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
 
 export interface EmbedManyOptions extends Omit<EmbedOptions, 'input'> {
   /** Input text to embed. */

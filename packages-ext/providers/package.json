@@ -50,6 +50,6 @@
     "@xsai/shared": "workspace:~"
   },
   "devDependencies": {
-    "scule": "^1.3.0"
+    "scule": "catalog:"
   }
 }

@@ -1,10 +1,10 @@
+import type { AnthropicModels } from '../../generated/types'
+
 import {
   createChatProviderWithExtraOptions,
   createModelProvider,
   merge,
 } from '@xsai-ext/shared-providers'
-
-import type { AnthropicModels } from '../../generated/types'
 
 export interface AnthropicOptions {
   /** @see {@link https://docs.claude.com/en/api/openai-sdk#extended-thinking-support} */

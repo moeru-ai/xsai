@@ -1,10 +1,10 @@
 import type { WithUnknown } from '@xsai/shared'
 import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, ToolCall, Usage } from '@xsai/shared-chat'
 
+import type { StreamTextEvent } from './types/event'
+
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
-
-import type { StreamTextEvent } from './types/event'
 
 import { transformChunk } from './internal/_transform-chunk'
 
@@ -63,13 +63,13 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
 
   const pushEvent = (stepEvent: StreamTextEvent) => {
     eventCtrl?.enqueue(stepEvent)
-    // eslint-disable-next-line sonarjs/void-use
+
     void options.onEvent?.(stepEvent)
   }
 
   const pushStep = (step: CompletionStep) => {
     steps.push(step)
-    // eslint-disable-next-line sonarjs/void-use
+
     void options.onStepFinish?.(step)
   }
 
@@ -256,7 +256,6 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       resultUsage.resolve(usage)
       resultTotalUsage.resolve(totalUsage)
 
-      // eslint-disable-next-line sonarjs/void-use
       void options.onFinish?.(steps.at(-1))
     }
   })()

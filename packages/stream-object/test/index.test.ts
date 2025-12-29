@@ -1,5 +1,6 @@
-import * as v from 'valibot'
 import { describe, expect, it, vi } from 'vitest'
+
+import * as v from 'valibot'
 
 import { streamObject } from '../src'
 

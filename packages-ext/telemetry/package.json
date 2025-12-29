@@ -38,13 +38,13 @@
     "test": "vitest run --update"
   },
   "dependencies": {
-    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/api": "catalog:",
     "xsai": "workspace:~"
   },
   "devDependencies": {
-    "@langfuse/otel": "^4.5.1",
-    "@opentelemetry/sdk-trace-base": "^2.0.1",
-    "@opentelemetry/sdk-trace-node": "^2.0.1",
-    "zod": "^4.1.5"
+    "@langfuse/otel": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "@opentelemetry/sdk-trace-node": "catalog:",
+    "zod": "catalog:schema-dev"
   }
 }

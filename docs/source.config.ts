@@ -12,6 +12,7 @@ import { createFileSystemTypesCache } from 'fumadocs-twoslash/cache-fs'
 // see https://fumadocs.vercel.app/docs/mdx/collections#define-docs
 export const docs = defineDocs({
   docs: {
+    postprocess: { includeProcessedMarkdown: true },
     schema: frontmatterSchema,
   },
   meta: {

@@ -1,7 +1,8 @@
-import { findWorkspaceDir } from '@pnpm/find-workspace-dir'
 import { glob, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { cwd } from 'node:process'
+
+import { findWorkspaceDir } from '@pnpm/find-workspace-dir'
 
 const pages = []
 

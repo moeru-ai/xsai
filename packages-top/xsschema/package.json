@@ -69,14 +69,14 @@
     }
   },
   "devDependencies": {
-    "@standard-schema/spec": "^1.1.0",
-    "@types/json-schema": "^7.0.15",
+    "@standard-schema/spec": "catalog:",
+    "@types/json-schema": "catalog:",
     "@valibot/to-json-schema": "catalog:schema",
-    "arktype": "^2.1.29",
-    "effect": "^3.19.13",
-    "sury": "^11.0.0-alpha.4",
+    "arktype": "catalog:schema-dev",
+    "effect": "catalog:schema-dev",
+    "sury": "catalog:schema-dev",
     "valibot": "catalog:schema",
-    "zod": "^4.2.1",
+    "zod": "catalog:schema-dev",
     "zod-to-json-schema": "catalog:schema"
   }
 }

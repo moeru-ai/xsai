@@ -1,9 +1,9 @@
+import type { StreamTextEvent } from '../src/types/event'
+
 import { clean } from '@xsai/shared'
 import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
-
-import type { StreamTextEvent } from '../src/types/event'
 
 import { streamText } from '../src'
 

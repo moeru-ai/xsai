@@ -1,8 +1,8 @@
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn, WithUnknown } from 'xsai'
 
-import { chat, determineStepType, executeTool, responseJSON, trampoline } from 'xsai'
-
 import type { WithTelemetry } from '../types/options'
+
+import { chat, determineStepType, executeTool, responseJSON, trampoline } from 'xsai'
 
 import { chatSpan } from './chat-span'
 import { getTracer } from './get-tracer'
@@ -68,7 +68,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             finishReason,
             stepType,
             text: Array.isArray(message.content)
-              // eslint-disable-next-line sonarjs/no-nested-functions
+
               ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
               : message.content,
             toolCalls,
@@ -101,7 +101,6 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             }
           }
           else {
-            // eslint-disable-next-line sonarjs/no-nested-functions
             return async () => rawGenerateText({
               ...options,
               messages,

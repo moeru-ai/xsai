@@ -1,6 +1,6 @@
-import { camelCase, pascalCase } from 'scule'
-
 import type { CodeGenProvider } from './types'
+
+import { camelCase, pascalCase } from 'scule'
 
 const codeGenConstCreate = (provider: CodeGenProvider) => `create${provider.overrides?.create ?? pascalCase(provider.id)}`
 
@@ -13,7 +13,7 @@ export const codeGenCreate = (provider: CodeGenProvider) => [
   ` * @see {@link ${provider.doc}}`,
   ' */',
   `export const ${codeGenConstCreate(provider)} = (apiKey: string, baseURL = '${provider.baseURL}') => merge(`,
-  // eslint-disable-next-line sonarjs/no-nested-template-literals
+
   `  createChatProvider${provider.models.length > 0 ? `<'${provider.models.join('\' | \'')}'>` : ''}({ apiKey, baseURL }),`,
   ...(provider.capabilities?.model === false ? [] : ['  createModelProvider({ apiKey, baseURL }),']),
   ...(provider.capabilities?.embed === true ? ['  createEmbedProvider({ apiKey, baseURL }),'] : []),

@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: pnpm
-          node-version: 24
+          node-version: latest
           registry-url: https://registry.npmjs.org
 
       - run: pnpm install
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: pnpm
-          node-version: 24
+          node-version: latest
           registry-url: https://registry.npmjs.org
 
       - uses: actions/cache@v4
@@ -54,7 +54,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: pnpm
-          node-version: 24
+          node-version: latest
           registry-url: https://registry.npmjs.org
 
       - uses: ai-action/setup-ollama@v1

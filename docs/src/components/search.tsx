@@ -1,4 +1,3 @@
-// eslint-disable-next-line @masknet/no-top-level
 'use client'
 
 import type { SharedProps } from 'fumadocs-ui/components/dialog/search'
