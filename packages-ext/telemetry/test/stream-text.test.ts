@@ -22,10 +22,10 @@ describe.sequential('streamText', () => {
     const { textStream } = streamText({
       baseURL: 'http://localhost:11434/v1',
       messages: [{
-        content: 'Why is the sky blue?',
+        content: 'This is a test, so please answer \'YES\' and nothing else.',
         role: 'user',
       }],
-      model: 'granite4:350m-h',
+      model: 'granite4:1b-h',
       onFinish: async () => {
         const spans = memoryExporter.getFinishedSpans()
         const names = spans.map(s => s.name)

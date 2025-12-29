@@ -39,7 +39,7 @@ describe.sequential('streamText with tools', () => {
         content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
         role: 'user',
       }],
-      model: 'granite4:350m-h',
+      model: 'granite4:1b-h',
       onFinish: async () => {
         const spans = memoryExporter.getFinishedSpans()
         const names = spans.map(s => s.name)
