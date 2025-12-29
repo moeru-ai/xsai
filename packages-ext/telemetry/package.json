@@ -45,6 +45,6 @@
     "@langfuse/otel": "catalog:",
     "@opentelemetry/sdk-trace-base": "catalog:",
     "@opentelemetry/sdk-trace-node": "catalog:",
-    "zod": "catalog:conflicts_schema_h4_2_1"
+    "zod": "catalog:schema-dev"
   }
 }
