@@ -1,7 +1,5 @@
 export { createAnthropic } from './providers/anthropic'
-export { createAzure } from './providers/azure'
 export { createFeatherless } from './providers/featherless'
 export { createOpenRouter } from './providers/openrouter'
 export * from './providers/renamed'
 export { createTogetherAI } from './providers/together-ai'
-export { createWorkersAI } from './providers/workers-ai'

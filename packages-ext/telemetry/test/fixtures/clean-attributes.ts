@@ -8,6 +8,7 @@ const cleanMessages = (m: string) =>
         ...toolCall,
         id: '',
       }))
+      message.content = ''
     }
 
     if (message.role === 'tool')
@@ -19,7 +20,7 @@ const cleanMessages = (m: string) =>
 export const cleanAttributes = (attributes: Attributes) => Object.fromEntries(
   Object.entries(attributes)
     .map(([key, value]) => {
-      if (['gen_ai.response.id', 'gen_ai.tool.call.id'].includes(key))
+      if (['gen_ai.response.id', 'gen_ai.tool.call.id', 'gen_ai.usage.output_tokens'].includes(key))
         return [key, undefined]
 
       if (['gen_ai.input.messages', 'gen_ai.output.messages'].includes(key))

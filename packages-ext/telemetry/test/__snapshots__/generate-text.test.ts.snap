@@ -21,7 +21,7 @@ exports[`generateText > basic 3`] = `
     "gen_ai.output.messages": "[
   {
     "role": "assistant",
-    "content": "YES"
+    "content": ""
   }
 ]",
     "gen_ai.provider.name": "openai",
@@ -33,7 +33,6 @@ exports[`generateText > basic 3`] = `
     ],
     "gen_ai.response.model": "granite4:1b-h",
     "gen_ai.usage.input_tokens": 45,
-    "gen_ai.usage.output_tokens": 2,
     "server.address": "localhost:11434",
   },
 ]

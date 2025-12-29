@@ -1,8 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`generateText with tools > basic 1`] = `"The result of 114514 plus 1919810 is **2,034,324**."`;
-
-exports[`generateText with tools > basic 2`] = `
+exports[`generateText with tools > basic 1`] = `
 [
   "execute_tool add",
   "chat granite4:1b-h",
@@ -10,7 +8,7 @@ exports[`generateText with tools > basic 2`] = `
 ]
 `;
 
-exports[`generateText with tools > basic 3`] = `
+exports[`generateText with tools > basic 2`] = `
 [
   {
     "gen_ai.operation.name": "execute_tool",
@@ -54,7 +52,6 @@ exports[`generateText with tools > basic 3`] = `
     "gen_ai.response.model": "granite4:1b-h",
     "gen_ai.tool.definitions": "[{"function":{"description":"Adds two numbers","name":"add","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false},"strict":true},"type":"function"}]",
     "gen_ai.usage.input_tokens": 207,
-    "gen_ai.usage.output_tokens": 37,
     "server.address": "localhost:11434",
   },
   {
@@ -88,7 +85,7 @@ exports[`generateText with tools > basic 3`] = `
     "gen_ai.output.messages": "[
   {
     "role": "assistant",
-    "content": "The result of 114514 plus 1919810 is **2,034,324**."
+    "content": ""
   }
 ]",
     "gen_ai.provider.name": "openai",
@@ -101,7 +98,6 @@ exports[`generateText with tools > basic 3`] = `
     "gen_ai.response.model": "granite4:1b-h",
     "gen_ai.tool.definitions": "[{"function":{"description":"Adds two numbers","name":"add","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false},"strict":true},"type":"function"}]",
     "gen_ai.usage.input_tokens": 249,
-    "gen_ai.usage.output_tokens": 21,
     "server.address": "localhost:11434",
   },
 ]

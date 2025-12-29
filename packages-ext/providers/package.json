@@ -35,6 +35,14 @@
         "types": "./dist/create.d.ts",
         "default": "./dist/create.js"
       },
+      "./special": {
+        "types": "./dist/special/index.d.ts",
+        "default": "./dist/special/index.js"
+      },
+      "./special/create": {
+        "types": "./dist/special/create.d.ts",
+        "default": "./dist/special/create.js"
+      },
       "./package.json": "./package.json"
     },
     "main": "./dist/index.js",
