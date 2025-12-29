@@ -18,7 +18,7 @@ describe('@xsai/stream-text basic', async () => {
           role: 'user',
         },
       ],
-      model: 'granite3.3:2b',
+      model: 'granite4:1b-h',
       seed: 114514,
     })
 
@@ -57,7 +57,7 @@ describe('@xsai/stream-text basic', async () => {
           role: 'user',
         },
       ],
-      model: 'granite3.3:2b',
+      model: 'granite4:350m-h',
       seed: 114514,
     })
 
@@ -89,7 +89,7 @@ describe('@xsai/stream-text basic', async () => {
           role: 'user',
         },
       ],
-      model: 'granite3.3:2b',
+      model: 'granite4:350m-h',
       seed: 114514,
       streamOptions: {
         includeUsage: true,

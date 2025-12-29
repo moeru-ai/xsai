@@ -23,7 +23,7 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'granite3.3:2b',
+      model: 'granite4:1b-h',
       onStepFinish: result => (step = result),
       seed: 114514,
     })
@@ -67,7 +67,7 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'qwen3:0.6b',
+      model: 'granite4:350m-h',
       seed: 1145141919810,
       toolChoice: 'required',
       tools: [add],

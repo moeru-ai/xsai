@@ -22,7 +22,7 @@ describe.sequential('generateText', () => {
         content: 'Why is the sky blue?',
         role: 'user',
       }],
-      model: 'qwen3:0.6b',
+      model: 'granite4:350m-h',
       seed: 114514,
       // telemetry: {
       //   metadata: {

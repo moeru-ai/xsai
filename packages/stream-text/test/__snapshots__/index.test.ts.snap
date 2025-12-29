@@ -34,7 +34,39 @@ exports[`@xsai/stream-text basic > basic 2`] = `
 exports[`@xsai/stream-text basic > includes usage 1`] = `
 [
   {
-    "text": "Why",
+    "text": "Sure",
+    "type": "text-delta",
+  },
+  {
+    "text": ",",
+    "type": "text-delta",
+  },
+  {
+    "text": " here",
+    "type": "text-delta",
+  },
+  {
+    "text": "'s",
+    "type": "text-delta",
+  },
+  {
+    "text": " a",
+    "type": "text-delta",
+  },
+  {
+    "text": " quick",
+    "type": "text-delta",
+  },
+  {
+    "text": " one",
+    "type": "text-delta",
+  },
+  {
+    "text": ":",
+    "type": "text-delta",
+  },
+  {
+    "text": " Why",
     "type": "text-delta",
   },
   {
@@ -46,15 +78,7 @@ exports[`@xsai/stream-text basic > includes usage 1`] = `
     "type": "text-delta",
   },
   {
-    "text": " sc",
-    "type": "text-delta",
-  },
-  {
-    "text": "ient",
-    "type": "text-delta",
-  },
-  {
-    "text": "ists",
+    "text": " scientists",
     "type": "text-delta",
   },
   {
@@ -101,9 +125,9 @@ exports[`@xsai/stream-text basic > includes usage 1`] = `
     "finishReason": "stop",
     "type": "finish",
     "usage": {
-      "completion_tokens": 16,
-      "prompt_tokens": 25,
-      "total_tokens": 41,
+      "completion_tokens": 22,
+      "prompt_tokens": 24,
+      "total_tokens": 46,
     },
   },
 ]
@@ -114,13 +138,13 @@ exports[`@xsai/stream-text basic > includes usage 2`] = `
   {
     "finishReason": "stop",
     "stepType": "initial",
-    "text": "Why don't scientists trust atoms? Because they make up everything!",
+    "text": "Sure, here's a quick one: Why don't scientists trust atoms? Because they make up everything!",
     "toolCalls": [],
     "toolResults": [],
     "usage": {
-      "completion_tokens": 16,
-      "prompt_tokens": 25,
-      "total_tokens": 41,
+      "completion_tokens": 22,
+      "prompt_tokens": 24,
+      "total_tokens": 46,
     },
   },
 ]
@@ -129,7 +153,43 @@ exports[`@xsai/stream-text basic > includes usage 2`] = `
 exports[`@xsai/stream-text basic > stream 1`] = `
 [
   {
-    "text": "Why",
+    "text": "Sure",
+    "type": "text-delta",
+  },
+  {
+    "text": ",",
+    "type": "text-delta",
+  },
+  {
+    "text": " here",
+    "type": "text-delta",
+  },
+  {
+    "text": "'s",
+    "type": "text-delta",
+  },
+  {
+    "text": " a",
+    "type": "text-delta",
+  },
+  {
+    "text": " joke",
+    "type": "text-delta",
+  },
+  {
+    "text": " for",
+    "type": "text-delta",
+  },
+  {
+    "text": " you",
+    "type": "text-delta",
+  },
+  {
+    "text": ":",
+    "type": "text-delta",
+  },
+  {
+    "text": " Why",
     "type": "text-delta",
   },
   {
@@ -141,15 +201,7 @@ exports[`@xsai/stream-text basic > stream 1`] = `
     "type": "text-delta",
   },
   {
-    "text": " sc",
-    "type": "text-delta",
-  },
-  {
-    "text": "ient",
-    "type": "text-delta",
-  },
-  {
-    "text": "ists",
+    "text": " scientists",
     "type": "text-delta",
   },
   {
@@ -205,7 +257,7 @@ exports[`@xsai/stream-text basic > stream 2`] = `
   {
     "finishReason": "stop",
     "stepType": "initial",
-    "text": "Why don't scientists trust atoms? Because they make up everything!",
+    "text": "Sure, here's a joke for you: Why don't scientists trust atoms? Because they make up everything!",
     "toolCalls": [],
     "toolResults": [],
     "usage": undefined,

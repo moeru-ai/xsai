@@ -63,7 +63,8 @@ jobs:
           path: ~/.ollama
           key: ${{ runner.os }}-ollama
       - run: ollama pull all-minilm
-      - run: ollama pull granite3.3:2b
+      - run: ollama pull granite4:350m-h
+      - run: ollama pull granite4:1b-h
       - run: ollama pull qwen3:0.6b
       - run: ollama serve > /dev/null 2>&1 &
 

@@ -24,7 +24,7 @@ describe.sequential('streamText', () => {
         content: 'Why is the sky blue?',
         role: 'user',
       }],
-      model: 'qwen3:0.6b',
+      model: 'granite4:350m-h',
       onFinish: async () => {
         const spans = memoryExporter.getFinishedSpans()
         const names = spans.map(s => s.name)

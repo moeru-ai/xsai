@@ -38,7 +38,7 @@ describe('@xsai/stream-text tool', async () => {
           role: 'user',
         },
       ],
-      model: 'qwen3:0.6b',
+      model: 'granite4:350m-h',
       seed: 1145141919810,
       toolChoice: 'required',
       tools: [add],

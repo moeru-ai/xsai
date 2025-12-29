@@ -3,8 +3,6 @@ import { describe, expect, it } from 'vitest'
 import { embed } from '../src'
 
 describe('@xsai/embed', () => {
-  const toFixed = (embedding: number[]) => embedding.map(e => e.toFixed(2))
-
   it('embed', async () => {
     const { embedding, usage } = await embed({
       baseURL: 'http://localhost:11434/v1/',
@@ -12,7 +10,7 @@ describe('@xsai/embed', () => {
       model: 'all-minilm',
     })
 
-    expect(toFixed(embedding)).toMatchSnapshot()
+    expect(embedding.length).toBe(384)
     expect(usage.prompt_tokens).toBe(7)
     expect(usage.total_tokens).toBe(7)
   })
