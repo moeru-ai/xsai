@@ -1,6 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`streamText > basic 1`] = `"The sky appears blue because sunlight, which travels through the Earth's atmosphere, is refracted or scattered when it reaches the Earth's atmosphere. This happens through water vapor (especially in the atmosphere above clouds) and other gases. Light, when it reaches the Earth's surface, undergoes refraction – bending as it travels through the air – and this bending causes the different wavelengths of light to spread out, making the sky appear blue. The exact reason is related to how Earth's atmosphere refracts light, causing shorter wavelengths (like blue) to appear prominently."`;
+exports[`streamText > basic 1`] = `
+"The sky appears blue due to **Rayleigh scattering** of light. When sunlight interacts with the Earth's atmosphere, water vapor and other molecules scatter shorter wavelengths of light (like blue) more than longer ones (like red). As a result, the blue color of the sun shines on the earth’s surface, and since these blue wavelengths are scattered in the atmosphere, they are reflected back into our eyes, making the sky appear blue. 
+
+A simple explanation is:  
+**The blue light from the sun is scattered more by the atmosphere than the red light, which is why we see the sky in hues of blue.**"
+`;
 
 exports[`streamText > basic 2`] = `
 [
@@ -13,7 +18,7 @@ exports[`streamText > basic 3`] = `
   {
     "gen_ai.input.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
     "gen_ai.operation.name": "chat",
-    "gen_ai.output.messages": "[{"content":"The sky appears blue because sunlight, which travels through the Earth's atmosphere, is refracted or scattered when it reaches the Earth's atmosphere. This happens through water vapor (especially in the atmosphere above clouds) and other gases. Light, when it reaches the Earth's surface, undergoes refraction – bending as it travels through the air – and this bending causes the different wavelengths of light to spread out, making the sky appear blue. The exact reason is related to how Earth's atmosphere refracts light, causing shorter wavelengths (like blue) to appear prominently.","role":"assistant"}]",
+    "gen_ai.output.messages": "[{"content":"The sky appears blue due to **Rayleigh scattering** of light. When sunlight interacts with the Earth's atmosphere, water vapor and other molecules scatter shorter wavelengths of light (like blue) more than longer ones (like red). As a result, the blue color of the sun shines on the earth’s surface, and since these blue wavelengths are scattered in the atmosphere, they are reflected back into our eyes, making the sky appear blue. \\n\\nA simple explanation is:  \\n**The blue light from the sun is scattered more by the atmosphere than the red light, which is why we see the sky in hues of blue.**","role":"assistant"}]",
     "gen_ai.provider.name": "openai",
     "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
@@ -21,10 +26,10 @@ exports[`streamText > basic 3`] = `
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "2e4ad228-0f19-4eda-8e7c-c6efa062429a",
+    "gen_ai.response.id": "c1927e4d-9b07-4fe3-be76-08f9b4662c76",
     "gen_ai.response.model": "qwen3:0.6b",
     "gen_ai.usage.input_tokens": 16,
-    "gen_ai.usage.output_tokens": 417,
+    "gen_ai.usage.output_tokens": 405,
     "server.address": "localhost:11434",
   },
 ]
