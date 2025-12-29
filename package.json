@@ -25,7 +25,6 @@
     "@vitest/coverage-v8": "catalog:",
     "automd": "catalog:",
     "bumpp": "catalog:",
-    "dotenv": "catalog:",
     "eslint": "catalog:",
     "pkgroll": "catalog:",
     "tsdown": "catalog:",
