@@ -2,12 +2,6 @@
 title: Telemetry
 ---
 
-<Callout type="warn">
-  xsAI Telemetry is experimental and may change in the future.
-
-  We may consider discontinuing Vercel AI SDK compatibility in the future and transitioning to full support for GenAI.
-</Callout>
-
 import { PkgSizeBadge } from '@/components/pkg-size-badge'
 
 <PkgSizeBadge pkg="@xsai-ext/telemetry" />
@@ -59,3 +53,5 @@ const { text } = await generateText({
   }, // [!code highlight]
 })
 ```
+
+xsAI Telemetry is based on [GenAI Attributes](https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/).
