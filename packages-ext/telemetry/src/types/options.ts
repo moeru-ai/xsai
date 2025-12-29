@@ -1,12 +1,10 @@
-import type { AttributeValue } from '@opentelemetry/api'
+import type { Attributes } from '@opentelemetry/api'
 
 export interface TelemetryOptions {
-  overrides?: TelemetryOverrides
+  attributes?: Attributes
   // TODO
   // tracer?: Tracer
 }
-
-export type TelemetryOverrides = Record<string, AttributeValue>
 
 export type WithTelemetry<T> = T & {
   telemetry?: TelemetryOptions

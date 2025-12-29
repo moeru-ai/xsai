@@ -52,9 +52,9 @@ const { text } = await generateText({
   ],
   model: 'gpt-4o',
   telemetry: { // [!code highlight]
-    metadata: { // [!code highlight]
-      agentId: 'weather-assistant', // [!code highlight]
-      instructions, // [!code highlight]
+    attributes: { // [!code highlight]
+      'gen_ai.agent.name': 'weather-assistant', // [!code highlight]
+      'gen_ai.agent.description': instructions, // [!code highlight]
     }, // [!code highlight]
   }, // [!code highlight]
 })

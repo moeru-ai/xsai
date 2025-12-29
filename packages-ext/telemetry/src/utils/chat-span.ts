@@ -22,8 +22,8 @@ export const chatSpan = (options: WithTelemetry<ChatOptions>, tracer: Tracer): R
     'gen_ai.response.model': options.model,
     'gen_ai.tool.definitions': JSON.stringify(options.tools?.map(tool => ({ function: tool.function, type: tool.type }))),
     'server.address': new URL(options.baseURL).host,
+    ...options.telemetry?.attributes,
     // TODO: gen_ai.output.type
-    ...options.telemetry?.overrides,
   },
   name: `chat ${options.model}`,
   tracer,
