@@ -4,7 +4,7 @@ import type { ToolCall } from './tool-call'
 export interface AssistantMessage {
   content?: (RefusalContentPart | TextContentPart)[] | string
   name?: string
-  /** @remarks OpenAI does not support this, but LiteLLM / DeepSeek does. */
+  /** @remarks OpenAI doesn't support this, but some providers do. */
   reasoning_content?: string
   refusal?: string
   role: 'assistant'

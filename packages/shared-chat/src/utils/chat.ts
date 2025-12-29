@@ -27,6 +27,8 @@ export interface ChatOptions extends CommonRequestOptions {
   temperature?: number
   toolChoice?: ToolChoice
   tools?: Tool[]
+  /** @remarks OpenAI doesn't support this, but some providers do. */
+  topK?: number
   /** @default 1 */
   topP?: number
 }

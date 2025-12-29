@@ -4,7 +4,7 @@ export interface StreamTextChunkResult {
   choices: {
     delta: {
       content?: string
-      /** @remarks OpenAI does not support this, but LiteLLM / DeepSeek does. */
+      /** @remarks OpenAI doesn't support this, but some providers do. */
       reasoning_content?: string
       refusal?: string
       role: 'assistant'
