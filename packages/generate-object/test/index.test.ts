@@ -18,7 +18,7 @@ describe('@xsai/generate-object', () => {
           role: 'user',
         },
       ],
-      model: 'granite4:350m-h',
+      model: 'granite4:1b-h',
       schema: v.object({
         answer: v.string(),
       }),
@@ -41,36 +41,12 @@ describe('@xsai/generate-object', () => {
           role: 'user',
         },
       ],
-      model: 'granite4:350m-h',
+      model: 'granite4:1b-h',
       schema: v.date(),
       seed: 39,
     })
 
     await expect(g).rejects.toThrowError()
-  })
-
-  it('object', async () => {
-    const { object } = await generateObject({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [
-        {
-          content: 'You are a helpful assistant.',
-          role: 'system',
-        },
-        {
-          content: 'This is a test, so please answer \'YES\' and nothing else.',
-          role: 'user',
-        },
-      ],
-      model: 'granite4:350m-h',
-      output: 'object',
-      schema: v.object({
-        answer: v.string(),
-      }),
-      seed: 39,
-    })
-
-    expect(object.answer).toBe('YES')
   })
 
   it('array', async () => {
@@ -86,7 +62,7 @@ describe('@xsai/generate-object', () => {
           role: 'user',
         },
       ],
-      model: 'granite4:350m-h',
+      model: 'granite4:1b-h',
       output: 'array',
       schema: v.object({
         answer: v.string(),
