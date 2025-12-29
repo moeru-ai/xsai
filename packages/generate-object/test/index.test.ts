@@ -82,19 +82,18 @@ describe('@xsai/generate-object', () => {
           role: 'system',
         },
         {
-          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          content: 'give me 5 fruits',
           role: 'user',
         },
       ],
       model: 'granite4:1b-h',
       output: 'array',
       schema: v.object({
-        answer: v.string(),
+        fruit: v.string(),
       }),
-      seed: 721,
+      seed: 39,
     })
 
-    expect(object).toHaveProperty('length')
-    expect(object[0].answer).toBe('YES')
+    expect(object).toHaveLength(5)
   })
 })
