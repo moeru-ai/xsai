@@ -1,30 +1,11 @@
 import type { InferPageType } from 'fumadocs-core/source'
 
-import { remarkInclude } from 'fumadocs-mdx/config'
-import { remark } from 'remark'
-import remarkGfm from 'remark-gfm'
-import remarkMdx from 'remark-mdx'
-
 import type { source } from '@/lib/source'
 
-const processor = remark()
-  .use(remarkMdx)
-  // needed for Fumadocs MDX
-  .use(remarkInclude)
-  .use(remarkGfm)
-
 export const getLLMText = async (page: InferPageType<typeof source>) => {
-  const processed = await processor.process({
-    path: page.data._file.absolutePath,
-    value: page.data.content,
-  })
+  const processed = await page.data.getText('processed')
 
-  return [
-    `# ${page.data.title}`,
-    `URL: ${page.url}`,
-    page.data.description != null
-      ? `\n${page.data.description}\n`
-      : '',
-    processed.value.toString(),
-  ].join('\n')
+  return `# ${page.data.title} (${page.url})
+
+${processed}`
 }

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "target": "ESNext",
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "lib": [
       "dom",
       "dom.iterable",
@@ -17,6 +17,9 @@
       ],
       "@/*": [
         "./src/*"
+      ],
+      "fumadocs-mdx:collections/*": [
+        ".source/*"
       ]
     },
     "resolveJsonModule": true,
@@ -38,7 +41,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    "dist/types/**/*.ts"
+    "dist/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -1,5 +1,5 @@
 import type { StreamTextOptions, StreamTextResult } from '@xsai/stream-text'
-import type { PartialDeep } from 'type-fest/source/partial-deep'
+import type { PartialDeep } from 'type-fest'
 import type { Schema } from 'xsschema'
 
 import { streamText } from '@xsai/stream-text'
