@@ -1,54 +1,36 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`streamText > basic 1`] = `
-"<think>
-Okay, so the user is asking why the sky is blue. Hmm, I know that the sky's color is due to air particles scattering sunlight. But wait, where exactly does that come from? Let me think.
+"The sky appears blue due to **Rayleigh scattering** of light. When sunlight interacts with the Earth's atmosphere, water vapor and other molecules scatter shorter wavelengths of light (like blue) more than longer ones (like red). As a result, the blue color of the sun shines on the earth’s surface, and since these blue wavelengths are scattered in the atmosphere, they are reflected back into our eyes, making the sky appear blue. 
 
-First, I remember that when sunlight hits the Earth's atmosphere, it gets scattered. This phenomenon is called Rayleigh scattering. Right? But I need to explain that in simpler terms. Also, maybe mention that it's part of the atmosphere's structure. Oh, right! The ozone layer in the atmosphere also plays a role. But wait, are there other reasons besides Rayleigh scattering?
-
-Wait, sometimes people think the sky is blue because of the way light interacts with the ground or the way light is reflected. But I think that's actually because of the atmosphere's properties. But maybe I should clarify that Rayleigh scattering is the primary reason. Also, some people find that the color is influenced by temperature or humidity, but I don't think that's the main factor here.
-
-I should mention that the blue light is scattered more efficiently by the air particles compared to other colors, which contributes to the overall sky color. Maybe add that it's a result of the atmosphere's natural structure, not just a physical property. Yeah, that makes sense. But wait, is there any other source of blue in the sky? I think the main one is Rayleigh scattering. But just to make sure, I should confirm that and provide a clear explanation.
-</think>
-
-The sky appears blue primarily due to **Rayleigh scattering** of sunlight by the Earth's atmosphere. When sunlight interacts with gas molecules (ozone, nitrogen, etc.) in the upper atmosphere, it bounces in all directions with a predominantly blue component. Since blue light is scattered more than other wavelengths by air molecules, the scattered blue light forms the color we see in the sky.  
-
-This scattering occurs with a wavelength-dependent efficiency: blue light is scattered more than red or orange light. Additionally, the atmosphere's structure contributes to the mixing of colors, and the sunlight's path (from the sun to Earth) further shapes the blue coloration.  
-
-So, in short: The sky is blue because the Earth's atmosphere scatters sunlight in such a way that the blue light ends up visible to us. 🌇"
+A simple explanation is:  
+**The blue light from the sun is scattered more by the atmosphere than the red light, which is why we see the sky in hues of blue.**"
 `;
 
 exports[`streamText > basic 2`] = `
 [
+  "chat qwen3:0.6b",
+]
+`;
+
+exports[`streamText > basic 3`] = `
+[
   {
-    "ai.model.id": "qwen3:0.6b",
-    "ai.model.provider": "xsai",
-    "ai.operationId": "ai.streamText.doStream",
-    "ai.prompt.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
-    "ai.response.avgOutputTokensPerSecond": 48.36097189033391,
-    "ai.response.finishReason": "stop",
-    "ai.response.id": "2f730f80-3cdd-43fd-9c5e-010b9d44e54a",
-    "ai.response.model": "qwen3:0.6b",
-    "ai.response.msToFinish": 9615.191379000002,
-    "ai.response.msToFirstChunk": 2944.94823,
-    "ai.response.providerMetadata": "{}",
-    "ai.response.text": "<think> Okay, so the user is asking why the sky is",
-    "ai.response.timestamp": "2025-10-19T09:33:20.226Z",
-    "ai.telemetry.metadata.agentId": "weather-assistant",
-    "ai.telemetry.metadata.instructions": "You are a helpful weather assistant",
-    "ai.usage.inputTokens": 14,
-    "ai.usage.outputTokens": 465,
-    "ai.usage.totalTokens": 479,
+    "gen_ai.input.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
+    "gen_ai.operation.name": "chat",
+    "gen_ai.output.messages": "[{"content":"The sky appears blue due to **Rayleigh scattering** of light. When sunlight interacts with the Earth's atmosphere, water vapor and other molecules scatter shorter wavelengths of light (like blue) more than longer ones (like red). As a result, the blue color of the sun shines on the earth’s surface, and since these blue wavelengths are scattered in the atmosphere, they are reflected back into our eyes, making the sky appear blue. \\n\\nA simple explanation is:  \\n**The blue light from the sun is scattered more by the atmosphere than the red light, which is why we see the sky in hues of blue.**","role":"assistant"}]",
+    "gen_ai.provider.name": "openai",
+    "gen_ai.request.choice.count": 1,
     "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "f5c22175-23b5-4cba-80d6-af13f9180df7",
+    "gen_ai.response.id": "c1927e4d-9b07-4fe3-be76-08f9b4662c76",
     "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.system": "xsai",
-    "gen_ai.usage.input_tokens": 14,
-    "gen_ai.usage.output_tokens": 465,
-    "operation.name": "ai.streamText.doStream",
+    "gen_ai.usage.input_tokens": 16,
+    "gen_ai.usage.output_tokens": 405,
+    "server.address": "localhost:11434",
   },
 ]
 `;

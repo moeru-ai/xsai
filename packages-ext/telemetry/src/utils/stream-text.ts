@@ -1,22 +1,20 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
+import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
 import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 
-import { commonAttributes, idAttributes, metadataAttributes } from './attributes'
+import { chatSpan } from './chat-span'
 import { getTracer } from './get-tracer'
-import { now } from './now'
-import { recordSpan, recordSpanSync } from './record-span'
+import { recordSpan } from './record-span'
 import { transformChunk } from './stream-text-internal'
-import { stringifyTool } from './stringify-tool'
 import { wrapTool } from './wrap-tool'
 
 /**
  * @experimental
  * Streaming Text with Telemetry.
  */
-export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>>) => {
+export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>>): StreamTextResult => {
   const tracer = getTracer()
 
   // state
@@ -56,27 +54,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     ? options.tools.map(tool => wrapTool(tool, tracer))
     : undefined
 
-  const doStream = async () => recordSpan({
-    attributes: {
-      ...idAttributes(),
-      ...commonAttributes('ai.streamText.doStream', options.model),
-      ...metadataAttributes(options.telemetry?.metadata),
-      ...(tools != null && tools.length > 0 && {
-        'ai.prompt.toolChoice': JSON.stringify(options.toolChoice ?? { type: 'auto' }),
-        'ai.prompt.tools': tools.map(stringifyTool),
-      }),
-      'ai.prompt.messages': JSON.stringify(options.messages),
-      'ai.response.model': options.model,
-      'gen_ai.request.model': options.model,
-      'gen_ai.response.id': crypto.randomUUID(),
-      'gen_ai.response.model': options.model,
-      'gen_ai.system': 'xsai',
-    },
-    name: 'ai.streamText.doStream',
-    tracer,
-  }, async (span) => {
-    const startMs = now()
-
+  const doStream = async () => recordSpan(chatSpan({ ...options, messages }, tracer), async (span) => {
     const { body: stream } = await chat({
       ...options,
       maxSteps: undefined,
@@ -119,7 +97,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     const toolCalls: CompletionToolCall[] = []
     const toolResults: CompletionToolResult[] = []
     let finishReason: FinishReason = 'other'
-    let firstChunk = true
 
     await stream!
       .pipeThrough(transformChunk())
@@ -131,18 +108,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         close: () => {},
         // eslint-disable-next-line sonarjs/cognitive-complexity
         write: (chunk) => {
-          // Telemetry
-          if (firstChunk) {
-            const msToFirstChunk = now() - startMs
-            span.addEvent('ai.stream.firstChunk', {
-              'ai.response.msToFirstChunk': msToFirstChunk,
-            })
-            span.setAttributes({
-              'ai.response.msToFirstChunk': msToFirstChunk,
-            })
-            firstChunk = false
-          }
-
           if (chunk.usage)
             pushUsage(chunk.usage)
 
@@ -205,12 +170,14 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         },
       }))
 
-    messages.push({
+    const message: AssistantMessage = {
       content: text,
       reasoning_content: reasoningText,
       role: 'assistant',
       tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
-    })
+    }
+    messages.push(message)
+    span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
 
     if (tool_calls.length !== 0) {
       for (const toolCall of tool_calls) {
@@ -251,19 +218,10 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     pushStep(step)
 
     // Telemetry
-    const msToFinish = now() - startMs
-    span.addEvent('ai.stream.finish')
+    // span.addEvent('ai.stream.finish')
     span.setAttributes({
-      'ai.response.msToFinish': msToFinish,
-      ...(step.toolCalls.length > 0 && { 'ai.response.toolCalls': JSON.stringify(step.toolCalls) }),
-      'ai.response.finishReason': step.finishReason,
-      'ai.response.text': step.text != null ? step.text : '',
       'gen_ai.response.finish_reasons': [step.finishReason],
       ...step.usage && {
-        'ai.response.avgOutputTokensPerSecond': (1000 * (step.usage.completion_tokens ?? 0)) / msToFinish,
-        'ai.usage.inputTokens': step.usage.prompt_tokens,
-        'ai.usage.outputTokens': step.usage.completion_tokens,
-        'ai.usage.totalTokens': step.usage.total_tokens,
         'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
         'gen_ai.usage.output_tokens': step.usage.completion_tokens,
       },
@@ -273,73 +231,69 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       return async () => doStream()
   })
 
-  return recordSpanSync<StreamTextResult>({
-    attributes: {
-      ...commonAttributes('ai.streamText', options.model),
-      ...metadataAttributes(options.telemetry?.metadata),
-      'ai.prompt': JSON.stringify({ messages: options.messages }),
-    },
-    endWhenDone: false,
-    name: 'ai.streamText',
-    tracer,
-  }, (rootSpan) => {
-    void (async () => {
-      try {
-        await trampoline(async () => doStream())
+  // return recordSpanSync<StreamTextResult>({
+  //   attributes: {
+  //     ...metadataAttributes(options.telemetry?.metadata),
+  //     ...chatAttributes(options),
+  //   },
+  //   name: 'xsai.streamText', // TODO: remove
+  //   tracer,
+  // }, (rootSpan) => {
+  void (async () => {
+    try {
+      await trampoline(async () => doStream())
 
-        eventCtrl?.close()
-        textCtrl?.close()
-        reasoningTextCtrl?.close()
-      }
-      catch (err) {
-        eventCtrl?.error(err)
-        textCtrl?.error(err)
-        reasoningTextCtrl?.error(err)
-
-        resultSteps.reject(err)
-        resultMessages.reject(err)
-        resultUsage.reject(err)
-        resultTotalUsage.reject(err)
-      }
-      finally {
-        resultSteps.resolve(steps)
-        resultMessages.resolve(messages)
-        resultUsage.resolve(usage)
-        resultTotalUsage.resolve(totalUsage)
-
-        const finishStep = steps.at(-1)
-
-        if (finishStep) {
-          rootSpan.setAttributes({
-            ...(finishStep.toolCalls.length > 0 && { 'ai.response.toolCalls': JSON.stringify(finishStep.toolCalls) }),
-            'ai.response.finishReason': finishStep.finishReason,
-            'ai.response.text': finishStep.text != null ? finishStep.text : '',
-          })
-        }
-
-        if (totalUsage) {
-          rootSpan.setAttributes({
-            'ai.usage.inputTokens': totalUsage.prompt_tokens,
-            'ai.usage.outputTokens': totalUsage.completion_tokens,
-            'ai.usage.totalTokens': totalUsage.total_tokens,
-          })
-        }
-
-        // eslint-disable-next-line sonarjs/void-use
-        void options.onFinish?.(finishStep)
-
-        rootSpan.end()
-      }
-    })()
-
-    return {
-      fullStream: eventStream,
-      messages: resultMessages.promise,
-      reasoningTextStream,
-      steps: resultSteps.promise,
-      textStream,
-      totalUsage: resultTotalUsage.promise,
-      usage: resultUsage.promise,
+      eventCtrl?.close()
+      textCtrl?.close()
+      reasoningTextCtrl?.close()
     }
-  })
+    catch (err) {
+      eventCtrl?.error(err)
+      textCtrl?.error(err)
+      reasoningTextCtrl?.error(err)
+
+      resultSteps.reject(err)
+      resultMessages.reject(err)
+      resultUsage.reject(err)
+      resultTotalUsage.reject(err)
+    }
+    finally {
+      resultSteps.resolve(steps)
+      resultMessages.resolve(messages)
+      resultUsage.resolve(usage)
+      resultTotalUsage.resolve(totalUsage)
+
+      const finishStep = steps.at(-1)
+
+      // if (finishStep) {
+      //   rootSpan.setAttributes({
+      //     'gen_ai.output.messages': JSON.stringify(messages),
+      //     'gen_ai.response.finish_reasons': [finishStep.finishReason],
+      //   })
+      // }
+
+      // if (totalUsage) {
+      //   rootSpan.setAttributes({
+      //     'gen_ai.usage.input_tokens': totalUsage.prompt_tokens,
+      //     'gen_ai.usage.output_tokens': totalUsage.completion_tokens,
+      //   })
+      // }
+
+      // eslint-disable-next-line sonarjs/void-use
+      void options.onFinish?.(finishStep)
+
+      // rootSpan.end()
+    }
+  })()
+
+  return {
+    fullStream: eventStream,
+    messages: resultMessages.promise,
+    reasoningTextStream,
+    steps: resultSteps.promise,
+    textStream,
+    totalUsage: resultTotalUsage.promise,
+    usage: resultUsage.promise,
+  }
+  // })
 }

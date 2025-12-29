@@ -7,20 +7,26 @@ export const wrapTool = (tool: Tool, tracer: Tracer): Tool => ({
   execute: async (input: unknown, options: ToolExecuteOptions) =>
     recordSpan({
       attributes: {
-        'ai.operationId': 'ai.toolCall',
-        'ai.toolCall.args': JSON.stringify(input),
-        'ai.toolCall.id': options.toolCallId,
-        'ai.toolCall.name': tool.function.name,
-        'operation.name': 'ai.toolCall',
+        'gen_ai.operation.name': 'execute_tool',
+        'gen_ai.tool.call.arguments': JSON.stringify(input),
+        'gen_ai.tool.call.description': tool.function.description,
+        'gen_ai.tool.call.id': options.toolCallId,
+        'gen_ai.tool.call.name': tool.function.name,
       },
-      name: 'ai.toolCall',
+      name: `execute_tool ${tool.function.name}`,
       tracer,
     }, async (span) => {
-      const result = await tool.execute(input, options)
+      try {
+        const result = await tool.execute(input, options)
+        span.setAttribute('gen_ai.tool.call.result', JSON.stringify(result))
+        return result
+      }
+      catch (err) {
+        if (err instanceof Error)
+          span.setAttribute('error.type', err.message)
 
-      span.setAttribute('ai.toolCall.result', JSON.stringify(result))
-
-      return result
+        throw err
+      }
     }),
   function: tool.function,
   type: tool.type,
