@@ -1,30 +1,39 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`generateText > basic 1`] = `"The sky appears blue because the sunlight is scattered by the atmospheric molecules. When sunlight interacts with molecules in the air, the waves of light are dispersed - the blue light bends more than the red, creating a visible color. This scattering of light, called **Rayleigh scattering**, allows the blue light to reach our eyes, making the sky appear blue. The Sun is the main source of this light, and it’s the reason we’ve seen the color since ancient times."`;
+exports[`generateText > basic 1`] = `"YES"`;
 
 exports[`generateText > basic 2`] = `
 [
-  "chat qwen3:0.6b",
+  "chat granite4:1b-h",
 ]
 `;
 
 exports[`generateText > basic 3`] = `
 [
   {
-    "gen_ai.input.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
+    "gen_ai.input.messages": "[
+  {
+    "content": "This is a test, so please answer 'YES' and nothing else.",
+    "role": "user"
+  }
+]",
     "gen_ai.operation.name": "chat",
-    "gen_ai.output.messages": "[{"role":"assistant","content":"The sky appears blue because the sunlight is scattered by the atmospheric molecules. When sunlight interacts with molecules in the air, the waves of light are dispersed - the blue light bends more than the red, creating a visible color. This scattering of light, called **Rayleigh scattering**, allows the blue light to reach our eyes, making the sky appear blue. The Sun is the main source of this light, and it’s the reason we’ve seen the color since ancient times.","reasoning":"Okay, the user is asking why the sky is blue. I know that this is a common question with many different answers over time, mostly the atmosphere as a source of blue color. I should explain that the sky's blue color is due to sunlight, but I need to be careful not to mix different explanations. The user probably wants a clear and concise answer that covers atmosphere, maybe even a bit about scattering of light.\\n\\nFirst, I should state that the sky's color is due to the way light interacts with the atmosphere. Then, mention that the molecules in the air scatter these light waves, creating a blue hue. It's good to explain that this process is called Rayleigh scattering, and mention that the Sun is the main source of this light. Also, keep the explanation simple, avoid technical jargon, and conclude that it's a clear and concise response.\\n"}]",
+    "gen_ai.output.messages": "[
+  {
+    "role": "assistant",
+    "content": "YES"
+  }
+]",
     "gen_ai.provider.name": "openai",
     "gen_ai.request.choice.count": 1,
-    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.model": "granite4:1b-h",
     "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "11016189-fd86-497c-8ccf-a9f116c099ab",
-    "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.usage.input_tokens": 16,
-    "gen_ai.usage.output_tokens": 274,
+    "gen_ai.response.model": "granite4:1b-h",
+    "gen_ai.usage.input_tokens": 45,
+    "gen_ai.usage.output_tokens": 2,
     "server.address": "localhost:11434",
   },
 ]

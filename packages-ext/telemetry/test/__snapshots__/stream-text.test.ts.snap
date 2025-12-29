@@ -1,35 +1,39 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`streamText > basic 1`] = `
-"The sky appears blue due to **Rayleigh scattering** of light. When sunlight interacts with the Earth's atmosphere, water vapor and other molecules scatter shorter wavelengths of light (like blue) more than longer ones (like red). As a result, the blue color of the sun shines on the earth’s surface, and since these blue wavelengths are scattered in the atmosphere, they are reflected back into our eyes, making the sky appear blue. 
-
-A simple explanation is:  
-**The blue light from the sun is scattered more by the atmosphere than the red light, which is why we see the sky in hues of blue.**"
-`;
+exports[`streamText > basic 1`] = `"YES"`;
 
 exports[`streamText > basic 2`] = `
 [
-  "chat qwen3:0.6b",
+  "chat granite4:1b-h",
 ]
 `;
 
 exports[`streamText > basic 3`] = `
 [
   {
-    "gen_ai.input.messages": "[{"content":"Why is the sky blue?","role":"user"}]",
+    "gen_ai.input.messages": "[
+  {
+    "content": "This is a test, so please answer 'YES' and nothing else.",
+    "role": "user"
+  }
+]",
     "gen_ai.operation.name": "chat",
-    "gen_ai.output.messages": "[{"content":"The sky appears blue due to **Rayleigh scattering** of light. When sunlight interacts with the Earth's atmosphere, water vapor and other molecules scatter shorter wavelengths of light (like blue) more than longer ones (like red). As a result, the blue color of the sun shines on the earth’s surface, and since these blue wavelengths are scattered in the atmosphere, they are reflected back into our eyes, making the sky appear blue. \\n\\nA simple explanation is:  \\n**The blue light from the sun is scattered more by the atmosphere than the red light, which is why we see the sky in hues of blue.**","role":"assistant"}]",
+    "gen_ai.output.messages": "[
+  {
+    "content": "YES",
+    "role": "assistant"
+  }
+]",
     "gen_ai.provider.name": "openai",
     "gen_ai.request.choice.count": 1,
-    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.model": "granite4:1b-h",
     "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "c1927e4d-9b07-4fe3-be76-08f9b4662c76",
-    "gen_ai.response.model": "qwen3:0.6b",
-    "gen_ai.usage.input_tokens": 16,
-    "gen_ai.usage.output_tokens": 405,
+    "gen_ai.response.model": "granite4:1b-h",
+    "gen_ai.usage.input_tokens": 45,
+    "gen_ai.usage.output_tokens": 2,
     "server.address": "localhost:11434",
   },
 ]

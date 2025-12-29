@@ -1,12 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`streamText with tools > basic 1`] = `"The sum of 114514 plus 1919810 is 2034324. Therefore, the answer is 2,034,324."`;
+exports[`streamText with tools > basic 1`] = `"The result of 114514 plus 1919810 is **2,034,324**."`;
 
 exports[`streamText with tools > basic 2`] = `
 [
   "execute_tool add",
-  "chat qwen3:0.6b",
-  "chat qwen3:0.6b",
+  "chat granite4:1b-h",
+  "chat granite4:1b-h",
 ]
 `;
 
@@ -16,44 +16,92 @@ exports[`streamText with tools > basic 3`] = `
     "gen_ai.operation.name": "execute_tool",
     "gen_ai.tool.call.arguments": "{"a":"114514","b":"1919810"}",
     "gen_ai.tool.call.description": "Adds two numbers",
-    "gen_ai.tool.call.id": "call_ew1w2m1s",
     "gen_ai.tool.call.name": "add",
     "gen_ai.tool.call.result": ""2034324"",
   },
   {
-    "gen_ai.input.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"}]",
+    "gen_ai.input.messages": "[
+  {
+    "content": "How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.",
+    "role": "user"
+  }
+]",
     "gen_ai.operation.name": "chat",
-    "gen_ai.output.messages": "[{"content":"","role":"assistant","tool_calls":[{"id":"call_ew1w2m1s","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]}]",
+    "gen_ai.output.messages": "[
+  {
+    "content": "",
+    "role": "assistant",
+    "tool_calls": [
+      {
+        "id": "",
+        "index": 0,
+        "type": "function",
+        "function": {
+          "name": "add",
+          "arguments": "{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"
+        }
+      }
+    ]
+  }
+]",
     "gen_ai.provider.name": "openai",
     "gen_ai.request.choice.count": 1,
-    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.model": "granite4:1b-h",
     "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "tool_calls",
     ],
-    "gen_ai.response.id": "23291262-63dc-4f00-b7dc-fb928cd562f5",
-    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.response.model": "granite4:1b-h",
     "gen_ai.tool.definitions": "[{"function":{"description":"Adds two numbers","name":"add","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false},"strict":true},"type":"function"}]",
-    "gen_ai.usage.input_tokens": 186,
-    "gen_ai.usage.output_tokens": 639,
+    "gen_ai.usage.input_tokens": 207,
+    "gen_ai.usage.output_tokens": 37,
     "server.address": "localhost:11434",
   },
   {
-    "gen_ai.input.messages": "[{"content":"How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.","role":"user"},{"content":"","role":"assistant","tool_calls":[{"id":"call_ew1w2m1s","index":0,"type":"function","function":{"name":"add","arguments":"{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"}}]},{"content":"2034324","role":"tool","tool_call_id":"call_ew1w2m1s"}]",
+    "gen_ai.input.messages": "[
+  {
+    "content": "How many times does 114514 plus 1919810 equal? Please try to call the \`add\` tool to solve the problem.",
+    "role": "user"
+  },
+  {
+    "content": "",
+    "role": "assistant",
+    "tool_calls": [
+      {
+        "id": "",
+        "index": 0,
+        "type": "function",
+        "function": {
+          "name": "add",
+          "arguments": "{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"
+        }
+      }
+    ]
+  },
+  {
+    "content": "2034324",
+    "role": "tool",
+    "tool_call_id": ""
+  }
+]",
     "gen_ai.operation.name": "chat",
-    "gen_ai.output.messages": "[{"content":"The sum of 114514 plus 1919810 is 2034324. Therefore, the answer is 2,034,324.","role":"assistant"}]",
+    "gen_ai.output.messages": "[
+  {
+    "content": "The result of 114514 plus 1919810 is **2,034,324**.",
+    "role": "assistant"
+  }
+]",
     "gen_ai.provider.name": "openai",
     "gen_ai.request.choice.count": 1,
-    "gen_ai.request.model": "qwen3:0.6b",
+    "gen_ai.request.model": "granite4:1b-h",
     "gen_ai.request.seed": 114514,
     "gen_ai.response.finish_reasons": [
       "stop",
     ],
-    "gen_ai.response.id": "22204df2-35b0-4e93-b130-bb123862dc58",
-    "gen_ai.response.model": "qwen3:0.6b",
+    "gen_ai.response.model": "granite4:1b-h",
     "gen_ai.tool.definitions": "[{"function":{"description":"Adds two numbers","name":"add","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"a":{"description":"First number","type":"string"},"b":{"description":"Second number","type":"string"}},"required":["a","b"],"additionalProperties":false},"strict":true},"type":"function"}]",
-    "gen_ai.usage.input_tokens": 239,
-    "gen_ai.usage.output_tokens": 304,
+    "gen_ai.usage.input_tokens": 249,
+    "gen_ai.usage.output_tokens": 21,
     "server.address": "localhost:11434",
   },
 ]

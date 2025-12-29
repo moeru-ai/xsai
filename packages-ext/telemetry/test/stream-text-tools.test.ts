@@ -6,6 +6,7 @@ import { tool } from 'xsai'
 import { z } from 'zod/v4'
 
 import { streamText } from '../src'
+import { cleanAttributes } from './fixtures/clean-attributes'
 
 describe.sequential('streamText with tools', () => {
   const memoryExporter = new InMemorySpanExporter()
@@ -38,11 +39,11 @@ describe.sequential('streamText with tools', () => {
         content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
         role: 'user',
       }],
-      model: 'granite4:350m-h',
+      model: 'granite4:1b-h',
       onFinish: async () => {
         const spans = memoryExporter.getFinishedSpans()
         const names = spans.map(s => s.name)
-        const attributes = spans.map(s => s.attributes)
+        const attributes = spans.map(s => cleanAttributes(s.attributes))
 
         expect(text).toMatchSnapshot()
         expect(names).toMatchSnapshot()
