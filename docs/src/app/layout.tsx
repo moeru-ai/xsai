@@ -15,8 +15,8 @@ const Layout = ({ children }: PropsWithChildren) => (
       <link href="https://github.com/moeru-ai.png" rel="icon" type="image/png" />
     </head>
     <body className="flex flex-col min-h-screen">
-      <Banner id="xsai-0.3">
-        <Link href="https://blog.moeru.ai/xsai-0.3/">xsAI v0.3 "future base" is now available! Read Announcement</Link>
+      <Banner id="xsai-0.4">
+        <Link href="https://blog.moeru.ai/xsai-0.4/">xsAI v0.4 "AIAIAI" is now available! Read Announcement</Link>
       </Banner>
       <RootProvider search={{ SearchDialog }}>{children}</RootProvider>
     </body>
