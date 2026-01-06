@@ -1,7 +1,8 @@
 export type * from './types/options'
 
-export { generateText } from './utils/generate-text'
-export { streamText } from './utils/stream-text'
+export { embed, embedMany } from './wrapped/embed'
+export { generateText } from './wrapped/generate-text'
+export { streamText } from './wrapped/stream-text'
 
 export type * from 'xsai'
 export * from 'xsai'

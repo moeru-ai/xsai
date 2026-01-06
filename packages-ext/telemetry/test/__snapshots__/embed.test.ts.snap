@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`embed > embed 1`] = `
+[
+  "embeddings all-minilm",
+]
+`;
+
+exports[`embed > embed 2`] = `
+[
+  {
+    "gen_ai.embeddings.dimension.count": 384,
+    "gen_ai.operation.name": "embeddings",
+    "gen_ai.request.encoding_formats": "float",
+    "gen_ai.request.model": "all-minilm",
+    "gen_ai.usage.input_tokens": 7,
+    "server.address": "localhost",
+    "server.port": 11434,
+  },
+]
+`;

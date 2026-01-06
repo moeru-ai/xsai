@@ -4,10 +4,10 @@ import type { WithTelemetry } from '../types/options'
 
 import { chat, determineStepType, executeTool, responseJSON, trampoline } from 'xsai'
 
-import { chatSpan } from './chat-span'
-import { getTracer } from './get-tracer'
-import { recordSpan } from './record-span'
-import { wrapTool } from './wrap-tool'
+import { getTracer } from '../utils/get-tracer'
+import { recordSpan } from '../utils/record-span'
+import { chatSpan } from '../utils/record-span-options'
+import { wrapTool } from '../utils/wrap-tool'
 
 /**
  * @experimental
