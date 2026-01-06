@@ -46,6 +46,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   const maxSteps = options.maxSteps ?? 1
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
+  let reasoningField: 'reasoning' | 'reasoning_content' | undefined
 
   // result state
   const resultSteps = new DelayedPromise<CompletionStep[]>()
@@ -84,7 +85,6 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
         : undefined,
     })
 
-    // let stepUsage: undefined | Usage
     const pushUsage = (u: Usage) => {
       usage = u
       totalUsage = totalUsage
@@ -93,8 +93,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
             prompt_tokens: totalUsage.prompt_tokens + u.prompt_tokens,
             total_tokens: totalUsage.total_tokens + u.total_tokens,
           }
-        : { ...u }
-      // stepUsage = u
+        : u
     }
 
     let text: string = ''
@@ -135,7 +134,17 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
 
           const choice = chunk.choices[0]
 
-          if (choice.delta.reasoning_content != null) {
+          if (choice.delta.reasoning != null) {
+            if (reasoningField !== 'reasoning')
+              reasoningField = 'reasoning'
+
+            pushEvent({ text: choice.delta.reasoning, type: 'reasoning-delta' })
+            pushReasoningText(choice.delta.reasoning)
+          }
+          else if (choice.delta.reasoning_content != null) {
+            if (reasoningField !== 'reasoning_content')
+              reasoningField = 'reasoning_content'
+
             pushEvent({ text: choice.delta.reasoning_content, type: 'reasoning-delta' })
             pushReasoningText(choice.delta.reasoning_content)
           }
@@ -185,8 +194,8 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       }))
 
     messages.push({
+      ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
       content: text,
-      reasoning_content: reasoningText,
       role: 'assistant',
       tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
     })

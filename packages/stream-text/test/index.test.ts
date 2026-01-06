@@ -110,4 +110,22 @@ describe('@xsai/stream-text basic', async () => {
 
     await expect(steps).resolves.toMatchSnapshot()
   })
+
+  it('reasoning', async () => {
+    const { reasoningTextStream } = streamText({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [{
+        content: 'How many letter r are in strawberry?',
+        role: 'user',
+      }],
+      model: 'qwen3:0.6b',
+      seed: 114514,
+    })
+
+    const reasoningText = []
+    for await (const t of reasoningTextStream) {
+      reasoningText.push(t)
+    }
+    expect(reasoningText.length).toBeGreaterThan(1)
+  })
 })

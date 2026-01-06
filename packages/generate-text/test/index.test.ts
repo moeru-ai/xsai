@@ -99,4 +99,18 @@ describe('@xsai/generate-text', () => {
       },
     ])
   })
+
+  it('reasoning', async () => {
+    const { reasoningText } = await generateText({
+      baseURL: 'http://localhost:11434/v1/',
+      messages: [{
+        content: 'How many letter r are in strawberry?',
+        role: 'user',
+      }],
+      model: 'qwen3:0.6b',
+      seed: 114514,
+    })
+
+    expect(reasoningText?.length).toBeGreaterThan(1)
+  })
 })

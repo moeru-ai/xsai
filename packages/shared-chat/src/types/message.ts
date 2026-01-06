@@ -4,6 +4,8 @@ import type { ToolCall } from './tool-call'
 export interface AssistantMessage {
   content?: (RefusalContentPart | TextContentPart)[] | string
   name?: string
+  /** @see {@link https://cookbook.openai.com/articles/gpt-oss/handle-raw-cot#chat-completions-api} */
+  reasoning?: string
   /** @remarks OpenAI doesn't support this, but some providers do. */
   reasoning_content?: string
   refusal?: string
