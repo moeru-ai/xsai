@@ -17,6 +17,7 @@ export interface ChatOptions extends CommonRequestOptions {
    * @default 0
    */
   presencePenalty?: number
+  reasoningEffort?: 'high' | 'medium' | 'minimal' | 'none' | 'xhigh'
   seed?: number
   /** up to 4 sequences where the API will stop generating further tokens. */
   stop?: [string, string, string, string ] | [string, string, string] | [string, string] | [string] | string
