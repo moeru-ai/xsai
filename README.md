@@ -54,9 +54,9 @@ How xsAI small? you can try install it with [Packagephobia](https://packagephobi
 | Package | Install size | Bundled size | Gzipped size |
 |---|---|---|---|
 | xsai@0.4.0 | 142KB | 22.7KB | 7.1KB |
-| ai@6.0.11 | 57400KB | 301.5KB | 74.3KB |
+| ai@6.0.11 | 5740KB | 301.5KB | 74.3KB |
 
-xsAI reduces the install size **400x** and the bundled size **13x**.
+xsAI reduces the install size **40x** and the bundled size **13x**.
 
 Notably, this contains dependencies introduced to support tool calls and structured output.
 
