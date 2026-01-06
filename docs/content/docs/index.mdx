@@ -17,22 +17,22 @@ This makes it ideal for a variety of scenarios that require smaller bundle size,
 
 ### So how small is xsAI?
 
-Without further ado, let's look at the results from https://pkg-size.dev:
+Without further ado, let's look at the results from  [Packagephobia (install size)](https://packagephobia.com) and [Bundlephobia (bundled size / gzipped size)](https://bundlephobia.com):
 
 <PkgSizeChart data={[
-  { bundled: 20, gzipped: 6.9, installed: 131, name: 'xsai@0.3.3' },
-  { bundled: 242, gzipped: 62, installed: 13581, name: 'ai@4.3.19' },
+  { bundled: 22.7, gzipped: 7.1, installed: 142, name: 'xsai@0.4.0' },
+  { bundled: 301.5, gzipped: 74.3, installed: 57400, name: 'ai@6.0.11' },
 ]} />
 
-xsAI reduces the installation size **100x** and the bundle size **12x**.
+xsAI reduces the installation size **400x** and the bundled size **13x**.
 
 And it could be smaller!
 
 If you only need basic text generation, you can just install the `@xsai/generate-text` package:
 
 <PkgSizeChart data={[
-  { bundled: 3.5, gzipped: 1.6, installed: 21, name: '@xsai/generate-text@0.3.3' },
-  { bundled: 20, gzipped: 6.9, installed: 131, name: 'xsai@0.3.3' },
+  { bundled: 4, gzipped: 1.7, installed: 22.6, name: '@xsai/generate-text@0.4.0' },
+  { bundled: 22.7, gzipped: 7.1, installed: 142, name: 'xsai@0.4.0' },
 ]} />
 
 ### Why are only OpenAI-compatible API supported?
