@@ -23,6 +23,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   const maxSteps = options.maxSteps ?? 1
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
+  let reasoningField: 'reasoning' | 'reasoning_content' | undefined
 
   // result state
   const resultSteps = new DelayedPromise<CompletionStep[]>()
@@ -66,7 +67,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       tools,
     })
 
-    // let stepUsage: undefined | Usage
     const pushUsage = (u: Usage) => {
       usage = u
       totalUsage = totalUsage
@@ -75,8 +75,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
             prompt_tokens: totalUsage.prompt_tokens + u.prompt_tokens,
             total_tokens: totalUsage.total_tokens + u.total_tokens,
           }
-        : { ...u }
-      // stepUsage = u
+        : u
     }
 
     let text: string = ''
@@ -117,7 +116,17 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
           const choice = chunk.choices[0]
 
-          if (choice.delta.reasoning_content != null) {
+          if (choice.delta.reasoning != null) {
+            if (reasoningField !== 'reasoning')
+              reasoningField = 'reasoning'
+
+            pushEvent({ text: choice.delta.reasoning, type: 'reasoning-delta' })
+            pushReasoningText(choice.delta.reasoning)
+          }
+          else if (choice.delta.reasoning_content != null) {
+            if (reasoningField !== 'reasoning_content')
+              reasoningField = 'reasoning_content'
+
             pushEvent({ text: choice.delta.reasoning_content, type: 'reasoning-delta' })
             pushReasoningText(choice.delta.reasoning_content)
           }
@@ -171,8 +180,8 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       }))
 
     const message: AssistantMessage = {
+      ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
       content: text,
-      reasoning_content: reasoningText,
       role: 'assistant',
       tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
     }
@@ -218,7 +227,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     pushStep(step)
 
     // Telemetry
-    // span.addEvent('ai.stream.finish')
     span.setAttributes({
       'gen_ai.response.finish_reasons': [step.finishReason],
       ...step.usage && {
@@ -231,14 +239,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       return async () => doStream()
   })
 
-  // return recordSpanSync<StreamTextResult>({
-  //   attributes: {
-  //     ...metadataAttributes(options.telemetry?.metadata),
-  //     ...chatAttributes(options),
-  //   },
-  //   name: 'xsai.streamText', // TODO: remove
-  //   tracer,
-  // }, (rootSpan) => {
   void (async () => {
     try {
       await trampoline(async () => doStream())
@@ -265,23 +265,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
       const finishStep = steps.at(-1)
 
-      // if (finishStep) {
-      //   rootSpan.setAttributes({
-      //     'gen_ai.output.messages': JSON.stringify(messages),
-      //     'gen_ai.response.finish_reasons': [finishStep.finishReason],
-      //   })
-      // }
-
-      // if (totalUsage) {
-      //   rootSpan.setAttributes({
-      //     'gen_ai.usage.input_tokens': totalUsage.prompt_tokens,
-      //     'gen_ai.usage.output_tokens': totalUsage.completion_tokens,
-      //   })
-      // }
-
       void options.onFinish?.(finishStep)
-
-      // rootSpan.end()
     }
   })()
 
@@ -294,5 +278,4 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     totalUsage: resultTotalUsage.promise,
     usage: resultUsage.promise,
   }
-  // })
 }

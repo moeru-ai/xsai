@@ -107,7 +107,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         return {
           finishReason: step.finishReason,
           messages,
-          reasoningText: message.reasoning_content,
+          reasoningText: message.reasoning ?? message.reasoning_content,
           steps,
           text: step.text,
           toolCalls: step.toolCalls,
