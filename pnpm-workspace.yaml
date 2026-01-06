@@ -35,12 +35,14 @@ catalog:
   bumpp: ^10.3.2
   clsx: ^2.1.1
   eslint: ^9.39.2
+  eslint-plugin-oxlint: &oxlint ^1.37.0
   fumadocs-core: ^16.4.1
   fumadocs-mdx: ^14.2.3
   fumadocs-twoslash: ^3.1.10
   fumadocs-ui: ^16.4.1
   lucide-react: ^0.562.0
   next: ^16.1.1
+  oxlint: *oxlint
   pkgroll: ^2.21.4
   postcss: ^8.5.6
   react: ^19.2.3

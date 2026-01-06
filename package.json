@@ -10,7 +10,7 @@
     "build:packages": "turbo -F=!./docs build",
     "bump": "bumpp",
     "docs:dev": "pnpm -rF @xsai/docs dev",
-    "lint": "eslint --flag unstable_native_nodejs_ts_config --cache .",
+    "lint": "moeru-lint .",
     "test": "pnpm -r --workspace-concurrency=1 test",
     "test:speech": "pnpm -r test:speech",
     "test:transcription": "pnpm -r test:transcription"
@@ -26,6 +26,8 @@
     "automd": "catalog:",
     "bumpp": "catalog:",
     "eslint": "catalog:",
+    "eslint-plugin-oxlint": "catalog:",
+    "oxlint": "catalog:",
     "pkgroll": "catalog:",
     "tsdown": "catalog:",
     "tsx": "catalog:",

@@ -1,8 +1,6 @@
 import { defineConfig } from '@moeru/eslint-config'
 
-export default defineConfig({
-  typescript: { tsconfigPath: './tsconfig.json' },
-})
+export default defineConfig()
   .append({
     ignores: [
       'docs/src/components/ui/**/*.tsx',
