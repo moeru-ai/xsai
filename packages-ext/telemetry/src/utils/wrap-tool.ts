@@ -16,17 +16,9 @@ export const wrapTool = (tool: Tool, tracer: Tracer): Tool => ({
       name: `execute_tool ${tool.function.name}`,
       tracer,
     }, async (span) => {
-      try {
-        const result = await tool.execute(input, options)
-        span.setAttribute('gen_ai.tool.call.result', JSON.stringify(result))
-        return result
-      }
-      catch (err) {
-        if (err instanceof Error)
-          span.setAttribute('error.type', err.message)
-
-        throw err
-      }
+      const result = await tool.execute(input, options)
+      span.setAttribute('gen_ai.tool.call.result', JSON.stringify(result))
+      return result
     }),
   function: tool.function,
   type: tool.type,

@@ -11,6 +11,11 @@ import { SpanStatusCode } from '@opentelemetry/api'
  */
 export const recordErrorOnSpan = (span: Span, error: unknown) => {
   if (error instanceof Error) {
+    // https://opentelemetry.io/docs/specs/semconv/registry/attributes/error/#error-attributes
+    span.setAttributes({
+      'error.message': error.message,
+      'error.type': error.name,
+    })
     span.recordException({
       message: error.message,
       name: error.name,

@@ -18,9 +18,7 @@ export const embed = async (options: WithTelemetry<EmbedOptions>): Promise<Embed
   // https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-spans/#embeddings
   return recordSpan<EmbedResult>(embedSpan(options, tracer), async (span) => {
     const result = await originalEmbed(clean({ ...options, telemetry: undefined }))
-
     span.setAttribute('gen_ai.usage.input_tokens', result.usage.prompt_tokens)
-
     return result
   })
 }
@@ -35,9 +33,7 @@ export const embedMany = async (options: WithTelemetry<EmbedManyOptions>): Promi
   // https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-spans/#embeddings
   return recordSpan<EmbedManyResult>(embedSpan(options, tracer), async (span) => {
     const result = await originalEmbedMany(clean({ ...options, telemetry: undefined }))
-
     span.setAttribute('gen_ai.usage.input_tokens', result.usage.prompt_tokens)
-
     return result
   })
 }
