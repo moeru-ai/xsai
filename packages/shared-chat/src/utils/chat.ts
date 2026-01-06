@@ -17,6 +17,7 @@ export interface ChatOptions extends CommonRequestOptions {
    * @default 0
    */
   presencePenalty?: number
+  /** Constrains effort on reasoning for reasoning models. */
   reasoningEffort?: 'high' | 'medium' | 'minimal' | 'none' | 'xhigh'
   seed?: number
   /** up to 4 sequences where the API will stop generating further tokens. */
@@ -26,7 +27,9 @@ export interface ChatOptions extends CommonRequestOptions {
    * @default 1
    */
   temperature?: number
+  /** Controls which (if any) tool is called by the model. */
   toolChoice?: ToolChoice
+  /** A list of tools the model may call. */
   tools?: Tool[]
   /** @remarks OpenAI doesn't support this, but some providers do. */
   topK?: number
