@@ -21,7 +21,7 @@ const providers = await fetch('https://models.dev/api.json')
   .then(providers => providers
     .map(provider => ({
       ...provider,
-      ...overrides[provider.id] ?? {},
+      ...overrides[provider.id],
     }))
     .toSorted((a, b) => a.id.localeCompare(b.id)),
   )

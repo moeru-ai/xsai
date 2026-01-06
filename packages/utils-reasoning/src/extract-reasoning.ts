@@ -16,7 +16,7 @@ export const extractReasoning = (text: string, options: ExtractReasoningOptions 
   tagName: 'think',
 }) => {
   const startTag = `<${options.tagName}>`
-  const endTag = `<\/${options.tagName}>`
+  const endTag = `</${options.tagName}>`
   const separator = options.separator ?? '\n'
   const fullText = options.startWithReasoning ? startTag + text : text
 

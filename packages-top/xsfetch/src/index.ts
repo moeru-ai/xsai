@@ -25,7 +25,9 @@ export const createFetch = (userOptions: Partial<CreateFetchOptions> = {}): type
     if (res.ok || retriesLeft === 0 || !options.retryStatusCodes.includes(res.status))
       return res
 
-    options.debug && console.warn('[xsfetch] Failed, retrying... Times left:', retriesLeft)
+    if (options.debug)
+      console.warn('[xsfetch] Failed, retrying... Times left:', retriesLeft)
+
     await sleep(options.retryDelay)
     return async () => xsfetch(retriesLeft - 1, input, init)
   }
