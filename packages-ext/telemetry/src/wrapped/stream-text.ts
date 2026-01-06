@@ -4,9 +4,9 @@ import type { WithTelemetry } from '../types/options'
 
 import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
 
-import { chatSpan } from '../utils/chat-span'
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
+import { chatSpan } from '../utils/record-span-options'
 import { transformChunk } from '../utils/stream-text-internal'
 import { wrapTool } from '../utils/wrap-tool'
 

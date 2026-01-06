@@ -1,8 +1,17 @@
-import type { Tracer } from '@opentelemetry/api'
-import type { ChatOptions } from 'xsai'
+import type { Attributes, Tracer } from '@opentelemetry/api'
+import type { ChatOptions, EmbedManyOptions, EmbedOptions } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 import type { RecordSpanOptions } from './record-span'
+
+const serverAddressAndPort = (baseURL: string | URL): Attributes => {
+  const url = new URL(baseURL)
+
+  return {
+    'server.address': url.host,
+    'server.port': url.port === '' ? url.protocol === 'https:' ? 443 : 80 : Number.parseInt(url.port),
+  }
+}
 
 export const chatSpan = (options: WithTelemetry<ChatOptions>, tracer: Tracer): RecordSpanOptions => ({
   attributes: {
@@ -21,10 +30,23 @@ export const chatSpan = (options: WithTelemetry<ChatOptions>, tracer: Tracer): R
     'gen_ai.response.id': crypto.randomUUID(),
     'gen_ai.response.model': options.model,
     'gen_ai.tool.definitions': JSON.stringify(options.tools?.map(tool => ({ function: tool.function, type: tool.type }))),
-    'server.address': new URL(options.baseURL).host,
+    ...serverAddressAndPort(options.baseURL),
     ...options.telemetry?.attributes,
     // TODO: gen_ai.output.type
   },
   name: `chat ${options.model}`,
+  tracer,
+})
+
+export const embedSpan = (options: WithTelemetry<EmbedManyOptions | EmbedOptions>, tracer: Tracer): RecordSpanOptions => ({
+  attributes: {
+    'gen_ai.embeddings.dimension.count': options.dimensions,
+    'gen_ai.operation.name': 'embeddings',
+    'gen_ai.request.encoding_formats': 'float',
+    'gen_ai.request.model': options.model,
+    ...serverAddressAndPort(options.baseURL),
+    ...options.telemetry?.attributes,
+  },
+  name: `embeddings ${options.model}`,
   tracer,
 })
