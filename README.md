@@ -2,12 +2,13 @@
 
 extra-small AI SDK.
 
-<!-- automd:badges name="xsai" provider="badgen" color="cyan" license bundlephobia -->
+<!-- automd:badges name="xsai" provider="badgen" color="gray" license bundlephobia packagephobia -->
 
-[![npm version](https://flat.badgen.net/npm/v/xsai?color=cyan)](https://npmjs.com/package/xsai)
-[![npm downloads](https://flat.badgen.net/npm/dm/xsai?color=cyan)](https://npm.chart.dev/xsai)
-[![bundle size](https://flat.badgen.net/bundlephobia/minzip/xsai?color=cyan)](https://bundlephobia.com/package/xsai)
-[![license](https://flat.badgen.net/github/license/moeru-ai/xsai?color=cyan)](https://github.com/moeru-ai/xsai/blob/main/LICENSE.md)
+[![npm version](https://flat.badgen.net/npm/v/xsai?color=gray)](https://npmjs.com/package/xsai)
+[![npm downloads](https://flat.badgen.net/npm/dm/xsai?color=gray)](https://npm.chart.dev/xsai)
+[![bundle size](https://flat.badgen.net/bundlephobia/minzip/xsai?color=gray)](https://bundlephobia.com/package/xsai)
+[![install size](https://flat.badgen.net/packagephobia/install/xsai?color=gray)](https://packagephobia.com/result?p=xsai)
+[![license](https://flat.badgen.net/github/license/moeru-ai/xsai?color=gray)](https://github.com/moeru-ai/xsai/blob/main/LICENSE)
 
 <!-- /automd -->
 
@@ -46,18 +47,20 @@ xsAI uses a variety of methods to make itself smaller.
 
 It's just a wrapper for [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), ESM Only, adding additional dependencies only when absolutely necessary.
 
-How xsAI small? you can [try install it with pkg-size.dev](https://pkg-size.dev/xsai):
+How xsAI small? you can try install it with [Packagephobia](https://packagephobia.com/result?p=xsai) or [Bundlephobia](https://bundlephobia.com/package/xsai):
 
-| Package | Installed size | Bundled size | Gzipped size |
+> In the following table, we used packagephobia's install size and bundlephobia's minified/gzipped size.
+
+| Package | Install size | Bundled size | Gzipped size |
 |---|---|---|---|
-| xsai@0.3.3 | 131KB | 20KB | 6.9KB |
-| ai@4.3.19 | 13581KB | 242KB | 62KB |
+| xsai@0.4.0 | 142KB | 22.7KB | 7.1KB |
+| ai@6.0.11 | 57400KB | 301.5KB | 74.3KB |
 
-xsAI reduces the installation size **100x** and the bundle size **12x**.
+xsAI reduces the install size **400x** and the bundled size **13x**.
 
 Notably, this contains dependencies introduced to support tool calls and structured output.
 
-If you only need the basic `generateText`, `@xsai/generate-text@0.3.3` is only 21KB install size and 3.5KB bundle size (1.6KB gzipped). ([try install it with pkg-size.dev](https://pkg-size.dev/@xsai/generate-text))
+If you only need the basic `generateText`, `@xsai/generate-text@0.4.0` is only 22.6KB install size and 4KB bundled size (1.7KB gzipped).
 
 ### Runtime-agnostic
 
@@ -79,13 +82,13 @@ npm install xsai
 yarn add xsai
 
 # pnpm
-pnpm install xsai
+pnpm add xsai
 
 # bun
 bun install xsai
 
 # deno
-deno install xsai
+deno install npm:xsai
 ```
 
 <!-- /automd -->
@@ -187,15 +190,9 @@ console.log(text)
 - [yusixian/moe-copy-ai](https://github.com/yusixian/moe-copy-ai)
 - [LemonNekoGH/flow-chat](https://github.com/LemonNekoGH/flow-chat)
 
-### Status
-
-xsAI is currently in an early stage of development and may introduce breaking changes at any time.
-
 ## License
 
 [MIT](LICENSE.md)
-
-Moeru AI / xsAI is not affiliated with OpenAI.
 
 ## Sponsors
 
