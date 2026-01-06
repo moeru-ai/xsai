@@ -8,8 +8,8 @@ const serverAddressAndPort = (baseURL: string | URL): Attributes => {
   const url = new URL(baseURL)
 
   return {
-    'server.address': url.host,
-    'server.port': url.port === '' ? url.protocol === 'https:' ? 443 : 80 : Number.parseInt(url.port),
+    'server.address': url.hostname,
+    'server.port': url.port ? Number.parseInt(url.port) : url.protocol === 'https:' ? 443 : 80,
   }
 }
 
