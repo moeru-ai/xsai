@@ -1,7 +1,7 @@
 {
   "name": "@xsai/generate-speech",
   "type": "module",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "extra-small AI SDK.",
   "author": "Moeru AI",
   "license": "MIT",
