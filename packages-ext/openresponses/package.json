@@ -34,8 +34,7 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll",
-    "test": "vitest run"
+    "build": "pkgroll"
   },
   "dependencies": {
     "@xsai/shared": "workspace:~",
