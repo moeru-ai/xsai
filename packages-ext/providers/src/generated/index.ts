@@ -3,6 +3,7 @@
 import process from 'node:process'
 
 import {
+  createAbacus,
   createAlibaba,
   createAlibabaCn,
   createBailing,
@@ -14,6 +15,8 @@ import {
   createDeepSeek,
   createFastrouter,
   createFireworks,
+  createFirmware,
+  createFriendli,
   createGithubCopilot,
   createGithubModels,
   createGoogleGenerativeAI,
@@ -35,7 +38,9 @@ import {
   createMoonshotai,
   createMoonshotaiCn,
   createMorph,
+  createNanoGpt,
   createNebius,
+  createNovitaAi,
   createNvidia,
   createOllamaCloud,
   createOpenAI,
@@ -43,6 +48,7 @@ import {
   createOvhcloud,
   createPerplexity,
   createPoe,
+  createPrivatemodeAi,
   createRequesty,
   createScaleway,
   createSiliconFlow,
@@ -51,6 +57,7 @@ import {
   createSynthetic,
   createUpstage,
   createVenice,
+  createVivgrid,
   createVultr,
   createWandb,
   createXai,
@@ -60,12 +67,20 @@ import {
   createZenmux,
   createZhipuai,
   createZhipuaiCodingPlan,
-  createNovita,
   createStepfun,
   createTencentHunyuan,
   createOllama,
   createLitellm,
 } from './create'
+
+/**
+ * Abacus Provider
+ * @see {@link https://abacus.ai/help/api}
+ * @remarks
+ * - baseURL - `https://routellm.abacus.ai/v1`
+ * - apiKey - `ABACUS_API_KEY`
+ */
+export const abacus = createAbacus(process.env.ABACUS_API_KEY ?? '')
 
 /**
  * Alibaba Provider
@@ -165,6 +180,24 @@ export const fastrouter = createFastrouter(process.env.FASTROUTER_API_KEY ?? '')
  * - apiKey - `FIREWORKS_API_KEY`
  */
 export const fireworks = createFireworks(process.env.FIREWORKS_API_KEY ?? '')
+
+/**
+ * Firmware Provider
+ * @see {@link https://docs.firmware.ai}
+ * @remarks
+ * - baseURL - `https://app.firmware.ai/api/v1`
+ * - apiKey - `FIRMWARE_API_KEY`
+ */
+export const firmware = createFirmware(process.env.FIRMWARE_API_KEY ?? '')
+
+/**
+ * Friendli Provider
+ * @see {@link https://friendli.ai/docs/guides/serverless_endpoints/introduction}
+ * @remarks
+ * - baseURL - `https://api.friendli.ai/serverless/v1`
+ * - apiKey - `FRIENDLI_TOKEN`
+ */
+export const friendli = createFriendli(process.env.FRIENDLI_TOKEN ?? '')
 
 /**
  * GitHub Copilot Provider
@@ -356,6 +389,15 @@ export const moonshotaiCn = createMoonshotaiCn(process.env.MOONSHOT_API_KEY ?? '
 export const morph = createMorph(process.env.MORPH_API_KEY ?? '')
 
 /**
+ * NanoGPT Provider
+ * @see {@link https://docs.nano-gpt.com}
+ * @remarks
+ * - baseURL - `https://nano-gpt.com/api/v1`
+ * - apiKey - `NANO_GPT_API_KEY`
+ */
+export const nanoGpt = createNanoGpt(process.env.NANO_GPT_API_KEY ?? '')
+
+/**
  * Nebius Token Factory Provider
  * @see {@link https://docs.tokenfactory.nebius.com/}
  * @remarks
@@ -363,6 +405,15 @@ export const morph = createMorph(process.env.MORPH_API_KEY ?? '')
  * - apiKey - `NEBIUS_API_KEY`
  */
 export const nebius = createNebius(process.env.NEBIUS_API_KEY ?? '')
+
+/**
+ * NovitaAI Provider
+ * @see {@link https://novita.ai/docs/guides/introduction}
+ * @remarks
+ * - baseURL - `https://api.novita.ai/openai`
+ * - apiKey - `NOVITA_API_KEY`
+ */
+export const novitaAi = createNovitaAi(process.env.NOVITA_API_KEY ?? '')
 
 /**
  * Nvidia Provider
@@ -428,6 +479,15 @@ export const perplexity = createPerplexity(process.env.PERPLEXITY_API_KEY ?? '')
 export const poe = createPoe(process.env.POE_API_KEY ?? '')
 
 /**
+ * Privatemode AI Provider
+ * @see {@link https://docs.privatemode.ai/api/overview}
+ * @remarks
+ * - baseURL - `http://localhost:8080/v1`
+ * - apiKey - `PRIVATEMODE_API_KEY`
+ */
+export const privatemodeAi = createPrivatemodeAi(process.env.PRIVATEMODE_API_KEY ?? '')
+
+/**
  * Requesty Provider
  * @see {@link https://requesty.ai/solution/llm-routing/models}
  * @remarks
@@ -459,9 +519,9 @@ export const siliconflow = createSiliconFlow(process.env.SILICONFLOW_API_KEY ?? 
  * @see {@link https://cloud.siliconflow.com/models}
  * @remarks
  * - baseURL - `https://api.siliconflow.cn/v1`
- * - apiKey - `SILICONFLOW_API_KEY`
+ * - apiKey - `SILICONFLOW_CN_API_KEY`
  */
-export const siliconflowCn = createSiliconflowCn(process.env.SILICONFLOW_API_KEY ?? '')
+export const siliconflowCn = createSiliconflowCn(process.env.SILICONFLOW_CN_API_KEY ?? '')
 
 /**
  * submodel Provider
@@ -485,7 +545,7 @@ export const synthetic = createSynthetic(process.env.SYNTHETIC_API_KEY ?? '')
  * Upstage Provider
  * @see {@link https://developers.upstage.ai/docs/apis/chat}
  * @remarks
- * - baseURL - `https://api.upstage.ai`
+ * - baseURL - `https://api.upstage.ai/v1/solar`
  * - apiKey - `UPSTAGE_API_KEY`
  */
 export const upstage = createUpstage(process.env.UPSTAGE_API_KEY ?? '')
@@ -498,6 +558,15 @@ export const upstage = createUpstage(process.env.UPSTAGE_API_KEY ?? '')
  * - apiKey - `VENICE_API_KEY`
  */
 export const venice = createVenice(process.env.VENICE_API_KEY ?? '')
+
+/**
+ * Vivgrid Provider
+ * @see {@link https://docs.vivgrid.com/models}
+ * @remarks
+ * - baseURL - `https://api.vivgrid.com/v1`
+ * - apiKey - `VIVGRID_API_KEY`
+ */
+export const vivgrid = createVivgrid(process.env.VIVGRID_API_KEY ?? '')
 
 /**
  * Vultr Provider
@@ -579,15 +648,6 @@ export const zhipuai = createZhipuai(process.env.ZHIPU_API_KEY ?? '')
  * - apiKey - `ZHIPU_API_KEY`
  */
 export const zhipuaiCodingPlan = createZhipuaiCodingPlan(process.env.ZHIPU_API_KEY ?? '')
-
-/**
- * Novita AI Provider
- * @see {@link https://novita.ai/docs/guides/llm-api#api-integration}
- * @remarks
- * - baseURL - `https://api.novita.ai/v3/openai/`
- * - apiKey - `NOVITA_API_KEY`
- */
-export const novita = createNovita(process.env.NOVITA_API_KEY ?? '')
 
 /**
  * StepFun Provider

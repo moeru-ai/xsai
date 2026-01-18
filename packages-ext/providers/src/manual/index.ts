@@ -1,5 +1,6 @@
 import process from 'node:process'
 
+import { novitaAi } from '../generated'
 import { createAnthropic, createFeatherless, createOpenRouter, createTogetherAI } from './create'
 
 /**
@@ -37,3 +38,6 @@ export const openrouter = createOpenRouter(process.env.OPENROUTER_API_KEY ?? '')
  * - apiKey - `TOGETHER_API_KEY`
  */
 export const togetherai = createTogetherAI(process.env.TOGETHER_API_KEY ?? '')
+
+/** @deprecated use `novitaAi` instead. */
+export const novita = novitaAi

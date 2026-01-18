@@ -51,7 +51,7 @@ const create = [
     '/* eslint-disable perfectionist/sort-union-types */',
     '/* eslint-disable sonarjs/no-identical-functions */',
   ].join('\n'),
-  'import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from \'../../utils\'',
+  'import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from \'../utils\'',
   ...autoProviders.map(codeGenCreate),
 ].join('\n\n')
 
