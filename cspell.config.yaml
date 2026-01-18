@@ -39,6 +39,7 @@ words:
   - llms
   - lmstudio
   - logprob
+  - logprobs
   - masknet
   - mastra
   - ministral

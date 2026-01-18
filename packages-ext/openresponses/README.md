@@ -1,1 +1,1 @@
-https://xsai.js.org/docs/packages-ext/telemetry
+https://xsai.js.org/docs/packages-ext/openresponses
