@@ -13,9 +13,9 @@ export interface IncompleteDetails {
 /** @see {@link https://www.openresponses.org/reference#object-UrlCitationParam-title} */
 export interface UrlCitation {
   /** The index of the last character of the citation in the message. */
-  endIndex: number
+  end_index: number
   /** The index of the first character of the citation in the message. */
-  startIndex: number
+  start_index: number
   /** The title of the cited resource. */
   title: string
   type: 'url_citation'
