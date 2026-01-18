@@ -405,6 +405,15 @@ importers:
         specifier: catalog:schema
         version: 4.2.1
 
+  packages-ext/openresponses:
+    dependencies:
+      '@xsai/shared':
+        specifier: workspace:~
+        version: link:../../packages/shared
+      '@xsai/shared-chat':
+        specifier: workspace:~
+        version: link:../../packages/shared-chat
+
   packages-ext/providers:
     dependencies:
       '@xsai/shared':
