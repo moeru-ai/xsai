@@ -1,6 +1,5 @@
 import type { CodeGenProvider } from './types'
 
-// TODO: cohere 'https://api.cohere.ai/compatibility/v1/'
 export const extraProviders: CodeGenProvider[] = [
   {
     apiKey: ['STEPFUN_API_KEY'],
@@ -51,5 +50,4 @@ export const extraProviders: CodeGenProvider[] = [
     models: [],
     name: 'LiteLLM',
   },
-  // TODO: speaches / player2 (special)
 ]

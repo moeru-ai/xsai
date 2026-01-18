@@ -10,6 +10,7 @@ import {
   createBaseten,
   createCerebras,
   createChutes,
+  createCohere,
   createCortecs,
   createDeepinfra,
   createDeepSeek,
@@ -135,6 +136,15 @@ export const cerebras = createCerebras(process.env.CEREBRAS_API_KEY ?? '')
  * - apiKey - `CHUTES_API_KEY`
  */
 export const chutes = createChutes(process.env.CHUTES_API_KEY ?? '')
+
+/**
+ * Cohere Provider
+ * @see {@link https://docs.cohere.com/docs/models}
+ * @remarks
+ * - baseURL - `https://api.cohere.ai/compatibility/v1/`
+ * - apiKey - `COHERE_API_KEY`
+ */
+export const cohere = createCohere(process.env.COHERE_API_KEY ?? '')
 
 /**
  * Cortecs Provider

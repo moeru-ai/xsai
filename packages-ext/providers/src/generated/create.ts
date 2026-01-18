@@ -68,6 +68,16 @@ export const createChutes = (apiKey: string, baseURL = 'https://llm.chutes.ai/v1
 )
 
 /**
+ * Create a Cohere Provider
+ * @see {@link https://docs.cohere.com/docs/models}
+ */
+export const createCohere = (apiKey: string, baseURL = 'https://api.cohere.ai/compatibility/v1/') => merge(
+  createChatProvider<'command-a-translate-08-2025' | 'command-a-03-2025' | 'command-r-08-2024' | 'command-r-plus-08-2024' | 'command-r7b-12-2024' | 'command-a-reasoning-08-2025' | 'command-a-vision-07-2025'>({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+  createEmbedProvider({ apiKey, baseURL }),
+)
+
+/**
  * Create a Cortecs Provider
  * @see {@link https://api.cortecs.ai/v1/models}
  */

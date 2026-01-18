@@ -7,6 +7,12 @@ export const overrides: Record<string, Partial<Provider>> = {
     },
     api: 'https://api.cerebras.ai/v1/',
   },
+  'cohere': {
+    _capabilities: {
+      embed: true,
+    },
+    api: 'https://api.cohere.ai/compatibility/v1/',
+  },
   'deepinfra': {
     _capabilities: {
       embed: true,
