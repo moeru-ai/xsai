@@ -34,10 +34,13 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll"
+    "build": "pkgroll",
+    "test": "vitest run --update"
   },
   "dependencies": {
     "@xsai/shared": "workspace:~",
-    "@xsai/shared-chat": "workspace:~"
+    "@xsai/shared-chat": "workspace:~",
+    "alien-signals": "catalog:",
+    "eventsource-parser": "catalog:"
   }
 }
