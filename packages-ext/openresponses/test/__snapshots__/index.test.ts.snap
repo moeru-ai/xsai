@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@xsai/stream-text basic > basic 1`] = `"Hello! How can I assist you today?"`;

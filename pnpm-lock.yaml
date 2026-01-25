@@ -63,6 +63,9 @@ catalogs:
     '@vitest/coverage-v8':
       specifier: ^4.0.16
       version: 4.0.16
+    alien-signals:
+      specifier: ^3.1.2
+      version: 3.1.2
     automd:
       specifier: ^0.4.2
       version: 0.4.2
@@ -81,6 +84,9 @@ catalogs:
     eslint-plugin-oxlint:
       specifier: ^1.37.0
       version: 1.37.0
+    eventsource-parser:
+      specifier: ^3.0.6
+      version: 3.0.6
     fumadocs-core:
       specifier: ^16.4.1
       version: 16.4.1
@@ -413,6 +419,12 @@ importers:
       '@xsai/shared-chat':
         specifier: workspace:~
         version: link:../../packages/shared-chat
+      alien-signals:
+        specifier: 'catalog:'
+        version: 3.1.2
+      eventsource-parser:
+        specifier: 'catalog:'
+        version: 3.0.6
 
   packages-ext/providers:
     dependencies:
@@ -2952,6 +2964,9 @@ packages:
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
 
+  alien-signals@3.1.2:
+    resolution: {integrity: sha512-d9dYqZTS90WLiU0I5c6DHj/HcKkF8ZyGN3G5x8wSbslulz70KOxaqCT0hQCo9KOyhVqzqGojvNdJXoTumZOtcw==}
+
   ansi-styles@4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
     engines: {node: '>=8'}
@@ -3598,6 +3613,10 @@ packages:
 
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+
+  eventsource-parser@3.0.6:
+    resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
+    engines: {node: '>=18.0.0'}
 
   expect-type@1.3.0:
     resolution: {integrity: sha512-knvyeauYhqjOYvQ66MznSMs83wmHrCycNEN6Ao+2AeYEfxUIkuiVxdEa1qlGEPK+We3n0THiDciYSsCcgW/DoA==}
@@ -7356,6 +7375,8 @@ snapshots:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
 
+  alien-signals@3.1.2: {}
+
   ansi-styles@4.3.0:
     dependencies:
       color-convert: 2.0.1
@@ -8123,6 +8144,8 @@ snapshots:
   esutils@2.0.3: {}
 
   eventemitter3@4.0.7: {}
+
+  eventsource-parser@3.0.6: {}
 
   expect-type@1.3.0: {}
 

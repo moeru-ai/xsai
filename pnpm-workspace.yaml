@@ -30,12 +30,14 @@ catalog:
   '@types/react': ^19.2.7
   '@types/react-dom': ^19.2.3
   '@vitest/coverage-v8': &vitest ^4.0.16
+  alien-signals: ^3.1.2
   automd: ^0.4.2
   best-effort-json-parser: ^1.2.1
   bumpp: ^10.3.2
   clsx: ^2.1.1
   eslint: ^9.39.2
   eslint-plugin-oxlint: &oxlint ^1.37.0
+  eventsource-parser: ^3.0.6
   fumadocs-core: ^16.4.1
   fumadocs-mdx: ^14.2.3
   fumadocs-twoslash: ^3.1.10
