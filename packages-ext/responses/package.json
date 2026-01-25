@@ -1,5 +1,5 @@
 {
-  "name": "@xsai-ext/openresponses",
+  "name": "@xsai-ext/responses",
   "type": "module",
   "version": "0.4.2",
   "description": "extra-small AI SDK.",
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages-ext/openresponses"
+    "directory": "packages-ext/responses"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "keywords": [
