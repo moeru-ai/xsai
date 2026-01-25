@@ -1,1 +1,1 @@
-https://xsai.js.org/docs/packages-ext/openresponses
+https://xsai.js.org/docs/packages-ext/responses
