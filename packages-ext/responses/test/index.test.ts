@@ -6,7 +6,7 @@ import { responses } from '../src'
 
 describe('@xsai-ext/responses basic', async () => {
   it('basic', async () => {
-    const { eventStream, textStream } = responses({
+    const { eventStream, textStream, totalUsage, usage } = responses({
       baseURL: 'http://localhost:11434/v1/',
       input: 'Hello!',
       instructions: 'You are a helpful assistant.',
@@ -27,5 +27,7 @@ describe('@xsai-ext/responses basic', async () => {
     expect(text).toMatchSnapshot()
 
     expect(events).toMatchSnapshot()
+    expect(await usage).toMatchSnapshot()
+    expect(await totalUsage).toMatchSnapshot()
   })
 })
