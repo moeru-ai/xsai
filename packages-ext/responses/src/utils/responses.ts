@@ -2,7 +2,7 @@ import type { ResponseCompletedStreamingEvent } from '../generated'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { StreamingEvent } from '../types/streaming-event'
 
-import { requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
+import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 import { EventSourceParserStream } from 'eventsource-parser/stream'
 
 import { executeTool } from './execute-tool'
@@ -22,13 +22,7 @@ export const responses = (options: ResponsesOptions) => {
   const input = normalizeInput(structuredClone(options.input))
   const steps: ResponseCompletedStreamingEvent[] = []
 
-  // output
-  let textCtrl: ReadableStreamDefaultController<string> | undefined
-  const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
-  let eventCtrl: ReadableStreamDefaultController<StreamingEvent> | undefined
-  const eventStream = new ReadableStream<StreamingEvent>({ start: controller => eventCtrl = controller })
-
-  const doStream = async () => {
+  const createReader = async () => {
     const res = await (options.fetch ?? globalThis.fetch)(requestURL('responses', options.baseURL), {
       body: requestBody({
         ...options,
@@ -44,70 +38,76 @@ export const responses = (options: ResponsesOptions) => {
       signal: options.abortSignal,
     }).then(responseCatch)
 
-    await res.body!
+    return res.body!
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
       .pipeThrough(new StreamingEventParserStream())
-      .pipeTo(new WritableStream({
-        abort: (reason) => {
-          textCtrl?.error(reason)
-        },
-        close: () => {},
-        write: async (event) => {
-          // eslint-disable-next-line no-console
-          console.log(event)
-
-          eventCtrl?.enqueue(event)
-
-          // eslint-disable-next-line ts/switch-exhaustiveness-check
-          switch (event.type) {
-            case 'response.completed':
-              steps.push(event)
-              break
-            case 'response.output_item.done': {
-              if (event.item == null)
-                break
-
-              input.push(...normalizeOutput([event.item]))
-
-              if (event.item.type === 'function_call') {
-                const functionCallOutput = await executeTool({
-                  functionCall: event.item,
-                  tools: options.tools,
-                })
-                input.push(...normalizeOutput([functionCallOutput]))
-              }
-
-              break
-            }
-            case 'response.output_text.delta':
-              textCtrl?.enqueue(event.delta)
-              break
-            default:
-              break
-          }
-        },
-      }))
-
-    // TODO: stopWhen
-    if (input.at(-1)?.type === 'function_call_output')
-      return async () => doStream()
+      .getReader()
   }
 
-  void (async () => {
-    try {
-      await trampoline(doStream)
-      textCtrl?.close()
-      eventCtrl?.close()
-    }
-    catch (err) {
-      textCtrl?.error(err)
-      eventCtrl?.error(err)
-    }
-    finally {
-      // TODO: onFinish
-    }
-  })()
+  let reader: ReadableStreamDefaultReader<StreamingEvent> | undefined
+
+  const mainStream = new ReadableStream<StreamingEvent>({
+    cancel: async () => reader?.cancel(),
+    async pull(controller) {
+      if (reader == null)
+        return controller.close()
+
+      try {
+        const { done, value: event } = await reader.read()
+
+        if (done)
+          return controller.close()
+
+        // eslint-disable-next-line ts/switch-exhaustiveness-check
+        switch (event.type) {
+          case 'response.completed': {
+            steps.push(event)
+
+            // TODO: stopWhen
+            if (input.at(-1)?.type === 'function_call_output') {
+              reader.releaseLock()
+              reader = await createReader()
+              return await this.pull!(controller)
+            }
+
+            break
+          }
+          case 'response.output_item.done': {
+            if (event.item == null)
+              break
+
+            input.push(...normalizeOutput([event.item]))
+
+            if (event.item.type === 'function_call') {
+              const functionCallOutput = await executeTool({
+                functionCall: event.item,
+                tools: options.tools,
+              })
+              input.push(...normalizeOutput([functionCallOutput]))
+            }
+
+            break
+          }
+          default:
+            break
+        }
+
+        controller.enqueue(event)
+      }
+      catch (err) {
+        controller.error(err)
+      }
+    },
+    start: async () => {
+      reader = await createReader()
+    },
+  })
+
+  const [eventStream, textStreamRaw] = mainStream.tee()
+  const textStream = textStreamRaw.pipeThrough(new TransformStream<StreamingEvent, string>({
+    transform: (event, controller) => event.type === 'response.output_text.delta' ? controller.enqueue(event.delta) : undefined,
+  }))
 
   return {
     eventStream,
