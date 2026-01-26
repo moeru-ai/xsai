@@ -1,3 +1,8 @@
+# eslint-disable pnpm/yaml-no-duplicate-catalog-item
+shellEmulator: true
+
+trustPolicy: no-downgrade
+
 packages:
   - docs
   - examples/*
@@ -78,10 +83,3 @@ catalogs:
 
 onlyBuiltDependencies:
   - unrs-resolver
-
-shellEmulator: true
-
-trustPolicy: no-downgrade
-
-trustPolicyExclude:
-  - '@redocly/openapi-core@1.34.6'
