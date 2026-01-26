@@ -4,7 +4,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
 [
   {
     "response": {
-      "id": "resp_994033",
+      "id": "resp_605140",
       "object": "response",
       "output": [],
       "status": "in_progress",
@@ -14,7 +14,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "response": {
-      "id": "resp_994033",
+      "id": "resp_605140",
       "object": "response",
       "output": [],
       "status": "in_progress",
@@ -25,8 +25,8 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "item": {
       "arguments": "",
-      "call_id": "call_xz1pfdfa",
-      "id": "fc_260163_0",
+      "call_id": "call_74i7ydt2",
+      "id": "fc_632103_0",
       "name": "add",
       "status": "in_progress",
       "type": "function_call",
@@ -36,24 +36,24 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
     "type": "response.output_item.added",
   },
   {
-    "delta": "{"b":"1919810","a":"114514"}",
-    "item_id": "fc_260163_0",
+    "delta": "{"a":"114514","b":"1919810"}",
+    "item_id": "fc_632103_0",
     "output_index": 0,
     "sequence_number": 3,
     "type": "response.function_call_arguments.delta",
   },
   {
-    "arguments": "{"b":"1919810","a":"114514"}",
-    "item_id": "fc_260163_0",
+    "arguments": "{"a":"114514","b":"1919810"}",
+    "item_id": "fc_632103_0",
     "output_index": 0,
     "sequence_number": 4,
     "type": "response.function_call_arguments.done",
   },
   {
     "item": {
-      "arguments": "{"b":"1919810","a":"114514"}",
-      "call_id": "call_xz1pfdfa",
-      "id": "fc_260163_0",
+      "arguments": "{"a":"114514","b":"1919810"}",
+      "call_id": "call_74i7ydt2",
+      "id": "fc_632103_0",
       "name": "add",
       "status": "completed",
       "type": "function_call",
@@ -64,13 +64,13 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "response": {
-      "id": "resp_994033",
+      "id": "resp_605140",
       "object": "response",
       "output": [
         {
-          "arguments": "{"b":"1919810","a":"114514"}",
-          "call_id": "call_xz1pfdfa",
-          "id": "fc_260163_0",
+          "arguments": "{"a":"114514","b":"1919810"}",
+          "call_id": "call_74i7ydt2",
+          "id": "fc_632103_0",
           "name": "add",
           "status": "completed",
           "type": "function_call",
@@ -84,6 +84,193 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
       },
     },
     "sequence_number": 6,
+    "type": "response.completed",
+  },
+  {
+    "response": {
+      "id": "resp_66034",
+      "object": "response",
+      "output": [],
+      "status": "in_progress",
+    },
+    "sequence_number": 0,
+    "type": "response.created",
+  },
+  {
+    "response": {
+      "id": "resp_66034",
+      "object": "response",
+      "output": [],
+      "status": "in_progress",
+    },
+    "sequence_number": 1,
+    "type": "response.in_progress",
+  },
+  {
+    "item": {
+      "content": [],
+      "id": "msg_567012",
+      "role": "assistant",
+      "status": "in_progress",
+      "type": "message",
+    },
+    "output_index": 0,
+    "sequence_number": 2,
+    "type": "response.output_item.added",
+  },
+  {
+    "content_index": 0,
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "part": {
+      "text": "",
+      "type": "output_text",
+    },
+    "sequence_number": 3,
+    "type": "response.content_part.added",
+  },
+  {
+    "content_index": 0,
+    "delta": "The",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 4,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": " answer",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 5,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": " is",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 6,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": " ",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 7,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": "2",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 8,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": ",",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 9,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": "034",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 10,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": ",",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 11,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": "324",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 12,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": ".",
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 13,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "sequence_number": 14,
+    "text": "The answer is 2,034,324.",
+    "type": "response.output_text.done",
+  },
+  {
+    "content_index": 0,
+    "item_id": "msg_567012",
+    "output_index": 0,
+    "part": {
+      "text": "The answer is 2,034,324.",
+      "type": "output_text",
+    },
+    "sequence_number": 15,
+    "type": "response.content_part.done",
+  },
+  {
+    "item": {
+      "content": [
+        {
+          "text": "The answer is 2,034,324.",
+          "type": "output_text",
+        },
+      ],
+      "id": "msg_567012",
+      "role": "assistant",
+      "status": "completed",
+      "type": "message",
+    },
+    "output_index": 0,
+    "sequence_number": 16,
+    "type": "response.output_item.done",
+  },
+  {
+    "response": {
+      "id": "resp_66034",
+      "object": "response",
+      "output": [
+        {
+          "content": [
+            {
+              "text": "The answer is 2,034,324.",
+              "type": "output_text",
+            },
+          ],
+          "id": "msg_567012",
+          "role": "assistant",
+          "status": "completed",
+          "type": "message",
+        },
+      ],
+      "status": "completed",
+      "usage": {
+        "input_tokens": 255,
+        "output_tokens": 11,
+        "total_tokens": 266,
+      },
+    },
+    "sequence_number": 17,
     "type": "response.completed",
   },
 ]

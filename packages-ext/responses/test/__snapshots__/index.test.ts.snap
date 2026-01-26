@@ -6,7 +6,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
 [
   {
     "response": {
-      "id": "resp_177110",
+      "id": "resp_802220",
       "object": "response",
       "output": [],
       "status": "in_progress",
@@ -16,7 +16,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   },
   {
     "response": {
-      "id": "resp_177110",
+      "id": "resp_802220",
       "object": "response",
       "output": [],
       "status": "in_progress",
@@ -27,7 +27,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "item": {
       "content": [],
-      "id": "msg_679276",
+      "id": "msg_308661",
       "role": "assistant",
       "status": "in_progress",
       "type": "message",
@@ -38,7 +38,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   },
   {
     "content_index": 0,
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "part": {
       "text": "",
@@ -50,7 +50,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": "Hello",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 4,
     "type": "response.output_text.delta",
@@ -58,7 +58,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": "!",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 5,
     "type": "response.output_text.delta",
@@ -66,7 +66,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " How",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 6,
     "type": "response.output_text.delta",
@@ -74,7 +74,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " can",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 7,
     "type": "response.output_text.delta",
@@ -82,7 +82,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " I",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 8,
     "type": "response.output_text.delta",
@@ -90,7 +90,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " assist",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 9,
     "type": "response.output_text.delta",
@@ -98,7 +98,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " you",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 10,
     "type": "response.output_text.delta",
@@ -106,7 +106,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " today",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 11,
     "type": "response.output_text.delta",
@@ -114,14 +114,14 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": "?",
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 12,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "sequence_number": 13,
     "text": "Hello! How can I assist you today?",
@@ -129,7 +129,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   },
   {
     "content_index": 0,
-    "item_id": "msg_679276",
+    "item_id": "msg_308661",
     "output_index": 0,
     "part": {
       "text": "Hello! How can I assist you today?",
@@ -146,7 +146,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
           "type": "output_text",
         },
       ],
-      "id": "msg_679276",
+      "id": "msg_308661",
       "role": "assistant",
       "status": "completed",
       "type": "message",
@@ -157,7 +157,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   },
   {
     "response": {
-      "id": "resp_177110",
+      "id": "resp_802220",
       "object": "response",
       "output": [
         {
@@ -167,7 +167,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
               "type": "output_text",
             },
           ],
-          "id": "msg_679276",
+          "id": "msg_308661",
           "role": "assistant",
           "status": "completed",
           "type": "message",

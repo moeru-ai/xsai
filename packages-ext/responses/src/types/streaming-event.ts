@@ -25,3 +25,5 @@ export type StreamingEvent
     | ResponseReasoningSummaryPartDoneStreamingEvent
     | ResponseRefusalDeltaStreamingEvent
     | ResponseRefusalDoneStreamingEvent
+
+export type StreamingEventType = StreamingEvent['type']

@@ -1,12 +1,12 @@
 import type { StandardJSONSchemaV1 } from '@standard-schema/spec'
 
-import type { FunctionCallOutputItemParam, FunctionTool } from '../generated'
+import type { FunctionCallOutput, FunctionTool } from '../generated'
 
 export interface ExecutableTool extends FunctionTool {
   execute: (input: unknown) => Promise<ToolExecuteResult> | ToolExecuteResult
 }
 
-export type ToolExecuteResult = FunctionCallOutputItemParam['output']
+export type ToolExecuteResult = FunctionCallOutput['output']
 
 export interface ToolOptions<T extends StandardJSONSchemaV1> {
   description?: string
