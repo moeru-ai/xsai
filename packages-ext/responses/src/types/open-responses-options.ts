@@ -1,7 +1,9 @@
 import type { CreateResponseBody, ItemParam } from '../generated'
+import type { ExecutableTool } from '../utils/tool'
 
-export interface OpenResponsesOptions extends Omit<NoNullCreateResponseBody, 'input'> {
+export interface OpenResponsesOptions extends Omit<NoNullCreateResponseBody, 'input' | 'tools'> {
   input: ItemParam[] | string
+  tools?: ExecutableTool[]
 }
 
 type NoNull<T> = {

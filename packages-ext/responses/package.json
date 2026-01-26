@@ -45,6 +45,8 @@
     "eventsource-parser": "catalog:"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "catalog:"
+    "@hey-api/openapi-ts": "catalog:",
+    "@standard-schema/spec": "catalog:",
+    "zod": "catalog:schema-dev"
   }
 }
