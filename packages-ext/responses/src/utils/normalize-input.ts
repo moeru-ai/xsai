@@ -1,10 +1,10 @@
-import type { Input } from '../types/input'
+import type { CreateResponseBody, ItemParam, UserMessageItemParam } from '../generated/types.gen'
 
-export const normalizeInput = (input: Input[] | string): Input[] =>
+export const normalizeInput = (input: NonNullable<CreateResponseBody['input']>): ItemParam[] =>
   Array.isArray(input)
     ? input
     : [{
-        content: input,
-        role: 'user',
-        type: 'message',
-      }]
+      content: input,
+      role: 'user',
+      type: 'message',
+    } satisfies UserMessageItemParam]

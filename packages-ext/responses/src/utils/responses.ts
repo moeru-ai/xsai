@@ -1,4 +1,4 @@
-import type { OpenResponsesOptions } from '../types/options'
+import type { CreateResponseBody } from '../generated'
 
 import { requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
 import { signal } from 'alien-signals'
@@ -6,12 +6,13 @@ import { EventSourceParserStream } from 'eventsource-parser/stream'
 
 import { normalizeInput } from './normalize-input'
 
-export interface ResponsesOptions extends OpenResponsesOptions {
+export interface ResponsesOptions extends Omit<CreateResponseBody, 'input'> {
   abortSignal?: AbortSignal
   apiKey?: string
   baseURL: string | URL
   fetch?: typeof globalThis.fetch
   headers?: Record<string, string>
+  input: NonNullable<CreateResponseBody['input']>
 }
 
 export const responses = (options: ResponsesOptions) => {
