@@ -40,8 +40,6 @@
   },
   "dependencies": {
     "@xsai/shared": "workspace:~",
-    "@xsai/shared-chat": "workspace:~",
-    "alien-signals": "catalog:",
     "eventsource-parser": "catalog:"
   },
   "devDependencies": {
