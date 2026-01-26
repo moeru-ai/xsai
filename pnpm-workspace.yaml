@@ -2,6 +2,8 @@
 shellEmulator: true
 
 trustPolicy: no-downgrade
+trustPolicyExclude:
+  - '@redocly/openapi-core@1.34.6'
 
 packages:
   - docs
@@ -12,6 +14,7 @@ packages:
 
 catalog:
   '@antfu/eslint-config': ^6.7.3
+  '@hey-api/openapi-ts': ^0.90.10
   '@langfuse/otel': ^4.5.1
   '@moeru/eslint-config': &std ^0.1.0-beta.14
   '@moeru/std': *std

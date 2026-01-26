@@ -35,6 +35,7 @@
   },
   "scripts": {
     "build": "pkgroll",
+    "sync": "openapi-ts",
     "test": "vitest run --update"
   },
   "dependencies": {
@@ -42,5 +43,8 @@
     "@xsai/shared-chat": "workspace:~",
     "alien-signals": "catalog:",
     "eventsource-parser": "catalog:"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "catalog:"
   }
 }
