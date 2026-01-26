@@ -1,4 +1,5 @@
 import type { OpenResponsesOptions } from '../types/open-responses-options'
+import type { StreamingEvent } from '../types/streaming-event'
 
 import { requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
 import { signal } from 'alien-signals'
@@ -21,6 +22,8 @@ export const responses = (options: ResponsesOptions) => {
   // output
   let textCtrl: ReadableStreamDefaultController<string> | undefined
   const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
+  let eventCtrl: ReadableStreamDefaultController<StreamingEvent> | undefined
+  const eventStream = new ReadableStream<StreamingEvent>({ start: controller => eventCtrl = controller })
 
   const doStream = async () => {
     const res = await (options.fetch ?? globalThis.fetch)(requestURL('responses', options.baseURL), {
@@ -51,6 +54,8 @@ export const responses = (options: ResponsesOptions) => {
           // eslint-disable-next-line no-console
           console.log(event)
 
+          eventCtrl?.enqueue(event)
+
           if (event.type !== 'response.output_text.delta')
             return
 
@@ -73,6 +78,7 @@ export const responses = (options: ResponsesOptions) => {
   })()
 
   return {
+    eventStream,
     textStream,
   }
 }
