@@ -1,0 +1,90 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
+[
+  {
+    "response": {
+      "id": "resp_994033",
+      "object": "response",
+      "output": [],
+      "status": "in_progress",
+    },
+    "sequence_number": 0,
+    "type": "response.created",
+  },
+  {
+    "response": {
+      "id": "resp_994033",
+      "object": "response",
+      "output": [],
+      "status": "in_progress",
+    },
+    "sequence_number": 1,
+    "type": "response.in_progress",
+  },
+  {
+    "item": {
+      "arguments": "",
+      "call_id": "call_xz1pfdfa",
+      "id": "fc_260163_0",
+      "name": "add",
+      "status": "in_progress",
+      "type": "function_call",
+    },
+    "output_index": 0,
+    "sequence_number": 2,
+    "type": "response.output_item.added",
+  },
+  {
+    "delta": "{"b":"1919810","a":"114514"}",
+    "item_id": "fc_260163_0",
+    "output_index": 0,
+    "sequence_number": 3,
+    "type": "response.function_call_arguments.delta",
+  },
+  {
+    "arguments": "{"b":"1919810","a":"114514"}",
+    "item_id": "fc_260163_0",
+    "output_index": 0,
+    "sequence_number": 4,
+    "type": "response.function_call_arguments.done",
+  },
+  {
+    "item": {
+      "arguments": "{"b":"1919810","a":"114514"}",
+      "call_id": "call_xz1pfdfa",
+      "id": "fc_260163_0",
+      "name": "add",
+      "status": "completed",
+      "type": "function_call",
+    },
+    "output_index": 0,
+    "sequence_number": 5,
+    "type": "response.output_item.done",
+  },
+  {
+    "response": {
+      "id": "resp_994033",
+      "object": "response",
+      "output": [
+        {
+          "arguments": "{"b":"1919810","a":"114514"}",
+          "call_id": "call_xz1pfdfa",
+          "id": "fc_260163_0",
+          "name": "add",
+          "status": "completed",
+          "type": "function_call",
+        },
+      ],
+      "status": "completed",
+      "usage": {
+        "input_tokens": 213,
+        "output_tokens": 28,
+        "total_tokens": 241,
+      },
+    },
+    "sequence_number": 6,
+    "type": "response.completed",
+  },
+]
+`;
