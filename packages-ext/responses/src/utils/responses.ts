@@ -5,6 +5,7 @@ import { signal } from 'alien-signals'
 import { EventSourceParserStream } from 'eventsource-parser/stream'
 
 import { normalizeInput } from './normalize-input'
+import { StreamingEventParserStream } from './streaming-event-parser-stream'
 
 export interface ResponsesOptions extends Omit<CreateResponseBody, 'input'> {
   abortSignal?: AbortSignal
@@ -41,19 +42,20 @@ export const responses = (options: ResponsesOptions) => {
     await res.body!
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
+      .pipeThrough(new StreamingEventParserStream())
       .pipeTo(new WritableStream({
         abort: (reason) => {
           textCtrl?.error(reason)
         },
         close: () => {},
-        write: (chunk) => {
+        write: (event) => {
           // eslint-disable-next-line no-console
-          console.log(chunk)
+          console.log(event)
 
-          if (chunk.event !== 'response.output_text.delta')
+          if (event.type !== 'response.output_text.delta')
             return
 
-          textCtrl?.enqueue((JSON.parse(chunk.data) as { delta: string }).delta)
+          textCtrl?.enqueue(event.delta)
         },
       }))
   }
