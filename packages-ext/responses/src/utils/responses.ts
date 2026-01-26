@@ -1,8 +1,9 @@
 import type { ResponseCompletedStreamingEvent } from '../generated'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { StreamingEvent } from '../types/streaming-event'
+import type { Usage } from '../types/usage'
 
-import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { DelayedPromise, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 import { EventSourceParserStream } from 'eventsource-parser/stream'
 
 import { executeTool } from './execute-tool'
@@ -18,10 +19,24 @@ export interface ResponsesOptions extends OpenResponsesOptions {
   headers?: Record<string, string>
 }
 
+export interface ResponsesResult {
+  eventStream: ReadableStream<StreamingEvent>
+  steps: ResponseCompletedStreamingEvent[]
+  textStream: ReadableStream<string>
+  totalUsage: Promise<undefined | Usage>
+  usage: Promise<undefined | Usage>
+}
+
 /** @experimental */
-export const responses = (options: ResponsesOptions) => {
+export const responses = (options: ResponsesOptions): ResponsesResult => {
   const input = normalizeInput(structuredClone(options.input))
   const steps: ResponseCompletedStreamingEvent[] = []
+  let usage: undefined | Usage
+  let totalUsage: undefined | Usage
+
+  // result state
+  const resultUsage = new DelayedPromise<undefined | Usage>()
+  const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
   const createReader = async () => {
     const res = await (options.fetch ?? globalThis.fetch)(requestURL('responses', options.baseURL), {
@@ -49,7 +64,11 @@ export const responses = (options: ResponsesOptions) => {
   let reader: ReadableStreamDefaultReader<StreamingEvent> | undefined
 
   const mainStream = new ReadableStream<StreamingEvent>({
-    cancel: async () => reader?.cancel(),
+    cancel: async () => {
+      await reader?.cancel()
+      resultUsage.resolve(usage)
+      resultTotalUsage.resolve(totalUsage)
+    },
     async pull(controller) {
       if (reader == null)
         return controller.close()
@@ -57,12 +76,26 @@ export const responses = (options: ResponsesOptions) => {
       try {
         const { done, value: event } = await reader.read()
 
-        if (done)
+        if (done) {
+          resultUsage.resolve(usage)
+          resultTotalUsage.resolve(totalUsage)
           return controller.close()
+        }
 
         // eslint-disable-next-line ts/switch-exhaustiveness-check
         switch (event.type) {
           case 'response.completed': {
+            if (event.response.usage) {
+              usage = event.response.usage
+              totalUsage = totalUsage
+                ? {
+                    input_tokens: totalUsage.input_tokens + event.response.usage.input_tokens,
+                    output_tokens: totalUsage.output_tokens + event.response.usage.output_tokens,
+                    total_tokens: totalUsage.total_tokens + event.response.usage.total_tokens,
+                  }
+                : event.response.usage
+            }
+
             steps.push(event)
 
             // TODO: stopWhen
@@ -97,6 +130,8 @@ export const responses = (options: ResponsesOptions) => {
         controller.enqueue(event)
       }
       catch (err) {
+        resultUsage.reject(err)
+        resultTotalUsage.reject(err)
         controller.error(err)
       }
     },
@@ -114,5 +149,7 @@ export const responses = (options: ResponsesOptions) => {
     eventStream,
     steps,
     textStream,
+    totalUsage: resultTotalUsage.promise,
+    usage: resultUsage.promise,
   }
 }

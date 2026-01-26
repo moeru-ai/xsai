@@ -4,7 +4,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
 [
   {
     "response": {
-      "id": "resp_458731",
+      "id": "resp_228815",
       "object": "response",
       "output": [],
       "status": "in_progress",
@@ -14,7 +14,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "response": {
-      "id": "resp_458731",
+      "id": "resp_228815",
       "object": "response",
       "output": [],
       "status": "in_progress",
@@ -25,8 +25,8 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "item": {
       "arguments": "",
-      "call_id": "call_hy6d0afi",
-      "id": "fc_413979_0",
+      "call_id": "call_hqx3as92",
+      "id": "fc_22384_0",
       "name": "add",
       "status": "in_progress",
       "type": "function_call",
@@ -37,14 +37,14 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "delta": "{"a":"114514","b":"1919810"}",
-    "item_id": "fc_413979_0",
+    "item_id": "fc_22384_0",
     "output_index": 0,
     "sequence_number": 3,
     "type": "response.function_call_arguments.delta",
   },
   {
     "arguments": "{"a":"114514","b":"1919810"}",
-    "item_id": "fc_413979_0",
+    "item_id": "fc_22384_0",
     "output_index": 0,
     "sequence_number": 4,
     "type": "response.function_call_arguments.done",
@@ -52,8 +52,8 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "item": {
       "arguments": "{"a":"114514","b":"1919810"}",
-      "call_id": "call_hy6d0afi",
-      "id": "fc_413979_0",
+      "call_id": "call_hqx3as92",
+      "id": "fc_22384_0",
       "name": "add",
       "status": "completed",
       "type": "function_call",
@@ -64,7 +64,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "response": {
-      "id": "resp_497893",
+      "id": "resp_564344",
       "object": "response",
       "output": [],
       "status": "in_progress",
@@ -74,7 +74,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "response": {
-      "id": "resp_497893",
+      "id": "resp_564344",
       "object": "response",
       "output": [],
       "status": "in_progress",
@@ -85,7 +85,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "item": {
       "content": [],
-      "id": "msg_879696",
+      "id": "msg_78406",
       "role": "assistant",
       "status": "in_progress",
       "type": "message",
@@ -96,7 +96,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "content_index": 0,
-    "item_id": "msg_879696",
+    "item_id": "msg_78406",
     "output_index": 0,
     "part": {
       "text": "",
@@ -108,23 +108,23 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": "The",
-    "item_id": "msg_879696",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 4,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "delta": " answer",
-    "item_id": "msg_879696",
+    "delta": " result",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 5,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "delta": " is",
-    "item_id": "msg_879696",
+    "delta": " of",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 6,
     "type": "response.output_text.delta",
@@ -132,92 +132,164 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": " ",
-    "item_id": "msg_879696",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 7,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "delta": "203",
-    "item_id": "msg_879696",
+    "delta": "114",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 8,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "delta": "432",
-    "item_id": "msg_879696",
+    "delta": "514",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 9,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "delta": "4",
-    "item_id": "msg_879696",
+    "delta": " plus",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 10,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "delta": ".",
-    "item_id": "msg_879696",
+    "delta": " ",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 11,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "item_id": "msg_879696",
+    "delta": "191",
+    "item_id": "msg_78406",
     "output_index": 0,
     "sequence_number": 12,
-    "text": "The answer is 2034324.",
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": "981",
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 13,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": "0",
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 14,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": " is",
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 15,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": " ",
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 16,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": "203",
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 17,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": "432",
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 18,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": "4",
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 19,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "delta": ".",
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 20,
+    "type": "response.output_text.delta",
+  },
+  {
+    "content_index": 0,
+    "item_id": "msg_78406",
+    "output_index": 0,
+    "sequence_number": 21,
+    "text": "The result of 114514 plus 1919810 is 2034324.",
     "type": "response.output_text.done",
   },
   {
     "content_index": 0,
-    "item_id": "msg_879696",
+    "item_id": "msg_78406",
     "output_index": 0,
     "part": {
-      "text": "The answer is 2034324.",
+      "text": "The result of 114514 plus 1919810 is 2034324.",
       "type": "output_text",
     },
-    "sequence_number": 13,
+    "sequence_number": 22,
     "type": "response.content_part.done",
   },
   {
     "item": {
       "content": [
         {
-          "text": "The answer is 2034324.",
+          "text": "The result of 114514 plus 1919810 is 2034324.",
           "type": "output_text",
         },
       ],
-      "id": "msg_879696",
+      "id": "msg_78406",
       "role": "assistant",
       "status": "completed",
       "type": "message",
     },
     "output_index": 0,
-    "sequence_number": 14,
+    "sequence_number": 23,
     "type": "response.output_item.done",
   },
   {
     "response": {
-      "id": "resp_497893",
+      "id": "resp_564344",
       "object": "response",
       "output": [
         {
           "content": [
             {
-              "text": "The answer is 2034324.",
+              "text": "The result of 114514 plus 1919810 is 2034324.",
               "type": "output_text",
             },
           ],
-          "id": "msg_879696",
+          "id": "msg_78406",
           "role": "assistant",
           "status": "completed",
           "type": "message",
@@ -226,12 +298,28 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
       "status": "completed",
       "usage": {
         "input_tokens": 255,
-        "output_tokens": 9,
-        "total_tokens": 264,
+        "output_tokens": 18,
+        "total_tokens": 273,
       },
     },
-    "sequence_number": 15,
+    "sequence_number": 24,
     "type": "response.completed",
   },
 ]
+`;
+
+exports[`@xsai-ext/responses tool > basic tool calls 2`] = `
+{
+  "input_tokens": 255,
+  "output_tokens": 18,
+  "total_tokens": 273,
+}
+`;
+
+exports[`@xsai-ext/responses tool > basic tool calls 3`] = `
+{
+  "input_tokens": 468,
+  "output_tokens": 46,
+  "total_tokens": 514,
+}
 `;

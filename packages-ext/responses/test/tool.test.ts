@@ -18,7 +18,7 @@ describe('@xsai-ext/responses tool', async () => {
       name: 'add',
     })
 
-    const { eventStream } = responses({
+    const { eventStream, totalUsage, usage } = responses({
       baseURL: 'http://localhost:11434/v1/',
       input: [
         {
@@ -43,5 +43,7 @@ describe('@xsai-ext/responses tool', async () => {
     }
 
     expect(events).toMatchSnapshot()
+    expect(await usage).toMatchSnapshot()
+    expect(await totalUsage).toMatchSnapshot()
   })
 })
