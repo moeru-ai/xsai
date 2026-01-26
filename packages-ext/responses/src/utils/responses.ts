@@ -18,6 +18,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
   headers?: Record<string, string>
 }
 
+/** @experimental */
 export const responses = (options: ResponsesOptions) => {
   const input = normalizeInput(structuredClone(options.input))
   const steps: ResponseCompletedStreamingEvent[] = []

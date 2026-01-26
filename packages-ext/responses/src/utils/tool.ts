@@ -16,6 +16,7 @@ export interface ToolOptions<T extends StandardJSONSchemaV1> {
   strict?: boolean
 }
 
+/** @experimental */
 export const tool = <T extends StandardJSONSchemaV1>({ description, execute, inputSchema, name, strict }: ToolOptions<T>): ExecutableTool => ({
   description: description ?? null,
   execute,
