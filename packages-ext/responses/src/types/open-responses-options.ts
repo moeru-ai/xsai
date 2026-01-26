@@ -1,8 +1,10 @@
 import type { CreateResponseBody, ItemParam } from '../generated'
 import type { ExecutableTool } from '../utils/tool'
 
-export interface OpenResponsesOptions extends Omit<NoNullCreateResponseBody, 'input' | 'tools'> {
+export interface OpenResponsesOptions extends Omit<NoNullCreateResponseBody, 'input' | 'stream' | 'tools'> {
   input: ItemParam[] | string
+  /** @remarks `@xsai-ext/responses` only supports `stream: true`, so you should not set it. */
+  stream?: never
   tools?: ExecutableTool[]
 }
 
