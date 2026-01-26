@@ -68,9 +68,11 @@ export const responses = (options: ResponsesOptions) => {
     try {
       await trampoline(doStream)
       textCtrl?.close()
+      eventCtrl?.close()
     }
     catch (err) {
       textCtrl?.error(err)
+      eventCtrl?.error(err)
     }
     finally {
       // TODO: onFinish
