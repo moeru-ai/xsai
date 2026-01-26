@@ -9,6 +9,9 @@ catalogs:
     '@antfu/eslint-config':
       specifier: ^6.7.3
       version: 6.7.3
+    '@hey-api/openapi-ts':
+      specifier: ^0.90.10
+      version: 0.90.10
     '@langfuse/otel':
       specifier: ^4.5.1
       version: 4.5.1
@@ -440,7 +443,7 @@ importers:
         version: 3.0.6
     devDependencies:
       '@hey-api/openapi-ts':
-        specifier: ^0.90.10
+        specifier: 'catalog:'
         version: 0.90.10(magicast@0.5.1)(typescript@5.9.3)
 
   packages-ext/telemetry:
