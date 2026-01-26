@@ -31,7 +31,6 @@ catalog:
   '@types/react': ^19.2.7
   '@types/react-dom': ^19.2.3
   '@vitest/coverage-v8': ^4.0.16
-  alien-signals: ^3.1.2
   automd: ^0.4.2
   best-effort-json-parser: ^1.2.1
   bumpp: ^10.3.2
