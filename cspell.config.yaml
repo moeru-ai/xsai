@@ -6,6 +6,7 @@ words:
   - AAAAIGZ
   - Airi
   - all-minilm
+  - antfu
   - arktype
   - automd
   - BAAI
@@ -39,6 +40,7 @@ words:
   - llms
   - lmstudio
   - logprob
+  - logprobs
   - masknet
   - mastra
   - ministral
@@ -64,6 +66,7 @@ words:
   - pkgroll
   - Plateforme
   - qwen
+  - redocly
   - reranker
   - rhasspy
   - scule

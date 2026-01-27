@@ -4,5 +4,6 @@ export default defineConfig()
   .append({
     ignores: [
       'docs/src/components/ui/**/*.tsx',
+      'packages-ext/responses/src/geenrated/**/*.ts',
     ],
   })
