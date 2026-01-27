@@ -1,5 +1,5 @@
-import type { ResponseCompletedStreamingEvent } from '../generated'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
+import type { Step } from '../types/step'
 import type { StreamingEvent } from '../types/streaming-event'
 import type { Usage } from '../types/usage'
 
@@ -21,7 +21,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
 
 export interface ResponsesResult {
   eventStream: ReadableStream<StreamingEvent>
-  steps: ResponseCompletedStreamingEvent[]
+  steps: Step[]
   textStream: ReadableStream<string>
   totalUsage: Promise<undefined | Usage>
   usage: Promise<undefined | Usage>
@@ -30,11 +30,12 @@ export interface ResponsesResult {
 /** @experimental */
 export const responses = (options: ResponsesOptions): ResponsesResult => {
   const input = normalizeInput(structuredClone(options.input))
-  const steps: ResponseCompletedStreamingEvent[] = []
+  const steps: Step[] = []
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
 
   // result state
+  const resultSteps = new DelayedPromise<Step[]>()
   const resultUsage = new DelayedPromise<undefined | Usage>()
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
@@ -66,6 +67,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const mainStream = new ReadableStream<StreamingEvent>({
     cancel: async () => {
       await reader?.cancel()
+      resultSteps.resolve(steps)
       resultUsage.resolve(usage)
       resultTotalUsage.resolve(totalUsage)
     },
@@ -77,6 +79,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         const { done, value: event } = await reader.read()
 
         if (done) {
+          resultSteps.resolve(steps)
           resultUsage.resolve(usage)
           resultTotalUsage.resolve(totalUsage)
           return controller.close()
@@ -96,7 +99,10 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
                 : event.response.usage
             }
 
-            steps.push(event)
+            steps.push({
+              response: event.response,
+              usage,
+            })
 
             // TODO: stopWhen
             if (input.at(-1)?.type === 'function_call_output') {
@@ -130,6 +136,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         controller.enqueue(event)
       }
       catch (err) {
+        resultSteps.reject(err)
         resultUsage.reject(err)
         resultTotalUsage.reject(err)
         controller.error(err)
