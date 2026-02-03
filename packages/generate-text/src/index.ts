@@ -73,35 +73,22 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
 
       messages.push(message)
 
-      if (finishReason !== 'stop' && stepType !== 'done') {
-        if (options.parallelToolCalls) {
-          const results = await Promise.all(
-            msgToolCalls.map(toolCall => executeTool({
-              abortSignal: options.abortSignal,
-              messages,
-              toolCall,
-              tools: options.tools,
-            })),
-          )
+      if (finishReason !== 'stop' && stepType !== 'done' && msgToolCalls.length > 0) {
+        const runTool = async (toolCall: typeof msgToolCalls[number]) => executeTool({
+          abortSignal: options.abortSignal,
+          messages,
+          toolCall,
+          tools: options.tools,
+        })
 
-          for (const { completionToolCall, completionToolResult, message } of results) {
-            toolCalls.push(completionToolCall)
-            toolResults.push(completionToolResult)
-            messages.push(message)
-          }
-        }
-        else {
-          for (const toolCall of msgToolCalls) {
-            const { completionToolCall, completionToolResult, message } = await executeTool({
-              abortSignal: options.abortSignal,
-              messages,
-              toolCall,
-              tools: options.tools,
-            })
-            toolCalls.push(completionToolCall)
-            toolResults.push(completionToolResult)
-            messages.push(message)
-          }
+        const results = options.parallelToolCalls
+          ? await Promise.all(msgToolCalls.map(runTool))
+          : await msgToolCalls.reduce(async (acc, tc) => [...await acc, await runTool(tc)], Promise.resolve([] as Awaited<ReturnType<typeof runTool>>[]))
+
+        for (const { completionToolCall, completionToolResult, message } of results) {
+          toolCalls.push(completionToolCall)
+          toolResults.push(completionToolResult)
+          messages.push(message)
         }
       }
 

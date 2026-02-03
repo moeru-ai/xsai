@@ -12,6 +12,8 @@ export interface ChatOptions extends CommonRequestOptions {
    */
   frequencyPenalty?: number
   messages: Message[]
+  /** Allow parallel tool calls. */
+  parallelToolCalls?: boolean
   /**
    * number between -2.0 and 2.0.
    * @default 0
@@ -31,8 +33,6 @@ export interface ChatOptions extends CommonRequestOptions {
   toolChoice?: ToolChoice
   /** A list of tools the model may call. */
   tools?: Tool[]
-  /** Allow parallel tool calls. */
-  parallelToolCalls?: boolean
   /** @remarks OpenAI doesn't support this, but some providers do. */
   topK?: number
   /** @default 1 */

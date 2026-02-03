@@ -1,6 +1,8 @@
 import { rawTool } from '@xsai/tool'
 import { describe, expect, it, vi } from 'vitest'
 
+import { streamText } from '../src'
+
 const chatMock = vi.fn()
 
 vi.mock('@xsai/shared-chat', async (importOriginal) => {
@@ -11,14 +13,15 @@ vi.mock('@xsai/shared-chat', async (importOriginal) => {
   }
 })
 
-import { streamText } from '../src'
-
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+const wait = async (ms: number) => new Promise((resolve) => {
+  const timer = setTimeout(resolve, ms)
+  return () => clearTimeout(timer)
+})
 
 const makeStreamResponse = (chunks: object[]) => {
   const encoder = new TextEncoder()
   const stream = new ReadableStream<Uint8Array>({
-    start(controller) {
+    start: (controller) => {
       for (const chunk of chunks) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`))
       }
@@ -129,5 +132,3 @@ describe('@xsai/stream-text parallel tool calls', () => {
     expect(order.indexOf('b-start')).toBeLessThan(order.indexOf('a-end'))
   })
 })
-
-

@@ -1,6 +1,8 @@
 import { rawTool } from '@xsai/tool'
 import { describe, expect, it, vi } from 'vitest'
 
+import { generateText } from '../src'
+
 const chatMock = vi.fn()
 
 vi.mock('@xsai/shared-chat', async (importOriginal) => {
@@ -11,9 +13,10 @@ vi.mock('@xsai/shared-chat', async (importOriginal) => {
   }
 })
 
-import { generateText } from '../src'
-
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+const wait = async (ms: number) => new Promise((resolve) => {
+  const timer = setTimeout(resolve, ms)
+  return () => clearTimeout(timer)
+})
 
 describe('@xsai/generate-text parallel tool calls', () => {
   it('executes tool calls concurrently when enabled', async () => {
@@ -136,5 +139,3 @@ describe('@xsai/generate-text parallel tool calls', () => {
     expect(order.indexOf('b-start')).toBeLessThan(order.indexOf('a-end'))
   })
 })
-
-

@@ -201,44 +201,26 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     })
 
     if (tool_calls.length !== 0) {
-      if (options.parallelToolCalls) {
-        const toolCallsToRun = tool_calls.filter((toolCall): toolCall is ToolCall => toolCall != null)
-        const results = await Promise.all(
-          toolCallsToRun.map(toolCall => executeTool({
-            abortSignal: options.abortSignal,
-            messages,
-            toolCall,
-            tools: options.tools,
-          })),
-        )
+      const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
 
-        for (const { completionToolCall, completionToolResult, message } of results) {
-          toolCalls.push(completionToolCall)
-          toolResults.push(completionToolResult)
-          messages.push(message)
+      const runTool = async (toolCall: ToolCall) => executeTool({
+        abortSignal: options.abortSignal,
+        messages,
+        toolCall,
+        tools: options.tools,
+      })
 
-          pushEvent({ ...completionToolCall, type: 'tool-call' })
-          pushEvent({ ...completionToolResult, type: 'tool-result' })
-        }
-      }
-      else {
-        for (const toolCall of tool_calls) {
-          if (toolCall == null)
-            continue
-          const { completionToolCall, completionToolResult, message } = await executeTool({
-            abortSignal: options.abortSignal,
-            messages,
-            toolCall,
-            tools: options.tools,
-          })
+      const results = options.parallelToolCalls
+        ? await Promise.all(validToolCalls.map(runTool))
+        : await validToolCalls.reduce(async (acc, tc) => [...await acc, await runTool(tc)], Promise.resolve([] as Awaited<ReturnType<typeof runTool>>[]))
 
-          toolCalls.push(completionToolCall)
-          toolResults.push(completionToolResult)
-          messages.push(message)
+      for (const { completionToolCall, completionToolResult, message } of results) {
+        toolCalls.push(completionToolCall)
+        toolResults.push(completionToolResult)
+        messages.push(message)
 
-          pushEvent({ ...completionToolCall, type: 'tool-call' })
-          pushEvent({ ...completionToolResult, type: 'tool-result' })
-        }
+        pushEvent({ ...completionToolCall, type: 'tool-call' })
+        pushEvent({ ...completionToolResult, type: 'tool-result' })
       }
     }
     else {
