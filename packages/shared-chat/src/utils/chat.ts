@@ -31,6 +31,8 @@ export interface ChatOptions extends CommonRequestOptions {
   toolChoice?: ToolChoice
   /** A list of tools the model may call. */
   tools?: Tool[]
+  /** Allow parallel tool calls. */
+  parallelToolCalls?: boolean
   /** @remarks OpenAI doesn't support this, but some providers do. */
   topK?: number
   /** @default 1 */

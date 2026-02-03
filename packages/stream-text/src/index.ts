@@ -201,22 +201,44 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     })
 
     if (tool_calls.length !== 0) {
-      for (const toolCall of tool_calls) {
-        if (toolCall == null)
-          continue
-        const { completionToolCall, completionToolResult, message } = await executeTool({
-          abortSignal: options.abortSignal,
-          messages,
-          toolCall,
-          tools: options.tools,
-        })
+      if (options.parallelToolCalls) {
+        const toolCallsToRun = tool_calls.filter((toolCall): toolCall is ToolCall => toolCall != null)
+        const results = await Promise.all(
+          toolCallsToRun.map(toolCall => executeTool({
+            abortSignal: options.abortSignal,
+            messages,
+            toolCall,
+            tools: options.tools,
+          })),
+        )
 
-        toolCalls.push(completionToolCall)
-        toolResults.push(completionToolResult)
-        messages.push(message)
+        for (const { completionToolCall, completionToolResult, message } of results) {
+          toolCalls.push(completionToolCall)
+          toolResults.push(completionToolResult)
+          messages.push(message)
 
-        pushEvent({ ...completionToolCall, type: 'tool-call' })
-        pushEvent({ ...completionToolResult, type: 'tool-result' })
+          pushEvent({ ...completionToolCall, type: 'tool-call' })
+          pushEvent({ ...completionToolResult, type: 'tool-result' })
+        }
+      }
+      else {
+        for (const toolCall of tool_calls) {
+          if (toolCall == null)
+            continue
+          const { completionToolCall, completionToolResult, message } = await executeTool({
+            abortSignal: options.abortSignal,
+            messages,
+            toolCall,
+            tools: options.tools,
+          })
+
+          toolCalls.push(completionToolCall)
+          toolResults.push(completionToolResult)
+          messages.push(message)
+
+          pushEvent({ ...completionToolCall, type: 'tool-call' })
+          pushEvent({ ...completionToolResult, type: 'tool-result' })
+        }
       }
     }
     else {
