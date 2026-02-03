@@ -12,7 +12,7 @@ export interface ChatOptions extends CommonRequestOptions {
    */
   frequencyPenalty?: number
   messages: Message[]
-  /** Allow parallel tool calls. */
+  /** Whether to enable parallel function calling during tool use. */
   parallelToolCalls?: boolean
   /**
    * number between -2.0 and 2.0.
