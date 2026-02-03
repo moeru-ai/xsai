@@ -203,16 +203,14 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     if (tool_calls.length !== 0) {
       const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
 
-      const runTool = async (toolCall: ToolCall) => executeTool({
-        abortSignal: options.abortSignal,
-        messages,
-        toolCall,
-        tools: options.tools,
-      })
-
-      const results = options.parallelToolCalls
-        ? await Promise.all(validToolCalls.map(runTool))
-        : await validToolCalls.reduce(async (acc, tc) => [...await acc, await runTool(tc)], Promise.resolve([] as Awaited<ReturnType<typeof runTool>>[]))
+      const results = await Promise.all(
+        validToolCalls.map(toolCall => executeTool({
+          abortSignal: options.abortSignal,
+          messages,
+          toolCall,
+          tools: options.tools,
+        })),
+      )
 
       for (const { completionToolCall, completionToolResult, message } of results) {
         toolCalls.push(completionToolCall)

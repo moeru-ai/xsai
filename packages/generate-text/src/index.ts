@@ -74,16 +74,14 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
       messages.push(message)
 
       if (finishReason !== 'stop' && stepType !== 'done' && msgToolCalls.length > 0) {
-        const runTool = async (toolCall: typeof msgToolCalls[number]) => executeTool({
-          abortSignal: options.abortSignal,
-          messages,
-          toolCall,
-          tools: options.tools,
-        })
-
-        const results = options.parallelToolCalls
-          ? await Promise.all(msgToolCalls.map(runTool))
-          : await msgToolCalls.reduce(async (acc, tc) => [...await acc, await runTool(tc)], Promise.resolve([] as Awaited<ReturnType<typeof runTool>>[]))
+        const results = await Promise.all(
+          msgToolCalls.map(toolCall => executeTool({
+            abortSignal: options.abortSignal,
+            messages,
+            toolCall,
+            tools: options.tools,
+          })),
+        )
 
         for (const { completionToolCall, completionToolResult, message } of results) {
           toolCalls.push(completionToolCall)
