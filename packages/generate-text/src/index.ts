@@ -75,7 +75,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
 
       if (finishReason !== 'stop' && stepType !== 'done' && msgToolCalls.length > 0) {
         const results = await Promise.all(
-          msgToolCalls.map(toolCall => executeTool({
+          msgToolCalls.map(async toolCall => executeTool({
             abortSignal: options.abortSignal,
             messages,
             toolCall,

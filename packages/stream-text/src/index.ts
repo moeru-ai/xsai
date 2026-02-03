@@ -204,7 +204,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
 
       const results = await Promise.all(
-        validToolCalls.map(toolCall => executeTool({
+        validToolCalls.map(async toolCall => executeTool({
           abortSignal: options.abortSignal,
           messages,
           toolCall,
