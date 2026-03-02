@@ -32,7 +32,10 @@ export const executeTool = async ({ abortSignal, messages, toolCall, tools }: Ex
   if (toolCall.function.arguments == null)
     throw new Error(`Missing toolCall.function.arguments: ${JSON.stringify(toolCall)}`)
 
-  const parsedArgs = JSON.parse(toolCall.function.arguments.trim() || '{}') as Record<string, unknown>
+  const rawArgs = toolCall.function.arguments
+  const parsedArgs = (typeof rawArgs === 'object'
+    ? rawArgs
+    : JSON.parse(String(rawArgs).trim() || '{}')) as Record<string, unknown>
   const result = wrapToolResult(await tool.execute(parsedArgs, {
     abortSignal,
     messages,
