@@ -93,6 +93,14 @@ deno install npm:xsai
 
 <!-- /automd -->
 
+### Agent Skills
+
+Install the [xsai skill](https://skills.sh) to your AI coding agent:
+
+```sh
+npx skills add moeru-ai/xsai
+```
+
 ### Getting Started
 
 Read the [documentation](https://xsai.js.org/docs) to get started.
