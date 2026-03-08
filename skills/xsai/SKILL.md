@@ -146,7 +146,7 @@ const { object: recipes } = await generateObject({
 ```ts
 import { streamObject } from '@xsai/stream-object'
 
-const { partialObjectStream, elementStream } = await streamObject({
+const { partialObjectStream } = await streamObject({
   ...options,
   schema: mySchema,
 })
