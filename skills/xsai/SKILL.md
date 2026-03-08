@@ -117,7 +117,7 @@ Uses Standard Schema (Zod, Valibot, ArkType, Effect, Sury) for type-safe structu
 
 ```ts
 import { generateObject } from '@xsai/generate-object'
-import { object, string, number } from 'valibot'
+import { object, string, number, array } from 'valibot'
 
 const { object: recipe } = await generateObject({
   apiKey: env.OPENAI_API_KEY,
