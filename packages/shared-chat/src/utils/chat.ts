@@ -2,7 +2,7 @@ import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
 import type { Message, Tool, ToolChoice } from '../types'
 
-import { clean, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 
 /** @see {@link https://platform.openai.com/docs/api-reference/chat/create} */
 export interface ChatOptions extends CommonRequestOptions {
@@ -43,13 +43,7 @@ export const chat = async <T extends WithUnknown<ChatOptions>>(options: T) =>
   (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
     body: requestBody({
       ...options,
-      tools: (options.tools)?.map(tool => ({
-        function: clean({
-          ...tool.function,
-          returns: undefined,
-        }),
-        type: 'function',
-      })),
+      tools: (options.tools)?.map(({ execute, ...tool }) => tool),
     }),
     headers: requestHeaders({
       'Content-Type': 'application/json',
