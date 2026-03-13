@@ -1,8 +1,8 @@
+import type { FunctionCall, FunctionCallOutput, ResponseResource } from '../generated'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { Step } from '../types/step'
 import type { StreamingEvent } from '../types/streaming-event'
 import type { Usage } from '../types/usage'
-import type { FunctionCall, FunctionCallOutput, ResponseResource } from '../generated'
 
 import { DelayedPromise, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 import { EventSourceParserStream } from 'eventsource-parser/stream'
@@ -41,7 +41,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
   const getText = (response: ResponseResource): string | undefined => {
     const text = response.output
-      .filter((item) => item.type === 'message')
+      .filter(item => item.type === 'message')
       .flatMap(item => item.content)
       .filter(part => part.type === 'output_text' || part.type === 'text')
       .map(part => part.text)
@@ -113,7 +113,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       resultUsage.resolve(usage)
       resultTotalUsage.resolve(totalUsage)
     },
-    async pull(controller) {
+    pull: async (controller) => {
       if (reader == null)
         return controller.close()
 
