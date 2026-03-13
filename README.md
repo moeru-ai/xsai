@@ -2,6 +2,8 @@
 
 extra-small AI SDK.
 
+OpenAI-compatible runtime for browser, edge, and agent tooling.
+
 <!-- automd:badges name="xsai" provider="badgen" color="gray" license bundlephobia packagephobia -->
 
 [![npm version](https://flat.badgen.net/npm/v/xsai?color=gray)](https://npmjs.com/package/xsai)
@@ -12,63 +14,23 @@ extra-small AI SDK.
 
 <!-- /automd -->
 
-xsAI is a series of utils to help you use OpenAI or OpenAI-compatible API.
+## Why xsAI?
 
-```ts
-import { env } from 'node:process'
+xsAI is built for cases where full-featured AI frameworks are too heavy, too broad, or simply unnecessary.
 
-import { generateText } from '@xsai/generate-text'
+It focuses on three things:
+- small size
+- runtime portability
+- a focused OpenAI-compatible surface
 
-const { text } = await generateText({
-  apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://api.openai.com/v1/',
-  messages: [
-    {
-      content: 'You are a helpful assistant.',
-      role: 'system',
-    },
-    {
-      content: 'This is a test, so please answer \'YES\' and nothing else.',
-      role: 'user',
-    },
-  ],
-  model: 'gpt-4o',
-})
+That means:
+- no universal provider abstraction
+- no attempt to be a full AI application framework
+- no unnecessary runtime baggage
 
-// "YES"
-console.log(text)
-```
+If you want a small foundation for OpenAI-compatible apps and agents, xsAI is for you.
 
-## Features
-
-### <small><ruby>extra<rp>(</rp><rt>x</rt><rp>)</rp>-small<rp>(</rp><rt>s</rt><rp>)</rp></ruby></small>
-
-xsAI uses a variety of methods to make itself smaller.
-
-It's just a wrapper for [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), ESM Only, adding additional dependencies only when absolutely necessary.
-
-How xsAI small? you can try install it with [Packagephobia](https://packagephobia.com/result?p=xsai) or [Bundlephobia](https://bundlephobia.com/package/xsai):
-
-> In the following table, we used packagephobia's install size and bundlephobia's minified/gzipped size.
-
-| Package | Install size | Bundled size | Gzipped size |
-|---|---|---|---|
-| xsai@0.4.0 | 142KB | 22.7KB | 7.1KB |
-| ai@6.0.11 | 5740KB | 301.5KB | 74.3KB |
-
-xsAI reduces the install size **40x** and the bundled size **13x**.
-
-Notably, this contains dependencies introduced to support tool calls and structured output.
-
-If you only need the basic `generateText`, `@xsai/generate-text@0.4.0` is only 22.6KB install size and 4KB bundled size (1.7KB gzipped).
-
-### Runtime-agnostic
-
-xsAI doesn't depend on Node.js Built-in Modules, it works well in Browsers, Deno, Bun and even the Edge Runtime.
-
-## Usage
-
-### Install
+## Install
 
 > You can also install only some of the utils of xsAI, such as `@xsai/generate-text` and `@xsai/stream-text`.
 
@@ -93,21 +55,57 @@ deno install npm:xsai
 
 <!-- /automd -->
 
-### Agent Skills
+## Quick Example
 
-Install the [xsai skill](https://skills.sh) to your AI coding agent:
+```ts
+import { env } from 'node:process'
 
-```sh
-npx skills add moeru-ai/xsai
+import { generateText } from 'xsai'
+
+const { text } = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  messages: [
+    {
+      content: 'You are a helpful assistant.',
+      role: 'system',
+    },
+    {
+      content: 'This is a test, so please answer \'YES\' and nothing else.',
+      role: 'user',
+    },
+  ],
+  model: 'gpt-4o',
+})
+
+// "YES"
+console.log(text)
 ```
 
-### Getting Started
+## Why It's Small
 
-Read the [documentation](https://xsai.js.org/docs) to get started.
+xsAI stays small by building directly on top of the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), staying ESM-only, and avoiding extra dependencies unless they are strictly necessary.
 
-### Examples
+You can compare xsAI with [Packagephobia](https://packagephobia.com/result?p=xsai) and [Bundlephobia](https://bundlephobia.com/package/xsai):
 
-###### Generating Text [(see above)](#xsai)
+> In the following table, we used packagephobia's install size and bundlephobia's minified/gzipped size.
+
+| Package | Install size | Bundled size | Gzipped size |
+|---|---|---|---|
+| xsai@0.4.0 | 142KB | 22.7KB | 7.1KB |
+| ai@6.0.11 | 5740KB | 301.5KB | 74.3KB |
+
+xsAI reduces the install size **40x** and the bundled size **13x**.
+
+Notably, this contains dependencies introduced to support tool calls and structured output.
+
+If you only need the basic `generateText`, `@xsai/generate-text@0.4.0` is only 22.6KB install size and 4KB bundled size (1.7KB gzipped).
+
+## Runtime Support
+
+xsAI doesn't depend on Node.js Built-in Modules, it works well in Browsers, Deno, Bun and even the Edge Runtime.
+
+## More Examples
 
 ###### Streaming Text
 
@@ -142,7 +140,7 @@ for await (const textPart of textStream) {
 console.log(text)
 ```
 
-###### Generating Text w/ Tool Calling
+###### Generating Text with Tool Calling
 
 ```ts
 import { env } from 'node:process'
@@ -189,7 +187,29 @@ const { text } = await generateText({
 console.log(text)
 ```
 
-#### Community Projects
+## Documentation
+
+Read the documentation at [xsai.js.org/docs](https://xsai.js.org/docs).
+
+- [Overview](https://xsai.js.org/docs/packages/overview)
+- [Generating Text](https://xsai.js.org/docs/packages/generate/text)
+- [Streaming Text](https://xsai.js.org/docs/packages/stream/text)
+- [Generating Structured Data](https://xsai.js.org/docs/packages/generate/object)
+- [Streaming Structured Data](https://xsai.js.org/docs/packages/stream/object)
+
+## Ecosystem
+
+### Agent Skills
+
+Install the [xsAI Skill](https://skills.sh) to your AI coding agent:
+
+```sh
+npx skills add moeru-ai/xsai
+```
+
+## Community Projects
+
+xsAI is used in community and in-house projects including:
 
 - [moeru-ai/airi](https://github.com/moeru-ai/airi)
 - [moeru-ai/arpk](https://github.com/moeru-ai/arpk)
