@@ -161,8 +161,16 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         controller.error(err)
       }
     },
-    start: async () => {
-      reader = await createReader()
+    start: async (controller) => {
+      try {
+        reader = await createReader()
+      }
+      catch (err) {
+        resultSteps.reject(err)
+        resultUsage.reject(err)
+        resultTotalUsage.reject(err)
+        controller.error(err)
+      }
     },
   })
 
