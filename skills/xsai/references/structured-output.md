@@ -19,6 +19,10 @@ xsAI supports Standard Schema style libraries through `xsschema`, including:
 - Effect
 
 Use these when the user wants typed structured output.
+Some schema vendors need an extra JSON Schema converter package in the project:
+
+- Zod v3: `zod-to-json-schema`
+- Valibot: `@valibot/to-json-schema`
 
 ## `generateObject`
 
