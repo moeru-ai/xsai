@@ -34,6 +34,20 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
 
+  const pushUsage = (nextUsage?: Usage) => {
+    if (nextUsage == null)
+      return
+
+    usage = nextUsage
+    totalUsage = totalUsage
+      ? {
+          input_tokens: totalUsage.input_tokens + nextUsage.input_tokens,
+          output_tokens: totalUsage.output_tokens + nextUsage.output_tokens,
+          total_tokens: totalUsage.total_tokens + nextUsage.total_tokens,
+        }
+      : nextUsage
+  }
+
   // result state
   const resultSteps = new DelayedPromise<Step[]>()
   const resultUsage = new DelayedPromise<undefined | Usage>()
@@ -85,19 +99,12 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
           return controller.close()
         }
 
+        let shouldContinue = false
+
         // eslint-disable-next-line ts/switch-exhaustiveness-check
         switch (event.type) {
           case 'response.completed': {
-            if (event.response.usage) {
-              usage = event.response.usage
-              totalUsage = totalUsage
-                ? {
-                    input_tokens: totalUsage.input_tokens + event.response.usage.input_tokens,
-                    output_tokens: totalUsage.output_tokens + event.response.usage.output_tokens,
-                    total_tokens: totalUsage.total_tokens + event.response.usage.total_tokens,
-                  }
-                : event.response.usage
-            }
+            pushUsage(event.response.usage ?? undefined)
 
             steps.push({
               response: event.response,
@@ -105,11 +112,18 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
             })
 
             // TODO: stopWhen
-            if (input.at(-1)?.type === 'function_call_output') {
-              reader.releaseLock()
-              reader = await createReader()
-              return await this.pull!(controller)
-            }
+            shouldContinue = input.at(-1)?.type === 'function_call_output'
+
+            break
+          }
+          case 'response.failed':
+          case 'response.incomplete': {
+            pushUsage(event.response.usage ?? undefined)
+
+            steps.push({
+              response: event.response,
+              usage,
+            })
 
             break
           }
@@ -134,6 +148,11 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         }
 
         controller.enqueue(event)
+
+        if (shouldContinue) {
+          reader.releaseLock()
+          reader = await createReader()
+        }
       }
       catch (err) {
         resultSteps.reject(err)
