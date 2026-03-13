@@ -1,289 +1,63 @@
 ---
 name: xsai
-description: Guide for using xsAI — an extra-small AI SDK for OpenAI and OpenAI-compatible APIs. Use this skill whenever the user imports from 'xsai' or any '@xsai/*' package, mentions xsai, needs to call OpenAI-compatible APIs with minimal bundle size, wants generateText/streamText/generateObject/streamObject/tool calling, needs embeddings, speech synthesis, image generation, or transcription via OpenAI API, or asks about lightweight alternatives to the Vercel AI SDK (ai package). Also use when the user needs structured output with Standard Schema (Zod, Valibot, ArkType) via OpenAI-compatible endpoints.
-license: MIT
-metadata:
-  author: moeru-ai
-  version: "0.4.0"
+description: Use this skill when the user is building with `xsai` or any `@xsai/*` package, or needs a small OpenAI-compatible runtime for text generation, streaming, tool calling, structured output, embeddings, image generation, speech synthesis, or transcription.
 ---
 
 # xsAI
 
-Extra-small AI SDK — a Fetch API wrapper for OpenAI and OpenAI-compatible APIs.
+Use this skill for `xsai` code, package selection, API selection, and positioning.
 
-142KB install size vs 5740KB for `ai` (40x smaller). Runtime-agnostic: Browser, Node.js, Deno, Bun, Edge.
+## Use xsAI when
 
-## Packages
+- The target API is OpenAI-compatible.
+- The user wants a small runtime or package footprint.
+- The user needs text generation, streaming, structured output, or tool calling without a broad framework.
+- The user is comparing `xsai` with larger SDKs such as `ai` or `pi` and wants the tradeoffs framed clearly.
 
-| Package | Description |
-|---------|-------------|
-| `xsai` | Umbrella — re-exports everything below |
-| `@xsai/generate-text` | Text generation (unary) |
-| `@xsai/stream-text` | Text generation (streaming) |
-| `@xsai/generate-object` | Structured output (unary) |
-| `@xsai/stream-object` | Structured output (streaming) |
-| `@xsai/tool` | Tool/function calling helpers |
-| `@xsai/embed` | Embeddings |
-| `@xsai/generate-image` | Image generation |
-| `@xsai/generate-speech` | Text-to-speech |
-| `@xsai/generate-transcription` | Speech-to-text (unary) |
-| `@xsai/stream-transcription` | Speech-to-text (streaming) |
-| `@xsai/utils-chat` | Chat message utilities |
-| `@xsai/utils-stream` | Stream utilities |
-| `@xsai/utils-reasoning` | Reasoning/thinking utilities |
-| `xsschema` | Standard Schema → JSON Schema conversion |
+## Do not use xsAI when
 
-## Common Options
+- The user needs a universal provider abstraction beyond OpenAI-compatible APIs.
+- The user wants a batteries-included AI application framework.
+- The task depends on provider-specific APIs that are not exposed through an OpenAI-compatible surface.
 
-All chat functions share these base options:
+## Default guidance
 
-```ts
-interface BaseOptions {
-  abortSignal?: AbortSignal
-  apiKey?: string // API key
-  baseURL: string | URL // required — API endpoint (e.g. 'https://api.openai.com/v1/')
-  fetch?: typeof fetch // custom fetch implementation
-  frequencyPenalty?: number // -2.0 to 2.0
-  headers?: Record<string, string>
-  maxSteps?: number // agentic loop steps (default: 1)
-  messages: Message[] // chat history
-  model: string // required — model ID
-  presencePenalty?: number // -2.0 to 2.0
-  seed?: number
-  stop?: string | string[]
-  temperature?: number // 0-2 (default: 1)
-  toolChoice?: 'auto' | 'none' | 'required'
-  tools?: Tool[]
-  topP?: number // (default: 1)
-}
-```
+- Prefer the smallest package that solves the task. Use the umbrella `xsai` package only when the user needs several features at once.
+- Keep recommendations aligned with xsAI's scope: OpenAI-compatible, Fetch-based, runtime-portable, and intentionally narrow.
+- If the user is optimizing for bundle or install size, explicitly prefer granular packages such as `@xsai/generate-text` over `xsai`.
+- If the user asks for broader provider abstraction, say xsAI intentionally does not optimize for that.
 
-## generateText
+## Package selection
 
-```ts
-import { generateText } from '@xsai/generate-text'
+- Read `references/package-selection.md` when the user needs help choosing between `xsai` and granular packages.
+- Read `references/text-stream-tools.md` for `generateText`, `streamText`, tool calling, and common chat options.
+- Read `references/structured-output.md` for `generateObject`, `streamObject`, `tool()`, `rawTool()`, or schema guidance.
+- Read `references/media-and-embeddings.md` for embeddings, image generation, speech, or transcription.
+- Read `references/extensions.md` only when the user explicitly needs xsAI extensions such as predefined providers, the OpenAI Responses API, or OTEL telemetry.
 
-const { finishReason, steps, text, toolCalls, toolResults, usage } = await generateText({
-  apiKey: env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1/',
-  messages: [
-    { content: 'You are a helpful assistant.', role: 'system' },
-    { content: 'Hello!', role: 'user' },
-  ],
-  model: 'gpt-4o',
-})
-```
+## API selection rules
 
-**Result**: `{ text, finishReason, usage, messages, steps, toolCalls, toolResults, reasoningText }`
+- Use `generateText` for unary text generation.
+- Use `streamText` for incremental text, reasoning deltas, or tool events.
+- Use `generateObject` for validated structured output.
+- Use `streamObject` when the user needs incremental object parsing.
+- Use `tool()` when the user has a Standard Schema library such as Zod or Valibot.
+- Use `rawTool()` when the user already has raw JSON Schema.
 
-## streamText
+## Key constraints
 
-```ts
-import { streamText } from '@xsai/stream-text'
+- `baseURL` and `model` are required in practice for xsAI calls.
+- xsAI is OpenAI-compatible-first. Do not imply support for non-compatible provider APIs.
+- `streamText()` returns immediately; callers consume `textStream`, `fullStream`, and result promises asynchronously.
+- `streamObject()` is async because schema conversion happens before streaming starts.
+- `maxSteps` controls repeated tool-use loops by issuing additional API calls with tool results appended.
+- xsAI is designed to stay small. Avoid recommending the umbrella package when a smaller package is enough.
 
-const { fullStream, messages, textStream, usage } = streamText({
-  apiKey: env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1/',
-  messages: [{ content: 'Tell me a story', role: 'user' }],
-  model: 'gpt-4o',
-  onFinish: step => console.log('all done'),
-  onStepFinish: step => console.log('step done', step),
-})
+## Positioning
 
-// Text-only stream
-for await (const chunk of textStream) {
-  process.stdout.write(chunk)
-}
+- Describe xsAI as an extra-small OpenAI-compatible runtime, not as a universal AI SDK.
+- When comparing with `ai` or `pi`, focus on size, runtime portability, OpenAI-compatible scope, and simpler primitives. Do not oversell feature breadth.
 
-// Or full event stream (text-delta, tool-call, tool-result, finish, error)
-for await (const event of fullStream) {
-  if (event.type === 'text-delta')
-    process.stdout.write(event.text)
-}
-```
+## Docs
 
-**Result**: `{ textStream, fullStream, reasoningTextStream, messages (Promise), steps (Promise), usage (Promise), totalUsage (Promise) }`
-
-## generateObject (Structured Output)
-
-Uses Standard Schema (Zod, Valibot, ArkType, Effect, Sury) for type-safe structured output:
-
-```ts
-import { generateObject } from '@xsai/generate-object'
-import { array, number, object, string } from 'valibot'
-
-const { object: recipe } = await generateObject({
-  apiKey: env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1/',
-  messages: [{ content: 'Give me a cookie recipe', role: 'user' }],
-  model: 'gpt-4o',
-  schema: object({ cookTime: number(), ingredients: array(string()), name: string() }),
-  schemaDescription: 'A cooking recipe',
-  schemaName: 'recipe',
-})
-```
-
-Array mode:
-
-```ts
-const { object: recipes } = await generateObject({
-  ...options,
-  output: 'array',
-  schema: object({ name: string() }),
-})
-// recipes: { name: string }[]
-```
-
-## streamObject
-
-```ts
-import { streamObject } from '@xsai/stream-object'
-
-const { partialObjectStream } = await streamObject({
-  ...options,
-  schema: mySchema,
-})
-
-// Object mode — partial objects as they build up
-for await (const partial of partialObjectStream) {
-  console.log(partial) // { name?: string, ... }
-}
-
-// Array mode — fully parsed elements one by one
-const { elementStream } = await streamObject({ ...options, output: 'array', schema: itemSchema })
-for await (const item of elementStream) {
-  console.log(item)
-}
-```
-
-## Tool Calling
-
-```ts
-import { tool } from '@xsai/tool'
-import { description, object, pipe, string } from 'valibot'
-
-const weather = await tool({
-  description: 'Get the weather in a location',
-  execute: ({ location }) => JSON.stringify({ location, temperature: 42 }),
-  name: 'weather',
-  parameters: object({
-    location: pipe(string(), description('City name')),
-  }),
-})
-
-const { text } = await generateText({
-  ...options,
-  maxSteps: 3, // allow multi-turn tool use
-  toolChoice: 'required',
-  tools: [weather],
-})
-```
-
-Raw JSON Schema tools (no schema lib needed):
-
-```ts
-import { rawTool } from '@xsai/tool'
-
-const myTool = rawTool({
-  description: 'Look up a value',
-  execute: ({ key }) => `value for ${key}`,
-  name: 'lookup',
-  parameters: { properties: { key: { type: 'string' } }, required: ['key'], type: 'object' },
-})
-```
-
-**execute** receives `(input, { messages, toolCallId, abortSignal })`.
-
-## Embeddings
-
-```ts
-import { embed, embedMany } from '@xsai/embed'
-
-const { embedding } = await embed({
-  apiKey: env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1/',
-  dimensions: 512,
-  input: 'Hello world',
-  model: 'text-embedding-3-small',
-})
-
-const { embeddings } = await embedMany({
-  ...options,
-  input: ['Hello', 'World'],
-})
-```
-
-## Image Generation
-
-```ts
-import { generateImage } from '@xsai/generate-image'
-
-const { image, images } = await generateImage({
-  apiKey: env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1/',
-  model: 'dall-e-3',
-  n: 1,
-  prompt: 'A cat on a skateboard',
-  size: '1024x1024',
-})
-// image.base64 — data URL
-// image.mimeType — 'image/png' etc.
-```
-
-## Speech / Transcription
-
-```ts
-import { generateSpeech } from '@xsai/generate-speech'
-
-const audioBuffer = await generateSpeech({
-  apiKey: env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1/',
-  input: 'Hello world',
-  model: 'tts-1',
-  responseFormat: 'mp3',
-  voice: 'alloy',
-})
-```
-
-```ts
-import { generateTranscription } from '@xsai/generate-transcription'
-
-// Streaming transcription
-import { streamTranscription } from '@xsai/stream-transcription'
-
-const { text } = await generateTranscription({
-  apiKey: env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1/',
-  file: audioBlob,
-  model: 'whisper-1',
-})
-
-const { textStream } = streamTranscription({ ...options, file: audioBlob })
-for await (const chunk of textStream) {
-  process.stdout.write(chunk)
-}
-```
-
-## Message Types
-
-```ts
-type Message
-  = | { content: ContentPart[] | string, role: 'user' }
-    | { content: string, role: 'developer' }
-    | { content: string, role: 'system' }
-    | { content: string, role: 'tool', tool_call_id: string }
-    | { content?: string, reasoning?: string, role: 'assistant', tool_calls?: ToolCall[] }
-```
-
-## Key Rules
-
-1. **`model` and `baseURL` are always required** — xsAI is provider-agnostic, no defaults
-2. **Standard Schema for structured output** — Zod, Valibot, ArkType, Effect all work. Use `xsschema` for conversion
-3. **`streamText` is synchronous** — it returns immediately, streams resolve lazily. `streamObject` is async (needs schema conversion)
-4. **`maxSteps`** enables agentic tool-use loops — each step makes a new API call with tool results appended
-5. **No Node.js deps** — pure Fetch API, works everywhere including Edge Runtime
-6. **Install granularly** — `@xsai/generate-text` alone is 22.6KB; use the umbrella `xsai` package only if you need most features
-
-## Documentation
-
-Read the full docs at https://xsai.js.org/docs or use context7 to query `xsai` documentation.
+- Public docs: `https://xsai.js.org/docs`

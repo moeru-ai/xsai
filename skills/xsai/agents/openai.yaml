@@ -1,0 +1,7 @@
+interface:
+  display_name: "xsAI"
+  short_description: "Use xsAI for lightweight OpenAI-compatible apps"
+  default_prompt: "Use $xsai to build or explain a small OpenAI-compatible workflow with xsAI."
+
+policy:
+  allow_implicit_invocation: true
