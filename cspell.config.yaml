@@ -41,8 +41,8 @@ words:
   - llms
   - lmstudio
   - logprob
-  - lucide
   - logprobs
+  - lucide
   - masknet
   - mastra
   - ministral
@@ -88,6 +88,7 @@ words:
   - unrs
   - unspeech
   - valibot
+  - vercel
   - vitest
   - voltagent
   - wizardlm
