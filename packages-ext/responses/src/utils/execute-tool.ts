@@ -18,7 +18,17 @@ export const executeTool = async ({ functionCall, tools }: ExecuteToolOptions): 
     throw new Error(`Model tried to call unavailable tool "${functionCall.name}", ${availableToolsErrorMsg}.`)
   }
 
-  const parsedArgs = JSON.parse(functionCall.arguments) as Record<string, unknown>
+  let parsedArgs: Record<string, unknown>
+
+  try {
+    parsedArgs = JSON.parse(functionCall.arguments) as Record<string, unknown>
+  }
+  catch (error) {
+    throw new Error(`Failed to parse tool arguments as JSON for tool "${functionCall.name}". Arguments: ${functionCall.arguments}`, {
+      cause: error,
+    })
+  }
+
   const toolResult = await tool.execute(parsedArgs)
 
   return {

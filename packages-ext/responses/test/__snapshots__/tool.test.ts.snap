@@ -6,10 +6,10 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
     "response": {
       "background": false,
       "completed_at": null,
-      "created_at": 1773391792,
+      "created_at": 1773393953,
       "error": null,
       "frequency_penalty": 0,
-      "id": "resp_527898",
+      "id": "resp_251676",
       "incomplete_details": null,
       "instructions": null,
       "max_output_tokens": null,
@@ -72,10 +72,10 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
     "response": {
       "background": false,
       "completed_at": null,
-      "created_at": 1773391792,
+      "created_at": 1773393953,
       "error": null,
       "frequency_penalty": 0,
-      "id": "resp_527898",
+      "id": "resp_251676",
       "incomplete_details": null,
       "instructions": null,
       "max_output_tokens": null,
@@ -137,8 +137,8 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "item": {
       "arguments": "",
-      "call_id": "call_2j26h8zl",
-      "id": "fc_887922_0",
+      "call_id": "call_epmkd2ug",
+      "id": "fc_310842_0",
       "name": "add",
       "status": "in_progress",
       "type": "function_call",
@@ -149,14 +149,14 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "delta": "{"a":"114514","b":"1919810"}",
-    "item_id": "fc_887922_0",
+    "item_id": "fc_310842_0",
     "output_index": 0,
     "sequence_number": 3,
     "type": "response.function_call_arguments.delta",
   },
   {
     "arguments": "{"a":"114514","b":"1919810"}",
-    "item_id": "fc_887922_0",
+    "item_id": "fc_310842_0",
     "output_index": 0,
     "sequence_number": 4,
     "type": "response.function_call_arguments.done",
@@ -164,8 +164,8 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "item": {
       "arguments": "{"a":"114514","b":"1919810"}",
-      "call_id": "call_2j26h8zl",
-      "id": "fc_887922_0",
+      "call_id": "call_epmkd2ug",
+      "id": "fc_310842_0",
       "name": "add",
       "status": "completed",
       "type": "function_call",
@@ -177,11 +177,11 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "response": {
       "background": false,
-      "completed_at": 1773391792,
-      "created_at": 1773391792,
+      "completed_at": 1773393953,
+      "created_at": 1773393953,
       "error": null,
       "frequency_penalty": 0,
-      "id": "resp_527898",
+      "id": "resp_251676",
       "incomplete_details": null,
       "instructions": null,
       "max_output_tokens": null,
@@ -192,8 +192,8 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
       "output": [
         {
           "arguments": "{"a":"114514","b":"1919810"}",
-          "call_id": "call_2j26h8zl",
-          "id": "fc_887922_0",
+          "call_id": "call_epmkd2ug",
+          "id": "fc_310842_0",
           "name": "add",
           "status": "completed",
           "type": "function_call",
@@ -263,10 +263,10 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
     "response": {
       "background": false,
       "completed_at": null,
-      "created_at": 1773391792,
+      "created_at": 1773393954,
       "error": null,
       "frequency_penalty": 0,
-      "id": "resp_134160",
+      "id": "resp_545518",
       "incomplete_details": null,
       "instructions": null,
       "max_output_tokens": null,
@@ -329,10 +329,10 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
     "response": {
       "background": false,
       "completed_at": null,
-      "created_at": 1773391792,
+      "created_at": 1773393954,
       "error": null,
       "frequency_penalty": 0,
-      "id": "resp_134160",
+      "id": "resp_545518",
       "incomplete_details": null,
       "instructions": null,
       "max_output_tokens": null,
@@ -394,7 +394,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "item": {
       "content": [],
-      "id": "msg_322868",
+      "id": "msg_360101",
       "role": "assistant",
       "status": "in_progress",
       "type": "message",
@@ -405,7 +405,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "content_index": 0,
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "output_index": 0,
     "part": {
       "annotations": [],
@@ -419,7 +419,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": "The",
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 4,
@@ -428,7 +428,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": " answer",
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 5,
@@ -437,7 +437,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": " is",
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 6,
@@ -446,7 +446,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": " ",
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 7,
@@ -455,7 +455,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": "203",
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 8,
@@ -464,7 +464,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": "432",
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 9,
@@ -473,7 +473,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": "4",
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 10,
@@ -482,7 +482,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "content_index": 0,
     "delta": ".",
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 11,
@@ -490,7 +490,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "content_index": 0,
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "logprobs": [],
     "output_index": 0,
     "sequence_number": 12,
@@ -499,7 +499,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   },
   {
     "content_index": 0,
-    "item_id": "msg_322868",
+    "item_id": "msg_360101",
     "output_index": 0,
     "part": {
       "annotations": [],
@@ -520,7 +520,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
           "type": "output_text",
         },
       ],
-      "id": "msg_322868",
+      "id": "msg_360101",
       "role": "assistant",
       "status": "completed",
       "type": "message",
@@ -532,11 +532,11 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
   {
     "response": {
       "background": false,
-      "completed_at": 1773391792,
-      "created_at": 1773391792,
+      "completed_at": 1773393954,
+      "created_at": 1773393954,
       "error": null,
       "frequency_penalty": 0,
-      "id": "resp_134160",
+      "id": "resp_545518",
       "incomplete_details": null,
       "instructions": null,
       "max_output_tokens": null,
@@ -554,7 +554,7 @@ exports[`@xsai-ext/responses tool > basic tool calls 1`] = `
               "type": "output_text",
             },
           ],
-          "id": "msg_322868",
+          "id": "msg_360101",
           "role": "assistant",
           "status": "completed",
           "type": "message",
