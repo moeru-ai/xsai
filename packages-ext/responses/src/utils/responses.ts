@@ -21,7 +21,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
 
 export interface ResponsesResult {
   eventStream: ReadableStream<StreamingEvent>
-  steps: Step[]
+  steps: Promise<Step[]>
   textStream: ReadableStream<string>
   totalUsage: Promise<undefined | Usage>
   usage: Promise<undefined | Usage>
@@ -181,7 +181,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
   return {
     eventStream,
-    steps,
+    steps: resultSteps.promise,
     textStream,
     totalUsage: resultTotalUsage.promise,
     usage: resultUsage.promise,
