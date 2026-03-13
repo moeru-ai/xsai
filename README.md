@@ -1,9 +1,5 @@
 # xsAI
 
-extra-small AI SDK.
-
-OpenAI-compatible runtime for browser, edge, and agent tooling.
-
 <!-- automd:badges name="xsai" provider="badgen" color="gray" license bundlephobia packagephobia -->
 
 [![npm version](https://flat.badgen.net/npm/v/xsai?color=gray)](https://npmjs.com/package/xsai)
@@ -13,6 +9,10 @@ OpenAI-compatible runtime for browser, edge, and agent tooling.
 [![license](https://flat.badgen.net/github/license/moeru-ai/xsai?color=gray)](https://github.com/moeru-ai/xsai/blob/main/LICENSE)
 
 <!-- /automd -->
+
+extra-small AI SDK.
+
+OpenAI-compatible runtime for browser, edge, and agent tooling.
 
 ## Why xsAI?
 
