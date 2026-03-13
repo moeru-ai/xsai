@@ -1,14 +1,6 @@
 ---
 name: xsai
-description: >-
-  Guide for using xsAI — an extra-small AI SDK for OpenAI and OpenAI-compatible APIs.
-  Use this skill whenever the user imports from 'xsai' or any '@xsai/*' package,
-  mentions xsai, needs to call OpenAI-compatible APIs with minimal bundle size,
-  wants generateText/streamText/generateObject/streamObject/tool calling, needs
-  embeddings, speech synthesis, image generation, or transcription via OpenAI API,
-  or asks about lightweight alternatives to the Vercel AI SDK (ai package). Also use
-  when the user needs structured output with Standard Schema (Zod, Valibot, ArkType)
-  via OpenAI-compatible endpoints.
+description: Guide for using xsAI — an extra-small AI SDK for OpenAI and OpenAI-compatible APIs. Use this skill whenever the user imports from 'xsai' or any '@xsai/*' package, mentions xsai, needs to call OpenAI-compatible APIs with minimal bundle size, wants generateText/streamText/generateObject/streamObject/tool calling, needs embeddings, speech synthesis, image generation, or transcription via OpenAI API, or asks about lightweight alternatives to the Vercel AI SDK (ai package). Also use when the user needs structured output with Standard Schema (Zod, Valibot, ArkType) via OpenAI-compatible endpoints.
 license: MIT
 metadata:
   author: moeru-ai
@@ -46,23 +38,23 @@ Extra-small AI SDK — a Fetch API wrapper for OpenAI and OpenAI-compatible APIs
 All chat functions share these base options:
 
 ```ts
-{
-  model: string              // required — model ID
-  baseURL: string | URL      // required — API endpoint (e.g. 'https://api.openai.com/v1/')
-  apiKey?: string            // API key
-  messages: Message[]        // chat history
-  temperature?: number       // 0-2 (default: 1)
-  topP?: number              // (default: 1)
-  frequencyPenalty?: number  // -2.0 to 2.0
-  presencePenalty?: number   // -2.0 to 2.0
+interface BaseOptions {
+  abortSignal?: AbortSignal
+  apiKey?: string // API key
+  baseURL: string | URL // required — API endpoint (e.g. 'https://api.openai.com/v1/')
+  fetch?: typeof fetch // custom fetch implementation
+  frequencyPenalty?: number // -2.0 to 2.0
+  headers?: Record<string, string>
+  maxSteps?: number // agentic loop steps (default: 1)
+  messages: Message[] // chat history
+  model: string // required — model ID
+  presencePenalty?: number // -2.0 to 2.0
   seed?: number
   stop?: string | string[]
-  tools?: Tool[]
+  temperature?: number // 0-2 (default: 1)
   toolChoice?: 'auto' | 'none' | 'required'
-  maxSteps?: number          // agentic loop steps (default: 1)
-  abortSignal?: AbortSignal
-  headers?: Record<string, string>
-  fetch?: typeof fetch       // custom fetch implementation
+  tools?: Tool[]
+  topP?: number // (default: 1)
 }
 ```
 
@@ -71,14 +63,14 @@ All chat functions share these base options:
 ```ts
 import { generateText } from '@xsai/generate-text'
 
-const { text, finishReason, usage, toolCalls, toolResults, steps } = await generateText({
+const { finishReason, steps, text, toolCalls, toolResults, usage } = await generateText({
   apiKey: env.OPENAI_API_KEY,
   baseURL: 'https://api.openai.com/v1/',
-  model: 'gpt-4o',
   messages: [
-    { role: 'system', content: 'You are a helpful assistant.' },
-    { role: 'user', content: 'Hello!' },
+    { content: 'You are a helpful assistant.', role: 'system' },
+    { content: 'Hello!', role: 'user' },
   ],
+  model: 'gpt-4o',
 })
 ```
 
@@ -89,13 +81,13 @@ const { text, finishReason, usage, toolCalls, toolResults, steps } = await gener
 ```ts
 import { streamText } from '@xsai/stream-text'
 
-const { textStream, fullStream, messages, usage } = streamText({
+const { fullStream, messages, textStream, usage } = streamText({
   apiKey: env.OPENAI_API_KEY,
   baseURL: 'https://api.openai.com/v1/',
+  messages: [{ content: 'Tell me a story', role: 'user' }],
   model: 'gpt-4o',
-  messages: [{ role: 'user', content: 'Tell me a story' }],
-  onStepFinish: step => console.log('step done', step),
   onFinish: step => console.log('all done'),
+  onStepFinish: step => console.log('step done', step),
 })
 
 // Text-only stream
@@ -105,7 +97,8 @@ for await (const chunk of textStream) {
 
 // Or full event stream (text-delta, tool-call, tool-result, finish, error)
 for await (const event of fullStream) {
-  if (event.type === 'text-delta') process.stdout.write(event.text)
+  if (event.type === 'text-delta')
+    process.stdout.write(event.text)
 }
 ```
 
@@ -117,16 +110,16 @@ Uses Standard Schema (Zod, Valibot, ArkType, Effect, Sury) for type-safe structu
 
 ```ts
 import { generateObject } from '@xsai/generate-object'
-import { object, string, number, array } from 'valibot'
+import { array, number, object, string } from 'valibot'
 
 const { object: recipe } = await generateObject({
   apiKey: env.OPENAI_API_KEY,
   baseURL: 'https://api.openai.com/v1/',
+  messages: [{ content: 'Give me a cookie recipe', role: 'user' }],
   model: 'gpt-4o',
-  messages: [{ role: 'user', content: 'Give me a cookie recipe' }],
-  schema: object({ name: string(), ingredients: array(string()), cookTime: number() }),
-  schemaName: 'recipe',
+  schema: object({ cookTime: number(), ingredients: array(string()), name: string() }),
   schemaDescription: 'A cooking recipe',
+  schemaName: 'recipe',
 })
 ```
 
@@ -170,19 +163,19 @@ import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 
 const weather = await tool({
-  name: 'weather',
   description: 'Get the weather in a location',
+  execute: ({ location }) => JSON.stringify({ location, temperature: 42 }),
+  name: 'weather',
   parameters: object({
     location: pipe(string(), description('City name')),
   }),
-  execute: ({ location }) => JSON.stringify({ location, temperature: 42 }),
 })
 
 const { text } = await generateText({
   ...options,
-  tools: [weather],
-  toolChoice: 'required',
   maxSteps: 3, // allow multi-turn tool use
+  toolChoice: 'required',
+  tools: [weather],
 })
 ```
 
@@ -192,10 +185,10 @@ Raw JSON Schema tools (no schema lib needed):
 import { rawTool } from '@xsai/tool'
 
 const myTool = rawTool({
-  name: 'lookup',
   description: 'Look up a value',
-  parameters: { type: 'object', properties: { key: { type: 'string' } }, required: ['key'] },
   execute: ({ key }) => `value for ${key}`,
+  name: 'lookup',
+  parameters: { properties: { key: { type: 'string' } }, required: ['key'], type: 'object' },
 })
 ```
 
@@ -207,11 +200,11 @@ const myTool = rawTool({
 import { embed, embedMany } from '@xsai/embed'
 
 const { embedding } = await embed({
-  model: 'text-embedding-3-small',
-  baseURL: 'https://api.openai.com/v1/',
   apiKey: env.OPENAI_API_KEY,
-  input: 'Hello world',
+  baseURL: 'https://api.openai.com/v1/',
   dimensions: 512,
+  input: 'Hello world',
+  model: 'text-embedding-3-small',
 })
 
 const { embeddings } = await embedMany({
@@ -226,12 +219,12 @@ const { embeddings } = await embedMany({
 import { generateImage } from '@xsai/generate-image'
 
 const { image, images } = await generateImage({
-  model: 'dall-e-3',
-  baseURL: 'https://api.openai.com/v1/',
   apiKey: env.OPENAI_API_KEY,
+  baseURL: 'https://api.openai.com/v1/',
+  model: 'dall-e-3',
+  n: 1,
   prompt: 'A cat on a skateboard',
   size: '1024x1024',
-  n: 1,
 })
 // image.base64 — data URL
 // image.mimeType — 'image/png' etc.
@@ -243,27 +236,27 @@ const { image, images } = await generateImage({
 import { generateSpeech } from '@xsai/generate-speech'
 
 const audioBuffer = await generateSpeech({
-  model: 'tts-1',
-  baseURL: 'https://api.openai.com/v1/',
   apiKey: env.OPENAI_API_KEY,
+  baseURL: 'https://api.openai.com/v1/',
   input: 'Hello world',
-  voice: 'alloy',
+  model: 'tts-1',
   responseFormat: 'mp3',
+  voice: 'alloy',
 })
 ```
 
 ```ts
 import { generateTranscription } from '@xsai/generate-transcription'
 
-const { text } = await generateTranscription({
-  model: 'whisper-1',
-  baseURL: 'https://api.openai.com/v1/',
-  apiKey: env.OPENAI_API_KEY,
-  file: audioBlob,
-})
-
 // Streaming transcription
 import { streamTranscription } from '@xsai/stream-transcription'
+
+const { text } = await generateTranscription({
+  apiKey: env.OPENAI_API_KEY,
+  baseURL: 'https://api.openai.com/v1/',
+  file: audioBlob,
+  model: 'whisper-1',
+})
 
 const { textStream } = streamTranscription({ ...options, file: audioBlob })
 for await (const chunk of textStream) {
@@ -274,12 +267,12 @@ for await (const chunk of textStream) {
 ## Message Types
 
 ```ts
-type Message =
-  | { role: 'system', content: string }
-  | { role: 'developer', content: string }
-  | { role: 'user', content: string | ContentPart[] }
-  | { role: 'assistant', content?: string, tool_calls?: ToolCall[], reasoning?: string }
-  | { role: 'tool', tool_call_id: string, content: string }
+type Message
+  = | { content: ContentPart[] | string, role: 'user' }
+    | { content: string, role: 'developer' }
+    | { content: string, role: 'system' }
+    | { content: string, role: 'tool', tool_call_id: string }
+    | { content?: string, reasoning?: string, role: 'assistant', tool_calls?: ToolCall[] }
 ```
 
 ## Key Rules

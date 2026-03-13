@@ -41,6 +41,7 @@ words:
   - llms
   - lmstudio
   - logprob
+  - logprobs
   - lucide
   - masknet
   - mastra
@@ -67,6 +68,7 @@ words:
   - pkgroll
   - Plateforme
   - qwen
+  - redocly
   - reranker
   - rhasspy
   - scule
@@ -86,6 +88,7 @@ words:
   - unrs
   - unspeech
   - valibot
+  - vercel
   - vitest
   - voltagent
   - wizardlm
