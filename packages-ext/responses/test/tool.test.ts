@@ -3,8 +3,7 @@ import type { StreamingEvent } from '../src/types/streaming-event'
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 
-import { responses } from '../src'
-import { tool } from '../src/utils/tool'
+import { responses, tool } from '../src'
 import { createEventStreamResponse } from './utils'
 
 describe('@xsai-ext/responses tool', async () => {
@@ -120,6 +119,23 @@ describe('@xsai-ext/responses tool', async () => {
           type: 'response.output_text.delta',
         },
         {
+          item: {
+            content: [
+              {
+                text: '3',
+                type: 'output_text',
+              },
+            ],
+            id: 'msg_1',
+            role: 'assistant',
+            status: 'completed',
+            type: 'message',
+          },
+          output_index: 0,
+          sequence_number: 2,
+          type: 'response.output_item.done',
+        },
+        {
           response: {
             id: 'resp_step_2',
             object: 'response',
@@ -131,7 +147,7 @@ describe('@xsai-ext/responses tool', async () => {
               total_tokens: 12,
             },
           },
-          sequence_number: 2,
+          sequence_number: 3,
           type: 'response.completed',
         },
       ])) as typeof globalThis.fetch
@@ -156,9 +172,10 @@ describe('@xsai-ext/responses tool', async () => {
       'response.completed',
       'response.created',
       'response.output_text.delta',
+      'response.output_item.done',
       'response.completed',
     ])
-    expect(steps.map(step => step.response.id)).toEqual(['resp_step_1', 'resp_step_2'])
+    expect((await steps).map(step => step.response.id)).toEqual(['resp_step_1', 'resp_step_2'])
     await expect(usage).resolves.toMatchObject({ total_tokens: 12 })
     await expect(totalUsage).resolves.toMatchObject({ total_tokens: 22 })
     expect(fetch).toHaveBeenCalledTimes(2)

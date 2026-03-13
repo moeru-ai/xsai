@@ -6,20 +6,82 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
 [
   {
     "response": {
-      "id": "resp_378062",
+      "background": false,
+      "completed_at": null,
+      "created_at": 1773391790,
+      "error": null,
+      "frequency_penalty": 0,
+      "id": "resp_10184",
+      "incomplete_details": null,
+      "instructions": "You are a helpful assistant.",
+      "max_output_tokens": null,
+      "max_tool_calls": null,
+      "metadata": {},
+      "model": "granite4:1b-h",
       "object": "response",
       "output": [],
+      "parallel_tool_calls": true,
+      "presence_penalty": 0,
+      "previous_response_id": null,
+      "prompt_cache_key": null,
+      "reasoning": null,
+      "safety_identifier": null,
+      "service_tier": "default",
       "status": "in_progress",
+      "store": false,
+      "temperature": 1,
+      "text": {
+        "format": {
+          "type": "text",
+        },
+      },
+      "tool_choice": "auto",
+      "tools": [],
+      "top_logprobs": 0,
+      "top_p": 1,
+      "truncation": "disabled",
+      "usage": null,
     },
     "sequence_number": 0,
     "type": "response.created",
   },
   {
     "response": {
-      "id": "resp_378062",
+      "background": false,
+      "completed_at": null,
+      "created_at": 1773391790,
+      "error": null,
+      "frequency_penalty": 0,
+      "id": "resp_10184",
+      "incomplete_details": null,
+      "instructions": "You are a helpful assistant.",
+      "max_output_tokens": null,
+      "max_tool_calls": null,
+      "metadata": {},
+      "model": "granite4:1b-h",
       "object": "response",
       "output": [],
+      "parallel_tool_calls": true,
+      "presence_penalty": 0,
+      "previous_response_id": null,
+      "prompt_cache_key": null,
+      "reasoning": null,
+      "safety_identifier": null,
+      "service_tier": "default",
       "status": "in_progress",
+      "store": false,
+      "temperature": 1,
+      "text": {
+        "format": {
+          "type": "text",
+        },
+      },
+      "tool_choice": "auto",
+      "tools": [],
+      "top_logprobs": 0,
+      "top_p": 1,
+      "truncation": "disabled",
+      "usage": null,
     },
     "sequence_number": 1,
     "type": "response.in_progress",
@@ -27,7 +89,7 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "item": {
       "content": [],
-      "id": "msg_481059",
+      "id": "msg_349478",
       "role": "assistant",
       "status": "in_progress",
       "type": "message",
@@ -38,9 +100,11 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   },
   {
     "content_index": 0,
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
     "output_index": 0,
     "part": {
+      "annotations": [],
+      "logprobs": [],
       "text": "",
       "type": "output_text",
     },
@@ -50,7 +114,8 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": "Hello",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 4,
     "type": "response.output_text.delta",
@@ -58,7 +123,8 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": "!",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 5,
     "type": "response.output_text.delta",
@@ -66,7 +132,8 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " How",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 6,
     "type": "response.output_text.delta",
@@ -74,7 +141,8 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " can",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 7,
     "type": "response.output_text.delta",
@@ -82,7 +150,8 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " I",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 8,
     "type": "response.output_text.delta",
@@ -90,7 +159,8 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " assist",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 9,
     "type": "response.output_text.delta",
@@ -98,7 +168,8 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " you",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 10,
     "type": "response.output_text.delta",
@@ -106,7 +177,8 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": " today",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 11,
     "type": "response.output_text.delta",
@@ -114,14 +186,16 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   {
     "content_index": 0,
     "delta": "?",
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 12,
     "type": "response.output_text.delta",
   },
   {
     "content_index": 0,
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
+    "logprobs": [],
     "output_index": 0,
     "sequence_number": 13,
     "text": "Hello! How can I assist you today?",
@@ -129,9 +203,11 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   },
   {
     "content_index": 0,
-    "item_id": "msg_481059",
+    "item_id": "msg_349478",
     "output_index": 0,
     "part": {
+      "annotations": [],
+      "logprobs": [],
       "text": "Hello! How can I assist you today?",
       "type": "output_text",
     },
@@ -142,11 +218,13 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
     "item": {
       "content": [
         {
+          "annotations": [],
+          "logprobs": [],
           "text": "Hello! How can I assist you today?",
           "type": "output_text",
         },
       ],
-      "id": "msg_481059",
+      "id": "msg_349478",
       "role": "assistant",
       "status": "completed",
       "type": "message",
@@ -157,26 +235,64 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
   },
   {
     "response": {
-      "id": "resp_378062",
+      "background": false,
+      "completed_at": 1773391791,
+      "created_at": 1773391791,
+      "error": null,
+      "frequency_penalty": 0,
+      "id": "resp_10184",
+      "incomplete_details": null,
+      "instructions": "You are a helpful assistant.",
+      "max_output_tokens": null,
+      "max_tool_calls": null,
+      "metadata": {},
+      "model": "granite4:1b-h",
       "object": "response",
       "output": [
         {
           "content": [
             {
+              "annotations": [],
+              "logprobs": [],
               "text": "Hello! How can I assist you today?",
               "type": "output_text",
             },
           ],
-          "id": "msg_481059",
+          "id": "msg_349478",
           "role": "assistant",
           "status": "completed",
           "type": "message",
         },
       ],
+      "parallel_tool_calls": true,
+      "presence_penalty": 0,
+      "previous_response_id": null,
+      "prompt_cache_key": null,
+      "reasoning": null,
+      "safety_identifier": null,
+      "service_tier": "default",
       "status": "completed",
+      "store": false,
+      "temperature": 1,
+      "text": {
+        "format": {
+          "type": "text",
+        },
+      },
+      "tool_choice": "auto",
+      "tools": [],
+      "top_logprobs": 0,
+      "top_p": 1,
+      "truncation": "disabled",
       "usage": {
         "input_tokens": 21,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+        },
         "output_tokens": 10,
+        "output_tokens_details": {
+          "reasoning_tokens": 0,
+        },
         "total_tokens": 31,
       },
     },
@@ -189,7 +305,13 @@ exports[`@xsai-ext/responses basic > basic 2`] = `
 exports[`@xsai-ext/responses basic > basic 3`] = `
 {
   "input_tokens": 21,
+  "input_tokens_details": {
+    "cached_tokens": 0,
+  },
   "output_tokens": 10,
+  "output_tokens_details": {
+    "reasoning_tokens": 0,
+  },
   "total_tokens": 31,
 }
 `;
@@ -197,7 +319,13 @@ exports[`@xsai-ext/responses basic > basic 3`] = `
 exports[`@xsai-ext/responses basic > basic 4`] = `
 {
   "input_tokens": 21,
+  "input_tokens_details": {
+    "cached_tokens": 0,
+  },
   "output_tokens": 10,
+  "output_tokens_details": {
+    "reasoning_tokens": 0,
+  },
   "total_tokens": 31,
 }
 `;

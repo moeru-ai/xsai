@@ -45,9 +45,9 @@ describe('@xsai-ext/responses basic', async () => {
     })
 
     await expect(eventStream.getReader().read()).rejects.toThrow(error)
+    await expect(steps).rejects.toThrow(error)
     await expect(usage).rejects.toThrow(error)
     await expect(totalUsage).rejects.toThrow(error)
-    expect(steps).toEqual([])
   })
 
   it('records incomplete responses as steps', async () => {
@@ -83,7 +83,7 @@ describe('@xsai-ext/responses basic', async () => {
     }
 
     expect(events.map(event => event.type)).toEqual(['response.incomplete'])
-    expect(steps.map(step => step.response.status)).toEqual(['incomplete'])
+    expect((await steps).map(step => step.response.status)).toEqual(['incomplete'])
     await expect(usage).resolves.toMatchObject({ total_tokens: 4 })
     await expect(totalUsage).resolves.toMatchObject({ total_tokens: 4 })
   })
