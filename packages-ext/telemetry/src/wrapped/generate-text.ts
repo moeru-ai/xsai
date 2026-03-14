@@ -1,5 +1,5 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, StopStep, WithUnknown } from 'xsai'
 import type { TrampolineFn } from '@xsai/shared'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, StopStep, WithUnknown } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 

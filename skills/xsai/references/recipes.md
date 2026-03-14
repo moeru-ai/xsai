@@ -13,8 +13,9 @@ Use this reference when the user wants code, when you are editing xsAI code, or 
 ## Minimal text generation
 
 ```ts
-import { generateText } from '@xsai/generate-text'
 import { env } from 'node:process'
+
+import { generateText } from '@xsai/generate-text'
 
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
@@ -38,10 +39,12 @@ Use this as the default starting point for simple scripts, tests, and one-shot h
 ## Streaming text with tools
 
 ```ts
+import { env } from 'node:process'
+
 import { streamText } from '@xsai/stream-text'
 import { stepCountAtLeast } from '@xsai/stream-text/shared-chat'
 import { tool } from '@xsai/tool'
-import { env } from 'node:process'
+
 import * as v from 'valibot'
 
 const add = await tool({
@@ -95,8 +98,10 @@ Use `textStream` for plain live text. Use `fullStream` when the caller needs too
 Valibot examples require `@valibot/to-json-schema` in the project. If the repo already uses a different supported schema library, keep that choice.
 
 ```ts
-import { generateObject } from '@xsai/generate-object'
 import { env } from 'node:process'
+
+import { generateObject } from '@xsai/generate-object'
+
 import * as v from 'valibot'
 
 const { object } = await generateObject({
@@ -126,8 +131,10 @@ Prefer this over asking the model for free-form JSON.
 ## Streaming structured output
 
 ```ts
-import { streamObject } from '@xsai/stream-object'
 import { env } from 'node:process'
+
+import { streamObject } from '@xsai/stream-object'
+
 import * as v from 'valibot'
 
 const { partialObjectStream } = await streamObject({
