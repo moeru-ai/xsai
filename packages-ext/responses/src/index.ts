@@ -1,6 +1,8 @@
 export type * from './types/open-responses-options'
 export type * from './types/step'
+export type * from './types/stop-when'
 export type * from './types/streaming-event'
 export type * from './types/usage'
 export * from './utils/responses'
+export * from './utils/stop-when'
 export * from './utils/tool'

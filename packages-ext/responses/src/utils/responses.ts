@@ -1,6 +1,7 @@
 import type { FunctionCall, FunctionCallOutput, ResponseResource } from '../generated'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { Step } from '../types/step'
+import type { StopCondition } from '../types/stop-when'
 import type { StreamingEvent } from '../types/streaming-event'
 import type { Usage } from '../types/usage'
 
@@ -10,6 +11,7 @@ import { EventSourceParserStream } from 'eventsource-parser/stream'
 import { executeTool } from './execute-tool'
 import { normalizeInput } from './normalize-input'
 import { normalizeOutput } from './normalize-output'
+import { shouldStop, stepCountAtLeast } from './stop-when'
 import { StreamingEventParserStream } from './streaming-event-parser-stream'
 
 export interface ResponsesOptions extends OpenResponsesOptions {
@@ -18,6 +20,8 @@ export interface ResponsesOptions extends OpenResponsesOptions {
   baseURL: string | URL
   fetch?: typeof globalThis.fetch
   headers?: Record<string, string>
+  /** @default `stepCountAtLeast(1)` */
+  stopWhen?: StopCondition
 }
 
 export interface ResponsesResult {
@@ -32,6 +36,7 @@ export interface ResponsesResult {
 export const responses = (options: ResponsesOptions): ResponsesResult => {
   const input = normalizeInput(structuredClone(options.input))
   const steps: Step[] = []
+  const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
   let stepFunctionCallOutputs: FunctionCallOutput[] = []
@@ -50,16 +55,20 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     return text.length > 0 ? text : undefined
   }
 
-  const pushStep = (response: ResponseResource) => {
-    steps.push({
+  const pushStep = (response: ResponseResource): Step => {
+    const step: Step = {
       functionCallOutputs: stepFunctionCallOutputs,
       functionCalls: getFunctionCalls(response),
       response,
       text: getText(response),
       usage,
-    })
+    }
+
+    steps.push(step)
 
     stepFunctionCallOutputs = []
+
+    return step
   }
 
   const pushUsage = (nextUsage?: Usage) => {
@@ -86,6 +95,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       body: requestBody({
         ...options,
         input,
+        stopWhen: undefined,
         stream: true,
         tools: options.tools?.map(({ execute, ...tool }) => tool),
       }),
@@ -133,10 +143,14 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         switch (event.type) {
           case 'response.completed': {
             pushUsage(event.response.usage ?? undefined)
-            pushStep(event.response)
+            const step = pushStep(event.response)
 
-            // TODO: stopWhen
             shouldContinue = input.at(-1)?.type === 'function_call_output'
+              && !shouldStop(stopWhen, {
+                input,
+                step,
+                steps,
+              })
 
             break
           }
