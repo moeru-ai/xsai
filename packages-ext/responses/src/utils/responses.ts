@@ -97,7 +97,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         input,
         stopWhen: undefined,
         stream: true,
-        tools: options.tools?.map(({ execute, ...tool }) => tool),
+        tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
       }),
       headers: requestHeaders({
         'Content-Type': 'application/json',

@@ -43,7 +43,7 @@ export const chat = async <T extends WithUnknown<ChatOptions>>(options: T) =>
   (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
     body: requestBody({
       ...options,
-      tools: (options.tools)?.map(({ execute, ...tool }) => tool),
+      tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
     }),
     headers: requestHeaders({
       'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 import type { TrampolineFn, WithUnknown } from '@xsai/shared'
-import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StopCondition, StopStep, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StopCondition, Usage } from '@xsai/shared-chat'
 
 import { responseJSON, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
@@ -85,7 +85,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         }
       }
 
-      const stopStep: StopStep = {
+      const stopStep: Omit<CompletionStep<true>, 'stepType'> = {
         finishReason,
         text: Array.isArray(message.content)
           ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
@@ -108,7 +108,6 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
           toolCallsLength: toolCalls.length,
           willContinue,
         }),
-        usage,
       }
 
       steps.push(step)

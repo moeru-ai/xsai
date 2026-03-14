@@ -1,5 +1,4 @@
-import type { TrampolineFn } from '@xsai/shared'
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, StopStep, WithUnknown } from 'xsai'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn, WithUnknown } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 
@@ -60,7 +59,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             }
           }
 
-          const stopStep: StopStep = {
+          const stopStep: Omit<CompletionStep<true>, 'stepType'> = {
             finishReason,
             text: Array.isArray(message.content)
 
