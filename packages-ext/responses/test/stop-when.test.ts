@@ -1,10 +1,12 @@
-import type { StopContext } from '../src'
+import type { Step, StopContext } from '../src'
+import type { ResponseResource } from '../src/generated'
 
 import { describe, expect, it } from 'vitest'
 
 import { and, hasFunctionCall, not, or, stepCountAtLeast } from '../src'
 
 const createContext = (overrides: Partial<StopContext> = {}): StopContext => {
+  // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
   const step = overrides.step ?? {
     functionCallOutputs: [],
     functionCalls: [],
@@ -16,7 +18,7 @@ const createContext = (overrides: Partial<StopContext> = {}): StopContext => {
     },
     text: undefined,
     usage: undefined,
-  }
+  } as unknown as Step
 
   return {
     input: [],
@@ -47,12 +49,13 @@ describe('@xsai-ext/responses stopWhen helpers', () => {
           status: 'completed',
           type: 'function_call',
         }],
+        // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
         response: {
           id: 'resp_1',
           object: 'response',
           output: [],
           status: 'completed',
-        },
+        } as unknown as ResponseResource,
       },
     })
 
@@ -73,12 +76,13 @@ describe('@xsai-ext/responses stopWhen helpers', () => {
           status: 'completed',
           type: 'function_call',
         }],
+        // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
         response: {
           id: 'resp_1',
           object: 'response',
           output: [],
           status: 'completed',
-        },
+        } as unknown as ResponseResource,
       },
       steps: [
         createContext().step,
