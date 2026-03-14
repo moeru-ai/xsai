@@ -39,6 +39,7 @@ Use this as the default starting point for simple scripts, tests, and one-shot h
 
 ```ts
 import { streamText } from '@xsai/stream-text'
+import { stepCountAtLeast } from '@xsai/stream-text/shared-chat'
 import { tool } from '@xsai/tool'
 import { env } from 'node:process'
 import * as v from 'valibot'
@@ -56,7 +57,6 @@ const add = await tool({
 const { fullStream } = streamText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
-  maxSteps: 2,
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -68,6 +68,7 @@ const { fullStream } = streamText({
     },
   ],
   model: 'gpt-4o',
+  stopWhen: stepCountAtLeast(2),
   toolChoice: 'required',
   tools: [add],
 })

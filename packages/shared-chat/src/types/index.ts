@@ -1,6 +1,7 @@
 export type * from './finish-reason'
 export type * from './message'
 export type * from './message-content'
+export type * from './stop-when'
 export type * from './step'
 export type * from './tool'
 export type * from './tool-call'

@@ -1,21 +1,21 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StopCondition, StopStep, ToolCall, Usage } from '@xsai/shared-chat'
 
 import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
+import { chat, determineStepType, executeTool, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 import { transformChunk } from './internal/_transform-chunk'
 
 export type * from './types/event'
 
 export interface StreamTextOptions extends ChatOptions {
-  /** @default 1 */
-  maxSteps?: number
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
   onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
+  /** @default `stepCountAtLeast(1)` */
+  stopWhen?: StopCondition
   /**
    * If you want to disable stream, use `@xsai/generate-{text,object}`.
    */
@@ -43,7 +43,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   // state
   const steps: CompletionStep[] = []
   const messages: Message[] = structuredClone(options.messages)
-  const maxSteps = options.maxSteps ?? 1
+  const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
   let reasoningField: 'reasoning' | 'reasoning_content' | undefined
@@ -77,8 +77,8 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   const doStream = async () => {
     const { body: stream } = await chat({
       ...options,
-      maxSteps: undefined,
       messages,
+      stopWhen: undefined,
       stream: true,
       streamOptions: options.streamOptions != null
         ? objCamelToSnake(options.streamOptions)
@@ -230,16 +230,30 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       })
     }
 
-    pushStep({
+    const stopStep: StopStep = {
       finishReason,
-      stepType: determineStepType({ finishReason, maxSteps, stepsLength: steps.length, toolCallsLength: toolCalls.length }),
       text,
       toolCalls,
       toolResults,
       usage,
+    }
+    const stop = shouldStop(stopWhen, {
+      messages,
+      step: stopStep,
+      steps: [...steps, stopStep],
+    })
+    const willContinue = toolCalls.length > 0 && !stop
+    pushStep({
+      ...stopStep,
+      stepType: determineStepType({
+        finishReason,
+        stepsLength: steps.length,
+        toolCallsLength: toolCalls.length,
+        willContinue,
+      }),
     })
 
-    if (toolCalls.length !== 0 && steps.length < maxSteps)
+    if (willContinue)
       return async () => doStream()
   }
 

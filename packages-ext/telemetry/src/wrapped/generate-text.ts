@@ -1,8 +1,9 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn, WithUnknown } from 'xsai'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, StopStep, WithUnknown } from 'xsai'
+import type { TrampolineFn } from '@xsai/shared'
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, determineStepType, executeTool, responseJSON, trampoline } from 'xsai'
+import { chat, determineStepType, executeTool, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -20,8 +21,8 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
     recordSpan(chatSpan(options, tracer), async span =>
       chat({
         ...options,
-        maxSteps: undefined,
         steps: undefined,
+        stopWhen: undefined,
         stream: false,
       })
         .then(responseJSON<GenerateTextResponse>)
@@ -39,18 +40,12 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
 
           const { finish_reason: finishReason, message } = choices[0]
           const msgToolCalls = message?.tool_calls ?? []
-
-          const stepType = determineStepType({
-            finishReason,
-            maxSteps: options.maxSteps ?? 1,
-            stepsLength: steps.length,
-            toolCallsLength: msgToolCalls.length,
-          })
+          const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
 
           messages.push(message)
           span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
 
-          if (finishReason !== 'stop' && stepType !== 'done') {
+          if (msgToolCalls.length > 0) {
             for (const toolCall of msgToolCalls) {
               const { completionToolCall, completionToolResult, message } = await executeTool({
                 abortSignal: options.abortSignal,
@@ -64,9 +59,8 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             }
           }
 
-          const step: CompletionStep<true> = {
+          const stopStep: StopStep = {
             finishReason,
-            stepType,
             text: Array.isArray(message.content)
 
               ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
@@ -74,6 +68,21 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             toolCalls,
             toolResults,
             usage,
+          }
+          const stop = shouldStop(stopWhen, {
+            messages,
+            step: stopStep,
+            steps: [...steps, stopStep],
+          })
+          const willContinue = toolCalls.length > 0 && !stop
+          const step: CompletionStep<true> = {
+            ...stopStep,
+            stepType: determineStepType({
+              finishReason,
+              stepsLength: steps.length,
+              toolCallsLength: toolCalls.length,
+              willContinue,
+            }),
           }
 
           steps.push(step)
@@ -88,7 +97,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
           if (options.onStepFinish)
             await options.onStepFinish(step)
 
-          if (step.finishReason === 'stop' || step.stepType === 'done') {
+          if (!willContinue) {
             return {
               finishReason: step.finishReason,
               messages,

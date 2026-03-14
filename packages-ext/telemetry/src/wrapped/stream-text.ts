@@ -1,8 +1,8 @@
-import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
+import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StopStep, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, trampoline } from 'xsai'
+import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -20,7 +20,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   // state
   const steps: CompletionStep[] = []
   const messages: Message[] = structuredClone(options.messages)
-  const maxSteps = options.maxSteps ?? 1
+  const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
   let reasoningField: 'reasoning' | 'reasoning_content' | undefined
@@ -58,8 +58,8 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   const doStream = async () => recordSpan(chatSpan({ ...options, messages }, tracer), async (span) => {
     const { body: stream } = await chat({
       ...options,
-      maxSteps: undefined,
       messages,
+      stopWhen: undefined,
       stream: true,
       streamOptions: options.streamOptions != null
         ? objCamelToSnake(options.streamOptions)
@@ -216,13 +216,27 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       })
     }
 
-    const step = {
+    const stopStep: StopStep = {
       finishReason,
-      stepType: determineStepType({ finishReason, maxSteps, stepsLength: steps.length, toolCallsLength: toolCalls.length }),
       text,
       toolCalls,
       toolResults,
       usage,
+    }
+    const stop = shouldStop(stopWhen, {
+      messages,
+      step: stopStep,
+      steps: [...steps, stopStep],
+    })
+    const willContinue = toolCalls.length > 0 && !stop
+    const step = {
+      ...stopStep,
+      stepType: determineStepType({
+        finishReason,
+        stepsLength: steps.length,
+        toolCallsLength: toolCalls.length,
+        willContinue,
+      }),
     }
     pushStep(step)
 
@@ -235,7 +249,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       },
     })
 
-    if (toolCalls.length !== 0 && steps.length < maxSteps)
+    if (willContinue)
       return async () => doStream()
   })
 

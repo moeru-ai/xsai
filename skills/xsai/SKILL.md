@@ -60,7 +60,7 @@ Use this skill for `xsai` code, package selection, API selection, canonical exam
 - xsAI is OpenAI-compatible-first. Do not imply support for non-compatible provider APIs.
 - `streamText()` returns immediately; callers consume `textStream`, `fullStream`, and result promises asynchronously.
 - `streamObject()` is async because schema conversion happens before streaming starts.
-- `maxSteps` controls repeated tool-use loops by issuing additional API calls with tool results appended.
+- `stopWhen` controls repeated tool-use loops with explicit stop predicates such as `stepCountAtLeast()` and `hasToolCall()`.
 - `generateObject()`, `streamObject()`, and `tool()` rely on `xsschema`; some schema vendors need extra JSON Schema converter packages.
 - xsAI is designed to stay small. Avoid recommending the umbrella package when a smaller package is enough.
 
