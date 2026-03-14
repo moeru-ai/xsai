@@ -411,6 +411,22 @@ importers:
         specifier: catalog:schema
         version: 4.2.1
 
+  packages-ext/messages:
+    dependencies:
+      '@xsai/shared':
+        specifier: workspace:~
+        version: link:../../packages/shared
+      eventsource-parser:
+        specifier: 'catalog:'
+        version: 3.0.6
+    devDependencies:
+      '@standard-schema/spec':
+        specifier: 'catalog:'
+        version: 1.1.0
+      zod:
+        specifier: catalog:schema-dev
+        version: 4.2.1
+
   packages-ext/providers:
     dependencies:
       '@xsai/shared':
