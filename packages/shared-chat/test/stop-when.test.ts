@@ -18,6 +18,7 @@ const createStopContext = (overrides: Partial<StopContext> = {}): StopContext =>
 
   return {
     messages: [],
+    ...overrides,
     step,
     steps: overrides.steps ?? [step],
   }
