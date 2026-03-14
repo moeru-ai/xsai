@@ -22,6 +22,7 @@ const createContext = (overrides: Partial<StopContext> = {}): StopContext => {
 
   return {
     input: [],
+    ...overrides,
     step,
     steps: overrides.steps ?? [step],
   }
