@@ -21,6 +21,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
     recordSpan(chatSpan(options, tracer), async span =>
       chat({
         ...options,
+        maxSteps: undefined,
         steps: undefined,
         stopWhen: undefined,
         stream: false,

@@ -58,6 +58,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   const doStream = async () => recordSpan(chatSpan({ ...options, messages }, tracer), async (span) => {
     const { body: stream } = await chat({
       ...options,
+      maxSteps: undefined,
       messages,
       stopWhen: undefined,
       stream: true,

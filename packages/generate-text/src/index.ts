@@ -44,6 +44,7 @@ export interface GenerateTextResult {
 const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promise<TrampolineFn<GenerateTextResult>> =>
   chat({
     ...options,
+    maxSteps: undefined,
     steps: undefined,
     stopWhen: undefined,
     stream: false,

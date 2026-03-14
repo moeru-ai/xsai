@@ -77,6 +77,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   const doStream = async () => {
     const { body: stream } = await chat({
       ...options,
+      maxSteps: undefined,
       messages,
       stopWhen: undefined,
       stream: true,
