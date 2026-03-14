@@ -1,15 +1,15 @@
 import type { TrampolineFn, WithUnknown } from '@xsai/shared'
-import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StopCondition, Usage } from '@xsai/shared-chat'
 
 import { responseJSON, trampoline } from '@xsai/shared'
-import { chat, determineStepType, executeTool } from '@xsai/shared-chat'
+import { chat, determineStepType, executeTool, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
-  /** @default 1 */
-  maxSteps?: number
   onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
   /** @internal */
   steps?: CompletionStep<true>[]
+  /** @default `stepCountAtLeast(1)` */
+  stopWhen?: StopCondition
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
 }
@@ -46,6 +46,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
     ...options,
     maxSteps: undefined,
     steps: undefined,
+    stopWhen: undefined,
     stream: false,
   })
     .then(responseJSON<GenerateTextResponse>)
@@ -63,17 +64,11 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
 
       const { finish_reason: finishReason, message } = choices[0]
       const msgToolCalls = message?.tool_calls ?? []
-
-      const stepType = determineStepType({
-        finishReason,
-        maxSteps: options.maxSteps ?? 1,
-        stepsLength: steps.length,
-        toolCallsLength: msgToolCalls.length,
-      })
+      const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
 
       messages.push(message)
 
-      if (finishReason !== 'stop' && stepType !== 'done' && msgToolCalls.length > 0) {
+      if (msgToolCalls.length > 0) {
         const results = await Promise.all(
           msgToolCalls.map(async toolCall => executeTool({
             abortSignal: options.abortSignal,
@@ -90,9 +85,8 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         }
       }
 
-      const step: CompletionStep<true> = {
+      const stopStep: Omit<CompletionStep<true>, 'stepType'> = {
         finishReason,
-        stepType,
         text: Array.isArray(message.content)
           ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
           : message.content,
@@ -100,13 +94,28 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         toolResults,
         usage,
       }
+      const stop = shouldStop(stopWhen, {
+        messages,
+        step: stopStep,
+        steps: [...steps, stopStep],
+      })
+      const willContinue = toolCalls.length > 0 && !stop
+      const step: CompletionStep<true> = {
+        ...stopStep,
+        stepType: determineStepType({
+          finishReason,
+          stepsLength: steps.length,
+          toolCallsLength: toolCalls.length,
+          willContinue,
+        }),
+      }
 
       steps.push(step)
 
       if (options.onStepFinish)
         await options.onStepFinish(step)
 
-      if (step.finishReason === 'stop' || step.stepType === 'done') {
+      if (!willContinue) {
         return {
           finishReason: step.finishReason,
           messages,

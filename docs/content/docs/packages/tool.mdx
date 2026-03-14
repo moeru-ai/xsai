@@ -33,6 +33,7 @@ accepts a `StandardSchemaV1`, automatically infers the type.
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
+import { stepCountAtLeast } from '@xsai/generate-text/shared-chat'
 import { tool } from '@xsai/tool'
 import { env } from 'node:process'
 import * as v from 'valibot'
@@ -55,7 +56,6 @@ const weather = await tool({
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
-  maxSteps: 2, // [!code highlight]
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -67,6 +67,7 @@ const { text } = await generateText({
     },
   ],
   model: 'gpt-4o',
+  stopWhen: stepCountAtLeast(2), // [!code highlight]
   tools: [weather], // [!code highlight]
 })
 ```
@@ -77,6 +78,7 @@ accepts a `JsonSchema`, execute params type to be defined manually.
 
 ```ts twoslash
 import { generateText } from '@xsai/generate-text'
+import { stepCountAtLeast } from '@xsai/generate-text/shared-chat'
 import { rawTool } from '@xsai/tool'
 import { env } from 'node:process'
 
@@ -105,7 +107,6 @@ const weather = rawTool<{ location: string }>({
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
-  maxSteps: 2, // [!code highlight]
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -117,6 +118,7 @@ const { text } = await generateText({
     },
   ],
   model: 'gpt-4o',
+  stopWhen: stepCountAtLeast(2), // [!code highlight]
   tools: [weather], // [!code highlight]
 })
 ```
@@ -154,6 +156,7 @@ You can also pass an object directly without installing `@xsai/tool`.
 import type { Tool } from '@xsai/shared-chat' // [!code highlight]
 
 import { generateText } from '@xsai/generate-text'
+import { stepCountAtLeast } from '@xsai/generate-text/shared-chat'
 import { env } from 'node:process'
 
 const weather = {
@@ -185,7 +188,6 @@ const weather = {
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
-  maxSteps: 2, // [!code highlight]
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -197,6 +199,7 @@ const { text } = await generateText({
     },
   ],
   model: 'gpt-4o',
+  stopWhen: stepCountAtLeast(2), // [!code highlight]
   tools: [weather], // [!code highlight]
 })
 ```

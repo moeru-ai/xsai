@@ -3,7 +3,7 @@ import type { StreamingEvent } from '../src/types/streaming-event'
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 
-import { responses, tool } from '../src'
+import { responses, stepCountAtLeast, tool } from '../src'
 import { createEventStreamResponse } from './utils'
 
 describe('@xsai-ext/responses tool', async () => {
@@ -157,6 +157,7 @@ describe('@xsai-ext/responses tool', async () => {
       fetch,
       input: 'Please use the tool.',
       model: 'granite4:350m-h',
+      stopWhen: stepCountAtLeast(2),
       tool_choice: 'required',
       tools: [add],
     })
@@ -179,5 +180,93 @@ describe('@xsai-ext/responses tool', async () => {
     await expect(usage).resolves.toMatchObject({ total_tokens: 12 })
     await expect(totalUsage).resolves.toMatchObject({ total_tokens: 22 })
     expect(fetch).toHaveBeenCalledTimes(2)
+  })
+
+  it('stops before the next tool step when stopWhen matches', async () => {
+    const add = tool({
+      description: 'Adds two numbers',
+      execute: () => '3',
+      inputSchema: z.object({
+        a: z.string(),
+        b: z.string(),
+      }),
+      name: 'add',
+    })
+
+    const fetch = vi.fn()
+      .mockResolvedValueOnce(createEventStreamResponse([
+        {
+          response: {
+            id: 'resp_step_1',
+            object: 'response',
+            output: [],
+            status: 'in_progress',
+          },
+          sequence_number: 0,
+          type: 'response.created',
+        },
+        {
+          item: {
+            arguments: '{"a":"1","b":"2"}',
+            call_id: 'call_1',
+            id: 'fc_1',
+            name: 'add',
+            status: 'completed',
+            type: 'function_call',
+          },
+          output_index: 0,
+          sequence_number: 1,
+          type: 'response.output_item.done',
+        },
+        {
+          response: {
+            id: 'resp_step_1',
+            object: 'response',
+            output: [
+              {
+                arguments: '{"a":"1","b":"2"}',
+                call_id: 'call_1',
+                id: 'fc_1',
+                name: 'add',
+                status: 'completed',
+                type: 'function_call',
+              },
+            ],
+            status: 'completed',
+            usage: {
+              input_tokens: 7,
+              output_tokens: 3,
+              total_tokens: 10,
+            },
+          },
+          sequence_number: 2,
+          type: 'response.completed',
+        },
+      ])) as typeof globalThis.fetch
+
+    const { eventStream, steps, totalUsage, usage } = responses({
+      baseURL: 'http://localhost:11434/v1/',
+      fetch,
+      input: 'Please use the tool.',
+      model: 'granite4:350m-h',
+      stopWhen: stepCountAtLeast(1),
+      tool_choice: 'required',
+      tools: [add],
+    })
+
+    const events: StreamingEvent[] = []
+    for await (const event of eventStream) {
+      events.push(event)
+    }
+
+    expect(events.map(event => event.type)).toEqual([
+      'response.created',
+      'response.output_item.done',
+      'response.completed',
+    ])
+    expect((await steps).map(step => step.response.id)).toEqual(['resp_step_1'])
+    await expect(usage).resolves.toMatchObject({ total_tokens: 10 })
+    await expect(totalUsage).resolves.toMatchObject({ total_tokens: 10 })
+    expect(fetch).toHaveBeenCalledTimes(1)
   })
 })
