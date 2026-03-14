@@ -8,5 +8,5 @@ export const tool = <T extends StandardJSONSchemaV1>({ description, execute, inp
   execute,
   input_schema: inputSchema['~standard'].jsonSchema.input({ target: 'draft-07' }),
   name,
-  strict: strict ?? true,
+  strict,
 })

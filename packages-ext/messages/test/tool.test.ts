@@ -27,7 +27,6 @@ describe('@xsai-ext/messages tool helper', async () => {
         type: 'object',
       },
       name: 'weather',
-      strict: true,
     })
 
     expect(await weather.execute({ location: 'Shanghai' })).toBe('Sunny in Shanghai')

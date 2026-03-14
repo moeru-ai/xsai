@@ -49,7 +49,6 @@ describe('@xsai-ext/messages countTokens', async () => {
           type: 'object',
         },
         name: 'lookup',
-        strict: true,
       },
     ])
   })

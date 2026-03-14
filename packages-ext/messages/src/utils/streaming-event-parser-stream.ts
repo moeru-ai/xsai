@@ -6,6 +6,9 @@ export class StreamingEventParserStream extends TransformStream<EventSourceMessa
   constructor() {
     super({
       transform: async (chunk, controller) => {
+        if (chunk.data === '[DONE]' || chunk.data.length === 0)
+          return
+
         const event = JSON.parse(chunk.data) as StreamingEvent
         controller.enqueue(event)
       },
