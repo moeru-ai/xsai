@@ -195,6 +195,37 @@ describe('@xsai-ext/messages basic', async () => {
     await expect(usage).rejects.toThrow(error)
     await expect(totalUsage).rejects.toThrow(error)
   })
+
+  it('does not emit unhandled rejections when auxiliary promises are ignored', async () => {
+    const error = new Error('boom')
+    const fetch = vi.fn<typeof globalThis.fetch>().mockRejectedValue(error)
+    const onUnhandledRejection = vi.fn()
+
+    process.on('unhandledRejection', onUnhandledRejection)
+
+    try {
+      const { textStream } = messages({
+        fetch,
+        max_tokens: 128,
+        messages: [{ content: 'Hello?', role: 'user' }],
+        model: 'claude-sonnet-4-5',
+      })
+
+      await expect((async () => {
+        for await (const chunk of textStream) {
+          void chunk
+        }
+      })()).rejects.toThrow(error)
+
+      await Promise.resolve()
+      await new Promise(resolve => setTimeout(resolve, 0))
+
+      expect(onUnhandledRejection).not.toHaveBeenCalled()
+    }
+    finally {
+      process.off('unhandledRejection', onUnhandledRejection)
+    }
+  })
 })
 
 describe('@xsai-ext/messages tool', async () => {

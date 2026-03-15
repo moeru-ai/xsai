@@ -306,6 +306,15 @@ export const messages = (options: MessagesOptions): MessagesResult => {
   const resultUsage = new DelayedPromise<undefined | Usage>()
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
+  const stepsPromise = resultSteps.promise
+  const usagePromise = resultUsage.promise
+  const totalUsagePromise = resultTotalUsage.promise
+
+  // Avoid unhandled rejections when callers only consume the streams.
+  stepsPromise.catch(() => {})
+  usagePromise.catch(() => {})
+  totalUsagePromise.catch(() => {})
+
   let currentStep: StepState | undefined
 
   const createReader = async () => {
@@ -416,9 +425,9 @@ export const messages = (options: MessagesOptions): MessagesResult => {
   return {
     eventStream,
     reasoningTextStream,
-    steps: resultSteps.promise,
+    steps: stepsPromise,
     textStream,
-    totalUsage: resultTotalUsage.promise,
-    usage: resultUsage.promise,
+    totalUsage: totalUsagePromise,
+    usage: usagePromise,
   }
 }
