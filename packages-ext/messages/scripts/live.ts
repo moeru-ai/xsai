@@ -133,12 +133,12 @@ const runThinkingCheck = async (config: LiveConfig): Promise<CheckResult> => {
     abortSignal,
     apiKey: config.apiKey,
     baseURL: config.baseURL,
-    max_tokens: 1_024,
+    max_tokens: 2_048,
     messages: [{ content: 'Think briefly, then answer with exactly THINKING_OK.', role: 'user' }],
     model: config.model,
     temperature: 1,
     thinking: {
-      budget_tokens: 512,
+      budget_tokens: 1024,
       type: 'enabled',
     },
   })
@@ -216,6 +216,52 @@ const runToolLoopCheck = async (config: LiveConfig): Promise<CheckResult> => {
   }
 }
 
+const runStrictToolCheck = async (config: LiveConfig): Promise<CheckResult> => {
+  const add = tool({
+    description: 'Add two integers and return their sum as plain text.',
+    execute: ({ a, b }) => (a + b).toString(),
+    inputSchema: z.object({
+      a: z.number(),
+      b: z.number(),
+    }),
+    name: 'add',
+    strict: true,
+  })
+
+  const result = messages({
+    abortSignal,
+    apiKey: config.apiKey,
+    baseURL: config.baseURL,
+    max_tokens: 256,
+    messages: [{ content: 'You must use the add tool with a=20 and b=22. Do not compute mentally. After using the tool, answer with exactly STRICT_OK 42.', role: 'user' }],
+    model: config.model,
+    temperature: 1,
+    tools: [add],
+  })
+
+  const [text, events, steps, usage, totalUsage] = await Promise.all([
+    collectText(result.textStream),
+    collectEvents(result.eventStream),
+    result.steps,
+    result.usage,
+    result.totalUsage,
+  ])
+
+  return {
+    details: {
+      eventTypes: events.map(event => event.type),
+      stepCount: steps.length,
+      text,
+      toolResults: steps[0]?.toolResults,
+      toolUses: steps[0]?.toolUses,
+      totalUsage,
+      usage,
+    },
+    name: 'messages strict tool loop',
+    ok: text.includes('STRICT_OK 42') && steps.length >= 2 && steps[0]?.toolUses.length === 1,
+  }
+}
+
 const main = async (): Promise<void> => {
   const config = getConfig()
   const checks = [
@@ -223,6 +269,7 @@ const main = async (): Promise<void> => {
     runBasicStreamCheck,
     runThinkingCheck,
     runToolLoopCheck,
+    runStrictToolCheck,
   ]
   const results: CheckResult[] = []
 
