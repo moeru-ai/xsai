@@ -18,7 +18,10 @@
     "ai"
   ],
   "sideEffects": false,
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./shared-chat": "./src/shared-chat.ts"
+  },
   "files": [
     "dist"
   ],
@@ -27,6 +30,10 @@
       ".": {
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
+      },
+      "./shared-chat": {
+        "types": "./dist/shared-chat.d.ts",
+        "default": "./dist/shared-chat.js"
       },
       "./package.json": "./package.json"
     },

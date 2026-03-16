@@ -146,6 +146,7 @@ console.log(text)
 import { env } from 'node:process'
 
 import { generateText } from '@xsai/generate-text'
+import { stepCountAtLeast } from '@xsai/generate-text/shared-chat'
 import { tool } from '@xsai/tool'
 import { description, object, pipe, string } from 'valibot'
 
@@ -167,7 +168,6 @@ const weather = await tool({
 const { text } = await generateText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
-  maxSteps: 2,
   messages: [
     {
       content: 'You are a helpful assistant.',
@@ -179,6 +179,7 @@ const { text } = await generateText({
     },
   ],
   model: 'gpt-4o',
+  stopWhen: stepCountAtLeast(2),
   toolChoice: 'required',
   tools: [weather],
 })

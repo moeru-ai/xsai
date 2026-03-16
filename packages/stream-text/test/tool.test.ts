@@ -6,6 +6,7 @@ import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'
+import { stepCountAtLeast } from '../src/shared-chat'
 
 describe('@xsai/stream-text tool', async () => {
   it('basic tool calls', async () => {
@@ -27,7 +28,6 @@ describe('@xsai/stream-text tool', async () => {
 
     const { fullStream, steps } = streamText({
       baseURL: 'http://localhost:11434/v1/',
-      maxSteps: 2,
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -40,6 +40,7 @@ describe('@xsai/stream-text tool', async () => {
       ],
       model: 'granite4:350m-h',
       seed: 1145141919810,
+      stopWhen: stepCountAtLeast(2),
       toolChoice: 'required',
       tools: [add],
     })

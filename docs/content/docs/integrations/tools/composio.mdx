@@ -141,6 +141,7 @@ export class XSAIToolSet extends ComposioToolSet {
 
 ```ts
 import { generateText } from '@xsai/generate-text'
+import { stepCountAtLeast } from '@xsai/generate-text/shared-chat'
 import { env } from 'node:process'
 
 import { XSAIToolSet } from './utils/xsai-tool-set'
@@ -152,12 +153,12 @@ const tools = await toolset.getTools({ apps: ['github'] })
 const result = await generateText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
-  maxSteps: 5,
   model: 'gpt-4o-mini',
   messages: [{
     role: 'user',
     content: 'Star the repository "moeru-ai/xsai"',
   }],
+  stopWhen: stepCountAtLeast(5),
   tools,
   toolChoice: 'required',
   temperature: 0,

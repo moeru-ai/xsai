@@ -6,6 +6,7 @@ import { description, object, pipe, string } from 'valibot'
 import { describe, expect, it } from 'vitest'
 
 import { generateText } from '../src'
+import { stepCountAtLeast } from '../src/shared-chat'
 
 describe('@xsai/generate-text', () => {
   it('basic', async () => {
@@ -56,7 +57,6 @@ describe('@xsai/generate-text', () => {
 
     const { steps } = await generateText({
       baseURL: 'http://localhost:11434/v1/',
-      maxSteps: 2,
       messages: [
         {
           content: 'You are a helpful assistant.',
@@ -69,6 +69,7 @@ describe('@xsai/generate-text', () => {
       ],
       model: 'granite4:350m-h',
       seed: 1145141919810,
+      stopWhen: stepCountAtLeast(2),
       toolChoice: 'required',
       tools: [add],
     })
