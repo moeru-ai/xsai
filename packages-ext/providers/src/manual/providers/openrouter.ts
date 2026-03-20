@@ -99,10 +99,10 @@ export interface OpenRouterOptions {
  * Create a OpenRouter Provider
  * @see {@link https://openrouter.ai/models}
  */
-export const createOpenRouter = (apiKey: string, baseURL = 'https://openrouter.ai/api/v1/') => merge(
+export const createOpenRouter = (apiKey: string, baseURL = 'https://openrouter.ai/api/v1/', referer?: string, title?: string) => merge(
   {
     chat: (model: string, openRouterOptions?: OpenRouterOptions) => {
-      const requestOptions: CommonRequestOptions = { apiKey, baseURL, model }
+      const requestOptions: CommonRequestOptions = { apiKey, baseURL, model, headers: { ...(referer && { 'HTTP-Referer': referer }), ...(title && { 'X-OpenRouter-Title': title }) } }
 
       const toOpenRouterOptions = ({ extraHeaders, models, provider }: OpenRouterOptions): Record<string, unknown> => {
         if (extraHeaders != null) {
@@ -130,5 +130,5 @@ export const createOpenRouter = (apiKey: string, baseURL = 'https://openrouter.a
     OpenrouterModels,
     OpenRouterOptions
   >,
-  createModelProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL, headers: { ...(referer && { 'HTTP-Referer': referer }), ...(title && { 'X-OpenRouter-Title': title }) } }),
 )
