@@ -1,6 +1,6 @@
 import type { StreamTranscriptionDelta } from '..'
 
-import { JSONParseError, RemoteAPIError, StreamChunkParseError } from '@xsai/shared'
+import { JSONParseError, RemoteAPIError } from '@xsai/shared'
 
 const parseJSONChunk = (data: string): StreamTranscriptionDelta => {
   if (data.startsWith('{') && data.includes('"error":')) {
@@ -13,12 +13,9 @@ const parseJSONChunk = (data: string): StreamTranscriptionDelta => {
     return JSON.parse(data) as StreamTranscriptionDelta
   }
   catch (cause) {
-    throw new StreamChunkParseError(`Failed to parse stream chunk: ${data}`, {
-      cause: new JSONParseError(`Failed to parse stream chunk JSON: ${data}`, {
-        cause,
-        text: data,
-      }),
-      chunk: data,
+    throw new JSONParseError(`Failed to parse stream chunk JSON: ${data}`, {
+      cause,
+      text: data,
     })
   }
 }

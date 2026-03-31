@@ -1,6 +1,6 @@
 import type { EventSourceMessage } from 'eventsource-parser/stream'
 
-import { RemoteAPIError, StreamChunkParseError } from '@xsai/shared'
+import { JSONParseError, RemoteAPIError } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
 import { transformChunk } from '../src/internal/_transform-chunk'
@@ -29,11 +29,11 @@ describe('@xsai/stream-text transformChunk errors', () => {
     })).rejects.toBeInstanceOf(RemoteAPIError)
   })
 
-  it('throws StreamChunkParseError for invalid JSON chunks', async () => {
+  it('throws JSONParseError for invalid JSON chunks', async () => {
     await expect(readTransformed({
       data: '{"choices":',
       event: 'message',
       id: '',
-    })).rejects.toBeInstanceOf(StreamChunkParseError)
+    })).rejects.toBeInstanceOf(JSONParseError)
   })
 })

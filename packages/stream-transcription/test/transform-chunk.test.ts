@@ -1,4 +1,4 @@
-import { RemoteAPIError, StreamChunkParseError } from '@xsai/shared'
+import { JSONParseError, RemoteAPIError } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
 import { transformChunk } from '../src/internal/_transform-chunk'
@@ -25,7 +25,7 @@ describe('@xsai/stream-transcription transformChunk errors', () => {
     await expect(readTransformed('data: {"error":{"message":"denied"}}\n')).rejects.toBeInstanceOf(RemoteAPIError)
   })
 
-  it('throws StreamChunkParseError for invalid JSON chunks', async () => {
-    await expect(readTransformed('data: {"text":\n')).rejects.toBeInstanceOf(StreamChunkParseError)
+  it('throws JSONParseError for invalid JSON chunks', async () => {
+    await expect(readTransformed('data: {"text":\n')).rejects.toBeInstanceOf(JSONParseError)
   })
 })

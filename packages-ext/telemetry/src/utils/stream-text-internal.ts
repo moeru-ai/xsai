@@ -1,7 +1,7 @@
 import type { EventSourceMessage } from 'eventsource-parser/stream'
 import type { FinishReason, ToolCall, Usage } from 'xsai'
 
-import { JSONParseError, RemoteAPIError, StreamChunkParseError } from 'xsai'
+import { JSONParseError, RemoteAPIError } from 'xsai'
 
 export interface StreamTextChunkResult {
   choices: {
@@ -37,12 +37,9 @@ const parseChunk = (data: string): StreamTextChunkResult => {
     return JSON.parse(data) as StreamTextChunkResult
   }
   catch (cause) {
-    throw new StreamChunkParseError(`Failed to parse stream chunk: ${data}`, {
-      cause: new JSONParseError(`Failed to parse stream chunk JSON: ${data}`, {
-        cause,
-        text: data,
-      }),
-      chunk: data,
+    throw new JSONParseError(`Failed to parse stream chunk JSON: ${data}`, {
+      cause,
+      text: data,
     })
   }
 }

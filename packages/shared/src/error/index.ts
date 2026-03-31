@@ -39,10 +39,6 @@ export interface RemoteAPIErrorOptions extends XSAIErrorOptions {
   responseBody: string
 }
 
-export interface StreamChunkParseErrorOptions extends XSAIErrorOptions {
-  chunk: string
-}
-
 export interface ToolExecutionErrorOptions extends InvalidToolInputErrorOptions {
   toolCallId?: string
 }
@@ -57,7 +53,6 @@ export type XSAIErrorCode
     | 'no_choices_returned'
     | 'no_such_tool'
     | 'remote_api_error'
-    | 'stream_chunk_parse_error'
     | 'tool_execution_error'
 
 export interface XSAIErrorOptions {
@@ -181,15 +176,6 @@ export class RemoteAPIError extends XSAIError {
     super(message, 'remote_api_error', options)
     this.response = options.response
     this.responseBody = options.responseBody
-  }
-}
-
-export class StreamChunkParseError extends XSAIError {
-  chunk: string
-
-  constructor(message: string, options: StreamChunkParseErrorOptions) {
-    super(message, 'stream_chunk_parse_error', options)
-    this.chunk = options.chunk
   }
 }
 
