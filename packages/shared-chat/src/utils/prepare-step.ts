@@ -1,18 +1,18 @@
 import type { WithUnknown } from '@xsai/shared'
 
-import type { ChatOptions } from './chat'
 import type { CompletionStep, Message, PrepareStep, ToolChoice } from '../types'
-
-export interface ResolveStepOptionsOptions extends Pick<WithUnknown<ChatOptions>, 'messages' | 'model' | 'toolChoice'> {
-  prepareStep?: PrepareStep
-  stepNumber: number
-  steps: CompletionStep[]
-}
+import type { ChatOptions } from './chat'
 
 export interface ResolvedStepOptions {
   messages: Message[]
   model: string
   toolChoice: ToolChoice | undefined
+}
+
+export interface ResolveStepOptionsOptions extends Pick<WithUnknown<ChatOptions>, 'messages' | 'model' | 'toolChoice'> {
+  prepareStep?: PrepareStep
+  stepNumber: number
+  steps: CompletionStep[]
 }
 
 export const resolveStepOptions = async ({ messages, model, prepareStep, stepNumber, steps, toolChoice }: ResolveStepOptionsOptions): Promise<ResolvedStepOptions> => {

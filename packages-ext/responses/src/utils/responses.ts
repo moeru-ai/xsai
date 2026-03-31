@@ -94,7 +94,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const resolveStepOptions = async (): Promise<PrepareStepResult> =>
     options.prepareStep == null
       ? {}
-      : await options.prepareStep({
+      : options.prepareStep({
           input: structuredClone(input),
           model: options.model,
           stepNumber: steps.length,

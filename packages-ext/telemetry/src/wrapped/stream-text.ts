@@ -71,204 +71,204 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       model: stepOptions.model,
       toolChoice: stepOptions.toolChoice,
     }, tracer), async (span) => {
-    const { body: stream } = await chat({
-      ...options,
-      maxSteps: undefined,
-      messages: stepOptions.messages,
-      model: stepOptions.model,
-      stopWhen: undefined,
-      stream: true,
-      streamOptions: options.streamOptions != null
-        ? objCamelToSnake(options.streamOptions)
-        : undefined,
-      toolChoice: stepOptions.toolChoice,
-      tools,
-    })
-
-    const pushUsage = (u: Usage) => {
-      usage = u
-      totalUsage = totalUsage
-        ? {
-            completion_tokens: totalUsage.completion_tokens + u.completion_tokens,
-            prompt_tokens: totalUsage.prompt_tokens + u.prompt_tokens,
-            total_tokens: totalUsage.total_tokens + u.total_tokens,
-          }
-        : u
-    }
-
-    let text: string = ''
-    let reasoningText: string | undefined
-    const pushText = (content: string) => {
-      textCtrl?.enqueue(content)
-      text += content
-    }
-    const pushReasoningText = (reasoningContent: string) => {
-      if (reasoningText == null)
-        reasoningText = ''
-
-      reasoningTextCtrl?.enqueue(reasoningContent)
-      reasoningText += reasoningContent
-    }
-
-    const tool_calls: ToolCall[] = []
-    const toolCalls: CompletionToolCall[] = []
-    const toolResults: CompletionToolResult[] = []
-    let finishReason: FinishReason = 'other'
-
-    await stream!
-      .pipeThrough(transformChunk())
-      .pipeTo(new WritableStream({
-        abort: (reason) => {
-          eventCtrl?.error(reason)
-          textCtrl?.error(reason)
-        },
-        close: () => {},
-        // eslint-disable-next-line sonarjs/cognitive-complexity
-        write: (chunk) => {
-          if (chunk.usage)
-            pushUsage(chunk.usage)
-
-          // skip if no choices
-          if (chunk.choices == null || chunk.choices.length === 0)
-            return
-
-          const choice = chunk.choices[0]
-
-          if (choice.delta.reasoning != null) {
-            if (reasoningField !== 'reasoning')
-              reasoningField = 'reasoning'
-
-            pushEvent({ text: choice.delta.reasoning, type: 'reasoning-delta' })
-            pushReasoningText(choice.delta.reasoning)
-          }
-          else if (choice.delta.reasoning_content != null) {
-            if (reasoningField !== 'reasoning_content')
-              reasoningField = 'reasoning_content'
-
-            pushEvent({ text: choice.delta.reasoning_content, type: 'reasoning-delta' })
-            pushReasoningText(choice.delta.reasoning_content)
-          }
-
-          if (choice.finish_reason != null)
-            finishReason = choice.finish_reason
-
-          if (choice.delta.tool_calls?.length === 0 || choice.delta.tool_calls == null) {
-            if (choice.delta.content != null) {
-              pushEvent({ text: choice.delta.content, type: 'text-delta' })
-              pushText(choice.delta.content)
-            }
-            else if (choice.delta.refusal != null) {
-              pushEvent({ error: choice.delta.refusal, type: 'error' })
-            }
-            else if (choice.finish_reason != null) {
-              pushEvent({ finishReason: choice.finish_reason, type: 'finish', usage })
-            }
-          }
-          else {
-            // https://platform.openai.com/docs/guides/function-calling?api-mode=chat&lang=javascript#streaming
-            for (const toolCall of choice.delta.tool_calls) {
-              const { index } = toolCall
-
-              if (!tool_calls.at(index)) {
-                tool_calls[index] = {
-                  ...toolCall,
-                  function: {
-                    ...toolCall.function,
-                    arguments: toolCall.function.arguments ?? '',
-                  },
-                }
-                pushEvent({
-                  toolCallId: toolCall.id,
-                  toolName: toolCall.function.name!,
-                  type: 'tool-call-streaming-start',
-                })
-              }
-              else {
-                tool_calls[index].function.arguments! += toolCall.function.arguments
-                pushEvent({
-                  argsTextDelta: toolCall.function.arguments!,
-                  toolCallId: toolCall.id,
-                  toolName: toolCall.function.name ?? tool_calls[index].function.name!,
-                  type: 'tool-call-delta',
-                })
-              }
-            }
-          }
-        },
-      }))
-
-    const message: AssistantMessage = {
-      ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
-      content: text,
-      role: 'assistant',
-      tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
-    }
-    messages.push(message)
-    span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
-
-    if (tool_calls.length !== 0) {
-      for (const toolCall of tool_calls) {
-        if (toolCall == null)
-          continue
-        const { completionToolCall, completionToolResult, message } = await executeTool({
-          abortSignal: options.abortSignal,
-          messages,
-          toolCall,
-          tools,
-        })
-
-        toolCalls.push(completionToolCall)
-        toolResults.push(completionToolResult)
-        messages.push(message)
-
-        pushEvent({ ...completionToolCall, type: 'tool-call' })
-        pushEvent({ ...completionToolResult, type: 'tool-result' })
-      }
-    }
-    else {
-      // TODO: should we add this on tool calls finish?
-      pushEvent({
-        finishReason,
-        type: 'finish',
-        usage,
+      const { body: stream } = await chat({
+        ...options,
+        maxSteps: undefined,
+        messages: stepOptions.messages,
+        model: stepOptions.model,
+        stopWhen: undefined,
+        stream: true,
+        streamOptions: options.streamOptions != null
+          ? objCamelToSnake(options.streamOptions)
+          : undefined,
+        toolChoice: stepOptions.toolChoice,
+        tools,
       })
-    }
 
-    const stopStep: StopStep = {
-      finishReason,
-      text,
-      toolCalls,
-      toolResults,
-      usage,
-    }
-    const stop = shouldStop(stopWhen, {
-      messages,
-      step: stopStep,
-      steps: [...steps, stopStep],
-    })
-    const willContinue = toolCalls.length > 0 && !stop
-    const step = {
-      ...stopStep,
-      stepType: determineStepType({
+      const pushUsage = (u: Usage) => {
+        usage = u
+        totalUsage = totalUsage
+          ? {
+              completion_tokens: totalUsage.completion_tokens + u.completion_tokens,
+              prompt_tokens: totalUsage.prompt_tokens + u.prompt_tokens,
+              total_tokens: totalUsage.total_tokens + u.total_tokens,
+            }
+          : u
+      }
+
+      let text: string = ''
+      let reasoningText: string | undefined
+      const pushText = (content: string) => {
+        textCtrl?.enqueue(content)
+        text += content
+      }
+      const pushReasoningText = (reasoningContent: string) => {
+        if (reasoningText == null)
+          reasoningText = ''
+
+        reasoningTextCtrl?.enqueue(reasoningContent)
+        reasoningText += reasoningContent
+      }
+
+      const tool_calls: ToolCall[] = []
+      const toolCalls: CompletionToolCall[] = []
+      const toolResults: CompletionToolResult[] = []
+      let finishReason: FinishReason = 'other'
+
+      await stream!
+        .pipeThrough(transformChunk())
+        .pipeTo(new WritableStream({
+          abort: (reason) => {
+            eventCtrl?.error(reason)
+            textCtrl?.error(reason)
+          },
+          close: () => {},
+          // eslint-disable-next-line sonarjs/cognitive-complexity
+          write: (chunk) => {
+            if (chunk.usage)
+              pushUsage(chunk.usage)
+
+            // skip if no choices
+            if (chunk.choices == null || chunk.choices.length === 0)
+              return
+
+            const choice = chunk.choices[0]
+
+            if (choice.delta.reasoning != null) {
+              if (reasoningField !== 'reasoning')
+                reasoningField = 'reasoning'
+
+              pushEvent({ text: choice.delta.reasoning, type: 'reasoning-delta' })
+              pushReasoningText(choice.delta.reasoning)
+            }
+            else if (choice.delta.reasoning_content != null) {
+              if (reasoningField !== 'reasoning_content')
+                reasoningField = 'reasoning_content'
+
+              pushEvent({ text: choice.delta.reasoning_content, type: 'reasoning-delta' })
+              pushReasoningText(choice.delta.reasoning_content)
+            }
+
+            if (choice.finish_reason != null)
+              finishReason = choice.finish_reason
+
+            if (choice.delta.tool_calls?.length === 0 || choice.delta.tool_calls == null) {
+              if (choice.delta.content != null) {
+                pushEvent({ text: choice.delta.content, type: 'text-delta' })
+                pushText(choice.delta.content)
+              }
+              else if (choice.delta.refusal != null) {
+                pushEvent({ error: choice.delta.refusal, type: 'error' })
+              }
+              else if (choice.finish_reason != null) {
+                pushEvent({ finishReason: choice.finish_reason, type: 'finish', usage })
+              }
+            }
+            else {
+            // https://platform.openai.com/docs/guides/function-calling?api-mode=chat&lang=javascript#streaming
+              for (const toolCall of choice.delta.tool_calls) {
+                const { index } = toolCall
+
+                if (!tool_calls.at(index)) {
+                  tool_calls[index] = {
+                    ...toolCall,
+                    function: {
+                      ...toolCall.function,
+                      arguments: toolCall.function.arguments ?? '',
+                    },
+                  }
+                  pushEvent({
+                    toolCallId: toolCall.id,
+                    toolName: toolCall.function.name!,
+                    type: 'tool-call-streaming-start',
+                  })
+                }
+                else {
+                  tool_calls[index].function.arguments! += toolCall.function.arguments
+                  pushEvent({
+                    argsTextDelta: toolCall.function.arguments!,
+                    toolCallId: toolCall.id,
+                    toolName: toolCall.function.name ?? tool_calls[index].function.name!,
+                    type: 'tool-call-delta',
+                  })
+                }
+              }
+            }
+          },
+        }))
+
+      const message: AssistantMessage = {
+        ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
+        content: text,
+        role: 'assistant',
+        tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
+      }
+      messages.push(message)
+      span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
+
+      if (tool_calls.length !== 0) {
+        for (const toolCall of tool_calls) {
+          if (toolCall == null)
+            continue
+          const { completionToolCall, completionToolResult, message } = await executeTool({
+            abortSignal: options.abortSignal,
+            messages,
+            toolCall,
+            tools,
+          })
+
+          toolCalls.push(completionToolCall)
+          toolResults.push(completionToolResult)
+          messages.push(message)
+
+          pushEvent({ ...completionToolCall, type: 'tool-call' })
+          pushEvent({ ...completionToolResult, type: 'tool-result' })
+        }
+      }
+      else {
+      // TODO: should we add this on tool calls finish?
+        pushEvent({
+          finishReason,
+          type: 'finish',
+          usage,
+        })
+      }
+
+      const stopStep: StopStep = {
         finishReason,
-        stepsLength: steps.length,
-        toolCallsLength: toolCalls.length,
-        willContinue,
-      }),
-    }
-    pushStep(step)
+        text,
+        toolCalls,
+        toolResults,
+        usage,
+      }
+      const stop = shouldStop(stopWhen, {
+        messages,
+        step: stopStep,
+        steps: [...steps, stopStep],
+      })
+      const willContinue = toolCalls.length > 0 && !stop
+      const step = {
+        ...stopStep,
+        stepType: determineStepType({
+          finishReason,
+          stepsLength: steps.length,
+          toolCallsLength: toolCalls.length,
+          willContinue,
+        }),
+      }
+      pushStep(step)
 
-    // Telemetry
-    span.setAttributes({
-      'gen_ai.response.finish_reasons': [step.finishReason],
-      ...step.usage && {
-        'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
-        'gen_ai.usage.output_tokens': step.usage.completion_tokens,
-      },
-    })
+      // Telemetry
+      span.setAttributes({
+        'gen_ai.response.finish_reasons': [step.finishReason],
+        ...step.usage && {
+          'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
+          'gen_ai.usage.output_tokens': step.usage.completion_tokens,
+        },
+      })
 
-    if (willContinue)
-      return async () => doStream()
+      if (willContinue)
+        return async () => doStream()
     })
   }
 

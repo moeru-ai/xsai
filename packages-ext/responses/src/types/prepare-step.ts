@@ -1,6 +1,7 @@
 import type { ItemParam } from '../generated'
-
 import type { Step } from './step'
+
+export type PrepareStep = (options: PrepareStepOptions) => PrepareStepResult | Promise<PrepareStepResult>
 
 export interface PrepareStepOptions {
   input: ItemParam[]
@@ -15,8 +16,6 @@ export interface PrepareStepResult {
   model?: string
   tool_choice?: OpenResponsesPrepareToolChoice
 }
-
-export type PrepareStep = (options: PrepareStepOptions) => PrepareStepResult | Promise<PrepareStepResult>
 
 type OpenResponsesPrepareToolChoice = NonNullable<{
   tool_choice?: import('../generated').CreateResponseBody['tool_choice']
