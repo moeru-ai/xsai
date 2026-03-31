@@ -2,7 +2,7 @@ import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionTo
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -55,16 +55,33 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     ? options.tools.map(tool => wrapTool(tool, tracer))
     : undefined
 
-  const doStream = async () => recordSpan(chatSpan({ ...options, messages }, tracer), async (span) => {
+  const doStream = async () => {
+    const stepOptions = await resolveStepOptions({
+      messages,
+      model: options.model,
+      prepareStep: options.prepareStep,
+      stepNumber: steps.length,
+      steps,
+      toolChoice: options.toolChoice,
+    })
+
+    return recordSpan(chatSpan({
+      ...options,
+      messages: stepOptions.messages,
+      model: stepOptions.model,
+      toolChoice: stepOptions.toolChoice,
+    }, tracer), async (span) => {
     const { body: stream } = await chat({
       ...options,
       maxSteps: undefined,
-      messages,
+      messages: stepOptions.messages,
+      model: stepOptions.model,
       stopWhen: undefined,
       stream: true,
       streamOptions: options.streamOptions != null
         ? objCamelToSnake(options.streamOptions)
         : undefined,
+      toolChoice: stepOptions.toolChoice,
       tools,
     })
 
@@ -252,7 +269,8 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
     if (willContinue)
       return async () => doStream()
-  })
+    })
+  }
 
   void (async () => {
     try {

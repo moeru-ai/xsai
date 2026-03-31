@@ -1,4 +1,5 @@
 export type * from './types/open-responses-options'
+export type * from './types/prepare-step'
 export type * from './types/step'
 export type * from './types/stop-when'
 export type * from './types/streaming-event'

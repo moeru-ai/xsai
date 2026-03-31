@@ -1,5 +1,6 @@
 import type { FunctionCall, FunctionCallOutput, ResponseResource } from '../generated'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
+import type { PrepareStepResult } from '../types/prepare-step'
 import type { Step } from '../types/step'
 import type { StopCondition } from '../types/stop-when'
 import type { StreamingEvent } from '../types/streaming-event'
@@ -90,13 +91,27 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const resultUsage = new DelayedPromise<undefined | Usage>()
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
+  const resolveStepOptions = async (): Promise<PrepareStepResult> =>
+    options.prepareStep == null
+      ? {}
+      : await options.prepareStep({
+          input: structuredClone(input),
+          model: options.model,
+          stepNumber: steps.length,
+          steps: structuredClone(steps),
+          tool_choice: options.tool_choice,
+        })
+
   const createReader = async () => {
+    const stepOptions = await resolveStepOptions()
     const res = await (options.fetch ?? globalThis.fetch)(requestURL('responses', options.baseURL), {
       body: requestBody({
         ...options,
-        input,
+        input: stepOptions.input != null ? structuredClone(stepOptions.input) : input,
+        model: stepOptions.model ?? options.model,
         stopWhen: undefined,
         stream: true,
+        tool_choice: stepOptions.tool_choice ?? options.tool_choice,
         tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
       }),
       headers: requestHeaders({

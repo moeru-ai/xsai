@@ -1,11 +1,12 @@
 import type { TrampolineFn, WithUnknown } from '@xsai/shared'
-import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StopCondition, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
 
 import { responseJSON, trampoline } from '@xsai/shared'
-import { chat, determineStepType, executeTool, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, determineStepType, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
+  prepareStep?: PrepareStep
   /** @internal */
   steps?: CompletionStep<true>[]
   /** @default `stepCountAtLeast(1)` */
@@ -41,13 +42,29 @@ export interface GenerateTextResult {
 }
 
 /** @internal */
-const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promise<TrampolineFn<GenerateTextResult>> =>
-  chat({
+const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promise<TrampolineFn<GenerateTextResult>> => {
+  const messages: Message[] = options.steps == null
+    ? structuredClone(options.messages)
+    : options.messages
+  const steps: CompletionStep<true>[] = options.steps ?? []
+  const stepOptions = await resolveStepOptions({
+    messages,
+    model: options.model,
+    prepareStep: options.prepareStep,
+    stepNumber: steps.length,
+    steps,
+    toolChoice: options.toolChoice,
+  })
+
+  return chat({
     ...options,
     maxSteps: undefined,
+    messages: stepOptions.messages,
+    model: stepOptions.model,
     steps: undefined,
     stopWhen: undefined,
     stream: false,
+    toolChoice: stepOptions.toolChoice,
   })
     .then(responseJSON<GenerateTextResponse>)
     .then(async (res) => {
@@ -55,9 +72,6 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
 
       if (!choices?.length)
         throw new Error(`No choices returned, response body: ${JSON.stringify(res)}`)
-
-      const messages: Message[] = structuredClone(options.messages)
-      const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
 
       const toolCalls: CompletionToolCall[] = []
       const toolResults: CompletionToolResult[] = []
@@ -135,6 +149,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         })
       }
     })
+}
 
 export const generateText = async (options: WithUnknown<GenerateTextOptions>): Promise<GenerateTextResult> =>
   trampoline<GenerateTextResult>(async () => rawGenerateText(options))
