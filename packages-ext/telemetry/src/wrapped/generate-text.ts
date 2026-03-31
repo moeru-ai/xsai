@@ -2,7 +2,7 @@ import type { CompletionStep, CompletionToolCall, CompletionToolResult, Generate
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, determineStepType, executeTool, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, determineStepType, executeTool, resolveStepOptions, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -16,14 +16,35 @@ import { wrapTool } from '../utils/wrap-tool'
 export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>) => {
   const tracer = getTracer()
 
-  const rawGenerateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>): Promise<TrampolineFn<GenerateTextResult>> =>
-    recordSpan(chatSpan(options, tracer), async span =>
+  const rawGenerateText = async (options: WithUnknown<WithTelemetry<GenerateTextOptions>>): Promise<TrampolineFn<GenerateTextResult>> => {
+    const messages: Message[] = options.steps == null
+      ? structuredClone(options.messages)
+      : options.messages
+    const steps: CompletionStep<true>[] = options.steps ?? []
+    const stepOptions = await resolveStepOptions({
+      messages,
+      model: options.model,
+      prepareStep: options.prepareStep,
+      stepNumber: steps.length,
+      steps,
+      toolChoice: options.toolChoice,
+    })
+
+    return recordSpan(chatSpan({
+      ...options,
+      messages: stepOptions.messages,
+      model: stepOptions.model,
+      toolChoice: stepOptions.toolChoice,
+    }, tracer), async span =>
       chat({
         ...options,
         maxSteps: undefined,
+        messages: stepOptions.messages,
+        model: stepOptions.model,
         steps: undefined,
         stopWhen: undefined,
         stream: false,
+        toolChoice: stepOptions.toolChoice,
       })
         .then(responseJSON<GenerateTextResponse>)
         .then(async (res) => {
@@ -31,9 +52,6 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
 
           if (!choices?.length)
             throw new Error(`No choices returned, response body: ${JSON.stringify(res)}`)
-
-          const messages: Message[] = structuredClone(options.messages)
-          const steps: CompletionStep<true>[] = options.steps ? structuredClone(options.steps) : []
 
           const toolCalls: CompletionToolCall[] = []
           const toolResults: CompletionToolResult[] = []
@@ -117,6 +135,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             })
           }
         }))
+  }
 
   return trampoline<GenerateTextResult>(async () => rawGenerateText({
     ...options,

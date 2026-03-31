@@ -1,10 +1,10 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StopCondition, StopStep, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, StopStep, ToolCall, Usage } from '@xsai/shared-chat'
 
 import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, determineStepType, executeTool, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, determineStepType, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 import { transformChunk } from './internal/_transform-chunk'
 
@@ -14,6 +14,7 @@ export interface StreamTextOptions extends ChatOptions {
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
   onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
+  prepareStep?: PrepareStep
   /** @default `stepCountAtLeast(1)` */
   stopWhen?: StopCondition
   /**
@@ -75,15 +76,26 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   }
 
   const doStream = async () => {
+    const stepOptions = await resolveStepOptions({
+      messages,
+      model: options.model,
+      prepareStep: options.prepareStep,
+      stepNumber: steps.length,
+      steps,
+      toolChoice: options.toolChoice,
+    })
+
     const { body: stream } = await chat({
       ...options,
       maxSteps: undefined,
-      messages,
+      messages: stepOptions.messages,
+      model: stepOptions.model,
       stopWhen: undefined,
       stream: true,
       streamOptions: options.streamOptions != null
         ? objCamelToSnake(options.streamOptions)
         : undefined,
+      toolChoice: stepOptions.toolChoice,
     })
 
     const pushUsage = (u: Usage) => {
