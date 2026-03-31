@@ -7,7 +7,7 @@ const encoder = new TextEncoder()
 
 const readTransformed = async (input: string) => {
   const stream = new ReadableStream<Uint8Array>({
-    start(controller) {
+    start: (controller) => {
       controller.enqueue(encoder.encode(input))
       controller.close()
     },
@@ -16,7 +16,7 @@ const readTransformed = async (input: string) => {
   await stream
     .pipeThrough(transformChunk())
     .pipeTo(new WritableStream({
-      write() {},
+      write: () => {},
     }))
 }
 

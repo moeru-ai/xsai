@@ -7,7 +7,7 @@ import { transformChunk } from '../src/internal/_transform-chunk'
 
 const readTransformed = async (message: EventSourceMessage) => {
   const stream = new ReadableStream<EventSourceMessage>({
-    start(controller) {
+    start: (controller) => {
       controller.enqueue(message)
       controller.close()
     },
@@ -16,7 +16,7 @@ const readTransformed = async (message: EventSourceMessage) => {
   await stream
     .pipeThrough(transformChunk())
     .pipeTo(new WritableStream({
-      write() {},
+      write: () => {},
     }))
 }
 

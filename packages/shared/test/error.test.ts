@@ -1,10 +1,9 @@
-import { APICallError, InvalidResponseError, JSONParseError, XSAIError } from '../src'
-import { responseCatch, responseJSON } from '../src'
-
 import { describe, expect, it } from 'vitest'
 
+import { APICallError, JSONParseError, responseCatch, responseJSON, XSAIError } from '../src'
+
 describe('@xsai/shared errors', () => {
-  it('APICallError.isInstance narrows shared errors', async () => {
+  it('aPICallError.isInstance narrows shared errors', async () => {
     const createResponse = () => new Response('upstream failed', {
       status: 503,
       statusText: 'Service Unavailable',

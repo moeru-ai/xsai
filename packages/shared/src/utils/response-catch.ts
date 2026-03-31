@@ -8,11 +8,12 @@ export const responseCatch = async (res: Response) => {
       responseBody,
     })
   }
-  if (!res.body)
+  if (!res.body) {
     throw new InvalidResponseError('Response body is empty from remote server', {
       reason: 'empty_body',
       response: res,
     })
+  }
   if (!(res.body instanceof ReadableStream)) {
     const contentType = res.headers.get('Content-Type')
     throw new InvalidResponseError(`Expected Response body to be a ReadableStream, but got ${String(res.body)}; Content Type is ${contentType}`, {
