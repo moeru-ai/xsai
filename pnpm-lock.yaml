@@ -448,6 +448,9 @@ importers:
       '@opentelemetry/api':
         specifier: 'catalog:'
         version: 1.9.0
+      eventsource-parser:
+        specifier: 'catalog:'
+        version: 3.0.6
       xsai:
         specifier: workspace:~
         version: link:../../packages-top/xsai

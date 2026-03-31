@@ -2,6 +2,7 @@ import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionTo
 
 import type { WithTelemetry } from '../types/options'
 
+import { EventSourceParserStream } from 'eventsource-parser/stream'
 import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
@@ -116,6 +117,8 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       let finishReason: FinishReason = 'other'
 
       await stream!
+        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new EventSourceParserStream())
         .pipeThrough(transformChunk())
         .pipeTo(new WritableStream({
           abort: (reason) => {
