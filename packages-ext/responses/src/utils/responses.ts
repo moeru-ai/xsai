@@ -99,7 +99,6 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
           model: options.model,
           stepNumber: steps.length,
           steps: structuredClone(steps),
-          tool_choice: options.tool_choice,
         })
 
   const createReader = async () => {
