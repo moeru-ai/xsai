@@ -28,7 +28,7 @@ export interface StreamTextChunkResult {
 export const transformChunk = () => {
   return new TransformStream<EventSourceMessage, StreamTextChunkResult>({
     transform: async (chunk, controller) => {
-      if (chunk.data === '[DONE]')
+      if (!chunk.data || chunk.data === '[DONE]')
         return
 
       if (chunk.data.startsWith('{') && chunk.data.includes('"error":'))
