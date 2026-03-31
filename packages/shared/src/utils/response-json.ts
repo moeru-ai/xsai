@@ -1,4 +1,4 @@
-import { XSAIError } from '../error'
+import { JSONParseError } from '../error'
 
 export const responseJSON = async <T>(res: Response): Promise<T> => {
   const text = await res.text()
@@ -7,6 +7,9 @@ export const responseJSON = async <T>(res: Response): Promise<T> => {
     return JSON.parse(text) as T
   }
   catch (cause) {
-    throw new XSAIError(`Failed to parse response, response body: ${text}`, res, cause)
+    throw new JSONParseError(`Failed to parse response, response body: ${text}`, {
+      cause,
+      text,
+    })
   }
 }

@@ -1,7 +1,7 @@
 import type { TrampolineFn, WithUnknown } from '@xsai/shared'
 import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
 
-import { responseJSON, trampoline } from '@xsai/shared'
+import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
@@ -70,8 +70,13 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
     .then(async (res) => {
       const { choices, usage } = res
 
-      if (!choices?.length)
-        throw new Error(`No choices returned, response body: ${JSON.stringify(res)}`)
+      if (!choices?.length) {
+        const responseBody = JSON.stringify(res)
+        throw new InvalidResponseError(`No choices returned, response body: ${responseBody}`, {
+          reason: 'no_choices',
+          responseBody,
+        })
+      }
 
       const toolCalls: CompletionToolCall[] = []
       const toolResults: CompletionToolResult[] = []

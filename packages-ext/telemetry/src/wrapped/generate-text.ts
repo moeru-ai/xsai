@@ -2,7 +2,7 @@ import type { CompletionStep, CompletionToolCall, CompletionToolResult, Generate
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, determineStepType, executeTool, resolveStepOptions, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, determineStepType, executeTool, InvalidResponseError, resolveStepOptions, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -50,8 +50,13 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
         .then(async (res) => {
           const { choices, usage } = res
 
-          if (!choices?.length)
-            throw new Error(`No choices returned, response body: ${JSON.stringify(res)}`)
+          if (!choices?.length) {
+            const responseBody = JSON.stringify(res)
+            throw new InvalidResponseError(`No choices returned, response body: ${responseBody}`, {
+              reason: 'no_choices',
+              responseBody,
+            })
+          }
 
           const toolCalls: CompletionToolCall[] = []
           const toolResults: CompletionToolResult[] = []
