@@ -1,6 +1,6 @@
 import type { Tool, ToolCall } from '../src'
 
-import { InvalidToolCallError, InvalidToolInputError, NoSuchToolError, ToolExecutionError } from '@xsai/shared'
+import { InvalidToolCallError, InvalidToolInputError, ToolExecutionError } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
 import { executeTool } from '../src/utils/execute-tool'
@@ -18,12 +18,16 @@ const createToolCall = (overrides: Partial<ToolCall> = {}): ToolCall => ({
 })
 
 describe('@xsai/shared-chat executeTool errors', () => {
-  it('throws NoSuchToolError when the model selects an unavailable tool', async () => {
+  it('throws InvalidToolCallError when the model selects an unavailable tool', async () => {
     await expect(executeTool({
       messages: [...messages],
       toolCall: createToolCall(),
       tools: [],
-    })).rejects.toBeInstanceOf(NoSuchToolError)
+    })).rejects.toMatchObject({
+      code: 'invalid_tool_call',
+      reason: 'unknown_tool',
+      toolName: 'weather',
+    })
   })
 
   it('throws InvalidToolCallError when tool name is missing', async () => {

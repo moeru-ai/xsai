@@ -1,40 +1,34 @@
-export interface APICallErrorOptions extends XSAIErrorOptions {
+export interface APICallErrorOptions extends ErrorOptions {
   requestBody?: string
   response: Response
   responseBody?: string
 }
 
-export interface InvalidModelResponseErrorOptions extends XSAIErrorOptions {
+export interface InvalidResponseErrorOptions extends ErrorOptions {
+  body?: unknown
+  contentType?: null | string
+  reason: 'empty_body' | 'invalid_body' | 'no_choices'
+  response?: Response
   responseBody?: string
 }
 
-export interface InvalidResponseErrorOptions extends XSAIErrorOptions {
-  body?: unknown
-  contentType?: null | string
-  reason: 'empty_body' | 'invalid_body'
-  response?: Response
-}
-
-export interface InvalidToolCallErrorOptions extends XSAIErrorOptions {
-  reason: 'missing_arguments' | 'missing_name'
+export interface InvalidToolCallErrorOptions extends ErrorOptions {
+  availableTools?: string[]
+  reason: 'missing_arguments' | 'missing_name' | 'unknown_tool'
   toolCall: unknown
+  toolName?: string
 }
 
-export interface InvalidToolInputErrorOptions extends XSAIErrorOptions {
+export interface InvalidToolInputErrorOptions extends ErrorOptions {
   toolInput: unknown
   toolName: string
 }
 
-export interface JSONParseErrorOptions extends XSAIErrorOptions {
+export interface JSONParseErrorOptions extends ErrorOptions {
   text: string
 }
 
-export interface NoSuchToolErrorOptions extends XSAIErrorOptions {
-  availableTools?: string[]
-  toolName: string
-}
-
-export interface RemoteAPIErrorOptions extends XSAIErrorOptions {
+export interface RemoteAPIErrorOptions extends ErrorOptions {
   response?: Response
   responseBody: string
 }
@@ -45,24 +39,17 @@ export interface ToolExecutionErrorOptions extends InvalidToolInputErrorOptions 
 
 export type XSAIErrorCode
   = | 'api_call_error'
-    | 'invalid_model_response'
     | 'invalid_response'
     | 'invalid_tool_call'
     | 'invalid_tool_input'
     | 'json_parse_error'
-    | 'no_choices_returned'
-    | 'no_such_tool'
     | 'remote_api_error'
     | 'tool_execution_error'
-
-export interface XSAIErrorOptions {
-  cause?: unknown
-}
 
 export class XSAIError extends Error {
   code: XSAIErrorCode
 
-  constructor(message: string, code: XSAIErrorCode, options: XSAIErrorOptions = {}) {
+  constructor(message: string, code: XSAIErrorCode, options: ErrorOptions = {}) {
     super(message, { cause: options.cause })
     this.code = code
     this.name = new.target.name
@@ -96,20 +83,12 @@ export class APICallError extends XSAIError {
   }
 }
 
-export class InvalidModelResponseError extends XSAIError {
-  responseBody?: string
-
-  constructor(message: string, code: 'invalid_model_response' | 'no_choices_returned', options: InvalidModelResponseErrorOptions = {}) {
-    super(message, code, options)
-    this.responseBody = options.responseBody
-  }
-}
-
 export class InvalidResponseError extends XSAIError {
   body?: unknown
   contentType?: null | string
   reason: InvalidResponseErrorOptions['reason']
   response?: Response
+  responseBody?: string
 
   constructor(message: string, options: InvalidResponseErrorOptions) {
     super(message, 'invalid_response', options)
@@ -117,17 +96,22 @@ export class InvalidResponseError extends XSAIError {
     this.contentType = options.contentType
     this.reason = options.reason
     this.response = options.response
+    this.responseBody = options.responseBody
   }
 }
 
 export class InvalidToolCallError extends XSAIError {
+  availableTools?: string[]
   reason: InvalidToolCallErrorOptions['reason']
   toolCall: unknown
+  toolName?: string
 
   constructor(message: string, options: InvalidToolCallErrorOptions) {
     super(message, 'invalid_tool_call', options)
+    this.availableTools = options.availableTools
     this.reason = options.reason
     this.toolCall = options.toolCall
+    this.toolName = options.toolName
   }
 }
 
@@ -148,23 +132,6 @@ export class JSONParseError extends XSAIError {
   constructor(message: string, options: JSONParseErrorOptions) {
     super(message, 'json_parse_error', options)
     this.text = options.text
-  }
-}
-
-export class NoChoicesReturnedError extends InvalidModelResponseError {
-  constructor(message: string, options: InvalidModelResponseErrorOptions = {}) {
-    super(message, 'no_choices_returned', options)
-  }
-}
-
-export class NoSuchToolError extends XSAIError {
-  availableTools?: string[]
-  toolName: string
-
-  constructor(message: string, options: NoSuchToolErrorOptions) {
-    super(message, 'no_such_tool', options)
-    this.availableTools = options.availableTools
-    this.toolName = options.toolName
   }
 }
 

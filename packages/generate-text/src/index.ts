@@ -1,7 +1,7 @@
 import type { TrampolineFn, WithUnknown } from '@xsai/shared'
 import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
 
-import { NoChoicesReturnedError, responseJSON, trampoline } from '@xsai/shared'
+import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
@@ -72,7 +72,8 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
 
       if (!choices?.length) {
         const responseBody = JSON.stringify(res)
-        throw new NoChoicesReturnedError(`No choices returned, response body: ${responseBody}`, {
+        throw new InvalidResponseError(`No choices returned, response body: ${responseBody}`, {
+          reason: 'no_choices',
           responseBody,
         })
       }

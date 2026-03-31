@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { APICallError, JSONParseError, responseCatch, responseJSON, XSAIError } from '../src'
+import { APICallError, InvalidResponseError, JSONParseError, responseCatch, responseJSON, XSAIError } from '../src'
 
 describe('@xsai/shared errors', () => {
   it('aPICallError.isInstance narrows shared errors', async () => {
@@ -52,6 +52,17 @@ describe('@xsai/shared errors', () => {
       contentType: 'application/json',
       reason: 'invalid_body',
     })
+  })
+
+  it('stores responseBody on InvalidResponseError when no choices are returned', () => {
+    const error = new InvalidResponseError('No choices returned', {
+      reason: 'no_choices',
+      responseBody: '{"choices":[]}',
+    })
+
+    expect(error.code).toBe('invalid_response')
+    expect(error.reason).toBe('no_choices')
+    expect(error.responseBody).toBe('{"choices":[]}')
   })
 
   it('throws JSONParseError for invalid JSON responses', async () => {

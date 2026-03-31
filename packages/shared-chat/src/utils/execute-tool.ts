@@ -1,6 +1,6 @@
 import type { CompletionToolCall, CompletionToolResult, Message, Tool, ToolCall, ToolMessage } from '../types'
 
-import { InvalidToolCallError, InvalidToolInputError, NoSuchToolError, ToolExecutionError } from '@xsai/shared'
+import { InvalidToolCallError, InvalidToolInputError, ToolExecutionError } from '@xsai/shared'
 
 import { wrapToolResult } from './internal/wrap-tool-result'
 
@@ -85,8 +85,10 @@ export const executeTool = async ({ abortSignal, messages, toolCall, tools }: Ex
     const availableToolsErrorMsg = (availableTools == null || availableTools.length === 0)
       ? 'No tools are available'
       : `Available tools: ${availableTools.join(', ')}`
-    throw new NoSuchToolError(`Model tried to call unavailable tool "${toolName}", ${availableToolsErrorMsg}.`, {
+    throw new InvalidToolCallError(`Model tried to call unavailable tool "${toolName}", ${availableToolsErrorMsg}.`, {
       availableTools,
+      reason: 'unknown_tool',
+      toolCall,
       toolName,
     })
   }

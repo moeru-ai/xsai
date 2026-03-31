@@ -1,10 +1,10 @@
-import { NoChoicesReturnedError } from '@xsai/shared'
+import { InvalidResponseError } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
 import { generateText } from '../src'
 
 describe('@xsai/generate-text errors', () => {
-  it('throws NoChoicesReturnedError when the provider returns no choices', async () => {
+  it('throws InvalidResponseError when the provider returns no choices', async () => {
     const fetch: typeof globalThis.fetch = async () => new Response(JSON.stringify({
       choices: [],
       created: 1,
@@ -24,6 +24,9 @@ describe('@xsai/generate-text errors', () => {
       fetch,
       messages: [{ content: 'hello', role: 'user' }],
       model: 'test-model',
-    })).rejects.toBeInstanceOf(NoChoicesReturnedError)
+    })).rejects.toMatchObject({
+      code: 'invalid_response',
+      reason: 'no_choices',
+    })
   })
 })
