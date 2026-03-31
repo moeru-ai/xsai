@@ -1,6 +1,8 @@
 import type { FinishReason, ToolCall, Usage } from '@xsai/shared-chat'
 import type { EventSourceMessage } from 'eventsource-parser/stream'
 
+import { JSONParseError, RemoteAPIError, StreamChunkParseError } from '@xsai/shared'
+
 export interface StreamTextChunkResult {
   choices: {
     delta: {
@@ -24,6 +26,27 @@ export interface StreamTextChunkResult {
   usage?: Usage
 }
 
+const parseChunk = (data: string): StreamTextChunkResult => {
+  if (data.startsWith('{') && data.includes('"error":')) {
+    throw new RemoteAPIError(`Error from server: ${data}`, {
+      responseBody: data,
+    })
+  }
+
+  try {
+    return JSON.parse(data) as StreamTextChunkResult
+  }
+  catch (cause) {
+    throw new StreamChunkParseError(`Failed to parse stream chunk: ${data}`, {
+      cause: new JSONParseError(`Failed to parse stream chunk JSON: ${data}`, {
+        cause,
+        text: data,
+      }),
+      chunk: data,
+    })
+  }
+}
+
 /** @internal */
 export const transformChunk = () => {
   return new TransformStream<EventSourceMessage, StreamTextChunkResult>({
@@ -31,10 +54,7 @@ export const transformChunk = () => {
       if (!chunk.data || chunk.data === '[DONE]')
         return
 
-      if (chunk.data.startsWith('{') && chunk.data.includes('"error":'))
-        throw new Error(`Error from server: ${chunk.data}`)
-
-      controller.enqueue(JSON.parse(chunk.data) as StreamTextChunkResult)
+      controller.enqueue(parseChunk(chunk.data))
     },
   })
 }

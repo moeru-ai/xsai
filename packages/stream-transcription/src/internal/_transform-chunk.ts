@@ -1,5 +1,28 @@
 import type { StreamTranscriptionDelta } from '..'
 
+import { JSONParseError, RemoteAPIError, StreamChunkParseError } from '@xsai/shared'
+
+const parseJSONChunk = (data: string): StreamTranscriptionDelta => {
+  if (data.startsWith('{') && data.includes('"error":')) {
+    throw new RemoteAPIError(`Error from server: ${data}`, {
+      responseBody: data,
+    })
+  }
+
+  try {
+    return JSON.parse(data) as StreamTranscriptionDelta
+  }
+  catch (cause) {
+    throw new StreamChunkParseError(`Failed to parse stream chunk: ${data}`, {
+      cause: new JSONParseError(`Failed to parse stream chunk JSON: ${data}`, {
+        cause,
+        text: data,
+      }),
+      chunk: data,
+    })
+  }
+}
+
 /** @internal */
 const parseChunk = (text: string): [StreamTranscriptionDelta | undefined, boolean] => {
   if (!text || !text.startsWith('data:'))
@@ -13,14 +36,7 @@ const parseChunk = (text: string): [StreamTranscriptionDelta | undefined, boolea
     return [undefined, true]
   }
 
-  if (data.startsWith('{') && data.includes('"error":')) {
-    throw new Error(`Error from server: ${data}`)
-  }
-
-  // Process normal chunk
-  const chunk = JSON.parse(data) as StreamTranscriptionDelta
-
-  return [chunk, false]
+  return [parseJSONChunk(data), false]
 }
 
 /** @internal */
@@ -42,12 +58,12 @@ export const transformChunk = () => {
           if (isEnd)
             break
 
-          if (chunk) {
+          if (chunk)
             controller.enqueue(chunk)
-          }
         }
         catch (error) {
           controller.error(error)
+          return
         }
       }
     },
