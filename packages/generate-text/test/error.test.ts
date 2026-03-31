@@ -1,4 +1,3 @@
-import { InvalidResponseError } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
 import { generateText } from '../src'

@@ -3,21 +3,24 @@ export interface APICallErrorOptions extends ErrorOptions {
   response: Response
   responseBody?: string
 }
-
 export interface InvalidResponseErrorOptions extends ErrorOptions {
   body?: unknown
   contentType?: null | string
-  reason: 'empty_body' | 'invalid_body' | 'no_choices'
+  reason: InvalidResponseReason
   response?: Response
   responseBody?: string
 }
 
+export type InvalidResponseReason = 'empty_body' | 'invalid_body' | 'no_choices'
+
 export interface InvalidToolCallErrorOptions extends ErrorOptions {
   availableTools?: string[]
-  reason: 'missing_arguments' | 'missing_name' | 'unknown_tool'
+  reason: InvalidToolCallReason
   toolCall: unknown
   toolName?: string
 }
+
+export type InvalidToolCallReason = 'missing_arguments' | 'missing_name' | 'unknown_tool'
 
 export interface InvalidToolInputErrorOptions extends ErrorOptions {
   toolInput: unknown
@@ -55,10 +58,13 @@ export class XSAIError extends Error {
     this.name = new.target.name
   }
 
-  static isInstance<T extends typeof XSAIError>(this: T, error: unknown): error is InstanceType<T> {
+  static isInstance<T extends abstract new (...args: any[]) => XSAIError>(this: T, error: unknown): error is InstanceType<T> {
     return error instanceof this
   }
 }
+
+const isRetryableStatus = (status: number) =>
+  status === 408 || status === 409 || status === 429 || status >= 500
 
 export class APICallError extends XSAIError {
   isRetryable: boolean
@@ -72,7 +78,7 @@ export class APICallError extends XSAIError {
 
   constructor(message: string, options: APICallErrorOptions) {
     super(message, 'api_call_error', options)
-    this.isRetryable = options.response.status === 408 || options.response.status === 409 || options.response.status === 429 || options.response.status >= 500
+    this.isRetryable = isRetryableStatus(options.response.status)
     this.requestBody = options.requestBody
     this.response = options.response
     this.responseBody = options.responseBody
@@ -86,43 +92,35 @@ export class APICallError extends XSAIError {
 export class InvalidResponseError extends XSAIError {
   body?: unknown
   contentType?: null | string
-  reason: InvalidResponseErrorOptions['reason']
+  declare reason: InvalidResponseErrorOptions['reason']
   response?: Response
   responseBody?: string
 
   constructor(message: string, options: InvalidResponseErrorOptions) {
     super(message, 'invalid_response', options)
-    this.body = options.body
-    this.contentType = options.contentType
-    this.reason = options.reason
-    this.response = options.response
-    this.responseBody = options.responseBody
+    Object.assign(this, options)
   }
 }
 
 export class InvalidToolCallError extends XSAIError {
   availableTools?: string[]
-  reason: InvalidToolCallErrorOptions['reason']
+  declare reason: InvalidToolCallErrorOptions['reason']
   toolCall: unknown
   toolName?: string
 
   constructor(message: string, options: InvalidToolCallErrorOptions) {
     super(message, 'invalid_tool_call', options)
-    this.availableTools = options.availableTools
-    this.reason = options.reason
-    this.toolCall = options.toolCall
-    this.toolName = options.toolName
+    Object.assign(this, options)
   }
 }
 
 export class InvalidToolInputError extends XSAIError {
   toolInput: unknown
-  toolName: string
+  declare toolName: string
 
   constructor(message: string, options: InvalidToolInputErrorOptions) {
     super(message, 'invalid_tool_input', options)
-    this.toolInput = options.toolInput
-    this.toolName = options.toolName
+    Object.assign(this, options)
   }
 }
 
@@ -137,24 +135,21 @@ export class JSONParseError extends XSAIError {
 
 export class RemoteAPIError extends XSAIError {
   response?: Response
-  responseBody: string
+  declare responseBody: string
 
   constructor(message: string, options: RemoteAPIErrorOptions) {
     super(message, 'remote_api_error', options)
-    this.response = options.response
-    this.responseBody = options.responseBody
+    Object.assign(this, options)
   }
 }
 
 export class ToolExecutionError extends XSAIError {
   toolCallId?: string
   toolInput: unknown
-  toolName: string
+  declare toolName: string
 
   constructor(message: string, options: ToolExecutionErrorOptions) {
     super(message, 'tool_execution_error', options)
-    this.toolCallId = options.toolCallId
-    this.toolInput = options.toolInput
-    this.toolName = options.toolName
+    Object.assign(this, options)
   }
 }
