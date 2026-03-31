@@ -1,5 +1,5 @@
-import type { EventSourceMessage } from 'eventsource-parser/stream'
 import type { FinishReason, ToolCall, Usage } from '@xsai/shared-chat'
+import type { EventSourceMessage } from 'eventsource-parser/stream'
 
 export interface StreamTextChunkResult {
   choices: {
