@@ -136,7 +136,6 @@ describe('@xsai-ext/responses prepareStep', () => {
       model?: string
       stepNumber: number
       stepsLength: number
-      toolChoice: string
     }[] = []
 
     const { eventStream, steps } = responses({
@@ -144,7 +143,7 @@ describe('@xsai-ext/responses prepareStep', () => {
       fetch,
       input: 'base input',
       model: 'base-model',
-      prepareStep: ({ input, model, stepNumber, steps, tool_choice }) => {
+      prepareStep: ({ input, model, stepNumber, steps }) => {
         prepareCalls.push({
           input: input.map(item => item.type === 'message'
             ? typeof item.content === 'string' ? item.content : JSON.stringify(item.content)
@@ -152,7 +151,6 @@ describe('@xsai-ext/responses prepareStep', () => {
           model,
           stepNumber,
           stepsLength: steps.length,
-          toolChoice: typeof tool_choice === 'string' ? tool_choice : 'object',
         })
 
         if (stepNumber === 0) {
@@ -199,14 +197,12 @@ describe('@xsai-ext/responses prepareStep', () => {
         model: 'base-model',
         stepNumber: 0,
         stepsLength: 0,
-        toolChoice: 'auto',
       },
       {
         input: ['base input', 'function_call', 'function_call_output'],
         model: 'base-model',
         stepNumber: 1,
         stepsLength: 1,
-        toolChoice: 'auto',
       },
     ])
     expect(requestBodies[0]).toMatchObject({
