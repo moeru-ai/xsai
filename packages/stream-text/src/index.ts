@@ -5,6 +5,7 @@ import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { EventSourceParserStream } from 'eventsource-parser/stream'
 
 import { transformChunk } from './internal/_transform-chunk'
 
@@ -129,6 +130,8 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     let finishReason: FinishReason = 'other'
 
     await stream!
+      .pipeThrough(new TextDecoderStream())
+      .pipeThrough(new EventSourceParserStream())
       .pipeThrough(transformChunk())
       .pipeTo(new WritableStream({
         abort: (reason) => {

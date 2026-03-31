@@ -656,6 +656,9 @@ importers:
       '@xsai/shared-chat':
         specifier: workspace:~
         version: link:../shared-chat
+      eventsource-parser:
+        specifier: 'catalog:'
+        version: 3.0.6
     devDependencies:
       '@xsai/tool':
         specifier: workspace:~
