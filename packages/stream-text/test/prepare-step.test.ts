@@ -21,8 +21,14 @@ const createChatCompletionStreamResponse = (chunks: unknown[]): Response => {
 describe('@xsai/stream-text prepareStep', () => {
   it('applies step-local overrides without mutating canonical loop state', async () => {
     const requestBodies: Record<string, unknown>[] = []
+    const parseRequestBody = (init: unknown): Record<string, unknown> => {
+      if (init == null || typeof init !== 'object' || !('body' in init) || typeof init.body !== 'string')
+        throw new TypeError('Expected RequestInit.body to be a JSON string')
+
+      return JSON.parse(init.body) as Record<string, unknown>
+    }
     const fetch = vi.fn(async (_input, init) => {
-      requestBodies.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+      requestBodies.push(parseRequestBody(init))
 
       if (requestBodies.length === 1) {
         return createChatCompletionStreamResponse([{
