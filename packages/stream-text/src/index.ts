@@ -124,7 +124,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       reasoningText += reasoningContent
     }
 
-    const tool_calls: ToolCall[] = []
+    const toolCallsById = new Map<string, ToolCall>()
     const toolCalls: CompletionToolCall[] = []
     const toolResults: CompletionToolResult[] = []
     let finishReason: FinishReason = 'other'
@@ -183,24 +183,25 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
           else {
             // https://platform.openai.com/docs/guides/function-calling?api-mode=chat&lang=javascript#streaming
             for (const toolCall of choice.delta.tool_calls) {
-              const { index } = toolCall
+              const currentToolCall = toolCallsById.get(toolCall.id)
 
-              if (!tool_calls.at(index)) {
-                tool_calls[index] = {
+              if (currentToolCall == null) {
+                const nextToolCall: ToolCall = {
                   ...toolCall,
                   function: {
                     ...toolCall.function,
                     arguments: toolCall.function.arguments ?? '',
                   },
                 }
+                toolCallsById.set(toolCall.id, nextToolCall)
                 pushEvent({ toolCallId: toolCall.id, toolName: toolCall.function.name!, type: 'tool-call-streaming-start' })
               }
               else {
-                tool_calls[index].function.arguments! += toolCall.function.arguments
+                currentToolCall.function.arguments! += toolCall.function.arguments
                 pushEvent({
                   argsTextDelta: toolCall.function.arguments!,
                   toolCallId: toolCall.id,
-                  toolName: toolCall.function.name ?? tool_calls[index].function.name!,
+                  toolName: toolCall.function.name ?? currentToolCall.function.name!,
                   type: 'tool-call-delta',
                 })
               }
@@ -209,18 +210,18 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
         },
       }))
 
+    const orderedToolCalls = [...toolCallsById.values()]
+
     messages.push({
       ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
       content: text,
       role: 'assistant',
-      tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
+      tool_calls: orderedToolCalls.length > 0 ? orderedToolCalls : undefined,
     })
 
-    if (tool_calls.length !== 0) {
-      const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
-
+    if (orderedToolCalls.length !== 0) {
       const results = await Promise.all(
-        validToolCalls.map(async toolCall => executeTool({
+        orderedToolCalls.map(async toolCall => executeTool({
           abortSignal: options.abortSignal,
           messages,
           toolCall,

@@ -191,4 +191,181 @@ describe('@xsai/stream-text prepareStep', () => {
       },
     ])
   })
+
+  it('executes tool calls when streaming deltas omit index', async () => {
+    const fetch = vi.fn(async () => createChatCompletionStreamResponse([{
+      choices: [{
+        delta: {
+          role: 'assistant',
+          tool_calls: [{
+            function: {
+              arguments: '{"a":"1","b":"2"}',
+              name: 'add',
+            },
+            id: 'call_1',
+            type: 'function',
+          }],
+        },
+        finish_reason: 'tool_calls',
+        index: 0,
+      }],
+      created: 0,
+      id: 'chatcmpl_1',
+      model: 'model-step-0',
+      object: 'chat.completion.chunk',
+      system_fingerprint: 'fp_1',
+    }])) as typeof globalThis.fetch
+
+    const add = {
+      execute: () => '3',
+      function: {
+        name: 'add',
+        parameters: {
+          properties: {},
+          type: 'object',
+        },
+      },
+      type: 'function',
+    } as const
+
+    const { steps } = streamText({
+      baseURL: 'https://example.com/v1/',
+      fetch,
+      messages: [
+        { content: 'system', role: 'system' },
+        { content: 'user', role: 'user' },
+      ],
+      model: 'base-model',
+      stopWhen: stepCountAtLeast(1),
+      tools: [add],
+    })
+
+    const allSteps = await steps
+
+    expect(allSteps).toHaveLength(1)
+    expect(allSteps[0].toolCalls).toMatchObject([{
+      args: '{"a":"1","b":"2"}',
+      toolCallId: 'call_1',
+      toolCallType: 'function',
+      toolName: 'add',
+    }])
+    expect(allSteps[0].toolResults).toMatchObject([{
+      args: {
+        a: '1',
+        b: '2',
+      },
+      result: '3',
+      toolCallId: 'call_1',
+      toolName: 'add',
+    }])
+  })
+
+  it('keeps multiple missing-index tool calls separate by id', async () => {
+    const fetch = vi.fn(async () => createChatCompletionStreamResponse([{
+      choices: [{
+        delta: {
+          role: 'assistant',
+          tool_calls: [
+            {
+              function: {
+                arguments: '{"a":"1","b":"2"}',
+                name: 'add',
+              },
+              id: 'call_1',
+              type: 'function',
+            },
+            {
+              function: {
+                arguments: '{"a":"3","b":"4"}',
+                name: 'mul',
+              },
+              id: 'call_2',
+              type: 'function',
+            },
+          ],
+        },
+        finish_reason: 'tool_calls',
+        index: 0,
+      }],
+      created: 0,
+      id: 'chatcmpl_1',
+      model: 'model-step-0',
+      object: 'chat.completion.chunk',
+      system_fingerprint: 'fp_1',
+    }])) as typeof globalThis.fetch
+
+    const add = {
+      execute: () => '3',
+      function: {
+        name: 'add',
+        parameters: {
+          properties: {},
+          type: 'object',
+        },
+      },
+      type: 'function',
+    } as const
+
+    const mul = {
+      execute: () => '12',
+      function: {
+        name: 'mul',
+        parameters: {
+          properties: {},
+          type: 'object',
+        },
+      },
+      type: 'function',
+    } as const
+
+    const { steps } = streamText({
+      baseURL: 'https://example.com/v1/',
+      fetch,
+      messages: [
+        { content: 'system', role: 'system' },
+        { content: 'user', role: 'user' },
+      ],
+      model: 'base-model',
+      stopWhen: stepCountAtLeast(1),
+      tools: [add, mul],
+    })
+
+    const allSteps = await steps
+
+    expect(allSteps).toHaveLength(1)
+    expect(allSteps[0].toolCalls).toMatchObject([
+      {
+        args: '{"a":"1","b":"2"}',
+        toolCallId: 'call_1',
+        toolCallType: 'function',
+        toolName: 'add',
+      },
+      {
+        args: '{"a":"3","b":"4"}',
+        toolCallId: 'call_2',
+        toolCallType: 'function',
+        toolName: 'mul',
+      },
+    ])
+    expect(allSteps[0].toolResults).toMatchObject([
+      {
+        args: {
+          a: '1',
+          b: '2',
+        },
+        result: '3',
+        toolCallId: 'call_1',
+        toolName: 'add',
+      },
+      {
+        args: {
+          a: '3',
+          b: '4',
+        },
+        result: '12',
+        toolCallId: 'call_2',
+        toolName: 'mul',
+      },
+    ])
+  })
 })

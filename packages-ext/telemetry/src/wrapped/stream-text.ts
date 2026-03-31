@@ -111,7 +111,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         reasoningText += reasoningContent
       }
 
-      const tool_calls: ToolCall[] = []
+      const toolCallsById = new Map<string, ToolCall>()
       const toolCalls: CompletionToolCall[] = []
       const toolResults: CompletionToolResult[] = []
       let finishReason: FinishReason = 'other'
@@ -170,16 +170,17 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
             else {
             // https://platform.openai.com/docs/guides/function-calling?api-mode=chat&lang=javascript#streaming
               for (const toolCall of choice.delta.tool_calls) {
-                const { index } = toolCall
+                const currentToolCall = toolCallsById.get(toolCall.id)
 
-                if (!tool_calls.at(index)) {
-                  tool_calls[index] = {
+                if (currentToolCall == null) {
+                  const nextToolCall: ToolCall = {
                     ...toolCall,
                     function: {
                       ...toolCall.function,
                       arguments: toolCall.function.arguments ?? '',
                     },
                   }
+                  toolCallsById.set(toolCall.id, nextToolCall)
                   pushEvent({
                     toolCallId: toolCall.id,
                     toolName: toolCall.function.name!,
@@ -187,11 +188,11 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
                   })
                 }
                 else {
-                  tool_calls[index].function.arguments! += toolCall.function.arguments
+                  currentToolCall.function.arguments! += toolCall.function.arguments
                   pushEvent({
                     argsTextDelta: toolCall.function.arguments!,
                     toolCallId: toolCall.id,
-                    toolName: toolCall.function.name ?? tool_calls[index].function.name!,
+                    toolName: toolCall.function.name ?? currentToolCall.function.name!,
                     type: 'tool-call-delta',
                   })
                 }
@@ -200,19 +201,19 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
           },
         }))
 
+      const orderedToolCalls = [...toolCallsById.values()]
+
       const message: AssistantMessage = {
         ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
         content: text,
         role: 'assistant',
-        tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
+        tool_calls: orderedToolCalls.length > 0 ? orderedToolCalls : undefined,
       }
       messages.push(message)
       span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
 
-      if (tool_calls.length !== 0) {
-        for (const toolCall of tool_calls) {
-          if (toolCall == null)
-            continue
+      if (orderedToolCalls.length !== 0) {
+        for (const toolCall of orderedToolCalls) {
           const { completionToolCall, completionToolResult, message } = await executeTool({
             abortSignal: options.abortSignal,
             messages,

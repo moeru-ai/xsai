@@ -11,7 +11,7 @@ export interface StreamTextChunkResult {
       reasoning_content?: string
       refusal?: string
       role: 'assistant'
-      tool_calls?: (ToolCall & { index: number })[]
+      tool_calls?: ToolCall[]
     }
     finish_reason?: FinishReason
     index: number
