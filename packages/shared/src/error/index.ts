@@ -63,11 +63,7 @@ export class XSAIError extends Error {
   }
 }
 
-const isRetryableStatus = (status: number) =>
-  status === 408 || status === 409 || status === 429 || status >= 500
-
 export class APICallError extends XSAIError {
-  isRetryable: boolean
   requestBody?: string
   response: Response
   responseBody?: string
@@ -78,7 +74,6 @@ export class APICallError extends XSAIError {
 
   constructor(message: string, options: APICallErrorOptions) {
     super(message, 'api_call_error', options)
-    this.isRetryable = isRetryableStatus(options.response.status)
     this.requestBody = options.requestBody
     this.response = options.response
     this.responseBody = options.responseBody

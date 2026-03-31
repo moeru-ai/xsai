@@ -23,7 +23,6 @@ describe('@xsai/shared errors', () => {
 
       expect(error.code).toBe('api_call_error')
       expect(error.statusCode).toBe(503)
-      expect(error.isRetryable).toBe(true)
       expect(error.responseBody).toBe('upstream failed')
     }
   })
