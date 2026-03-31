@@ -183,7 +183,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
           else {
             // https://platform.openai.com/docs/guides/function-calling?api-mode=chat&lang=javascript#streaming
             for (const toolCall of choice.delta.tool_calls) {
-              const { index } = toolCall
+              const { index = 0 } = toolCall
 
               if (!tool_calls.at(index)) {
                 tool_calls[index] = {
