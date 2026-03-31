@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@opentelemetry/api": "catalog:",
+    "eventsource-parser": "catalog:",
     "xsai": "workspace:~"
   },
   "devDependencies": {

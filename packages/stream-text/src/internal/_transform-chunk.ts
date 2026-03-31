@@ -1,4 +1,5 @@
 import type { FinishReason, ToolCall, Usage } from '@xsai/shared-chat'
+import type { EventSourceMessage } from 'eventsource-parser/stream'
 
 export interface StreamTextChunkResult {
   choices: {
@@ -24,57 +25,16 @@ export interface StreamTextChunkResult {
 }
 
 /** @internal */
-const parseChunk = (text: string): [StreamTextChunkResult | undefined, boolean] => {
-  if (!text || !text.startsWith('data:'))
-    return [undefined, false]
-
-  // Extract content after "data:" prefix
-  const content = text.slice('data:'.length)
-  // Remove leading single space if present
-  const data = content.startsWith(' ') ? content.slice(1) : content
-
-  // Handle special cases
-  if (data === '[DONE]') {
-    return [undefined, true]
-  }
-
-  if (data.startsWith('{') && data.includes('"error":')) {
-    throw new Error(`Error from server: ${data}`)
-  }
-
-  // Process normal chunk
-  const chunk = JSON.parse(data) as StreamTextChunkResult
-
-  return [chunk, false]
-}
-
-/** @internal */
 export const transformChunk = () => {
-  const decoder = new TextDecoder()
-  let buffer = ''
-
-  return new TransformStream<Uint8Array, StreamTextChunkResult>({
+  return new TransformStream<EventSourceMessage, StreamTextChunkResult>({
     transform: async (chunk, controller) => {
-      const text = decoder.decode(chunk, { stream: true })
-      buffer += text
-      const lines = buffer.split('\n')
-      buffer = lines.pop() ?? ''
+      if (chunk.data === '[DONE]')
+        return
 
-      // Process complete lines
-      for (const line of lines) {
-        try {
-          const [chunk, isEnd] = parseChunk(line)
-          if (isEnd)
-            break
+      if (chunk.data.startsWith('{') && chunk.data.includes('"error":'))
+        throw new Error(`Error from server: ${chunk.data}`)
 
-          if (chunk) {
-            controller.enqueue(chunk)
-          }
-        }
-        catch (error) {
-          controller.error(error)
-        }
-      }
+      controller.enqueue(JSON.parse(chunk.data) as StreamTextChunkResult)
     },
   })
 }

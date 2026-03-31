@@ -48,7 +48,8 @@
   },
   "dependencies": {
     "@xsai/shared": "workspace:~",
-    "@xsai/shared-chat": "workspace:~"
+    "@xsai/shared-chat": "workspace:~",
+    "eventsource-parser": "catalog:"
   },
   "devDependencies": {
     "@xsai/tool": "workspace:~",

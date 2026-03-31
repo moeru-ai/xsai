@@ -2,6 +2,7 @@ import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionTo
 
 import type { WithTelemetry } from '../types/options'
 
+import { EventSourceParserStream } from 'eventsource-parser/stream'
 import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
@@ -116,6 +117,8 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       let finishReason: FinishReason = 'other'
 
       await stream!
+        .pipeThrough(new TextDecoderStream())
+        .pipeThrough(new EventSourceParserStream())
         .pipeThrough(transformChunk())
         .pipeTo(new WritableStream({
           abort: (reason) => {
@@ -273,33 +276,41 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   }
 
   void (async () => {
+    let finalError: unknown
+
     try {
       await trampoline(async () => doStream())
-
-      eventCtrl?.close()
-      textCtrl?.close()
-      reasoningTextCtrl?.close()
     }
     catch (err) {
-      eventCtrl?.error(err)
-      textCtrl?.error(err)
-      reasoningTextCtrl?.error(err)
-
-      resultSteps.reject(err)
-      resultMessages.reject(err)
-      resultUsage.reject(err)
-      resultTotalUsage.reject(err)
+      finalError = err
     }
-    finally {
-      resultSteps.resolve(steps)
-      resultMessages.resolve(messages)
-      resultUsage.resolve(usage)
-      resultTotalUsage.resolve(totalUsage)
-
-      const finishStep = steps.at(-1)
-
-      void options.onFinish?.(finishStep)
+    try {
+      await options.onFinish?.(steps.at(-1))
     }
+    catch (err) {
+      finalError ??= err
+    }
+
+    if (finalError != null) {
+      eventCtrl?.error(finalError)
+      textCtrl?.error(finalError)
+      reasoningTextCtrl?.error(finalError)
+
+      resultSteps.reject(finalError)
+      resultMessages.reject(finalError)
+      resultUsage.reject(finalError)
+      resultTotalUsage.reject(finalError)
+      return
+    }
+
+    eventCtrl?.close()
+    textCtrl?.close()
+    reasoningTextCtrl?.close()
+
+    resultSteps.resolve(steps)
+    resultMessages.resolve(messages)
+    resultUsage.resolve(usage)
+    resultTotalUsage.resolve(totalUsage)
   })()
 
   return {
