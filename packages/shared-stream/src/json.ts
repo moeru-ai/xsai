@@ -4,11 +4,14 @@ import { JSONParseError, RemoteAPIError } from '@xsai/shared'
 
 export interface ParseJsonSSEMessageOptions<T> {
   doneMarker?: string
-  isErrorResponse?: (data: string) => boolean
+  isErrorResponse?: (parsed: T) => boolean
   parse?: (data: string) => T
 }
 
-const defaultIsErrorResponse = (data: string) => data.startsWith('{') && data.includes('"error":')
+const defaultIsErrorResponse = (parsed: unknown) =>
+  parsed != null
+  && typeof parsed === 'object'
+  && 'error' in parsed
 
 export const parseJsonSSEMessage = <T>(
   message: EventSourceMessage,
@@ -22,14 +25,10 @@ export const parseJsonSSEMessage = <T>(
   if (data === (options.doneMarker ?? '[DONE]'))
     return
 
-  if ((options.isErrorResponse ?? defaultIsErrorResponse)(data)) {
-    throw new RemoteAPIError(`Error from server: ${data}`, {
-      responseBody: data,
-    })
-  }
+  let parsed: T
 
   try {
-    return (options.parse ?? JSON.parse)(data) as T
+    parsed = (options.parse ?? JSON.parse)(data) as T
   }
   catch (cause) {
     throw new JSONParseError(`Failed to parse stream chunk JSON: ${data}`, {
@@ -37,6 +36,14 @@ export const parseJsonSSEMessage = <T>(
       text: data,
     })
   }
+
+  if ((options.isErrorResponse ?? defaultIsErrorResponse)(parsed)) {
+    throw new RemoteAPIError(`Error from server: ${data}`, {
+      responseBody: data,
+    })
+  }
+
+  return parsed
 }
 
 export class JsonMessageTransformStream<T> extends TransformStream<EventSourceMessage, T> {

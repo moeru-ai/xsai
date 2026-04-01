@@ -27,6 +27,14 @@ describe('@xsai/shared-stream', () => {
     expect(() => parseJsonSSEMessage(createMessage('{"error":{"message":"denied"}}'))).toThrow(RemoteAPIError)
   })
 
+  it('does not treat string content containing error as a remote api error', () => {
+    expect(parseJsonSSEMessage<{ content: string }>(
+      createMessage('{"content":"the model said \\"error\\": false"}'),
+    )).toEqual({
+      content: 'the model said "error": false',
+    })
+  })
+
   it('throws json parse errors', () => {
     expect(() => parseJsonSSEMessage(createMessage('{"value":'))).toThrow(JSONParseError)
   })
