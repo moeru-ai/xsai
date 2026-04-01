@@ -176,8 +176,8 @@ catalogs:
       specifier: ^3.16.0
       version: 3.19.13
     sury:
-      specifier: ^10.0.0
-      version: 10.0.4
+      specifier: ^10.0.0 || ^11.0.0-alpha
+      version: 11.0.0-alpha.4
     valibot:
       specifier: ^1.0.0
       version: 1.0.0
@@ -388,7 +388,7 @@ importers:
         version: 3.1.1
       sury:
         specifier: catalog:schema
-        version: 10.0.4
+        version: 11.0.0-alpha.4
       tailwindcss:
         specifier: 'catalog:'
         version: 4.1.18
@@ -5116,14 +5116,6 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
-
-  sury@10.0.4:
-    resolution: {integrity: sha512-dWKqOv+6D4AwGCjeKyaWr157RVBtvnPUp1I6RxReYD1dYuBl4k6oUd/t5INh1mBhUuAEC9SP+rZmIunCyNjXzQ==}
-    peerDependencies:
-      rescript: 11.x
-    peerDependenciesMeta:
-      rescript:
-        optional: true
 
   sury@11.0.0-alpha.4:
     resolution: {integrity: sha512-oeG/GJWZvQCKtGPpLbu0yCZudfr5LxycDo5kh7SJmKHDPCsEPJssIZL2Eb4Tl7g9aPEvIDuRrkS+L0pybsMEMA==}
@@ -10145,8 +10137,6 @@ snapshots:
     optional: true
 
   supports-preserve-symlinks-flag@1.0.0: {}
-
-  sury@10.0.4: {}
 
   sury@11.0.0-alpha.4: {}
 
