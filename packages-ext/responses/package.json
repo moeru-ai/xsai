@@ -2,6 +2,7 @@
   "name": "@xsai-ext/responses",
   "type": "module",
   "version": "0.4.4",
+  "private": true,
   "description": "extra-small AI SDK.",
   "author": "Moeru AI",
   "license": "MIT",
