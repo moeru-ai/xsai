@@ -1,4 +1,4 @@
-import { createNovitaAi } from '../create'
+import { createNovitaAi, createStepfun } from '../create'
 
 export { createAnthropic } from './providers/anthropic'
 export { createFeatherless } from './providers/featherless'
@@ -7,3 +7,6 @@ export { createTogetherAI } from './providers/together-ai'
 
 /** @deprecated use `createNovitaAi` instead. */
 export const createNovita = createNovitaAi
+
+/** @deprecated use `createStepfun` instead. */
+export const createStepFun = createStepfun
