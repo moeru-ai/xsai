@@ -39,6 +39,6 @@
   },
   "dependencies": {
     "@xsai/shared": "workspace:~",
-    "eventsource-parser": "catalog:"
+    "@xsai/shared-stream": "workspace:~"
   }
 }

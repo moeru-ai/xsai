@@ -7,13 +7,12 @@ import type { StreamingEvent } from '../types/streaming-event'
 import type { Usage } from '../types/usage'
 
 import { DelayedPromise, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
-import { EventSourceParserStream } from 'eventsource-parser/stream'
+import { EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { executeTool } from './execute-tool'
 import { normalizeInput } from './normalize-input'
 import { normalizeOutput } from './normalize-output'
 import { shouldStop, stepCountAtLeast } from './stop-when'
-import { StreamingEventParserStream } from './streaming-event-parser-stream'
 
 export interface ResponsesOptions extends OpenResponsesOptions {
   abortSignal?: AbortSignal
@@ -124,7 +123,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     return res.body!
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
-      .pipeThrough(new StreamingEventParserStream())
+      .pipeThrough(new JsonMessageTransformStream<StreamingEvent>())
       .getReader()
   }
 
