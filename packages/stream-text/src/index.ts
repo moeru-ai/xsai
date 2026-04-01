@@ -107,14 +107,15 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     }
 
     let text = ''
-    let reasoningText = ''
-    let hasReasoningText = false
+    let reasoningText: string | undefined
     const pushText = (content: string) => {
       textCtrl.current?.enqueue(content)
       text += content
     }
     const pushReasoningText = (reasoningContent: string) => {
-      hasReasoningText = true
+      if (reasoningText == null)
+        reasoningText = ''
+
       reasoningTextCtrl.current?.enqueue(reasoningContent)
       reasoningText += reasoningContent
     }
@@ -204,7 +205,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       }))
 
     messages.push({
-      ...(reasoningField != null && hasReasoningText ? { [reasoningField]: reasoningText } : {}),
+      ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
       content: text,
       role: 'assistant',
       tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
