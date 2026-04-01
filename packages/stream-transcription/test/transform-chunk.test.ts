@@ -1,4 +1,5 @@
 import { JSONParseError, RemoteAPIError } from '@xsai/shared'
+import { EventSourceParserStream } from 'eventsource-parser/stream'
 import { describe, expect, it } from 'vitest'
 
 import { transformChunk } from '../src/internal/_transform-chunk'
@@ -14,6 +15,8 @@ const readTransformed = async (input: string) => {
   })
 
   await stream
+    .pipeThrough(new TextDecoderStream())
+    .pipeThrough(new EventSourceParserStream())
     .pipeThrough(transformChunk())
     .pipeTo(new WritableStream({
       write: () => {},

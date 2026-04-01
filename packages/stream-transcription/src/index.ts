@@ -1,6 +1,7 @@
 import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
 import { DelayedPromise, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { EventSourceParserStream } from 'eventsource-parser/stream'
 
 import { transformChunk } from './internal/_transform-chunk'
 
@@ -69,6 +70,8 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
     const { body: stream } = response
 
     await stream!
+      .pipeThrough(new TextDecoderStream())
+      .pipeThrough(new EventSourceParserStream())
       .pipeThrough(transformChunk())
       .pipeTo(new WritableStream({
         abort: (reason) => {

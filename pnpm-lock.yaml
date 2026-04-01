@@ -675,6 +675,9 @@ importers:
       '@xsai/shared':
         specifier: workspace:~
         version: link:../shared
+      eventsource-parser:
+        specifier: 'catalog:'
+        version: 3.0.6
 
   packages/tool:
     dependencies:
