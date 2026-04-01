@@ -82,6 +82,16 @@ export const overrides: Record<string, Partial<Provider>> = {
       create: 'SiliconFlow',
     },
   },
+  'stepfun': {
+    _capabilities: {
+      embed: true,
+      speech: true,
+      transcription: true,
+    },
+  },
+  'venice': {
+    api: 'https://api.venice.ai/api/v1',
+  },
   'xai': {
     api: 'https://api.x.ai/v1/',
   },

@@ -2,19 +2,6 @@ import type { CodeGenProvider } from './types'
 
 export const extraProviders: CodeGenProvider[] = [
   {
-    apiKey: ['STEPFUN_API_KEY'],
-    baseURL: 'https://api.stepfun.com/v1/',
-    capabilities: {
-      embed: true,
-      speech: true,
-      transcription: true,
-    },
-    doc: 'https://www.stepfun.com',
-    id: 'stepfun',
-    models: [],
-    name: 'StepFun',
-  },
-  {
     apiKey: ['TENCENT_HUNYUAN_API_KEY'],
     baseURL: 'https://api.hunyuan.cloud.tencent.com/v1/',
     capabilities: {

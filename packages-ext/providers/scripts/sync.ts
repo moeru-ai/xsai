@@ -7,6 +7,10 @@ import { extraProviders } from './utils/extra'
 import { overrides } from './utils/overrides'
 import { SUFFIX, toCodeGenProvider } from './utils/process'
 
+const excludeProviderKeys = [
+  '302ai', // JS doesn't allow variables that start with a number.
+]
+
 const manualProviderKeys = [
   'anthropic',
   'azure',
@@ -19,6 +23,7 @@ const providers = await fetch('https://models.dev/api.json')
   .then(async res => res.json() as Promise<Providers>)
   .then(ps => Object.values(ps))
   .then(providers => providers
+    .filter(provider => !excludeProviderKeys.includes(provider.id))
     .map(provider => ({
       ...provider,
       ...overrides[provider.id],
@@ -50,6 +55,7 @@ const create = [
   [
     '/* eslint-disable perfectionist/sort-union-types */',
     '/* eslint-disable sonarjs/no-identical-functions */',
+    '/* eslint-disable sonarjs/use-type-alias */',
   ].join('\n'),
   'import { createChatProvider, createEmbedProvider, createImageProvider, createModelProvider, createSpeechProvider, createTranscriptionProvider, merge } from \'../utils\'',
   ...autoProviders.map(codeGenCreate),
