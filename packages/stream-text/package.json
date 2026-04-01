@@ -49,7 +49,7 @@
   "dependencies": {
     "@xsai/shared": "workspace:~",
     "@xsai/shared-chat": "workspace:~",
-    "eventsource-parser": "catalog:"
+    "@xsai/shared-stream": "workspace:~"
   },
   "devDependencies": {
     "@xsai/tool": "workspace:~",

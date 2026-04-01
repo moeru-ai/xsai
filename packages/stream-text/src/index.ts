@@ -1,13 +1,12 @@
 import type { WithUnknown } from '@xsai/shared'
 import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, StopStep, ToolCall, Usage } from '@xsai/shared-chat'
 
+import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, determineStepType, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
-import { EventSourceParserStream } from 'eventsource-parser/stream'
-
-import { transformChunk } from './internal/_transform-chunk'
+import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export type * from './types/event'
 
@@ -57,15 +56,12 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
   // output
-  let eventCtrl: ReadableStreamDefaultController<StreamTextEvent> | undefined
-  let textCtrl: ReadableStreamDefaultController<string> | undefined
-  let reasoningTextCtrl: ReadableStreamDefaultController<string> | undefined
-  const eventStream = new ReadableStream<StreamTextEvent>({ start: controller => eventCtrl = controller })
-  const textStream = new ReadableStream<string>({ start: controller => textCtrl = controller })
-  const reasoningTextStream = new ReadableStream<string>({ start: controller => reasoningTextCtrl = controller })
+  const { controller: eventCtrl, stream: eventStream } = createControlledStream<StreamTextEvent>()
+  const { controller: textCtrl, stream: textStream } = createControlledStream<string>()
+  const { controller: reasoningTextCtrl, stream: reasoningTextStream } = createControlledStream<string>()
 
   const pushEvent = (stepEvent: StreamTextEvent) => {
-    eventCtrl?.enqueue(stepEvent)
+    eventCtrl.current?.enqueue(stepEvent)
 
     void options.onEvent?.(stepEvent)
   }
@@ -110,17 +106,16 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
         : u
     }
 
-    let text: string = ''
-    let reasoningText: string | undefined
+    let text = ''
+    let reasoningText = ''
+    let hasReasoningText = false
     const pushText = (content: string) => {
-      textCtrl?.enqueue(content)
+      textCtrl.current?.enqueue(content)
       text += content
     }
     const pushReasoningText = (reasoningContent: string) => {
-      if (reasoningText == null)
-        reasoningText = ''
-
-      reasoningTextCtrl?.enqueue(reasoningContent)
+      hasReasoningText = true
+      reasoningTextCtrl.current?.enqueue(reasoningContent)
       reasoningText += reasoningContent
     }
 
@@ -132,11 +127,10 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     await stream!
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
-      .pipeThrough(transformChunk())
+      .pipeThrough(new JsonMessageTransformStream<StreamTextChunkResult>())
       .pipeTo(new WritableStream({
         abort: (reason) => {
-          eventCtrl?.error(reason)
-          textCtrl?.error(reason)
+          errorControllers(reason, eventCtrl, textCtrl, reasoningTextCtrl)
         },
         close: () => {},
         // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -210,7 +204,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       }))
 
     messages.push({
-      ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
+      ...(reasoningField != null && hasReasoningText ? { [reasoningField]: reasoningText } : {}),
       content: text,
       role: 'assistant',
       tool_calls: tool_calls.length > 0 ? tool_calls : undefined,
@@ -290,9 +284,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     }
 
     if (finalError != null) {
-      eventCtrl?.error(finalError)
-      textCtrl?.error(finalError)
-      reasoningTextCtrl?.error(finalError)
+      errorControllers(finalError, eventCtrl, textCtrl, reasoningTextCtrl)
 
       resultSteps.reject(finalError)
       resultMessages.reject(finalError)
@@ -301,9 +293,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       return
     }
 
-    eventCtrl?.close()
-    textCtrl?.close()
-    reasoningTextCtrl?.close()
+    closeControllers(eventCtrl, textCtrl, reasoningTextCtrl)
 
     resultSteps.resolve(steps)
     resultMessages.resolve(messages)

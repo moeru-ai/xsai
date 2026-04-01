@@ -1,9 +1,7 @@
 import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
 import { DelayedPromise, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
-import { EventSourceParserStream } from 'eventsource-parser/stream'
-
-import { transformChunk } from './internal/_transform-chunk'
+import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export interface StreamTranscriptionDelta {
   delta: string
@@ -34,10 +32,8 @@ export interface StreamTranscriptionResult {
 
 /** @experimental */
 export const streamTranscription = (options: WithUnknown<StreamTranscriptionOptions>): StreamTranscriptionResult => {
-  let textStreamCtrl: ReadableStreamDefaultController<string> | undefined
-  let fullStreamCtrl: ReadableStreamDefaultController<StreamTranscriptionDelta> | undefined
-  const fullStream = new ReadableStream<StreamTranscriptionDelta>({ start: controller => fullStreamCtrl = controller })
-  const textStream = new ReadableStream<string>({ start: controller => textStreamCtrl = controller })
+  const { controller: textStreamCtrl, stream: textStream } = createControlledStream<string>()
+  const { controller: fullStreamCtrl, stream: fullStream } = createControlledStream<StreamTranscriptionDelta>()
   const fullText = new DelayedPromise<string>()
   let text = ''
 
@@ -72,18 +68,17 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
     await stream!
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
-      .pipeThrough(transformChunk())
+      .pipeThrough(new JsonMessageTransformStream<StreamTranscriptionDelta>())
       .pipeTo(new WritableStream({
         abort: (reason) => {
-          fullStreamCtrl?.error(reason)
-          textStreamCtrl?.error(reason)
+          errorControllers(reason, fullStreamCtrl, textStreamCtrl)
         },
         close: () => {},
         write: (chunk) => {
           if (chunk.type === 'transcript.text.delta') {
-            textStreamCtrl?.enqueue(chunk.delta)
+            textStreamCtrl.current?.enqueue(chunk.delta)
             text += chunk.delta
-            fullStreamCtrl?.enqueue(chunk)
+            fullStreamCtrl.current?.enqueue(chunk)
           }
           else if (chunk.type === 'transcript.text.done') {
             // TODO: handle usage
@@ -96,12 +91,10 @@ export const streamTranscription = (options: WithUnknown<StreamTranscriptionOpti
     try {
       await doStream()
       fullText.resolve(text)
-      fullStreamCtrl?.close()
-      textStreamCtrl?.close()
+      closeControllers(fullStreamCtrl, textStreamCtrl)
     }
     catch (err) {
-      fullStreamCtrl?.error(err)
-      textStreamCtrl?.error(err)
+      errorControllers(err, fullStreamCtrl, textStreamCtrl)
       fullText.reject(err)
     }
   })()

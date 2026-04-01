@@ -429,9 +429,9 @@ importers:
       '@xsai/shared':
         specifier: workspace:~
         version: link:../../packages/shared
-      eventsource-parser:
-        specifier: 'catalog:'
-        version: 3.0.6
+      '@xsai/shared-stream':
+        specifier: workspace:~
+        version: link:../../packages/shared-stream
     devDependencies:
       '@hey-api/openapi-ts':
         specifier: 'catalog:'
@@ -448,9 +448,9 @@ importers:
       '@opentelemetry/api':
         specifier: 'catalog:'
         version: 1.9.0
-      eventsource-parser:
-        specifier: 'catalog:'
-        version: 3.0.6
+      '@xsai/shared-stream':
+        specifier: workspace:~
+        version: link:../../packages/shared-stream
       xsai:
         specifier: workspace:~
         version: link:../../packages-top/xsai
@@ -497,6 +497,9 @@ importers:
       '@xsai/shared-chat':
         specifier: workspace:~
         version: link:../../packages/shared-chat
+      '@xsai/shared-stream':
+        specifier: workspace:~
+        version: link:../../packages/shared-stream
       '@xsai/stream-object':
         specifier: workspace:~
         version: link:../../packages/stream-object
@@ -629,6 +632,16 @@ importers:
         specifier: workspace:~
         version: link:../shared
 
+  packages/shared-stream:
+    dependencies:
+      '@xsai/shared':
+        specifier: workspace:~
+        version: link:../shared
+    devDependencies:
+      eventsource-parser:
+        specifier: 'catalog:'
+        version: 3.0.6
+
   packages/stream-object:
     dependencies:
       '@xsai/stream-text':
@@ -659,9 +672,9 @@ importers:
       '@xsai/shared-chat':
         specifier: workspace:~
         version: link:../shared-chat
-      eventsource-parser:
-        specifier: 'catalog:'
-        version: 3.0.6
+      '@xsai/shared-stream':
+        specifier: workspace:~
+        version: link:../shared-stream
     devDependencies:
       '@xsai/tool':
         specifier: workspace:~
@@ -675,9 +688,9 @@ importers:
       '@xsai/shared':
         specifier: workspace:~
         version: link:../shared
-      eventsource-parser:
-        specifier: 'catalog:'
-        version: 3.0.6
+      '@xsai/shared-stream':
+        specifier: workspace:~
+        version: link:../shared-stream
 
   packages/tool:
     dependencies:
