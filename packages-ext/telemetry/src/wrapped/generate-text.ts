@@ -69,13 +69,16 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
           span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
 
           if (msgToolCalls.length > 0) {
-            for (const toolCall of msgToolCalls) {
-              const { completionToolCall, completionToolResult, message } = await executeTool({
+            const results = await Promise.all(
+              msgToolCalls.map(async toolCall => executeTool({
                 abortSignal: options.abortSignal,
                 messages,
                 toolCall,
                 tools: options.tools,
-              })
+              })),
+            )
+
+            for (const { completionToolCall, completionToolResult, message } of results) {
               toolCalls.push(completionToolCall)
               toolResults.push(completionToolResult)
               messages.push(message)
@@ -124,7 +127,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             return {
               finishReason: step.finishReason,
               messages,
-              reasoningText: message.reasoning_content,
+              reasoningText: message.reasoning ?? message.reasoning_content,
               steps,
               text: step.text,
               toolCalls: step.toolCalls,
