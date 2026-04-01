@@ -25,7 +25,7 @@ const parseJSONChunk = (data: string): StreamTranscriptionDelta => {
 /** @internal */
 export const transformChunk = () => {
   return new TransformStream<EventSourceMessage, StreamTranscriptionDelta>({
-    transform: async (chunk, controller) => {
+    transform: (chunk, controller) => {
       if (!chunk.data || chunk.data === '[DONE]')
         return
 
