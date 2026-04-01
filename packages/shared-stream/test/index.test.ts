@@ -84,25 +84,25 @@ describe('@xsai/shared-stream', () => {
   })
 
   it('closes and errors controllers', async () => {
-    const first = createControlledStream<string>()
-    const second = createControlledStream<string>()
-    const firstReader = first.stream.getReader()
-    const secondReader = second.stream.getReader()
+    const [firstStream, firstCtrl] = createControlledStream<string>()
+    const [secondStream, secondCtrl] = createControlledStream<string>()
+    const firstReader = firstStream.getReader()
+    const secondReader = secondStream.getReader()
 
-    first.controller.current?.enqueue('first')
-    closeControllers(first.controller, second.controller)
+    firstCtrl.current?.enqueue('first')
+    closeControllers(firstCtrl, secondCtrl)
 
     await expect(firstReader.read()).resolves.toMatchObject({ done: false, value: 'first' })
     await expect(firstReader.read()).resolves.toMatchObject({ done: true })
     await expect(secondReader.read()).resolves.toMatchObject({ done: true })
 
-    const third = createControlledStream<string>()
-    const fourth = createControlledStream<string>()
-    const thirdReader = third.stream.getReader()
-    const fourthReader = fourth.stream.getReader()
+    const [thirdStream, thirdCtrl] = createControlledStream<string>()
+    const [fourthStream, fourthCtrl] = createControlledStream<string>()
+    const thirdReader = thirdStream.getReader()
+    const fourthReader = fourthStream.getReader()
     const error = new Error('boom')
 
-    errorControllers(error, third.controller, fourth.controller)
+    errorControllers(error, thirdCtrl, fourthCtrl)
 
     await expect(thirdReader.read()).rejects.toThrow('boom')
     await expect(fourthReader.read()).rejects.toThrow('boom')

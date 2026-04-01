@@ -33,9 +33,9 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
   // output
-  const { controller: eventCtrl, stream: eventStream } = createControlledStream<StreamTextEvent>()
-  const { controller: textCtrl, stream: textStream } = createControlledStream<string>()
-  const { controller: reasoningTextCtrl, stream: reasoningTextStream } = createControlledStream<string>()
+  const [eventStream, eventCtrl] = createControlledStream<StreamTextEvent>()
+  const [textStream, textCtrl] = createControlledStream<string>()
+  const [reasoningTextStream, reasoningTextCtrl] = createControlledStream<string>()
 
   const pushEvent = (stepEvent: StreamTextEvent) => {
     eventCtrl.current?.enqueue(stepEvent)

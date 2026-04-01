@@ -32,8 +32,8 @@ export interface StreamTranscriptionResult {
 
 /** @experimental */
 export const streamTranscription = (options: WithUnknown<StreamTranscriptionOptions>): StreamTranscriptionResult => {
-  const { controller: textStreamCtrl, stream: textStream } = createControlledStream<string>()
-  const { controller: fullStreamCtrl, stream: fullStream } = createControlledStream<StreamTranscriptionDelta>()
+  const [textStream, textStreamCtrl] = createControlledStream<string>()
+  const [fullStream, fullStreamCtrl] = createControlledStream<StreamTranscriptionDelta>()
   const fullText = new DelayedPromise<string>()
   let text = ''
 

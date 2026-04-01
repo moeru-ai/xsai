@@ -11,10 +11,7 @@ export const createControlledStream = <T>() => {
     start: currentController => controller.current = currentController,
   })
 
-  return {
-    controller,
-    stream,
-  }
+  return [stream, controller] as const
 }
 
 export const closeControllers = (...controllers: ReadableStreamControllerRef<unknown>[]) => {
