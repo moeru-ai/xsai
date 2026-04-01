@@ -1,5 +1,6 @@
-import type { StreamTranscriptionDelta } from '..'
 import type { EventSourceMessage } from 'eventsource-parser/stream'
+
+import type { StreamTranscriptionDelta } from '..'
 
 import { JSONParseError, RemoteAPIError } from '@xsai/shared'
 

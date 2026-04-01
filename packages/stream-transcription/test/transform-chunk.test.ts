@@ -1,6 +1,6 @@
 import { JSONParseError, RemoteAPIError } from '@xsai/shared'
-import { describe, expect, it } from 'vitest'
 import { EventSourceParserStream } from 'eventsource-parser/stream'
+import { describe, expect, it } from 'vitest'
 
 import { transformChunk } from '../src/internal/_transform-chunk'
 
