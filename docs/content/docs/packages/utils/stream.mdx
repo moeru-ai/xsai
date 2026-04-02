@@ -55,19 +55,3 @@ const smoothTextStream = textStream.pipeThrough(smoothStream({
   chunking: 'line',
 }))
 ```
-
-### toAsyncIterator
-
-Simple polyfill for Safari. (see https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#browser_compatibility)
-
-```ts twoslash
-import { simulateReadableStream, toAsyncIterator } from '@xsai/utils-stream'
-
-const stream = simulateReadableStream<number>({
-  chunks: [1, 2, 3],
-  chunkDelay: 100,
-  initialDelay: 0,
-})
-
-const iterableStream = toAsyncIterator(stream)
-```
