@@ -58,7 +58,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:~"
+    "@xsai/shared": "workspace:"
   },
   "devDependencies": {
     "scule": "catalog:",

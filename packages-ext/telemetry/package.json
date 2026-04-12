@@ -39,8 +39,8 @@
   },
   "dependencies": {
     "@opentelemetry/api": "catalog:",
-    "@xsai/shared-stream": "workspace:~",
-    "xsai": "workspace:~"
+    "@xsai/shared-stream": "workspace:",
+    "xsai": "workspace:"
   },
   "devDependencies": {
     "@langfuse/otel": "catalog:",

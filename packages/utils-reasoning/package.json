@@ -39,7 +39,7 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
-    "@xsai/generate-text": "workspace:~",
-    "@xsai/stream-text": "workspace:~"
+    "@xsai/generate-text": "workspace:",
+    "@xsai/stream-text": "workspace:"
   }
 }

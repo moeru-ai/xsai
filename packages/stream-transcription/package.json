@@ -38,7 +38,7 @@
     "test:transcription": "vitest run"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:~",
-    "@xsai/shared-stream": "workspace:~"
+    "@xsai/shared": "workspace:",
+    "@xsai/shared-stream": "workspace:"
   }
 }

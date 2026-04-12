@@ -40,8 +40,8 @@
     "test": "vitest run --update"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:~",
-    "@xsai/shared-stream": "workspace:~"
+    "@xsai/shared": "workspace:",
+    "@xsai/shared-stream": "workspace:"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "catalog:",

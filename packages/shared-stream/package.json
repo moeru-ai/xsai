@@ -38,7 +38,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@xsai/shared": "workspace:~"
+    "@xsai/shared": "workspace:"
   },
   "devDependencies": {
     "eventsource-parser": "catalog:"
