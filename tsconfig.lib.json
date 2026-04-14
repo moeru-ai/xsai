@@ -1,5 +1,8 @@
 {
   "extends": "@moeru/tsconfig",
+  "compilerOptions": {
+    "types": ["node"]
+  },
   "include": [
     "examples/**/src",
     "packages/**/src",

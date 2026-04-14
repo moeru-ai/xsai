@@ -101,8 +101,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         text += content
       }
       const pushReasoningText = (reasoningContent: string) => {
-        if (reasoningText == null)
-          reasoningText = ''
+        reasoningText ??= ''
 
         reasoningTextCtrl.current?.enqueue(reasoningContent)
         reasoningText += reasoningContent

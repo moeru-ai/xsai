@@ -1,18 +1,16 @@
 export class DelayedPromise<T> {
   get promise(): Promise<T> {
-    if (this._promise == null) {
-      this._promise = new Promise<T>((resolve, reject) => {
-        if (this.status.type === 'resolved') {
-          resolve(this.status.value)
-        }
-        else if (this.status.type === 'rejected') {
-          reject(this.status.error)
-        }
+    this._promise ??= new Promise<T>((resolve, reject) => {
+      if (this.status.type === 'resolved') {
+        resolve(this.status.value)
+      }
+      else if (this.status.type === 'rejected') {
+        reject(this.status.error)
+      }
 
-        this._resolve = resolve
-        this._reject = reject
-      })
-    }
+      this._resolve = resolve
+      this._reject = reject
+    })
 
     return this._promise
   }

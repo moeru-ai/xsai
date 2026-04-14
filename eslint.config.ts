@@ -7,3 +7,8 @@ export default defineConfig()
       'packages-ext/responses/src/generated/**/*.ts',
     ],
   })
+  .append({
+    rules: {
+      'markdown/heading-increment': 'off',
+    },
+  })

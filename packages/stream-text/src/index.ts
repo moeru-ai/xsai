@@ -113,8 +113,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       text += content
     }
     const pushReasoningText = (reasoningContent: string) => {
-      if (reasoningText == null)
-        reasoningText = ''
+      reasoningText ??= ''
 
       reasoningTextCtrl.current?.enqueue(reasoningContent)
       reasoningText += reasoningContent

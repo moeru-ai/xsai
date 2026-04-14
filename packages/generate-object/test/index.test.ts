@@ -46,7 +46,7 @@ describe('@xsai/generate-object', () => {
       seed: 39,
     })
 
-    await expect(g).rejects.toThrowError()
+    await expect(g).rejects.toThrow()
   })
 
   it('object', async () => {
