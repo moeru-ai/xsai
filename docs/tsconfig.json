@@ -23,6 +23,7 @@
       ]
     },
     "resolveJsonModule": true,
+    "types": ["node"],
     "allowJs": true,
     "strict": true,
     "noEmit": true,
