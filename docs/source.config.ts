@@ -31,6 +31,11 @@ export default defineConfig({
       transformers: [
         ...(rehypeCodeDefaultOptions.transformers ?? []),
         transformerTwoslash({
+          twoslashOptions: {
+            compilerOptions: {
+              types: ['node'],
+            },
+          },
           typesCache: createFileSystemTypesCache(),
         }),
       ],
