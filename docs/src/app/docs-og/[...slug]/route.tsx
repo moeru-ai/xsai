@@ -19,7 +19,7 @@ export const GET = async (
 
   return generateOGImage({
     description: page.data.description,
-    icon: (<img height="64" src="https://github.com/moeru-ai.png" width="64" />),
+    icon: (<img alt="Moeru AI" height="64" src="https://github.com/moeru-ai.png" width="64" />),
     primaryColor: '#222',
     primaryTextColor: '#fff',
     site: 'xsAI',
