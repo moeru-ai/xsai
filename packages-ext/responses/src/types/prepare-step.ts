@@ -13,7 +13,7 @@ export interface PrepareStepOptions {
 export interface PrepareStepResult {
   input?: ItemParam[]
   model?: string
-  tool_choice?: OpenResponsesPrepareToolChoice
+  toolChoice?: OpenResponsesPrepareToolChoice
 }
 
 type OpenResponsesPrepareToolChoice = NonNullable<{

@@ -6,13 +6,14 @@ import type { StopCondition } from '../types/stop-when'
 import type { StreamingEvent } from '../types/streaming-event'
 import type { Usage } from '../types/usage'
 
-import { DelayedPromise, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 import { EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { executeTool } from './execute-tool'
 import { normalizeInput } from './normalize-input'
 import { normalizeOutput } from './normalize-output'
 import { shouldStop, stepCountAtLeast } from './stop-when'
+import { normalizeTool } from './tool'
 
 export interface ResponsesOptions extends OpenResponsesOptions {
   abortSignal?: AbortSignal
@@ -109,8 +110,11 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         model: stepOptions.model ?? options.model,
         stopWhen: undefined,
         stream: true,
-        tool_choice: stepOptions.tool_choice ?? options.tool_choice,
-        tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
+        streamOptions: options.streamOptions != null
+          ? objCamelToSnake(options.streamOptions)
+          : undefined,
+        toolChoice: stepOptions.toolChoice ?? options.toolChoice,
+        tools: options.tools?.map(normalizeTool).map(({ execute: _execute, ...tool }) => tool),
       }),
       headers: requestHeaders({
         'Content-Type': 'application/json',
@@ -182,6 +186,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
             if (event.item.type === 'function_call') {
               const functionCallOutput = await executeTool({
+                abortSignal: options.abortSignal,
                 functionCall: event.item,
                 tools: options.tools,
               })

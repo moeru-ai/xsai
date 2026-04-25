@@ -41,11 +41,12 @@
   },
   "dependencies": {
     "@xsai/shared": "workspace:",
-    "@xsai/shared-stream": "workspace:"
+    "@xsai/shared-chat": "workspace:",
+    "@xsai/shared-stream": "workspace:",
+    "@xsai/tool": "workspace:"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "catalog:",
-    "@standard-schema/spec": "catalog:",
     "zod": "catalog:schema-dev"
   }
 }
