@@ -18,6 +18,9 @@ dist
 *.sln
 *.sw?
 
+# Agents
+.codex
+
 # docs:generated content
 .contentlayer
 .content-collections
