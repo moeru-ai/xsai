@@ -13,7 +13,7 @@ export interface OpenResponsesOptions extends CamelCaseProperties<Omit<NoNullCre
 type CamelCaseProperties<T> = {
   [K in keyof T as K extends string
     ? SnakeToCamel<K>
-    : never]?: CamelCaseValue<T[K]>
+    : never]: CamelCaseValue<T[K]>
 }
 
 type CamelCaseValue<T> = T extends readonly unknown[]
