@@ -1,5 +1,5 @@
-import type { FunctionCall } from '../src/generated'
 import type { ExecutableTool } from '../src'
+import type { FunctionCall } from '../src/generated'
 
 import { InvalidToolCallError, InvalidToolInputError, ToolExecutionError } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'

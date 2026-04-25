@@ -5,15 +5,16 @@ import { describe, expect, it, vi } from 'vitest'
 import { responses, stepCountAtLeast } from '../src'
 import { createEventStreamResponse } from './utils'
 
+const parseRequestBody = (init: unknown): Record<string, unknown> => {
+  if (init == null || typeof init !== 'object' || !('body' in init) || typeof init.body !== 'string')
+    throw new TypeError('Expected RequestInit.body to be a JSON string')
+
+  return JSON.parse(init.body) as Record<string, unknown>
+}
+
 describe('@xsai-ext/responses prepareStep', () => {
   it('applies step-local overrides without mutating canonical loop state', async () => {
     const requestBodies: Record<string, unknown>[] = []
-    const parseRequestBody = (init: unknown): Record<string, unknown> => {
-      if (init == null || typeof init !== 'object' || !('body' in init) || typeof init.body !== 'string')
-        throw new TypeError('Expected RequestInit.body to be a JSON string')
-
-      return JSON.parse(init.body) as Record<string, unknown>
-    }
     const fetch = vi.fn(async (_input, init) => {
       requestBodies.push(parseRequestBody(init))
 
@@ -146,9 +147,9 @@ describe('@xsai-ext/responses prepareStep', () => {
       prepareStep: ({ input, model, stepNumber, steps }) => {
         prepareCalls.push({
           input: input.map(item => item.type === 'message'
-            ? typeof item.content === 'string' ? item.content : JSON.stringify(item.content)
-            : item.type),
-          model,
+            ? typeof item.content === 'string' ? item.content : JSON.stringify(item.content ?? null)
+            : item.type ?? ''),
+          model: model ?? undefined,
           stepNumber,
           stepsLength: steps.length,
         })
@@ -239,12 +240,6 @@ describe('@xsai-ext/responses prepareStep', () => {
 
   it('accepts camelCase request and prepareStep options', async () => {
     const requestBodies: Record<string, unknown>[] = []
-    const parseRequestBody = (init: unknown): Record<string, unknown> => {
-      if (init == null || typeof init !== 'object' || !('body' in init) || typeof init.body !== 'string')
-        throw new TypeError('Expected RequestInit.body to be a JSON string')
-
-      return JSON.parse(init.body) as Record<string, unknown>
-    }
     const fetch = vi.fn(async (_input, init) => {
       requestBodies.push(parseRequestBody(init))
 
@@ -282,10 +277,12 @@ describe('@xsai-ext/responses prepareStep', () => {
       toolChoice: 'auto',
     })
 
-    for await (const _event of eventStream) {
-      // drain stream
+    const events = []
+    for await (const event of eventStream) {
+      events.push(event.type)
     }
 
+    expect(events).toEqual(['response.completed'])
     expect(requestBodies).toHaveLength(1)
     expect(requestBodies[0]).toMatchObject({
       max_output_tokens: 100,
