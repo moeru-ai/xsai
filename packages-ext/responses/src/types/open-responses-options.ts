@@ -1,5 +1,5 @@
 import type { CreateResponseBody, ItemParam } from '../generated'
-import type { ExecutableTool } from '../utils/tool'
+import type { OpenResponsesTool } from '../utils/tool'
 import type { PrepareStep } from './prepare-step'
 
 export interface OpenResponsesOptions extends CamelCaseProperties<Omit<NoNullCreateResponseBody, 'input' | 'stream' | 'tools'>> {
@@ -7,7 +7,7 @@ export interface OpenResponsesOptions extends CamelCaseProperties<Omit<NoNullCre
   prepareStep?: PrepareStep
   /** @remarks `@xsai-ext/responses` only supports `stream: true`, so you should not set it. */
   stream?: never
-  tools?: ExecutableTool[]
+  tools?: OpenResponsesTool[]
 }
 
 type CamelCaseProperties<T> = {

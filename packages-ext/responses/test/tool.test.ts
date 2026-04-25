@@ -1,21 +1,22 @@
 import type { StreamingEvent } from '../src/types/streaming-event'
 
+import { tool } from '@xsai/tool'
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 
-import { responses, stepCountAtLeast, tool } from '../src'
+import { responses, stepCountAtLeast } from '../src'
 import { createEventStreamResponse } from './utils'
 
 describe('@xsai-ext/responses tool', async () => {
   it('basic tool calls', async () => {
-    const add = tool({
+    const add = await tool({
       description: 'Adds two numbers',
       execute: ({ a, b }) => (Number.parseInt(a) + Number.parseInt(b)).toString(),
-      inputSchema: z.object({
+      name: 'add',
+      parameters: z.object({
         a: z.string().describe('First number'),
         b: z.string().describe('Second number'),
       }),
-      name: 'add',
     })
 
     const { eventStream, totalUsage, usage } = responses({
@@ -48,14 +49,14 @@ describe('@xsai-ext/responses tool', async () => {
   })
 
   it('emits response.completed before starting the next tool step', async () => {
-    const add = tool({
+    const add = await tool({
       description: 'Adds two numbers',
       execute: () => '3',
-      inputSchema: z.object({
+      name: 'add',
+      parameters: z.object({
         a: z.string(),
         b: z.string(),
       }),
-      name: 'add',
     })
 
     const fetch = vi.fn()
@@ -183,14 +184,14 @@ describe('@xsai-ext/responses tool', async () => {
   })
 
   it('stops before the next tool step when stopWhen matches', async () => {
-    const add = tool({
+    const add = await tool({
       description: 'Adds two numbers',
       execute: () => '3',
-      inputSchema: z.object({
+      name: 'add',
+      parameters: z.object({
         a: z.string(),
         b: z.string(),
       }),
-      name: 'add',
     })
 
     const fetch = vi.fn()

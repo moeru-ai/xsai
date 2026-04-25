@@ -1,17 +1,23 @@
 import type { FunctionCall, FunctionCallOutput } from '../generated'
-import type { ExecutableTool } from './tool'
+import type { OpenResponsesTool, ToolExecuteResult } from './tool'
+
+import { normalizeTool } from './tool'
 
 export interface ExecuteToolOptions {
-  // abortSignal?: AbortSignal
+  abortSignal?: AbortSignal
   functionCall: FunctionCall
-  tools?: ExecutableTool[]
+  tools?: OpenResponsesTool[]
 }
 
-export const executeTool = async ({ functionCall, tools }: ExecuteToolOptions): Promise<FunctionCallOutput> => {
-  const tool = tools?.find(tool => tool.name === functionCall.name)
+const normalizeToolOutput = (output: object | ToolExecuteResult | unknown[]): FunctionCallOutput['output'] =>
+  typeof output === 'string' ? output : JSON.stringify(output)
+
+export const executeTool = async ({ abortSignal, functionCall, tools }: ExecuteToolOptions): Promise<FunctionCallOutput> => {
+  const normalizedTools = tools?.map(tool => normalizeTool(tool))
+  const tool = normalizedTools?.find(tool => tool.name === functionCall.name)
 
   if (!tool) {
-    const availableTools = tools?.map(tool => tool.name)
+    const availableTools = normalizedTools?.map(tool => tool.name)
     const availableToolsErrorMsg = (availableTools == null || availableTools.length === 0)
       ? 'No tools are available'
       : `Available tools: ${availableTools.join(', ')}`
@@ -29,12 +35,15 @@ export const executeTool = async ({ functionCall, tools }: ExecuteToolOptions): 
     })
   }
 
-  const toolResult = await tool.execute(parsedArgs)
+  const toolResult = await tool.execute(parsedArgs, {
+    abortSignal,
+    toolCallId: functionCall.call_id,
+  })
 
   return {
     call_id: functionCall.call_id,
     id: crypto.randomUUID(),
-    output: toolResult,
+    output: normalizeToolOutput(toolResult),
     status: 'completed',
     type: 'function_call_output',
   }

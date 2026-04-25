@@ -13,6 +13,7 @@ import { executeTool } from './execute-tool'
 import { normalizeInput } from './normalize-input'
 import { normalizeOutput } from './normalize-output'
 import { shouldStop, stepCountAtLeast } from './stop-when'
+import { normalizeTool } from './tool'
 
 export interface ResponsesOptions extends OpenResponsesOptions {
   abortSignal?: AbortSignal
@@ -112,8 +113,8 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         streamOptions: options.streamOptions != null
           ? objCamelToSnake(options.streamOptions)
           : undefined,
-        tool_choice: stepOptions.toolChoice ?? options.toolChoice,
-        tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
+        toolChoice: stepOptions.toolChoice ?? options.toolChoice,
+        tools: options.tools?.map(normalizeTool).map(({ execute: _execute, ...tool }) => tool),
       }),
       headers: requestHeaders({
         'Content-Type': 'application/json',
@@ -185,6 +186,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
             if (event.item.type === 'function_call') {
               const functionCallOutput = await executeTool({
+                abortSignal: options.abortSignal,
                 functionCall: event.item,
                 tools: options.tools,
               })

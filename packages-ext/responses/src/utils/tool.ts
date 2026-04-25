@@ -1,27 +1,36 @@
-import type { StandardJSONSchemaV1 } from '@standard-schema/spec'
+import type { Tool } from '@xsai/shared-chat'
 
 import type { FunctionCallOutput, FunctionTool } from '../generated'
 
 export interface ExecutableTool extends FunctionTool {
-  execute: (input: unknown) => Promise<ToolExecuteResult> | ToolExecuteResult
+  execute: (input: unknown, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
+}
+
+export type OpenResponsesTool = ExecutableTool | Tool
+
+export interface ToolExecuteOptions {
+  abortSignal?: AbortSignal
+  // input: ItemParam[]
+  toolCallId: string
 }
 
 export type ToolExecuteResult = FunctionCallOutput['output']
 
-export interface ToolOptions<T extends StandardJSONSchemaV1> {
-  description?: string
-  execute: (input: StandardJSONSchemaV1.InferInput<T>) => Promise<ToolExecuteResult> | ToolExecuteResult
-  inputSchema: T
-  name: string
-  strict?: boolean
-}
+export const isChatTool = (tool: OpenResponsesTool): tool is Tool =>
+  'function' in tool
 
-/** @experimental */
-export const tool = <T extends StandardJSONSchemaV1>({ description, execute, inputSchema, name, strict }: ToolOptions<T>): ExecutableTool => ({
-  description: description ?? null,
-  execute,
-  name,
-  parameters: inputSchema['~standard'].jsonSchema.input({ target: 'draft-07' }),
-  strict: strict ?? true,
-  type: 'function',
-})
+export const normalizeTool = (tool: OpenResponsesTool): ExecutableTool =>
+  isChatTool(tool)
+    ? {
+        description: tool.function.description ?? null,
+        execute: async (input, options) => tool.execute(input, {
+          abortSignal: options.abortSignal,
+          messages: [],
+          toolCallId: options.toolCallId,
+        }) as Promise<ToolExecuteResult> | ToolExecuteResult,
+        name: tool.function.name,
+        parameters: tool.function.parameters,
+        strict: tool.function.strict ?? null,
+        type: 'function',
+      }
+    : tool
