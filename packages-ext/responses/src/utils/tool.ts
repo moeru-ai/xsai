@@ -30,7 +30,7 @@ export const normalizeTool = (tool: OpenResponsesTool): ExecutableTool =>
         }) as Promise<ToolExecuteResult> | ToolExecuteResult,
         name: tool.function.name,
         parameters: tool.function.parameters,
-        strict: tool.function.strict ?? null,
+        strict: tool.function.strict ?? true,
         type: 'function',
       }
     : tool
