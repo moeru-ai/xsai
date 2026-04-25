@@ -33,7 +33,7 @@ describe('@xsai-ext/responses tool', async () => {
         },
       ],
       model: 'granite4:350m-h',
-      tool_choice: 'required',
+      toolChoice: 'required',
       tools: [add],
     })
 
@@ -158,7 +158,7 @@ describe('@xsai-ext/responses tool', async () => {
       input: 'Please use the tool.',
       model: 'granite4:350m-h',
       stopWhen: stepCountAtLeast(2),
-      tool_choice: 'required',
+      toolChoice: 'required',
       tools: [add],
     })
 
@@ -250,7 +250,7 @@ describe('@xsai-ext/responses tool', async () => {
       input: 'Please use the tool.',
       model: 'granite4:350m-h',
       stopWhen: stepCountAtLeast(1),
-      tool_choice: 'required',
+      toolChoice: 'required',
       tools: [add],
     })
 

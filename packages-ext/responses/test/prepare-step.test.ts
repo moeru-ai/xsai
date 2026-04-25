@@ -161,7 +161,7 @@ describe('@xsai-ext/responses prepareStep', () => {
               type: 'message',
             }] as ItemParam[],
             model: 'prepared-model-0',
-            tool_choice: 'required',
+            toolChoice: 'required',
           }
         }
 
@@ -170,7 +170,7 @@ describe('@xsai-ext/responses prepareStep', () => {
         }
       },
       stopWhen: stepCountAtLeast(2),
-      tool_choice: 'auto',
+      toolChoice: 'auto',
       tools: [add],
     })
 
@@ -235,5 +235,67 @@ describe('@xsai-ext/responses prepareStep', () => {
         type: 'function_call_output',
       },
     ])
+  })
+
+  it('accepts camelCase request and prepareStep options', async () => {
+    const requestBodies: Record<string, unknown>[] = []
+    const parseRequestBody = (init: unknown): Record<string, unknown> => {
+      if (init == null || typeof init !== 'object' || !('body' in init) || typeof init.body !== 'string')
+        throw new TypeError('Expected RequestInit.body to be a JSON string')
+
+      return JSON.parse(init.body) as Record<string, unknown>
+    }
+    const fetch = vi.fn(async (_input, init) => {
+      requestBodies.push(parseRequestBody(init))
+
+      return createEventStreamResponse([
+        {
+          response: {
+            id: 'resp_step_1',
+            object: 'response',
+            output: [],
+            status: 'completed',
+            usage: {
+              input_tokens: 7,
+              output_tokens: 3,
+              total_tokens: 10,
+            },
+          },
+          sequence_number: 0,
+          type: 'response.completed',
+        },
+      ])
+    }) as typeof globalThis.fetch
+
+    const { eventStream } = responses({
+      baseURL: 'https://example.com/v1/',
+      fetch,
+      input: 'base input',
+      maxOutputTokens: 100,
+      model: 'base-model',
+      prepareStep: () => ({
+        toolChoice: 'required',
+      }),
+      streamOptions: {
+        includeObfuscation: false,
+      },
+      toolChoice: 'auto',
+    })
+
+    for await (const _event of eventStream) {
+      // drain stream
+    }
+
+    expect(requestBodies).toHaveLength(1)
+    expect(requestBodies[0]).toMatchObject({
+      max_output_tokens: 100,
+      stream_options: {
+        include_obfuscation: false,
+      },
+      tool_choice: 'required',
+    })
+    expect(requestBodies[0]).not.toHaveProperty('maxOutputTokens')
+    expect(requestBodies[0]).not.toHaveProperty('streamOptions')
+    expect(requestBodies[0]).not.toHaveProperty('toolChoice')
   })
 })

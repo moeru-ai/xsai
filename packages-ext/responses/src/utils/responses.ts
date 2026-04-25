@@ -6,7 +6,7 @@ import type { StopCondition } from '../types/stop-when'
 import type { StreamingEvent } from '../types/streaming-event'
 import type { Usage } from '../types/usage'
 
-import { DelayedPromise, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 import { EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { executeTool } from './execute-tool'
@@ -109,7 +109,10 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         model: stepOptions.model ?? options.model,
         stopWhen: undefined,
         stream: true,
-        tool_choice: stepOptions.tool_choice ?? options.tool_choice,
+        streamOptions: options.streamOptions != null
+          ? objCamelToSnake(options.streamOptions)
+          : undefined,
+        tool_choice: stepOptions.toolChoice ?? options.toolChoice,
         tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
       }),
       headers: requestHeaders({
