@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { createQianfan } from '../src/create'
 import { nvidia, qianfan } from '../src'
+import { createQianfan } from '../src/create'
 
 describe('@xsai-ext/providers', () => {
   it('nvidia', () => {
