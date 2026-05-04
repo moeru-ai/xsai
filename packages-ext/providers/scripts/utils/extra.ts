@@ -2,6 +2,15 @@ import type { CodeGenProvider } from './types'
 
 export const extraProviders: CodeGenProvider[] = [
   {
+    apiKey: ['QIANFAN_API_KEY'],
+    baseURL: 'https://qianfan.baidubce.com/v2',
+    capabilities: {},
+    doc: 'https://cloud.baidu.com/doc/qianfan/s/Hmh4suq26',
+    id: 'qianfan',
+    models: [],
+    name: 'Baidu Qianfan',
+  },
+  {
     apiKey: ['TENCENT_HUNYUAN_API_KEY'],
     baseURL: 'https://api.hunyuan.cloud.tencent.com/v1/',
     capabilities: {

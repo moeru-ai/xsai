@@ -91,6 +91,7 @@ import {
   createZenmux,
   createZhipuai,
   createZhipuaiCodingPlan,
+  createQianfan,
   createTencentHunyuan,
   createOllama,
   createLitellm,
@@ -887,6 +888,15 @@ export const zhipuai = createZhipuai(process.env.ZHIPU_API_KEY ?? '')
  * - apiKey - `ZHIPU_API_KEY`
  */
 export const zhipuaiCodingPlan = createZhipuaiCodingPlan(process.env.ZHIPU_API_KEY ?? '')
+
+/**
+ * Baidu Qianfan Provider
+ * @see {@link https://cloud.baidu.com/doc/qianfan/s/Hmh4suq26}
+ * @remarks
+ * - baseURL - `https://qianfan.baidubce.com/v2`
+ * - apiKey - `QIANFAN_API_KEY`
+ */
+export const qianfan = createQianfan(process.env.QIANFAN_API_KEY ?? '')
 
 /**
  * Tencent Hunyuan Provider

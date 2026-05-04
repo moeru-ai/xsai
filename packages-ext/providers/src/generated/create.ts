@@ -813,6 +813,15 @@ export const createZhipuaiCodingPlan = (apiKey: string, baseURL = 'https://open.
 )
 
 /**
+ * Create a Baidu Qianfan Provider
+ * @see {@link https://cloud.baidu.com/doc/qianfan/s/Hmh4suq26}
+ */
+export const createQianfan = (apiKey: string, baseURL = 'https://qianfan.baidubce.com/v2') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
  * Create a Tencent Hunyuan Provider
  * @see {@link https://cloud.tencent.com/document/product/1729}
  */
