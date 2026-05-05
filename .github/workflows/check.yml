@@ -66,6 +66,7 @@ jobs:
       - run: ollama pull granite4:350m-h
       - run: ollama pull granite4:1b-h
       - run: ollama pull qwen3:0.6b
+      - run: ollama pull qwen3.5:0.8b
       - run: ollama serve > /dev/null 2>&1 &
 
       - run: pnpm install
