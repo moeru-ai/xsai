@@ -88,8 +88,6 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       : nextUsage
   }
 
-  const parseToolInput = (input: string) => JSON.parse(input.trim() || '{}') as unknown
-
   const mapFullEvent = (event: FullEvent): Event[] => {
     // eslint-disable-next-line ts/switch-exhaustiveness-check
     switch (event.type) {
@@ -263,7 +261,6 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
             }, {
               toolResult: {
                 id: event.item.call_id,
-                input: parseToolInput(event.item.arguments),
                 name: event.item.name,
                 output: functionCallOutput.output,
               },

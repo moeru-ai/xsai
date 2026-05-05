@@ -85,7 +85,6 @@ export interface ToolCallStartEvent {
 export interface ToolResultDoneEvent {
   toolResult: {
     id: string
-    input: unknown
     name: string
     output: unknown
   }
