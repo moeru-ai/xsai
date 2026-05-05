@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/deprecation */
 // import { generateText } from '@xsai/generate-text'
 // import { streamText } from '@xsai/stream-text'
 import { describe, expect, it } from 'vitest'

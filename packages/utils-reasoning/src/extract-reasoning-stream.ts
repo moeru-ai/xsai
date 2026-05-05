@@ -7,6 +7,7 @@ export interface ExtractReasoningStreamResult {
   textStream: ReadableStream<string>
 }
 
+/** @deprecated use `streamText().reasoningTextStream` instead. */
 export const extractReasoningStream = (stream: ReadableStream<string>, options: ExtractReasoningOptions = {
   tagName: 'think',
 }): ExtractReasoningStreamResult => {

@@ -12,6 +12,7 @@ export interface ExtractReasoningResult {
   text: string
 }
 
+/** @deprecated use `(await generateText()).reasoningText` instead. */
 export const extractReasoning = (text: string, options: ExtractReasoningOptions = {
   tagName: 'think',
 }) => {
