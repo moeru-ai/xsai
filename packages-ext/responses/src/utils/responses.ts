@@ -112,8 +112,16 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         if (event.item?.type === 'reasoning')
           return [{ outputIndex: event.output_index, type: 'reasoning.start' }]
 
-        if (event.item?.type === 'function_call')
-          return [{ outputIndex: event.output_index, type: 'tool-call.start' }]
+        if (event.item?.type === 'function_call') {
+          return [{
+            outputIndex: event.output_index,
+            toolCall: {
+              id: event.item.call_id,
+              name: event.item.name,
+            },
+            type: 'tool-call.start',
+          }]
+        }
 
         return []
       }

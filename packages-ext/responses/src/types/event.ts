@@ -79,6 +79,10 @@ export interface ToolCallDoneEvent {
 
 export interface ToolCallStartEvent {
   outputIndex: number
+  toolCall: {
+    id: string
+    name: string
+  }
   type: 'tool-call.start'
 }
 
