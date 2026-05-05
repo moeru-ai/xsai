@@ -149,11 +149,19 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const pushStreamingEvent = (event: FullEvent) => {
     fullCtrl.current?.enqueue(event)
 
-    if (event.type === 'response.output_text.delta' || event.type === 'response.refusal.delta')
-      textCtrl.current?.enqueue(event.delta)
-
-    if (event.type === 'response.reasoning.delta' || event.type === 'response.reasoning_summary_text.delta')
-      reasoningTextCtrl.current?.enqueue(event.delta)
+    // eslint-disable-next-line ts/switch-exhaustiveness-check
+    switch (event.type) {
+      case 'response.output_text.delta':
+      case 'response.refusal.delta':
+        textCtrl.current?.enqueue(event.delta)
+        break
+      case 'response.reasoning.delta':
+      case 'response.reasoning_summary_text.delta':
+        reasoningTextCtrl.current?.enqueue(event.delta)
+        break
+      default:
+        break
+    }
   }
 
   const pushEvent = (event: Event) => {
