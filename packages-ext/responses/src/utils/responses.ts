@@ -1,10 +1,10 @@
 import type { FunctionCall, FunctionCallOutput, ResponseResource } from '../generated'
 import type { Event } from '../types/event'
+import type { FullEvent } from '../types/event-full'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { PrepareStepResult } from '../types/prepare-step'
 import type { Step } from '../types/step'
 import type { StopCondition } from '../types/stop-when'
-import type { StreamingEvent } from '../types/streaming-event'
 import type { Usage } from '../types/usage'
 
 import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
@@ -28,7 +28,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
 
 export interface ResponsesResult {
   eventStream: ReadableStream<Event>
-  fullStream: ReadableStream<StreamingEvent>
+  fullStream: ReadableStream<FullEvent>
   steps: Promise<Step[]>
   textStream: ReadableStream<string>
   totalUsage: Promise<undefined | Usage>
@@ -90,7 +90,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
   const parseToolInput = (input: string) => JSON.parse(input.trim() || '{}') as unknown
 
-  const mapStreamingEvent = (event: StreamingEvent): Event[] => {
+  const mapFullEvent = (event: FullEvent): Event[] => {
     // eslint-disable-next-line ts/switch-exhaustiveness-check
     switch (event.type) {
       case 'error':
@@ -142,11 +142,11 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
   // output
-  const [fullStream, fullStreamCtrl] = createControlledStream<StreamingEvent>()
+  const [fullStream, fullStreamCtrl] = createControlledStream<FullEvent>()
   const [textStream, textStreamCtrl] = createControlledStream<string>()
   const [eventStream, eventStreamCtrl] = createControlledStream<Event>()
 
-  const pushStreamingEvent = (event: StreamingEvent) => {
+  const pushStreamingEvent = (event: FullEvent) => {
     fullStreamCtrl.current?.enqueue(event)
 
     if (event.type === 'response.output_text.delta')
@@ -199,11 +199,11 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     return res.body!
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
-      .pipeThrough(new JsonMessageTransformStream<StreamingEvent>())
+      .pipeThrough(new JsonMessageTransformStream<FullEvent>())
       .getReader()
   }
 
-  let reader: ReadableStreamDefaultReader<StreamingEvent> | undefined
+  let reader: ReadableStreamDefaultReader<FullEvent> | undefined
 
   const doStream = async () => {
     reader = await createReader()
@@ -215,7 +215,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         return
 
       let shouldContinue = false
-      const events = mapStreamingEvent(event)
+      const events = mapFullEvent(event)
 
       // eslint-disable-next-line ts/switch-exhaustiveness-check
       switch (event.type) {

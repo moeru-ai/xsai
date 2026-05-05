@@ -1,5 +1,5 @@
 import type { Event } from '../src/types/event'
-import type { StreamingEvent } from '../src/types/streaming-event'
+import type { FullEvent } from '../src/types/event-full'
 
 import { tool } from '@xsai/tool'
 import { describe, expect, it } from 'vitest'
@@ -21,7 +21,7 @@ describe('@xsai-ext/responses basic', async () => {
       text += t
     }
 
-    const chunks: StreamingEvent[] = []
+    const chunks: FullEvent[] = []
     for await (const chunk of fullStream) {
       chunks.push(chunk)
     }
@@ -60,7 +60,7 @@ describe('@xsai-ext/responses basic', async () => {
       tools: [add],
     })
 
-    const chunks: StreamingEvent[] = []
+    const chunks: FullEvent[] = []
     for await (const chunk of fullStream) {
       chunks.push(chunk)
     }
