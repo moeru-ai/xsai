@@ -8,6 +8,20 @@ export interface ErrorEvent {
   type: 'error'
 }
 
+export type Event = ErrorEvent
+  | ReasoningDeltaEvent
+  | ReasoningDoneEvent
+  | ReasoningStartEvent
+  | StepDoneEvent
+  | StepStartEvent
+  | TextDeltaEvent
+  | TextDoneEvent
+  | TextStartEvent
+  | ToolCallDeltaEvent
+  | ToolCallDoneEvent
+  | ToolCallStartEvent
+  | ToolResultDoneEvent
+
 export interface ReasoningDeltaEvent {
   delta: string
   type: 'reasoning.delta'
