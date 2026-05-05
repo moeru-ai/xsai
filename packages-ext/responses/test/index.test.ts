@@ -14,6 +14,7 @@ describe('@xsai-ext/responses basic', async () => {
       input: 'Hello!',
       instructions: 'You are a helpful assistant.',
       model: 'qwen3.5:0.8b',
+      reasoning: { effort: 'low' },
     })
 
     let text = ''
@@ -64,6 +65,7 @@ describe('@xsai-ext/responses basic', async () => {
       input: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
       instructions: 'You are a helpful assistant.',
       model: 'qwen3.5:0.8b',
+      reasoning: { effort: 'low' },
       toolChoice: 'required',
       tools: [add],
     })
