@@ -26,7 +26,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
 }
 
 export interface ResponsesResult {
-  eventStream: ReadableStream<StreamingEvent>
+  fullStream: ReadableStream<StreamingEvent>
   steps: Promise<Step[]>
   textStream: ReadableStream<string>
   totalUsage: Promise<undefined | Usage>
@@ -227,13 +227,13 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     },
   })
 
-  const [eventStream, textStreamRaw] = mainStream.tee()
+  const [fullStream, textStreamRaw] = mainStream.tee()
   const textStream = textStreamRaw.pipeThrough(new TransformStream<StreamingEvent, string>({
     transform: (event, controller) => event.type === 'response.output_text.delta' ? controller.enqueue(event.delta) : undefined,
   }))
 
   return {
-    eventStream,
+    fullStream,
     steps: resultSteps.promise,
     textStream,
     totalUsage: resultTotalUsage.promise,
