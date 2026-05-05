@@ -1,3 +1,4 @@
+export type * from './types/event'
 export type * from './types/open-responses-options'
 export type * from './types/prepare-step'
 export type * from './types/step'

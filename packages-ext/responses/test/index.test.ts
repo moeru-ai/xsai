@@ -1,3 +1,4 @@
+import type { Event } from '../src/types/event'
 import type { StreamingEvent } from '../src/types/streaming-event'
 
 import { tool } from '@xsai/tool'
@@ -8,7 +9,7 @@ import { responses } from '../src'
 
 describe('@xsai-ext/responses basic', async () => {
   it('basic', async () => {
-    const { fullStream, textStream, totalUsage, usage } = responses({
+    const { eventStream, fullStream, textStream, totalUsage, usage } = responses({
       baseURL: 'http://localhost:11434/v1/',
       input: 'Hello!',
       instructions: 'You are a helpful assistant.',
@@ -25,10 +26,16 @@ describe('@xsai-ext/responses basic', async () => {
       chunks.push(chunk)
     }
 
+    const events: Event[] = []
+    for await (const event of eventStream) {
+      events.push(event)
+    }
+
     expect(text.length).toBeGreaterThan(1)
     expect(text).toMatchSnapshot()
 
     expect(chunks).toMatchSnapshot()
+    expect(events).toMatchSnapshot()
     expect(await usage).toMatchSnapshot()
     expect(await totalUsage).toMatchSnapshot()
   })
@@ -44,7 +51,7 @@ describe('@xsai-ext/responses basic', async () => {
       }),
     })
 
-    const { fullStream, totalUsage, usage } = responses({
+    const { eventStream, fullStream, totalUsage, usage } = responses({
       baseURL: 'http://localhost:11434/v1/',
       input: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
       instructions: 'You are a helpful assistant.',
@@ -58,7 +65,13 @@ describe('@xsai-ext/responses basic', async () => {
       chunks.push(chunk)
     }
 
+    const events: Event[] = []
+    for await (const event of eventStream) {
+      events.push(event)
+    }
+
     expect(chunks).toMatchSnapshot()
+    expect(events).toMatchSnapshot()
     expect(await usage).toMatchSnapshot()
     expect(await totalUsage).toMatchSnapshot()
   })

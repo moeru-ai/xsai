@@ -41,7 +41,7 @@ export interface StepDoneEvent {
   // TODO: reason
   output: ItemField[]
   type: 'step.done'
-  usage: Usage
+  usage?: Usage
 }
 
 export interface StepStartEvent {
