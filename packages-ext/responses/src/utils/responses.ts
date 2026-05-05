@@ -149,7 +149,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const pushStreamingEvent = (event: FullEvent) => {
     fullStreamCtrl.current?.enqueue(event)
 
-    if (event.type === 'response.output_text.delta')
+    if (event.type === 'response.output_text.delta' || event.type === 'response.refusal.delta')
       textStreamCtrl.current?.enqueue(event.delta)
   }
 
