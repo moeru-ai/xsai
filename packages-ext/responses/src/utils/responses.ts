@@ -29,6 +29,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
 export interface ResponsesResult {
   eventStream: ReadableStream<Event>
   fullStream: ReadableStream<FullEvent>
+  reasoningTextStream: ReadableStream<string>
   steps: Promise<Step[]>
   textStream: ReadableStream<string>
   totalUsage: Promise<undefined | Usage>
@@ -140,19 +141,31 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
   // output
-  const [fullStream, fullStreamCtrl] = createControlledStream<FullEvent>()
-  const [textStream, textStreamCtrl] = createControlledStream<string>()
-  const [eventStream, eventStreamCtrl] = createControlledStream<Event>()
+  const [fullStream, fullCtrl] = createControlledStream<FullEvent>()
+  const [textStream, textCtrl] = createControlledStream<string>()
+  const [reasoningTextStream, reasoningTextCtrl] = createControlledStream<string>()
+  const [eventStream, eventCtrl] = createControlledStream<Event>()
 
   const pushStreamingEvent = (event: FullEvent) => {
-    fullStreamCtrl.current?.enqueue(event)
+    fullCtrl.current?.enqueue(event)
 
-    if (event.type === 'response.output_text.delta' || event.type === 'response.refusal.delta')
-      textStreamCtrl.current?.enqueue(event.delta)
+    // eslint-disable-next-line ts/switch-exhaustiveness-check
+    switch (event.type) {
+      case 'response.output_text.delta':
+      case 'response.refusal.delta':
+        textCtrl.current?.enqueue(event.delta)
+        break
+      case 'response.reasoning.delta':
+      case 'response.reasoning_summary_text.delta':
+        reasoningTextCtrl.current?.enqueue(event.delta)
+        break
+      default:
+        break
+    }
   }
 
   const pushEvent = (event: Event) => {
-    eventStreamCtrl.current?.enqueue(event)
+    eventCtrl.current?.enqueue(event)
   }
 
   const pushEvents = (events: Event[]) => {
@@ -295,7 +308,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     }
 
     if (finalError != null) {
-      errorControllers(finalError, fullStreamCtrl, textStreamCtrl, eventStreamCtrl)
+      errorControllers(finalError, fullCtrl, textCtrl, reasoningTextCtrl, eventCtrl)
 
       resultSteps.reject(finalError)
       resultUsage.reject(finalError)
@@ -303,7 +316,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       return
     }
 
-    closeControllers(fullStreamCtrl, textStreamCtrl, eventStreamCtrl)
+    closeControllers(fullCtrl, textCtrl, reasoningTextCtrl, eventCtrl)
 
     resultSteps.resolve(steps)
     resultUsage.resolve(usage)
@@ -313,6 +326,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   return {
     eventStream,
     fullStream,
+    reasoningTextStream,
     steps: resultSteps.promise,
     textStream,
     totalUsage: resultTotalUsage.promise,

@@ -9,7 +9,7 @@ import { responses } from '../src'
 
 describe('@xsai-ext/responses basic', async () => {
   it('basic', async () => {
-    const { eventStream, fullStream, textStream, totalUsage, usage } = responses({
+    const { eventStream, fullStream, reasoningTextStream, textStream, totalUsage, usage } = responses({
       baseURL: 'http://localhost:11434/v1/',
       input: 'Hello!',
       instructions: 'You are a helpful assistant.',
@@ -19,6 +19,11 @@ describe('@xsai-ext/responses basic', async () => {
     let text = ''
     for await (const t of textStream) {
       text += t
+    }
+
+    let reasoningText = ''
+    for await (const t of reasoningTextStream) {
+      reasoningText += t
     }
 
     const chunks: FullEvent[] = []
@@ -33,6 +38,9 @@ describe('@xsai-ext/responses basic', async () => {
 
     expect(text.length).toBeGreaterThan(1)
     expect(text).toMatchSnapshot()
+
+    expect(reasoningText.length).toBeGreaterThan(1)
+    expect(reasoningText).toMatchSnapshot()
 
     expect(chunks).toMatchSnapshot()
     expect(events).toMatchSnapshot()
