@@ -5,8 +5,6 @@ export type StopCondition = (context: StopContext) => boolean
 
 export interface StopContext {
   messages: readonly Message[]
-  step: StopStep
-  steps: readonly StopStep[]
+  step: CompletionStep
+  steps: readonly CompletionStep[]
 }
-
-export type StopStep<T extends boolean = false> = Omit<CompletionStep<T>, 'stepType'>

@@ -9,5 +9,4 @@ export interface Step {
   usage?: Usage
   // TODO: reasoning
   // TODO: finishReason
-  // TODO: stepType
 }
