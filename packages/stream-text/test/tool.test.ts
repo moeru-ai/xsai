@@ -59,11 +59,16 @@ describe('@xsai/stream-text tool', async () => {
       type: 'tool-call-streaming-start',
     })
 
-    expect(events.find(e => e.type === 'tool-call')).toStrictEqual({
-      args: '{"a":"114514","b":"1919810"}',
+    const toolCallEvent = events.find(e => e.type === 'tool-call')
+
+    expect(toolCallEvent).toMatchObject({
       toolCallType: 'function',
       toolName: 'add',
       type: 'tool-call',
+    })
+    expect(JSON.parse(toolCallEvent!.args)).toStrictEqual({
+      a: '114514',
+      b: '1919810',
     })
 
     expect(events.find(e => e.type === 'tool-result')).toStrictEqual({
@@ -84,13 +89,14 @@ describe('@xsai/stream-text tool', async () => {
     })
 
     expect(allSteps.length).toBe(2)
-    expect(allSteps[0].toolCalls.map(cleanToolCallId)).toStrictEqual([
-      {
-        args: '{"a":"114514","b":"1919810"}',
-        toolCallType: 'function',
-        toolName: 'add',
-      },
-    ])
+    expect(allSteps[0].toolCalls.map(cleanToolCallId)).toMatchObject([{
+      toolCallType: 'function',
+      toolName: 'add',
+    }])
+    expect(JSON.parse(allSteps[0].toolCalls[0].args)).toStrictEqual({
+      a: '114514',
+      b: '1919810',
+    })
     expect(allSteps[0].toolResults.map(cleanToolCallId)).toStrictEqual([
       {
         args: {

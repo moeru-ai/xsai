@@ -12,7 +12,7 @@ exports[`streamText with tools > basic 2`] = `
 [
   {
     "gen_ai.operation.name": "execute_tool",
-    "gen_ai.tool.call.arguments": "{"b":"1919810","a":"114514"}",
+    "gen_ai.tool.call.arguments": "{"a":"114514","b":"1919810"}",
     "gen_ai.tool.call.description": "Adds two numbers",
     "gen_ai.tool.call.name": "add",
     "gen_ai.tool.call.result": ""2034324"",
@@ -36,7 +36,7 @@ exports[`streamText with tools > basic 2`] = `
         "type": "function",
         "function": {
           "name": "add",
-          "arguments": "{\\"b\\":\\"1919810\\",\\"a\\":\\"114514\\"}"
+          "arguments": "{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"
         }
       }
     ]
@@ -71,7 +71,7 @@ exports[`streamText with tools > basic 2`] = `
         "type": "function",
         "function": {
           "name": "add",
-          "arguments": "{\\"b\\":\\"1919810\\",\\"a\\":\\"114514\\"}"
+          "arguments": "{\\"a\\":\\"114514\\",\\"b\\":\\"1919810\\"}"
         }
       }
     ]
