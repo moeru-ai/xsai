@@ -1,7 +1,5 @@
-import type { FinishReason } from './finish-reason'
 import type { Message } from './message'
-import type { CompletionToolCall, CompletionToolResult } from './tool'
-import type { Usage } from './usage'
+import type { CompletionStep } from './step'
 
 export type StopCondition = (context: StopContext) => boolean
 
@@ -11,10 +9,4 @@ export interface StopContext {
   steps: readonly StopStep[]
 }
 
-export interface StopStep {
-  finishReason: FinishReason
-  text?: string
-  toolCalls: CompletionToolCall[]
-  toolResults: CompletionToolResult[]
-  usage?: Usage
-}
+export type StopStep<T extends boolean = false> = Omit<CompletionStep<T>, 'stepType'>
