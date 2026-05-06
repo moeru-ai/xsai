@@ -2,7 +2,7 @@ import type { CompletionStep, CompletionToolCall, CompletionToolResult, Generate
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, determineStepType, executeTool, InvalidResponseError, resolveStepOptions, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, executeTool, InvalidResponseError, resolveStepOptions, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -85,7 +85,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             }
           }
 
-          const stopStep: Omit<CompletionStep<true>, 'stepType'> = {
+          const step: CompletionStep<true> = {
             finishReason,
             text: Array.isArray(message.content)
 
@@ -97,19 +97,10 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
           }
           const stop = shouldStop(stopWhen, {
             messages,
-            step: stopStep,
-            steps: [...steps, stopStep],
+            step,
+            steps: [...steps, step],
           })
           const willContinue = toolCalls.length > 0 && !stop
-          const step: CompletionStep<true> = {
-            ...stopStep,
-            stepType: determineStepType({
-              finishReason,
-              stepsLength: steps.length,
-              toolCallsLength: toolCalls.length,
-              willContinue,
-            }),
-          }
 
           steps.push(step)
 

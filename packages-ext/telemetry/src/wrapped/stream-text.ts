@@ -1,10 +1,10 @@
-import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StopStep, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
+import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 import type { StreamTextChunkResult } from '../types/stream-text-chunk'
 
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
-import { chat, DelayedPromise, determineStepType, executeTool, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, DelayedPromise, executeTool, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -234,7 +234,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         })
       }
 
-      const stopStep: StopStep = {
+      const step: CompletionStep = {
         finishReason,
         text,
         toolCalls,
@@ -243,19 +243,10 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       }
       const stop = shouldStop(stopWhen, {
         messages,
-        step: stopStep,
-        steps: [...steps, stopStep],
+        step,
+        steps: [...steps, step],
       })
       const willContinue = toolCalls.length > 0 && !stop
-      const step = {
-        ...stopStep,
-        stepType: determineStepType({
-          finishReason,
-          stepsLength: steps.length,
-          toolCallsLength: toolCalls.length,
-          willContinue,
-        }),
-      }
       pushStep(step)
 
       // Telemetry

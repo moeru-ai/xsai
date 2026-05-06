@@ -22,7 +22,6 @@ exports[`@xsai/stream-text basic > basic 2`] = `
 [
   {
     "finishReason": "stop",
-    "stepType": "initial",
     "text": "YES",
     "toolCalls": [],
     "toolResults": [],
@@ -137,7 +136,6 @@ exports[`@xsai/stream-text basic > includes usage 2`] = `
 [
   {
     "finishReason": "stop",
-    "stepType": "initial",
     "text": "Sure, here's a quick one: Why don't scientists trust atoms? Because they make up everything!",
     "toolCalls": [],
     "toolResults": [],
@@ -256,7 +254,6 @@ exports[`@xsai/stream-text basic > stream 2`] = `
 [
   {
     "finishReason": "stop",
-    "stepType": "initial",
     "text": "Sure, here's a joke for you: Why don't scientists trust atoms? Because they make up everything!",
     "toolCalls": [],
     "toolResults": [],

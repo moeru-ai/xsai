@@ -1,11 +1,11 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, StopStep, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, Usage } from '@xsai/shared-chat'
 
 import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, determineStepType, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export type * from './types/event'
@@ -240,7 +240,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       })
     }
 
-    const stopStep: StopStep = {
+    const step: CompletionStep = {
       finishReason,
       text,
       toolCalls,
@@ -249,19 +249,11 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     }
     const stop = shouldStop(stopWhen, {
       messages,
-      step: stopStep,
-      steps: [...steps, stopStep],
+      step,
+      steps: [...steps, step],
     })
     const willContinue = toolCalls.length > 0 && !stop
-    pushStep({
-      ...stopStep,
-      stepType: determineStepType({
-        finishReason,
-        stepsLength: steps.length,
-        toolCallsLength: toolCalls.length,
-        willContinue,
-      }),
-    })
+    pushStep(step)
 
     if (willContinue)
       return async () => doStream()

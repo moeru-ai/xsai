@@ -2,7 +2,7 @@ import type { TrampolineFn, WithUnknown } from '@xsai/shared'
 import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
 
 import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
-import { chat, determineStepType, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
@@ -104,7 +104,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         }
       }
 
-      const stopStep: Omit<CompletionStep<true>, 'stepType'> = {
+      const step: CompletionStep<true> = {
         finishReason,
         text: Array.isArray(message.content)
           ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
@@ -115,19 +115,10 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
       }
       const stop = shouldStop(stopWhen, {
         messages,
-        step: stopStep,
-        steps: [...steps, stopStep],
+        step,
+        steps: [...steps, step],
       })
       const willContinue = toolCalls.length > 0 && !stop
-      const step: CompletionStep<true> = {
-        ...stopStep,
-        stepType: determineStepType({
-          finishReason,
-          stepsLength: steps.length,
-          toolCallsLength: toolCalls.length,
-          willContinue,
-        }),
-      }
 
       steps.push(step)
 
