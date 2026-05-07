@@ -45,7 +45,6 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
-  type RawUsage = NonNullable<ResponseResource['usage']>
 
   const getFunctionCalls = (response: ResponseResource): FunctionCall[] =>
     response.output.filter((item): item is FunctionCall => item.type === 'function_call')
@@ -77,7 +76,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     steps.push(step)
   }
 
-  const pushUsage = (nextUsage?: RawUsage) => {
+  const pushUsage = (nextUsage?: NonNullable<ResponseResource['usage']>) => {
     if (nextUsage == null)
       return
 
