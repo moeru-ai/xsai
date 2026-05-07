@@ -5,7 +5,7 @@ import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, executeTool, normalizeChatCompletionUsage, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export type * from './types/event'
@@ -97,13 +97,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
 
     const pushUsage = (u: ChatCompletionUsage) => {
       usage = normalizeChatCompletionUsage(u)
-      totalUsage = totalUsage
-        ? {
-            inputTokens: totalUsage.inputTokens + usage.inputTokens,
-            outputTokens: totalUsage.outputTokens + usage.outputTokens,
-            totalTokens: totalUsage.totalTokens + usage.totalTokens,
-          }
-        : usage
+      totalUsage = computeTotalUsage(totalUsage, usage)
     }
 
     let text = ''

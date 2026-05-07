@@ -8,6 +8,7 @@ import type { PrepareStepResult } from '../types/prepare-step'
 import type { StopCondition } from '../types/stop-when'
 
 import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
+import { computeTotalUsage } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { executeTool } from './execute-tool'
@@ -81,13 +82,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       return
 
     usage = normalizeUsage(nextUsage)
-    totalUsage = totalUsage
-      ? {
-          inputTokens: totalUsage.inputTokens + usage.inputTokens,
-          outputTokens: totalUsage.outputTokens + usage.outputTokens,
-          totalTokens: totalUsage.totalTokens + usage.totalTokens,
-        }
-      : usage
+    totalUsage = computeTotalUsage(totalUsage, usage)
   }
 
   const pushResponseStep = (response: ResponseResource, stepOptions: {

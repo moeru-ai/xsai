@@ -4,7 +4,7 @@ import type { WithTelemetry } from '../types/options'
 import type { StreamTextChunkResult } from '../types/stream-text-chunk'
 
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
-import { chat, DelayedPromise, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, computeTotalUsage, DelayedPromise, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -88,13 +88,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
           return
 
         usage = normalizeChatCompletionUsage(u)
-        totalUsage = totalUsage
-          ? {
-              inputTokens: totalUsage.inputTokens + usage.inputTokens,
-              outputTokens: totalUsage.outputTokens + usage.outputTokens,
-              totalTokens: totalUsage.totalTokens + usage.totalTokens,
-            }
-          : usage
+        totalUsage = computeTotalUsage(totalUsage, usage)
       }
 
       let text = ''
