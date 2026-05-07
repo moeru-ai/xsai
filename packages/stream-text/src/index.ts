@@ -1,5 +1,5 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatCompletionUsage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, Usage } from '@xsai/shared-chat'
 
 import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
@@ -95,7 +95,10 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       toolChoice: stepOptions.toolChoice,
     })
 
-    const pushUsage = (u: ChatCompletionUsage) => {
+    const pushUsage = (u: StreamTextChunkResult['usage']) => {
+      if (u == null)
+        return
+
       usage = normalizeChatCompletionUsage(u)
       totalUsage = computeTotalUsage(totalUsage, usage)
     }
@@ -129,8 +132,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
         close: () => {},
         // eslint-disable-next-line sonarjs/cognitive-complexity
         write: (chunk) => {
-          if (chunk.usage)
-            pushUsage(chunk.usage)
+          pushUsage(chunk.usage)
 
           // skip if no choices
           if (chunk.choices == null || chunk.choices.length === 0)
