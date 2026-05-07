@@ -1,5 +1,6 @@
+import type { CompletionStep } from '@xsai/shared-chat'
+
 import type { CreateResponseBody, ItemParam } from '../generated'
-import type { Step } from './step'
 
 export type PrepareStep = (options: PrepareStepOptions) => PrepareStepResult | Promise<PrepareStepResult>
 
@@ -7,7 +8,7 @@ export interface PrepareStepOptions {
   input: ItemParam[]
   model?: null | string
   stepNumber: number
-  steps: Step[]
+  steps: CompletionStep[]
 }
 
 export interface PrepareStepResult {

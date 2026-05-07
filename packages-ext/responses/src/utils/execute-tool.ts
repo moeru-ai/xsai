@@ -1,3 +1,5 @@
+import type { CompletionToolCall, CompletionToolResult } from '@xsai/shared-chat'
+
 import type { FunctionCall, FunctionCallOutput } from '../generated'
 import type { OpenResponsesTool, ToolExecuteResult } from './tool'
 
@@ -9,6 +11,12 @@ export interface ExecuteToolOptions {
   abortSignal?: AbortSignal
   functionCall: FunctionCall
   tools?: OpenResponsesTool[]
+}
+
+export interface ExecuteToolResult {
+  completionToolCall: CompletionToolCall
+  completionToolResult: CompletionToolResult
+  functionCallOutput: FunctionCallOutput
 }
 
 const normalizeToolOutput = (output: object | ToolExecuteResult | unknown[]): FunctionCallOutput['output'] =>
@@ -31,7 +39,7 @@ const parseToolInput = (toolName: string, input: string) => {
   }
 }
 
-export const executeTool = async ({ abortSignal, functionCall, tools }: ExecuteToolOptions): Promise<FunctionCallOutput> => {
+export const executeTool = async ({ abortSignal, functionCall, tools }: ExecuteToolOptions): Promise<ExecuteToolResult> => {
   const normalizedTools = tools?.map(tool => normalizeTool(tool))
   const tool = normalizedTools?.find(tool => tool.name === functionCall.name)
 
@@ -69,11 +77,31 @@ export const executeTool = async ({ abortSignal, functionCall, tools }: ExecuteT
     })
   }
 
-  return {
+  const functionCallOutput: FunctionCallOutput = {
     call_id: functionCall.call_id,
     id: crypto.randomUUID(),
     output: normalizeToolOutput(toolResult),
     status: 'completed',
     type: 'function_call_output',
+  }
+
+  const completionToolCall: CompletionToolCall = {
+    args: functionCall.arguments,
+    toolCallId: functionCall.call_id,
+    toolCallType: 'function',
+    toolName: functionCall.name,
+  }
+
+  const completionToolResult: CompletionToolResult = {
+    args: parsedArgs,
+    result: functionCallOutput.output,
+    toolCallId: functionCall.call_id,
+    toolName: functionCall.name,
+  }
+
+  return {
+    completionToolCall,
+    completionToolResult,
+    functionCallOutput,
   }
 }
