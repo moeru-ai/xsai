@@ -8,7 +8,7 @@ import type { PrepareStepResult } from '../types/prepare-step'
 import type { StopCondition } from '../types/stop-when'
 import type { Usage } from '../types/usage'
 
-import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { executeTool } from './execute-tool'
@@ -44,8 +44,6 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
-  let stepToolCalls: CompletionToolCall[] = []
-  let stepToolResults: CompletionToolResult[] = []
 
   const getFunctionCalls = (response: ResponseResource): FunctionCall[] =>
     response.output.filter((item): item is FunctionCall => item.type === 'function_call')
@@ -70,21 +68,20 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
           total_tokens: usage.total_tokens,
         }
 
-  const pushStep = (response: ResponseResource, finishReason: FinishReason): CompletionStep => {
-    const step: CompletionStep = {
-      finishReason,
-      text: getText(response),
-      toolCalls: stepToolCalls,
-      toolResults: stepToolResults,
-      usage: toCompletionUsage(usage),
-    }
+  const createStep = (response: ResponseResource, stepOptions: {
+    finishReason: FinishReason
+    toolCalls: CompletionToolCall[]
+    toolResults: CompletionToolResult[]
+  }): CompletionStep => ({
+    finishReason: stepOptions.finishReason,
+    text: getText(response),
+    toolCalls: stepOptions.toolCalls,
+    toolResults: stepOptions.toolResults,
+    usage: toCompletionUsage(usage),
+  })
 
+  const pushStep = (step: CompletionStep) => {
     steps.push(step)
-
-    stepToolCalls = []
-    stepToolResults = []
-
-    return step
   }
 
   const pushUsage = (nextUsage?: Usage) => {
@@ -99,6 +96,18 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
           total_tokens: totalUsage.total_tokens + nextUsage.total_tokens,
         }
       : nextUsage
+  }
+
+  const pushResponseStep = (response: ResponseResource, stepOptions: {
+    finishReason: FinishReason
+    toolCalls: CompletionToolCall[]
+    toolResults: CompletionToolResult[]
+  }): CompletionStep => {
+    pushUsage(response.usage ?? undefined)
+    const step = createStep(response, stepOptions)
+    pushStep(step)
+
+    return step
   }
 
   const mapFullEvent = (event: FullEvent): Event[] => {
@@ -234,37 +243,21 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       .getReader()
   }
 
-  const handleCompletedResponse = (response: ResponseResource): boolean => {
-    pushUsage(response.usage ?? undefined)
-    const step = pushStep(
-      response,
-      getFunctionCalls(response).length > 0 ? 'tool-calls' : 'stop',
-    )
-
-    return input.at(-1)?.type === 'function_call_output'
-      && !shouldStop(stopWhen, {
-        input,
-        step,
-        steps,
-      })
-  }
-
-  const handleDoneResponse = (response: ResponseResource, finishReason: FinishReason) => {
-    pushUsage(response.usage ?? undefined)
-    pushStep(response, finishReason)
-  }
-
-  const pushFunctionCallOutput = async (functionCall: FunctionCall, events: Event[]) => {
+  const pushFunctionCallOutput = async (functionCall: FunctionCall, step: {
+    events: Event[]
+    toolCalls: CompletionToolCall[]
+    toolResults: CompletionToolResult[]
+  }) => {
     const { completionToolCall, completionToolResult, functionCallOutput } = await executeTool({
       abortSignal: options.abortSignal,
       functionCall,
       tools: options.tools,
     })
 
-    stepToolCalls.push(completionToolCall)
-    stepToolResults.push(completionToolResult)
+    step.toolCalls.push(completionToolCall)
+    step.toolResults.push(completionToolResult)
     input.push(...normalizeOutput([functionCallOutput]))
-    events.push({
+    step.events.push({
       toolCall: {
         arguments: completionToolCall.args,
         id: completionToolCall.toolCallId,
@@ -281,23 +274,27 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     })
   }
 
-  const handleOutputItemDone = async (event: Extract<FullEvent, { type: 'response.output_item.done' }>, events: Event[]) => {
+  const handleOutputItemDone = async (event: Extract<FullEvent, { type: 'response.output_item.done' }>, step: {
+    events: Event[]
+    toolCalls: CompletionToolCall[]
+    toolResults: CompletionToolResult[]
+  }) => {
     if (event.item == null)
       return
 
     input.push(...normalizeOutput([event.item]))
 
     if (event.item.type === 'function_call') {
-      await pushFunctionCallOutput(event.item, events)
+      await pushFunctionCallOutput(event.item, step)
     }
   }
 
-  let reader: ReadableStreamDefaultReader<FullEvent> | undefined
-
   const doStream = async () => {
-    reader = await createReader()
+    const reader = await createReader()
+    const toolCalls: CompletionToolCall[] = []
+    const toolResults: CompletionToolResult[] = []
 
-    while (reader != null) {
+    while (true) {
       const { done, value: event } = await reader.read()
 
       if (done)
@@ -305,20 +302,46 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
       let shouldContinue = false
       const events = mapFullEvent(event)
+      const step = { events, toolCalls, toolResults }
 
       // eslint-disable-next-line ts/switch-exhaustiveness-check
       switch (event.type) {
-        case 'response.completed':
-          shouldContinue = handleCompletedResponse(event.response)
+        case 'response.completed': {
+          pushUsage(event.response.usage ?? undefined)
+
+          const completionStep = createStep(event.response, {
+            finishReason: getFunctionCalls(event.response).length > 0 ? 'tool-calls' : 'stop',
+            toolCalls,
+            toolResults,
+          })
+
+          shouldContinue = input.at(-1)?.type === 'function_call_output'
+            && !shouldStop(stopWhen, {
+              input,
+              step: completionStep,
+              steps: [...steps, completionStep],
+            })
+
+          pushStep(completionStep)
+
           break
+        }
         case 'response.failed':
-          handleDoneResponse(event.response, 'error')
+          pushResponseStep(event.response, {
+            finishReason: 'error',
+            toolCalls,
+            toolResults,
+          })
           break
         case 'response.incomplete':
-          handleDoneResponse(event.response, 'length')
+          pushResponseStep(event.response, {
+            finishReason: 'length',
+            toolCalls,
+            toolResults,
+          })
           break
         case 'response.output_item.done':
-          await handleOutputItemDone(event, events)
+          await handleOutputItemDone(event, step)
           break
         default:
           break
@@ -329,7 +352,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
       if (shouldContinue) {
         reader.releaseLock()
-        reader = await createReader()
+        return async () => doStream()
       }
     }
   }
@@ -338,7 +361,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     let finalError: unknown
 
     try {
-      await doStream()
+      await trampoline(async () => doStream())
     }
     catch (err) {
       finalError = err
