@@ -1,10 +1,9 @@
-import type { Message } from './message'
 import type { CompletionStep } from './step'
 
-export type StopCondition = (context: StopContext) => boolean
+export type StopCondition<Input = unknown> = (context: StopContext<Input>) => boolean
 
-export interface StopContext {
-  messages: readonly Message[]
+export interface StopContext<Input = unknown> {
+  input: readonly Input[]
   step: CompletionStep
   steps: readonly CompletionStep[]
 }

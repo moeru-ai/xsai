@@ -238,7 +238,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         usage,
       }
       const stop = shouldStop(stopWhen, {
-        messages,
+        input: messages,
         step,
         steps: [...steps, step],
       })

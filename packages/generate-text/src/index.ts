@@ -10,7 +10,7 @@ export interface GenerateTextOptions extends ChatOptions {
   /** @internal */
   steps?: CompletionStep<true>[]
   /** @default `stepCountAtLeast(1)` */
-  stopWhen?: StopCondition
+  stopWhen?: StopCondition<Message>
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
 }
@@ -84,7 +84,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
 
       const { finish_reason: finishReason, message } = choices[0]
       const msgToolCalls = message?.tool_calls ?? []
-      const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
+      const stopWhen: StopCondition<Message> = options.stopWhen ?? stepCountAtLeast(1)
 
       messages.push(message)
 
@@ -115,7 +115,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         usage,
       }
       const stop = shouldStop(stopWhen, {
-        messages,
+        input: messages,
         step,
         steps: [...steps, step],
       })

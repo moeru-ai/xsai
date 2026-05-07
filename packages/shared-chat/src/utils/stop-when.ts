@@ -1,12 +1,12 @@
 import type { StopCondition, StopContext } from '../types'
 
-export const and = (...conditions: StopCondition[]): StopCondition =>
+export const and = <Input = unknown>(...conditions: StopCondition<Input>[]): StopCondition<Input> =>
   context => conditions.every(condition => condition(context))
 
-export const or = (...conditions: StopCondition[]): StopCondition =>
+export const or = <Input = unknown>(...conditions: StopCondition<Input>[]): StopCondition<Input> =>
   context => conditions.some(condition => condition(context))
 
-export const not = (condition: StopCondition): StopCondition =>
+export const not = <Input = unknown>(condition: StopCondition<Input>): StopCondition<Input> =>
   context => !condition(context)
 
 export const stepCountAtLeast = (count: number): StopCondition =>
@@ -19,5 +19,5 @@ export const hasToolCall = (name?: string): StopCondition =>
 export const stepCountIs = stepCountAtLeast
 
 /** @internal */
-export const shouldStop = (stopWhen: StopCondition, context: StopContext): boolean =>
+export const shouldStop = <Input = unknown>(stopWhen: StopCondition<Input>, context: StopContext<Input>): boolean =>
   stopWhen(context)

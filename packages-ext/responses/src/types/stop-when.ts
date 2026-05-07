@@ -1,11 +1,7 @@
-import type { CompletionStep } from '@xsai/shared-chat'
+import type { StopCondition as SharedStopCondition, StopContext as SharedStopContext } from '@xsai/shared-chat'
 
 import type { ItemParam } from '../generated'
 
-export type StopCondition = (context: StopContext) => boolean
+export type StopCondition = SharedStopCondition<ItemParam>
 
-export interface StopContext {
-  input: readonly ItemParam[]
-  step: CompletionStep
-  steps: readonly CompletionStep[]
-}
+export type StopContext = SharedStopContext<ItemParam>
