@@ -97,7 +97,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             usage,
           }
           const stop = shouldStop(stopWhen, {
-            messages,
+            input: messages,
             step,
             steps: [...steps, step],
           })

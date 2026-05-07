@@ -16,7 +16,7 @@ export interface StreamTextOptions extends ChatOptions {
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
   prepareStep?: PrepareStep
   /** @default `stepCountAtLeast(1)` */
-  stopWhen?: StopCondition
+  stopWhen?: StopCondition<Message>
   /**
    * If you want to disable stream, use `@xsai/generate-{text,object}`.
    */
@@ -44,7 +44,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   // state
   const steps: CompletionStep[] = []
   const messages: Message[] = structuredClone(options.messages)
-  const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
+  const stopWhen: StopCondition<Message> = options.stopWhen ?? stepCountAtLeast(1)
   let usage: undefined | Usage
   let totalUsage: undefined | Usage
   let reasoningField: 'reasoning' | 'reasoning_content' | undefined
@@ -244,7 +244,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       usage,
     }
     const stop = shouldStop(stopWhen, {
-      messages,
+      input: messages,
       step,
       steps: [...steps, step],
     })

@@ -17,7 +17,7 @@ const createStopContext = (overrides: Partial<StopContext> = {}): StopContext =>
   const step = overrides.step ?? createCompletionStep()
 
   return {
-    messages: [],
+    input: [],
     ...overrides,
     step,
     steps: overrides.steps ?? [step],
