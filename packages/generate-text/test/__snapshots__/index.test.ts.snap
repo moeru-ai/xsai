@@ -8,9 +8,9 @@ exports[`@xsai/generate-text > basic 1`] = `
     "toolCalls": [],
     "toolResults": [],
     "usage": {
-      "completion_tokens": 2,
-      "prompt_tokens": 34,
-      "total_tokens": 36,
+      "inputTokens": 34,
+      "outputTokens": 2,
+      "totalTokens": 36,
     },
   },
 ]

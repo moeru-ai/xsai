@@ -1,4 +1,4 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, Usage as CompletionUsage, FinishReason } from '@xsai/shared-chat'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Usage } from '@xsai/shared-chat'
 
 import type { FunctionCall, ResponseResource } from '../generated'
 import type { Event } from '../types/event'
@@ -6,14 +6,15 @@ import type { FullEvent } from '../types/event-full'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { PrepareStepResult } from '../types/prepare-step'
 import type { StopCondition } from '../types/stop-when'
-import type { Usage } from '../types/usage'
 
 import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
+import { computeTotalUsage } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { executeTool } from './execute-tool'
 import { normalizeInput } from './normalize-input'
 import { normalizeOutput } from './normalize-output'
+import { normalizeUsage } from './normalize-usage'
 import { shouldStop, stepCountAtLeast } from './stop-when'
 import { normalizeTool } from './tool'
 
@@ -59,15 +60,6 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     return text.length > 0 ? text : undefined
   }
 
-  const toCompletionUsage = (usage?: Usage): CompletionUsage | undefined =>
-    usage == null
-      ? undefined
-      : {
-          completion_tokens: usage.output_tokens,
-          prompt_tokens: usage.input_tokens,
-          total_tokens: usage.total_tokens,
-        }
-
   const createStep = (response: ResponseResource, stepOptions: {
     finishReason: FinishReason
     toolCalls: CompletionToolCall[]
@@ -77,25 +69,19 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     text: getText(response),
     toolCalls: stepOptions.toolCalls,
     toolResults: stepOptions.toolResults,
-    usage: toCompletionUsage(usage),
+    usage,
   })
 
   const pushStep = (step: CompletionStep) => {
     steps.push(step)
   }
 
-  const pushUsage = (nextUsage?: Usage) => {
+  const pushUsage = (nextUsage?: NonNullable<ResponseResource['usage']>) => {
     if (nextUsage == null)
       return
 
-    usage = nextUsage
-    totalUsage = totalUsage
-      ? {
-          input_tokens: totalUsage.input_tokens + nextUsage.input_tokens,
-          output_tokens: totalUsage.output_tokens + nextUsage.output_tokens,
-          total_tokens: totalUsage.total_tokens + nextUsage.total_tokens,
-        }
-      : nextUsage
+    usage = normalizeUsage(nextUsage)
+    totalUsage = computeTotalUsage(totalUsage, usage)
   }
 
   const pushResponseStep = (response: ResponseResource, stepOptions: {
@@ -118,7 +104,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       case 'response.completed':
       case 'response.failed':
       case 'response.incomplete':
-        return [{ output: event.response.output, type: 'step.done', usage: event.response.usage ?? undefined }]
+        return [{ output: event.response.output, type: 'step.done', usage: event.response.usage != null ? normalizeUsage(event.response.usage) : undefined }]
       case 'response.content_part.added':
         return event.part.type === 'output_text' || event.part.type === 'text' || event.part.type === 'refusal'
           ? [{ outputIndex: event.output_index, type: 'text.start' }]

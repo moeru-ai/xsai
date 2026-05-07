@@ -5,7 +5,7 @@ import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export type * from './types/event'
@@ -95,15 +95,12 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       toolChoice: stepOptions.toolChoice,
     })
 
-    const pushUsage = (u: Usage) => {
-      usage = u
-      totalUsage = totalUsage
-        ? {
-            completion_tokens: totalUsage.completion_tokens + u.completion_tokens,
-            prompt_tokens: totalUsage.prompt_tokens + u.prompt_tokens,
-            total_tokens: totalUsage.total_tokens + u.total_tokens,
-          }
-        : u
+    const pushUsage = (u: StreamTextChunkResult['usage']) => {
+      if (u == null)
+        return
+
+      usage = normalizeChatCompletionUsage(u)
+      totalUsage = computeTotalUsage(totalUsage, usage)
     }
 
     let text = ''
@@ -135,8 +132,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
         close: () => {},
         // eslint-disable-next-line sonarjs/cognitive-complexity
         write: (chunk) => {
-          if (chunk.usage)
-            pushUsage(chunk.usage)
+          pushUsage(chunk.usage)
 
           // skip if no choices
           if (chunk.choices == null || chunk.choices.length === 0)
