@@ -1,4 +1,4 @@
-import type { Message, ToolMessage } from './message'
+import type { Message } from './message'
 
 export interface CompletionToolCall {
   args: string
@@ -9,7 +9,7 @@ export interface CompletionToolCall {
 
 export interface CompletionToolResult {
   args: Record<string, unknown>
-  result: ToolMessage['content']
+  result: unknown
   toolCallId: string
   toolName: string
 }

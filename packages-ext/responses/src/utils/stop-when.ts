@@ -12,8 +12,8 @@ export const not = (condition: StopCondition): StopCondition =>
 export const stepCountAtLeast = (count: number): StopCondition =>
   ({ steps }) => steps.length >= count
 
-export const hasFunctionCall = (name?: string): StopCondition =>
-  ({ step }) => step.functionCalls.some(functionCall => name == null || functionCall.name === name)
+export const hasToolCall = (name?: string): StopCondition =>
+  ({ step }) => step.toolCalls.some(toolCall => name == null || toolCall.toolName === name)
 
 /** @internal */
 export const shouldStop = (stopWhen: StopCondition, context: StopContext): boolean =>
