@@ -1,7 +1,6 @@
-// import type { CompletionToolCall, CompletionToolResult, FinishReason, Usage } from '@xsai/shared-chat'
+import type { Usage } from '@xsai/shared-chat'
 
 import type { ErrorPayload, ItemField } from '../generated'
-import type { Usage } from './usage'
 
 export interface ErrorEvent {
   error: ErrorPayload

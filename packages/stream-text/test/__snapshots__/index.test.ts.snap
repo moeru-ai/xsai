@@ -124,9 +124,9 @@ exports[`@xsai/stream-text basic > includes usage 1`] = `
     "finishReason": "stop",
     "type": "finish",
     "usage": {
-      "completion_tokens": 22,
-      "prompt_tokens": 24,
-      "total_tokens": 46,
+      "inputTokens": 24,
+      "outputTokens": 22,
+      "totalTokens": 46,
     },
   },
 ]
@@ -140,9 +140,9 @@ exports[`@xsai/stream-text basic > includes usage 2`] = `
     "toolCalls": [],
     "toolResults": [],
     "usage": {
-      "completion_tokens": 22,
-      "prompt_tokens": 24,
-      "total_tokens": 46,
+      "inputTokens": 24,
+      "outputTokens": 22,
+      "totalTokens": 46,
     },
   },
 ]

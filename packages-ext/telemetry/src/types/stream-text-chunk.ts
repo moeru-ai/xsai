@@ -1,4 +1,4 @@
-import type { FinishReason, ToolCall, Usage } from 'xsai'
+import type { ChatCompletionUsage, FinishReason, ToolCall } from 'xsai'
 
 export interface StreamTextChunkResult {
   choices: {
@@ -20,5 +20,5 @@ export interface StreamTextChunkResult {
   model: string
   object: 'chat.completion.chunk'
   system_fingerprint: string
-  usage?: Usage
+  usage?: ChatCompletionUsage
 }

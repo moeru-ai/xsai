@@ -2,7 +2,7 @@ import type { CompletionStep, CompletionToolCall, CompletionToolResult, Generate
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, executeTool, InvalidResponseError, resolveStepOptions, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, executeTool, InvalidResponseError, normalizeChatCompletionUsage, resolveStepOptions, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -48,7 +48,8 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
       })
         .then(responseJSON<GenerateTextResponse>)
         .then(async (res) => {
-          const { choices, usage } = res
+          const { choices } = res
+          const usage = normalizeChatCompletionUsage(res.usage)
 
           if (!choices?.length) {
             const responseBody = JSON.stringify(res)
@@ -107,8 +108,8 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
           // TODO: metrics counter
           span.setAttributes({
             'gen_ai.response.finish_reasons': [step.finishReason],
-            'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
-            'gen_ai.usage.output_tokens': step.usage.completion_tokens,
+            'gen_ai.usage.input_tokens': step.usage.inputTokens,
+            'gen_ai.usage.output_tokens': step.usage.outputTokens,
           })
 
           if (options.onStepFinish)
@@ -156,8 +157,8 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
   //   span.setAttributes({
   //     'gen_ai.output.messages': JSON.stringify(result.messages),
   //     'gen_ai.response.finish_reasons': [result.finishReason],
-  //     'gen_ai.usage.input_tokens': result.usage.prompt_tokens,
-  //     'gen_ai.usage.output_tokens': result.usage.completion_tokens,
+  //     'gen_ai.usage.input_tokens': result.usage.inputTokens,
+  //     'gen_ai.usage.output_tokens': result.usage.outputTokens,
   //   })
 
   //   return result

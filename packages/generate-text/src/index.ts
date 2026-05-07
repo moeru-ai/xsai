@@ -1,8 +1,8 @@
 import type { TrampolineFn, WithUnknown } from '@xsai/shared'
-import type { AssistantMessage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
+import type { AssistantMessage, ChatCompletionUsage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
 
 import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
-import { chat, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, executeTool, normalizeChatCompletionUsage, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
@@ -27,7 +27,7 @@ export interface GenerateTextResponse {
   model: string
   object: 'chat.completion'
   system_fingerprint: string
-  usage: Usage
+  usage: ChatCompletionUsage
 }
 
 export interface GenerateTextResult {
@@ -68,7 +68,8 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
   })
     .then(responseJSON<GenerateTextResponse>)
     .then(async (res) => {
-      const { choices, usage } = res
+      const { choices } = res
+      const usage = normalizeChatCompletionUsage(res.usage)
 
       if (!choices?.length) {
         const responseBody = JSON.stringify(res)

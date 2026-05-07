@@ -4,7 +4,7 @@ import type { WithTelemetry } from '../types/options'
 import type { StreamTextChunkResult } from '../types/stream-text-chunk'
 
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
-import { chat, DelayedPromise, executeTool, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, DelayedPromise, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -83,15 +83,18 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         tools,
       })
 
-      const pushUsage = (u: Usage) => {
-        usage = u
+      const pushUsage = (u: StreamTextChunkResult['usage']) => {
+        if (u == null)
+          return
+
+        usage = normalizeChatCompletionUsage(u)
         totalUsage = totalUsage
           ? {
-              completion_tokens: totalUsage.completion_tokens + u.completion_tokens,
-              prompt_tokens: totalUsage.prompt_tokens + u.prompt_tokens,
-              total_tokens: totalUsage.total_tokens + u.total_tokens,
+              inputTokens: totalUsage.inputTokens + usage.inputTokens,
+              outputTokens: totalUsage.outputTokens + usage.outputTokens,
+              totalTokens: totalUsage.totalTokens + usage.totalTokens,
             }
-          : u
+          : usage
       }
 
       let text = ''
@@ -123,8 +126,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
           close: () => {},
           // eslint-disable-next-line sonarjs/cognitive-complexity
           write: (chunk) => {
-            if (chunk.usage)
-              pushUsage(chunk.usage)
+            pushUsage(chunk.usage)
 
             // skip if no choices
             if (chunk.choices == null || chunk.choices.length === 0)
@@ -253,8 +255,8 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       span.setAttributes({
         'gen_ai.response.finish_reasons': [step.finishReason],
         ...step.usage && {
-          'gen_ai.usage.input_tokens': step.usage.prompt_tokens,
-          'gen_ai.usage.output_tokens': step.usage.completion_tokens,
+          'gen_ai.usage.input_tokens': step.usage.inputTokens,
+          'gen_ai.usage.output_tokens': step.usage.outputTokens,
         },
       })
 

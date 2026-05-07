@@ -2383,15 +2383,9 @@ I should avoid any technical jargon and keep the tone helpful and supportive. Ma
     ],
     "type": "step.done",
     "usage": {
-      "input_tokens": 23,
-      "input_tokens_details": {
-        "cached_tokens": 0,
-      },
-      "output_tokens": 173,
-      "output_tokens_details": {
-        "reasoning_tokens": 0,
-      },
-      "total_tokens": 196,
+      "inputTokens": 23,
+      "outputTokens": 173,
+      "totalTokens": 196,
     },
   },
 ]
@@ -2399,29 +2393,17 @@ I should avoid any technical jargon and keep the tone helpful and supportive. Ma
 
 exports[`@xsai-ext/responses basic > basic 5`] = `
 {
-  "input_tokens": 23,
-  "input_tokens_details": {
-    "cached_tokens": 0,
-  },
-  "output_tokens": 173,
-  "output_tokens_details": {
-    "reasoning_tokens": 0,
-  },
-  "total_tokens": 196,
+  "inputTokens": 23,
+  "outputTokens": 173,
+  "totalTokens": 196,
 }
 `;
 
 exports[`@xsai-ext/responses basic > basic 6`] = `
 {
-  "input_tokens": 23,
-  "input_tokens_details": {
-    "cached_tokens": 0,
-  },
-  "output_tokens": 173,
-  "output_tokens_details": {
-    "reasoning_tokens": 0,
-  },
-  "total_tokens": 196,
+  "inputTokens": 23,
+  "outputTokens": 173,
+  "totalTokens": 196,
 }
 `;
 
@@ -6347,15 +6329,9 @@ Let me use the add tool to check:",
     ],
     "type": "step.done",
     "usage": {
-      "input_tokens": 333,
-      "input_tokens_details": {
-        "cached_tokens": 0,
-      },
-      "output_tokens": 353,
-      "output_tokens_details": {
-        "reasoning_tokens": 0,
-      },
-      "total_tokens": 686,
+      "inputTokens": 333,
+      "outputTokens": 353,
+      "totalTokens": 686,
     },
   },
 ]
@@ -6363,28 +6339,16 @@ Let me use the add tool to check:",
 
 exports[`@xsai-ext/responses basic > tool calls 3`] = `
 {
-  "input_tokens": 333,
-  "input_tokens_details": {
-    "cached_tokens": 0,
-  },
-  "output_tokens": 353,
-  "output_tokens_details": {
-    "reasoning_tokens": 0,
-  },
-  "total_tokens": 686,
+  "inputTokens": 333,
+  "outputTokens": 353,
+  "totalTokens": 686,
 }
 `;
 
 exports[`@xsai-ext/responses basic > tool calls 4`] = `
 {
-  "input_tokens": 333,
-  "input_tokens_details": {
-    "cached_tokens": 0,
-  },
-  "output_tokens": 353,
-  "output_tokens_details": {
-    "reasoning_tokens": 0,
-  },
-  "total_tokens": 686,
+  "inputTokens": 333,
+  "outputTokens": 353,
+  "totalTokens": 686,
 }
 `;

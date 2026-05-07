@@ -1,11 +1,11 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatCompletionUsage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, Usage } from '@xsai/shared-chat'
 
 import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, executeTool, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, executeTool, normalizeChatCompletionUsage, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export type * from './types/event'
@@ -95,15 +95,15 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       toolChoice: stepOptions.toolChoice,
     })
 
-    const pushUsage = (u: Usage) => {
-      usage = u
+    const pushUsage = (u: ChatCompletionUsage) => {
+      usage = normalizeChatCompletionUsage(u)
       totalUsage = totalUsage
         ? {
-            completion_tokens: totalUsage.completion_tokens + u.completion_tokens,
-            prompt_tokens: totalUsage.prompt_tokens + u.prompt_tokens,
-            total_tokens: totalUsage.total_tokens + u.total_tokens,
+            inputTokens: totalUsage.inputTokens + usage.inputTokens,
+            outputTokens: totalUsage.outputTokens + usage.outputTokens,
+            totalTokens: totalUsage.totalTokens + usage.totalTokens,
           }
-        : u
+        : usage
     }
 
     let text = ''
