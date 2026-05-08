@@ -7,7 +7,7 @@ export const toFunctionCallOutput = (result: ToolExecuteResult): FunctionCallOut
   if (typeof result === 'string')
     return result
 
-  if (Array.isArray(result) && result.every(item => !!(typeof item === 'object' && 'type' in item && ['input_file', 'input_image', 'input_text'].includes((item as { type: string }).type))))
+  if (Array.isArray(result) && result.every(item => item !== null && typeof item === 'object' && 'type' in item && ['input_file', 'input_image', 'input_text'].includes((item as { type: string }).type)))
     return result as FunctionCallOutput['output']
 
   return JSON.stringify(result)
