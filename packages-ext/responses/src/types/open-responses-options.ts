@@ -1,11 +1,10 @@
 import type { Tool } from '@xsai/shared-chat'
 
 import type { CreateResponseBody, ItemParam } from '../generated'
-import type { PrepareStep } from './prepare-step'
 
-export interface OpenResponsesOptions extends CamelCaseProperties<Omit<NoNullCreateResponseBody, 'input' | 'stream' | 'tools'>> {
+export interface OpenResponsesOptions extends CamelCaseProperties<Omit<NoNullCreateResponseBody, 'input' | 'model' | 'stream' | 'tools'>> {
   input: ItemParam[] | string
-  prepareStep?: PrepareStep
+  model: string
   /** @remarks `@xsai-ext/responses` only supports `stream: true`, so you should not set it. */
   stream?: never
   tools?: Tool[]

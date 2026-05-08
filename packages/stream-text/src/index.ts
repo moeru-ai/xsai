@@ -5,7 +5,7 @@ import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
 
 import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
-import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export type * from './types/event'
@@ -73,8 +73,8 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   }
 
   const doStream = async () => {
-    const stepOptions = await resolveStepOptions({
-      messages,
+    const stepOptions = await resolvePrepareStep({
+      input: messages,
       model: options.model,
       prepareStep: options.prepareStep,
       stepNumber: steps.length,
@@ -85,7 +85,7 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     const { body: stream } = await chat({
       ...options,
       maxSteps: undefined,
-      messages: stepOptions.messages,
+      messages: stepOptions.input,
       model: stepOptions.model,
       stopWhen: undefined,
       stream: true,

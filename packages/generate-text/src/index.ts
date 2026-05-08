@@ -2,7 +2,7 @@ import type { TrampolineFn, WithUnknown } from '@xsai/shared'
 import type { AssistantMessage, ChatCompletionUsage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
 
 import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
-import { chat, executeTool, normalizeChatCompletionUsage, resolveStepOptions, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
@@ -47,8 +47,8 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
     ? structuredClone(options.messages)
     : options.messages
   const steps: CompletionStep<true>[] = options.steps ?? []
-  const stepOptions = await resolveStepOptions({
-    messages,
+  const stepOptions = await resolvePrepareStep({
+    input: messages,
     model: options.model,
     prepareStep: options.prepareStep,
     stepNumber: steps.length,
@@ -59,7 +59,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
   return chat({
     ...options,
     maxSteps: undefined,
-    messages: stepOptions.messages,
+    messages: stepOptions.input,
     model: stepOptions.model,
     steps: undefined,
     stopWhen: undefined,

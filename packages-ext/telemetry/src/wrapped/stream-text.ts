@@ -4,7 +4,7 @@ import type { WithTelemetry } from '../types/options'
 import type { StreamTextChunkResult } from '../types/stream-text-chunk'
 
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
-import { chat, computeTotalUsage, DelayedPromise, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolveStepOptions, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, computeTotalUsage, DelayedPromise, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolvePrepareStep, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -54,8 +54,8 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     : undefined
 
   const doStream = async () => {
-    const stepOptions = await resolveStepOptions({
-      messages,
+    const stepOptions = await resolvePrepareStep({
+      input: messages,
       model: options.model,
       prepareStep: options.prepareStep,
       stepNumber: steps.length,
@@ -65,14 +65,14 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
     return recordSpan(chatSpan({
       ...options,
-      messages: stepOptions.messages,
+      messages: stepOptions.input,
       model: stepOptions.model,
       toolChoice: stepOptions.toolChoice,
     }, tracer), async (span) => {
       const { body: stream } = await chat({
         ...options,
         maxSteps: undefined,
-        messages: stepOptions.messages,
+        messages: stepOptions.input,
         model: stepOptions.model,
         stopWhen: undefined,
         stream: true,

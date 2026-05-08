@@ -2,7 +2,7 @@ import type { CompletionStep, CompletionToolCall, CompletionToolResult, Generate
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, executeTool, InvalidResponseError, normalizeChatCompletionUsage, resolveStepOptions, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, executeTool, InvalidResponseError, normalizeChatCompletionUsage, resolvePrepareStep, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -21,8 +21,8 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
       ? structuredClone(options.messages)
       : options.messages
     const steps: CompletionStep<true>[] = options.steps ?? []
-    const stepOptions = await resolveStepOptions({
-      messages,
+    const stepOptions = await resolvePrepareStep({
+      input: messages,
       model: options.model,
       prepareStep: options.prepareStep,
       stepNumber: steps.length,
@@ -32,14 +32,14 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
 
     return recordSpan(chatSpan({
       ...options,
-      messages: stepOptions.messages,
+      messages: stepOptions.input,
       model: stepOptions.model,
       toolChoice: stepOptions.toolChoice,
     }, tracer), async span =>
       chat({
         ...options,
         maxSteps: undefined,
-        messages: stepOptions.messages,
+        messages: stepOptions.input,
         model: stepOptions.model,
         steps: undefined,
         stopWhen: undefined,
