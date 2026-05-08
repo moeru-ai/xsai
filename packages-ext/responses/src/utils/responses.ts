@@ -1,6 +1,6 @@
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Usage } from '@xsai/shared-chat'
 
-import type { FunctionCall, ResponseResource } from '../generated'
+import type { FunctionCall, FunctionCallOutput, ResponseResource } from '../generated'
 import type { Event } from '../types/event'
 import type { FullEvent } from '../types/event-full'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
@@ -8,15 +8,14 @@ import type { PrepareStepResult } from '../types/prepare-step'
 import type { StopCondition } from '../types/stop-when'
 
 import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
-import { computeTotalUsage } from '@xsai/shared-chat'
+import { computeTotalUsage, executeTool } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
-import { executeTool } from './execute-tool'
 import { normalizeInput } from './normalize-input'
 import { normalizeOutput } from './normalize-output'
+import { toFunctionTool, toToolCall, wrapToolOutput } from './normalize-tool'
 import { normalizeUsage } from './normalize-usage'
 import { shouldStop, stepCountAtLeast } from './stop-when'
-import { normalizeTool } from './tool'
 
 export interface ResponsesOptions extends OpenResponsesOptions {
   abortSignal?: AbortSignal
@@ -212,7 +211,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
           ? objCamelToSnake(options.streamOptions)
           : undefined,
         toolChoice: stepOptions.toolChoice ?? options.toolChoice,
-        tools: options.tools?.map(normalizeTool).map(({ execute: _execute, ...tool }) => tool),
+        tools: options.tools?.map(toFunctionTool),
       }),
       headers: requestHeaders({
         'Content-Type': 'application/json',
@@ -234,11 +233,20 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     toolCalls: CompletionToolCall[]
     toolResults: CompletionToolResult[]
   }) => {
-    const { completionToolCall, completionToolResult, functionCallOutput } = await executeTool({
+    const { completionToolCall, completionToolResult, message } = await executeTool({
       abortSignal: options.abortSignal,
-      functionCall,
+      messages: [],
+      toolCall: toToolCall(functionCall),
       tools: options.tools,
     })
+
+    const functionCallOutput: FunctionCallOutput = {
+      call_id: functionCall.call_id,
+      id: crypto.randomUUID(),
+      output: wrapToolOutput(message.content),
+      status: 'completed',
+      type: 'function_call_output',
+    }
 
     step.toolCalls.push(completionToolCall)
     step.toolResults.push(completionToolResult)
