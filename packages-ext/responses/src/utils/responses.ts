@@ -33,6 +33,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
 export interface ResponsesResult {
   eventStream: ReadableStream<Event>
   fullStream: ReadableStream<FullEvent>
+  input: Promise<ItemParam[]>
   reasoningTextStream: ReadableStream<string>
   steps: Promise<CompletionStep[]>
   textStream: ReadableStream<string>
@@ -155,6 +156,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   }
 
   // result state
+  const resultInput = new DelayedPromise<ItemParam[]>()
   const resultSteps = new DelayedPromise<CompletionStep[]>()
   const resultUsage = new DelayedPromise<undefined | Usage>()
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
@@ -255,7 +257,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
     step.toolCalls.push(completionToolCall)
     step.toolResults.push(completionToolResult)
-    input.push(...normalizeOutput([functionCallOutput]))
+    input.push(normalizeOutput(functionCallOutput))
     step.events.push({
       toolCall: {
         arguments: completionToolCall.args,
@@ -281,7 +283,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     if (event.item == null)
       return
 
-    input.push(...normalizeOutput([event.item]))
+    input.push(normalizeOutput(event.item))
 
     if (event.item.type === 'function_call') {
       await pushFunctionCallOutput(event.item, step)
@@ -376,6 +378,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     if (finalError != null) {
       errorControllers(finalError, fullCtrl, textCtrl, reasoningTextCtrl, eventCtrl)
 
+      resultInput.reject(finalError)
       resultSteps.reject(finalError)
       resultUsage.reject(finalError)
       resultTotalUsage.reject(finalError)
@@ -384,6 +387,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
     closeControllers(fullCtrl, textCtrl, reasoningTextCtrl, eventCtrl)
 
+    resultInput.resolve(input)
     resultSteps.resolve(steps)
     resultUsage.resolve(usage)
     resultTotalUsage.resolve(totalUsage)
@@ -392,6 +396,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   return {
     eventStream,
     fullStream,
+    input: resultInput.promise,
     reasoningTextStream,
     steps: resultSteps.promise,
     textStream,
