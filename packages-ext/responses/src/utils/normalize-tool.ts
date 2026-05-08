@@ -17,7 +17,7 @@ export const toFunctionTool = (tool: Tool): FunctionTool => ({
   description: tool.function.description ?? null,
   name: tool.function.name,
   parameters: tool.function.parameters,
-  strict: tool.function.strict ?? null,
+  strict: tool.function.strict ?? true,
   type: 'function',
 })
 
