@@ -1,32 +1,32 @@
-import type { WithUnknown } from '@xsai/shared'
-
 import type { CompletionStep, Message, PrepareStep, ToolChoice } from '../types'
-import type { ChatOptions } from './chat'
 
-export interface ResolvedStepOptions {
-  messages: Message[]
+export interface ResolvePrepareStepOptions<TInput = Message[], TToolChoice = ToolChoice> {
+  input: TInput
   model: string
-  toolChoice: ToolChoice | undefined
-}
-
-export interface ResolveStepOptionsOptions extends Pick<WithUnknown<ChatOptions>, 'messages' | 'model' | 'toolChoice'> {
-  prepareStep?: PrepareStep
+  prepareStep?: PrepareStep<TInput, TToolChoice>
   stepNumber: number
   steps: CompletionStep[]
+  toolChoice?: TToolChoice
 }
 
-export const resolveStepOptions = async ({ messages, model, prepareStep, stepNumber, steps, toolChoice }: ResolveStepOptionsOptions): Promise<ResolvedStepOptions> => {
+export interface ResolvePrepareStepResult<TInput = Message[], TToolChoice = ToolChoice> {
+  input: TInput
+  model: string
+  toolChoice?: TToolChoice
+}
+
+export const resolvePrepareStep = async <TInput, TToolChoice>({ input, model, prepareStep, stepNumber, steps, toolChoice }: ResolvePrepareStepOptions<TInput, TToolChoice>): Promise<ResolvePrepareStepResult<TInput, TToolChoice>> => {
   const prepared = prepareStep == null
     ? undefined
     : await prepareStep({
-        messages: structuredClone(messages),
+        input: structuredClone(input),
         model,
         stepNumber,
         steps: structuredClone(steps),
       })
 
   return {
-    messages: prepared?.messages != null ? structuredClone(prepared.messages) : messages,
+    input: prepared?.input != null ? structuredClone(prepared.input) : input,
     model: prepared?.model ?? model,
     toolChoice: prepared?.toolChoice ?? toolChoice,
   }

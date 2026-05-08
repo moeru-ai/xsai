@@ -1,14 +1,13 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Usage } from '@xsai/shared-chat'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, PrepareStep, Usage } from '@xsai/shared-chat'
 
-import type { FunctionCall, FunctionCallOutput, ResponseResource } from '../generated'
+import type { FunctionCall, FunctionCallOutput, ItemParam, ResponseResource } from '../generated'
 import type { Event } from '../types/event'
 import type { FullEvent } from '../types/event-full'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
-import type { PrepareStepResult } from '../types/prepare-step'
 import type { StopCondition } from '../types/stop-when'
 
 import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
-import { computeTotalUsage, executeTool } from '@xsai/shared-chat'
+import { computeTotalUsage, executeTool, resolvePrepareStep } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { normalizeInput } from './normalize-input'
@@ -23,6 +22,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
   baseURL: string | URL
   fetch?: typeof globalThis.fetch
   headers?: Record<string, string>
+  prepareStep?: PrepareStep<ItemParam[], NonNullable<OpenResponsesOptions['toolChoice']>>
   /** @default `stepCountAtLeast(1)` */
   stopWhen?: StopCondition
 }
@@ -188,29 +188,26 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     }
   }
 
-  const resolveStepOptions = async (): Promise<PrepareStepResult> =>
-    options.prepareStep == null
-      ? {}
-      : options.prepareStep({
-          input: structuredClone(input),
-          model: options.model,
-          stepNumber: steps.length,
-          steps: structuredClone(steps),
-        })
-
   const createReader = async () => {
-    const stepOptions = await resolveStepOptions()
+    const stepOptions = await resolvePrepareStep({
+      input,
+      model: options.model,
+      prepareStep: options.prepareStep,
+      stepNumber: steps.length,
+      steps,
+      toolChoice: options.toolChoice,
+    })
     const res = await (options.fetch ?? globalThis.fetch)(requestURL('responses', options.baseURL), {
       body: requestBody({
         ...options,
-        input: stepOptions.input != null ? structuredClone(stepOptions.input) : input,
-        model: stepOptions.model ?? options.model,
+        input: stepOptions.input,
+        model: stepOptions.model,
         stopWhen: undefined,
         stream: true,
         streamOptions: options.streamOptions != null
           ? objCamelToSnake(options.streamOptions)
           : undefined,
-        toolChoice: stepOptions.toolChoice ?? options.toolChoice,
+        toolChoice: stepOptions.toolChoice,
         tools: options.tools?.map(toFunctionTool),
       }),
       headers: requestHeaders({

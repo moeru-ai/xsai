@@ -69,7 +69,7 @@ describe('@xsai/generate-text prepareStep', () => {
     }) as typeof globalThis.fetch
 
     const prepareCalls: {
-      messages: string[]
+      input: string[]
       model: string
       stepNumber: number
       stepsLength: number
@@ -96,9 +96,9 @@ describe('@xsai/generate-text prepareStep', () => {
         { content: 'base user', role: 'user' },
       ],
       model: 'base-model',
-      prepareStep: ({ messages, model, stepNumber, steps }) => {
+      prepareStep: ({ input, model, stepNumber, steps }) => {
         prepareCalls.push({
-          messages: messages.map(message => typeof message.content === 'string' ? message.content : JSON.stringify(message.content)),
+          input: input.map(message => typeof message.content === 'string' ? message.content : JSON.stringify(message.content)),
           model,
           stepNumber,
           stepsLength: steps.length,
@@ -107,7 +107,7 @@ describe('@xsai/generate-text prepareStep', () => {
 
         if (stepNumber === 0) {
           return {
-            messages: [
+            input: [
               { content: 'override system', role: 'system' },
               { content: 'override user', role: 'user' },
             ],
@@ -128,14 +128,14 @@ describe('@xsai/generate-text prepareStep', () => {
     expect(result.text).toBe('3')
     expect(prepareCalls).toEqual([
       {
-        messages: ['base system', 'base user'],
+        input: ['base system', 'base user'],
         model: 'base-model',
         stepNumber: 0,
         stepsLength: 0,
         toolChoice: 'required',
       },
       {
-        messages: ['base system', 'base user', '', '3'],
+        input: ['base system', 'base user', '', '3'],
         model: 'base-model',
         stepNumber: 1,
         stepsLength: 1,
