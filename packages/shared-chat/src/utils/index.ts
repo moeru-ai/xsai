@@ -1,5 +1,5 @@
 export { chat, type ChatOptions } from './chat'
 export { executeTool, type ExecuteToolOptions, type ExecuteToolResult } from './execute-tool'
-export { resolvePrepareStep, type ResolvePrepareStepOptions } from './prepare-step'
+export { resolvePrepareStep, type ResolvePrepareStepOptions, type ResolvePrepareStepResult } from './prepare-step'
 export { and, hasToolCall, not, or, shouldStop, stepCountAtLeast } from './stop-when'
 export { computeTotalUsage, normalizeChatCompletionUsage } from './usage'
