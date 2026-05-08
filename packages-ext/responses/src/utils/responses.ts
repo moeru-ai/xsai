@@ -22,6 +22,9 @@ export interface ResponsesOptions extends OpenResponsesOptions {
   baseURL: string | URL
   fetch?: typeof globalThis.fetch
   headers?: Record<string, string>
+  onEvent?: (event: Event) => Promise<unknown> | unknown
+  onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
+  onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
   prepareStep?: PrepareStep<ItemParam[], NonNullable<OpenResponsesOptions['toolChoice']>>
   /** @default `stepCountAtLeast(1)` */
   stopWhen?: StopCondition
@@ -73,6 +76,8 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
   const pushStep = (step: CompletionStep) => {
     steps.push(step)
+
+    void options.onStepFinish?.(step)
   }
 
   const pushUsage = (nextUsage?: NonNullable<ResponseResource['usage']>) => {
@@ -180,6 +185,8 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
   const pushEvent = (event: Event) => {
     eventCtrl.current?.enqueue(event)
+
+    void options.onEvent?.(event)
   }
 
   const pushEvents = (events: Event[]) => {
@@ -357,6 +364,13 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     }
     catch (err) {
       finalError = err
+    }
+
+    try {
+      await options.onFinish?.(steps.at(-1))
+    }
+    catch (err) {
+      finalError ??= err
     }
 
     if (finalError != null) {
