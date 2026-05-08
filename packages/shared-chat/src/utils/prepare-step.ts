@@ -1,4 +1,4 @@
-import type { CompletionStep, Message, PrepareStep, PrepareStepResult, ToolChoice } from '../types'
+import type { CompletionStep, Message, PrepareStep, ToolChoice } from '../types'
 
 export interface ResolvePrepareStepOptions<TInput = Message[], TToolChoice = ToolChoice> {
   input: TInput
@@ -9,7 +9,11 @@ export interface ResolvePrepareStepOptions<TInput = Message[], TToolChoice = Too
   toolChoice?: TToolChoice
 }
 
-export type ResolvePrepareStepResult<TInput = Message[], TToolChoice = ToolChoice> = Pick<PrepareStepResult<TInput, TToolChoice>, 'toolChoice'> & Required<Omit<PrepareStepResult<TInput, TToolChoice>, 'toolChoice'>>
+export interface ResolvePrepareStepResult<TInput = Message[], TToolChoice = ToolChoice> {
+  input: TInput
+  model: string
+  toolChoice?: TToolChoice
+}
 
 export const resolvePrepareStep = async <TInput, TToolChoice>({ input, model, prepareStep, stepNumber, steps, toolChoice }: ResolvePrepareStepOptions<TInput, TToolChoice>): Promise<ResolvePrepareStepResult<TInput, TToolChoice>> => {
   const prepared = prepareStep == null
