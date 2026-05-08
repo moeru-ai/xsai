@@ -1,9 +1,17 @@
-import type { Tool, ToolCall } from '@xsai/shared-chat'
+import type { Tool, ToolCall, ToolExecuteResult } from '@xsai/shared-chat'
 
 import type { FunctionCall, FunctionCallOutput, FunctionTool } from '../generated'
 
-export const wrapToolOutput = (output: FunctionCallOutput['output'] | object | unknown[]): string =>
-  typeof output === 'string' ? output : JSON.stringify(output)
+// eslint-disable-next-line sonarjs/function-return-type
+export const toFunctionCallOutput = (result: ToolExecuteResult): FunctionCallOutput['output'] => {
+  if (typeof result === 'string')
+    return result
+
+  if (Array.isArray(result) && result.every(item => !!(typeof item === 'object' && 'type' in item && ['input_file', 'input_image', 'input_text'].includes((item as { type: string }).type))))
+    return result as FunctionCallOutput['output']
+
+  return JSON.stringify(result)
+}
 
 export const toFunctionTool = (tool: Tool): FunctionTool => ({
   description: tool.function.description ?? null,

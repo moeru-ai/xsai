@@ -1,8 +1,7 @@
 import type { CommonContentPart, ToolMessage } from '../../types'
 
-/** @internal */
 // eslint-disable-next-line sonarjs/function-return-type
-export const wrapToolResult = (result: object | string | unknown[]): ToolMessage['content'] => {
+export const toToolMessageContent = (result: object | string | unknown[]): ToolMessage['content'] => {
   if (typeof result === 'string')
     return result
 

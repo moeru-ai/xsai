@@ -98,10 +98,14 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
           })),
         )
 
-        for (const { completionToolCall, completionToolResult, message } of results) {
+        for (const { completionToolCall, completionToolResult, result } of results) {
           toolCalls.push(completionToolCall)
           toolResults.push(completionToolResult)
-          messages.push(message)
+          messages.push({
+            content: result,
+            role: 'tool',
+            tool_call_id: completionToolCall.toolCallId,
+          })
         }
       }
 

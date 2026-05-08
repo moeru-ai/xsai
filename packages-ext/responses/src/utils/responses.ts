@@ -13,7 +13,7 @@ import { closeControllers, createControlledStream, errorControllers, EventSource
 
 import { normalizeInput } from './normalize-input'
 import { normalizeOutput } from './normalize-output'
-import { toFunctionTool, toToolCall, wrapToolOutput } from './normalize-tool'
+import { toFunctionCallOutput, toFunctionTool, toToolCall } from './normalize-tool'
 import { normalizeUsage } from './normalize-usage'
 import { shouldStop, stepCountAtLeast } from './stop-when'
 
@@ -233,17 +233,18 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     toolCalls: CompletionToolCall[]
     toolResults: CompletionToolResult[]
   }) => {
-    const { completionToolCall, completionToolResult, message } = await executeTool({
+    const { completionToolCall, completionToolResult, result } = await executeTool({
       abortSignal: options.abortSignal,
       messages: [],
       toolCall: toToolCall(functionCall),
       tools: options.tools,
+      wrapResult: toFunctionCallOutput,
     })
 
     const functionCallOutput: FunctionCallOutput = {
       call_id: functionCall.call_id,
       id: crypto.randomUUID(),
-      output: wrapToolOutput(message.content),
+      output: result,
       status: 'completed',
       type: 'function_call_output',
     }
