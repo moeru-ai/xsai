@@ -9,7 +9,7 @@ export interface CompletionToolCall {
 
 export interface CompletionToolResult {
   args: Record<string, unknown>
-  result: unknown
+  result: ToolExecuteResult
   toolCallId: string
   toolName: string
 }

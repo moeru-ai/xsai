@@ -1,20 +1,21 @@
-import type { CompletionToolCall, CompletionToolResult, Message, Tool, ToolCall, ToolMessage } from '../types'
+import type { CompletionToolCall, CompletionToolResult, Message, Tool, ToolCall, ToolExecuteResult, ToolMessage } from '../types'
 
 import { InvalidToolCallError, InvalidToolInputError, ToolExecutionError } from '@xsai/shared'
 
-import { wrapToolResult } from './internal/wrap-tool-result'
+import { toToolMessageContent } from './internal/to-tool-message-content'
 
-export interface ExecuteToolOptions {
+export interface ExecuteToolOptions<T = ToolMessage['content']> {
   abortSignal?: AbortSignal
   messages: Message[]
   toolCall: ToolCall
   tools?: Tool[]
+  wrapResult?: (result: ToolExecuteResult) => T
 }
 
-export interface ExecuteToolResult {
+export interface ExecuteToolResult<T = ToolMessage['content']> {
   completionToolCall: CompletionToolCall
   completionToolResult: CompletionToolResult
-  message: ToolMessage
+  result: T
 }
 
 const isAbortError = (error: unknown, abortSignal?: AbortSignal) =>
@@ -41,11 +42,11 @@ const runTool = async (tool: Tool, options: {
   toolCall: ToolCall
 }) => {
   try {
-    return wrapToolResult(await tool.execute(options.parsedArgs, {
+    return await tool.execute(options.parsedArgs, {
       abortSignal: options.abortSignal,
       messages: options.messages,
       toolCallId: options.toolCall.id,
-    }))
+    })
   }
   catch (cause) {
     if (isAbortError(cause, options.abortSignal))
@@ -60,7 +61,7 @@ const runTool = async (tool: Tool, options: {
   }
 }
 
-export const executeTool = async ({ abortSignal, messages, toolCall, tools }: ExecuteToolOptions): Promise<ExecuteToolResult> => {
+export const executeTool = async <T = ToolMessage['content']>({ abortSignal, messages, toolCall, tools, wrapResult }: ExecuteToolOptions<T>): Promise<ExecuteToolResult<T>> => {
   const toolName = toolCall.function.name
   const toolArguments = toolCall.function.arguments
 
@@ -95,6 +96,7 @@ export const executeTool = async ({ abortSignal, messages, toolCall, tools }: Ex
 
   const parsedArgs = parseToolInput(toolName, toolArguments)
   const result = await runTool(tool, { abortSignal, messages, parsedArgs, toolCall })
+  const wrappedResult = (wrapResult ?? toToolMessageContent as (result: ToolExecuteResult) => T)(result)
 
   const completionToolCall: CompletionToolCall = {
     args: toolArguments,
@@ -110,15 +112,9 @@ export const executeTool = async ({ abortSignal, messages, toolCall, tools }: Ex
     toolName,
   }
 
-  const message: ToolMessage = {
-    content: result,
-    role: 'tool',
-    tool_call_id: toolCall.id,
-  }
-
   return {
     completionToolCall,
     completionToolResult,
-    message,
+    result: wrappedResult,
   }
 }
