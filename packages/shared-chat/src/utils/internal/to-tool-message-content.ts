@@ -7,7 +7,7 @@ export const toToolMessageContent = (result: object | string | unknown[]): ToolM
 
   if (Array.isArray(result)) {
     // check array type
-    if (result.every(item => !!(typeof item === 'object' && 'type' in item && ['file', 'image_url', 'input_audio', 'text'].includes((item as { type: string }).type)))) {
+    if (result.every(item => item !== null && typeof item === 'object' && 'type' in item && ['file', 'image_url', 'input_audio', 'text'].includes((item as { type: string }).type))) {
       return result as CommonContentPart[]
     }
   }
