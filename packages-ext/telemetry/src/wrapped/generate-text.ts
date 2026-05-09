@@ -41,10 +41,14 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
         maxSteps: undefined,
         messages: stepOptions.input,
         model: stepOptions.model,
+        onStepFinish: undefined,
+        prepareStep: undefined,
         steps: undefined,
         stopWhen: undefined,
         stream: false,
+        telemetry: undefined,
         toolChoice: stepOptions.toolChoice,
+        totalUsage: undefined,
       })
         .then(responseJSON<GenerateTextResponse>)
         .then(async (res) => {

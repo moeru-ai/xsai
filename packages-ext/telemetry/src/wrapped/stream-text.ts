@@ -75,11 +75,16 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         maxSteps: undefined,
         messages: stepOptions.input,
         model: stepOptions.model,
+        onEvent: undefined,
+        onFinish: undefined,
+        onStepFinish: undefined,
+        prepareStep: undefined,
         stopWhen: undefined,
         stream: true,
         streamOptions: options.streamOptions != null
           ? objCamelToSnake(options.streamOptions)
           : undefined,
+        telemetry: undefined,
         toolChoice: stepOptions.toolChoice,
         tools,
       })

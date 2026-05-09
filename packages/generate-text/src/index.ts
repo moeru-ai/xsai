@@ -64,10 +64,13 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
     maxSteps: undefined,
     messages: stepOptions.input,
     model: stepOptions.model,
+    onStepFinish: undefined,
+    prepareStep: undefined,
     steps: undefined,
     stopWhen: undefined,
     stream: false,
     toolChoice: stepOptions.toolChoice,
+    totalUsage: undefined,
   })
     .then(responseJSON<GenerateTextResponse>)
     .then(async (res) => {

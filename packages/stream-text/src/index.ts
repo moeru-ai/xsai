@@ -90,6 +90,10 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       maxSteps: undefined,
       messages: stepOptions.input,
       model: stepOptions.model,
+      onEvent: undefined,
+      onFinish: undefined,
+      onStepFinish: undefined,
+      prepareStep: undefined,
       stopWhen: undefined,
       stream: true,
       streamOptions: options.streamOptions != null
