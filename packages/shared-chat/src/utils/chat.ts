@@ -43,6 +43,12 @@ export const chat = async <T extends WithUnknown<ChatOptions>>(options: T) =>
   (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
     body: requestBody({
       ...options,
+      maxSteps: undefined,
+      onEvent: undefined,
+      onFinish: undefined,
+      onStepFinish: undefined,
+      prepareStep: undefined,
+      stopWhen: undefined,
       tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
     }),
     headers: requestHeaders({

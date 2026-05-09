@@ -38,13 +38,9 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
     }, tracer), async span =>
       chat({
         ...options,
-        maxSteps: undefined,
         messages: stepOptions.input,
         model: stepOptions.model,
-        onStepFinish: undefined,
-        prepareStep: undefined,
         steps: undefined,
-        stopWhen: undefined,
         stream: false,
         telemetry: undefined,
         toolChoice: stepOptions.toolChoice,
