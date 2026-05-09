@@ -317,6 +317,9 @@ importers:
       '@xsai-ext/providers':
         specifier: 'workspace:'
         version: link:../packages-ext/providers
+      '@xsai-ext/responses':
+        specifier: 'workspace:'
+        version: link:../packages-ext/responses
       '@xsai-ext/telemetry':
         specifier: 'workspace:'
         version: link:../packages-ext/telemetry
