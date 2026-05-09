@@ -1,3 +1,5 @@
+import type { StreamTextChunkResult, StreamTextEvent } from '@xsai/stream-text'
+
 import { describe, expect, it, vi } from 'vitest'
 
 import * as v from 'valibot'
@@ -8,7 +10,7 @@ type ExtractReadableStream<T> = T extends ReadableStream<infer U> ? U : never
 
 describe('@xsai/stream-object', () => {
   it('basic', async () => {
-    const { partialObjectStream } = await streamObject({
+    const { eventStream, fullStream, partialObjectStream } = await streamObject({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -35,6 +37,19 @@ describe('@xsai/stream-object', () => {
     }
 
     expect(objects.at(-1)!.answer).toBe('YES')
+
+    const events: StreamTextEvent[] = []
+    for await (const event of eventStream) {
+      events.push(event)
+    }
+    expect(events.length).toBeGreaterThan(0)
+
+    const chunks: StreamTextChunkResult[] = []
+    for await (const chunk of fullStream) {
+      chunks.push(chunk)
+    }
+    expect(chunks.length).toBeGreaterThan(0)
+    expect(chunks.every(chunk => chunk.object === 'chat.completion.chunk')).toBe(true)
   })
 
   it('string array', async () => {
