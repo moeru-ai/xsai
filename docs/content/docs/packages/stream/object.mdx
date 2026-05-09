@@ -93,6 +93,14 @@ for await (const element of elementStream) { // [!code highlight]
 }
 ```
 
+## Streams
+
+`streamObject()` is built on `streamText()`, so it also returns:
+
+- `textStream`: raw JSON text deltas
+- `eventStream`: normalized xsAI events
+- `fullStream`: parsed chat completion chunks from the provider
+
 ## Utils
 
 ### toElementStream
@@ -118,4 +126,3 @@ const partialObjectStream = await fetch('https://example.com')
   .then(res => res.body!.pipeThrough(new TextDecoderStream()))
   .then(stream => toPartialObjectStream<{ foo: { bar: 'baz' }}>(stream))
 ```
-

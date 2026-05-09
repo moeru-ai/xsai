@@ -47,6 +47,38 @@ for await (const textPart of textStream) {
 console.log(text)
 ```
 
+### Streams
+
+`streamText()` exposes multiple streams for different levels of detail:
+
+- `textStream`: text deltas only
+- `reasoningTextStream`: reasoning deltas only, when the model emits them
+- `eventStream`: normalized xsAI events, such as `text-delta`, `reasoning-delta`, `tool-call`, `tool-result`, and `finish`
+- `fullStream`: parsed chat completion chunks from the provider
+
+```ts twoslash
+import { streamText } from '@xsai/stream-text'
+import { env } from 'node:process'
+
+const { eventStream, fullStream } = streamText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  messages: [{
+    content: 'Tell me a short joke.',
+    role: 'user',
+  }],
+  model: 'gpt-4o',
+})
+
+for await (const event of eventStream) {
+  console.log(event.type)
+}
+
+for await (const chunk of fullStream) {
+  console.log(chunk.object)
+}
+```
+
 ### Image input
 
 <Callout>

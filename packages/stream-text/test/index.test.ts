@@ -1,3 +1,4 @@
+import type { StreamTextChunkResult } from '../src/types/chunk'
 import type { StreamTextEvent } from '../src/types/event'
 
 import { describe, expect, it } from 'vitest'
@@ -6,7 +7,7 @@ import { streamText } from '../src'
 
 describe('@xsai/stream-text basic', async () => {
   it('basic', async () => {
-    const { fullStream, steps, textStream } = streamText({
+    const { eventStream, fullStream, steps, textStream } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -29,7 +30,7 @@ describe('@xsai/stream-text basic', async () => {
     expect(text.toUpperCase()).toBe('YES')
 
     const events: StreamTextEvent[] = []
-    for await (const event of fullStream) {
+    for await (const event of eventStream) {
       events.push(event.type === 'text-delta'
         ? {
             ...event,
@@ -41,11 +42,18 @@ describe('@xsai/stream-text basic', async () => {
     }
     expect(events).toMatchSnapshot()
 
+    const chunks: StreamTextChunkResult[] = []
+    for await (const chunk of fullStream) {
+      chunks.push(chunk)
+    }
+    expect(chunks.length).toBeGreaterThan(0)
+    expect(chunks.every(chunk => chunk.object === 'chat.completion.chunk')).toBe(true)
+
     await expect(steps).resolves.toMatchSnapshot()
   })
 
   it('stream', async () => {
-    const { fullStream, steps, textStream } = streamText({
+    const { eventStream, steps, textStream } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -68,7 +76,7 @@ describe('@xsai/stream-text basic', async () => {
     expect(text.length).toBeGreaterThan(1)
 
     const events: StreamTextEvent[] = []
-    for await (const event of fullStream) {
+    for await (const event of eventStream) {
       events.push(event)
     }
     expect(events).toMatchSnapshot()
@@ -77,7 +85,7 @@ describe('@xsai/stream-text basic', async () => {
   })
 
   it('includes usage', async () => {
-    const { fullStream, steps, textStream } = streamText({
+    const { eventStream, fullStream, steps, textStream } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -103,10 +111,16 @@ describe('@xsai/stream-text basic', async () => {
     expect(text.length).toBeGreaterThan(1)
 
     const events: StreamTextEvent[] = []
-    for await (const event of fullStream) {
+    for await (const event of eventStream) {
       events.push(event)
     }
     expect(events).toMatchSnapshot()
+
+    const chunks: StreamTextChunkResult[] = []
+    for await (const chunk of fullStream) {
+      chunks.push(chunk)
+    }
+    expect(chunks.some(chunk => chunk.usage != null)).toBe(true)
 
     await expect(steps).resolves.toMatchSnapshot()
   })

@@ -34,6 +34,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
   // output
   const [eventStream, eventCtrl] = createControlledStream<StreamTextEvent>()
+  const [fullStream, fullCtrl] = createControlledStream<StreamTextChunkResult>()
   const [textStream, textCtrl] = createControlledStream<string>()
   const [reasoningTextStream, reasoningTextCtrl] = createControlledStream<string>()
 
@@ -115,11 +116,12 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         .pipeThrough(new JsonMessageTransformStream<StreamTextChunkResult>())
         .pipeTo(new WritableStream({
           abort: (reason) => {
-            errorControllers(reason, eventCtrl, textCtrl, reasoningTextCtrl)
+            errorControllers(reason, eventCtrl, fullCtrl, textCtrl, reasoningTextCtrl)
           },
           close: () => {},
           // eslint-disable-next-line sonarjs/cognitive-complexity
           write: (chunk) => {
+            fullCtrl.current?.enqueue(chunk)
             pushUsage(chunk.usage)
 
             // skip if no choices
@@ -280,7 +282,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     }
 
     if (finalError != null) {
-      errorControllers(finalError, eventCtrl, textCtrl, reasoningTextCtrl)
+      errorControllers(finalError, eventCtrl, fullCtrl, textCtrl, reasoningTextCtrl)
 
       resultSteps.reject(finalError)
       resultMessages.reject(finalError)
@@ -289,7 +291,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       return
     }
 
-    closeControllers(eventCtrl, textCtrl, reasoningTextCtrl)
+    closeControllers(eventCtrl, fullCtrl, textCtrl, reasoningTextCtrl)
 
     resultSteps.resolve(steps)
     resultMessages.resolve(messages)
@@ -298,7 +300,8 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   })()
 
   return {
-    fullStream: eventStream,
+    eventStream,
+    fullStream,
     messages: resultMessages.promise,
     reasoningTextStream,
     steps: resultSteps.promise,

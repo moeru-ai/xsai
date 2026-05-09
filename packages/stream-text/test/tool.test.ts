@@ -26,7 +26,7 @@ describe('@xsai/stream-text tool', async () => {
       }),
     })
 
-    const { fullStream, steps } = streamText({
+    const { eventStream, steps } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -46,7 +46,7 @@ describe('@xsai/stream-text tool', async () => {
     })
 
     const events: StreamTextEvent[] = []
-    for await (const event of fullStream) {
+    for await (const event of eventStream) {
       // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
       events.push(clean({
         ...event,
