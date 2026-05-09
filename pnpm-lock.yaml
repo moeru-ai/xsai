@@ -663,9 +663,6 @@ importers:
       best-effort-json-parser:
         specifier: 'catalog:'
         version: 1.4.0
-      type-fest:
-        specifier: 'catalog:'
-        version: 5.5.0
       valibot:
         specifier: catalog:schema
         version: 1.0.0(typescript@6.0.2)

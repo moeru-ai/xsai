@@ -45,7 +45,6 @@
   "devDependencies": {
     "@valibot/to-json-schema": "catalog:schema",
     "best-effort-json-parser": "catalog:",
-    "type-fest": "catalog:",
     "valibot": "catalog:schema"
   }
 }
