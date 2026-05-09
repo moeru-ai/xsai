@@ -12,7 +12,7 @@ describe('@xsai/generate-text', () => {
   it('basic', async () => {
     let step: GenerateTextResult['steps'][number] | undefined
 
-    const { finishReason, steps, text, toolCalls, toolResults } = await generateText({
+    const { finishReason, steps, text, toolCalls, toolResults, totalUsage, usage } = await generateText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -34,6 +34,7 @@ describe('@xsai/generate-text', () => {
     expect(toolCalls.length).toBe(0)
     expect(toolResults.length).toBe(0)
     expect(steps).toMatchSnapshot()
+    expect(totalUsage).toStrictEqual(usage)
 
     expect(steps[0]).toStrictEqual(step)
   })
@@ -55,7 +56,7 @@ describe('@xsai/generate-text', () => {
       }),
     })
 
-    const { steps } = await generateText({
+    const { steps, totalUsage, usage } = await generateText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -99,6 +100,13 @@ describe('@xsai/generate-text', () => {
         toolName: 'add',
       },
     ])
+
+    expect(totalUsage).toStrictEqual({
+      inputTokens: steps.reduce((sum, step) => sum + step.usage.inputTokens, 0),
+      outputTokens: steps.reduce((sum, step) => sum + step.usage.outputTokens, 0),
+      totalTokens: steps.reduce((sum, step) => sum + step.usage.totalTokens, 0),
+    })
+    expect(usage).toStrictEqual(steps.at(-1)!.usage)
   })
 
   it('reasoning', async () => {

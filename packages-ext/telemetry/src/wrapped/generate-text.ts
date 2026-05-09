@@ -2,7 +2,7 @@ import type { CompletionStep, CompletionToolCall, CompletionToolResult, Generate
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, executeTool, InvalidResponseError, normalizeChatCompletionUsage, resolvePrepareStep, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, computeTotalUsage, executeTool, InvalidResponseError, normalizeChatCompletionUsage, resolvePrepareStep, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -50,6 +50,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
         .then(async (res) => {
           const { choices } = res
           const usage = normalizeChatCompletionUsage(res.usage)
+          const totalUsage = computeTotalUsage(options.totalUsage, usage)
 
           if (!choices?.length) {
             const responseBody = JSON.stringify(res)
@@ -128,6 +129,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
               text: step.text,
               toolCalls: step.toolCalls,
               toolResults: step.toolResults,
+              totalUsage,
               usage: step.usage,
             }
           }
@@ -136,6 +138,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
               ...options,
               messages,
               steps,
+              totalUsage,
             })
           }
         }))

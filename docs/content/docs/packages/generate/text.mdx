@@ -36,6 +36,29 @@ const { text } = await generateText({
 })
 ```
 
+### Usage
+
+`usage` contains token usage for the final step. `totalUsage` contains accumulated token usage across all steps, including tool-call follow-up steps.
+
+```ts twoslash
+import { generateText } from '@xsai/generate-text'
+import { env } from 'node:process'
+
+const { text, totalUsage, usage } = await generateText({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  messages: [{
+    content: 'Why is the sky blue?',
+    role: 'user',
+  }],
+  model: 'gpt-4o',
+})
+
+console.log(text)
+console.log(usage)
+console.log(totalUsage)
+```
+
 ### Image input
 
 <Callout>

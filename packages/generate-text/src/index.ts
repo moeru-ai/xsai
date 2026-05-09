@@ -2,7 +2,7 @@ import type { TrampolineFn, WithUnknown } from '@xsai/shared'
 import type { AssistantMessage, ChatCompletionUsage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
 
 import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
-import { chat, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
@@ -13,6 +13,8 @@ export interface GenerateTextOptions extends ChatOptions {
   stopWhen?: StopCondition<Message>
   /** if you want to enable stream, use `@xsai/stream-{text,object}` */
   stream?: never
+  /** @internal */
+  totalUsage?: Usage
 }
 
 export interface GenerateTextResponse {
@@ -38,6 +40,7 @@ export interface GenerateTextResult {
   text?: string
   toolCalls: CompletionToolCall[]
   toolResults: CompletionToolResult[]
+  totalUsage: Usage
   usage: Usage
 }
 
@@ -70,6 +73,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
     .then(async (res) => {
       const { choices } = res
       const usage = normalizeChatCompletionUsage(res.usage)
+      const totalUsage = computeTotalUsage(options.totalUsage, usage)
 
       if (!choices?.length) {
         const responseBody = JSON.stringify(res)
@@ -139,6 +143,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
           text: step.text,
           toolCalls: step.toolCalls,
           toolResults: step.toolResults,
+          totalUsage,
           usage: step.usage,
         }
       }
@@ -147,6 +152,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
           ...options,
           messages,
           steps,
+          totalUsage,
         })
       }
     })
