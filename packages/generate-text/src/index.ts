@@ -61,13 +61,12 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
 
   return chat({
     ...options,
-    maxSteps: undefined,
     messages: stepOptions.input,
     model: stepOptions.model,
     steps: undefined,
-    stopWhen: undefined,
     stream: false,
     toolChoice: stepOptions.toolChoice,
+    totalUsage: undefined,
   })
     .then(responseJSON<GenerateTextResponse>)
     .then(async (res) => {

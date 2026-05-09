@@ -33,6 +33,7 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
 
   return generateText({
     ...options,
+    output: undefined, // Remove output from options
     response_format: {
       json_schema: {
         description: options.schemaDescription,
@@ -46,7 +47,7 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
     schemaDescription: undefined, // Remove schemaDescription from options
     schemaName: undefined, // Remove schemaName from options
     strict: undefined, // Remove strict from options
-  }).then(async ({ finishReason, messages, steps, text, toolCalls, toolResults, usage }) => {
+  }).then(async ({ finishReason, messages, steps, text, toolCalls, toolResults, totalUsage, usage }) => {
     const json: unknown = JSON.parse(text!)
 
     if (options.output === 'array') {
@@ -60,6 +61,7 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
         text,
         toolCalls,
         toolResults,
+        totalUsage,
         usage,
       }
     }
@@ -72,6 +74,7 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
         text,
         toolCalls,
         toolResults,
+        totalUsage,
         usage,
       }
     }

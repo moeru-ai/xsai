@@ -87,10 +87,8 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
 
     const { body: stream } = await chat({
       ...options,
-      maxSteps: undefined,
       messages: stepOptions.input,
       model: stepOptions.model,
-      stopWhen: undefined,
       stream: true,
       streamOptions: options.streamOptions != null
         ? objCamelToSnake(options.streamOptions)

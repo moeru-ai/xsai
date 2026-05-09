@@ -52,6 +52,7 @@ export async function streamObject<T extends Schema>(
 
   let { textStream, ...rest } = streamText({
     ...options,
+    output: undefined,
     response_format: {
       json_schema: {
         description: options.schemaDescription,

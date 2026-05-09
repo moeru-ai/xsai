@@ -72,14 +72,13 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
     }, tracer), async (span) => {
       const { body: stream } = await chat({
         ...options,
-        maxSteps: undefined,
         messages: stepOptions.input,
         model: stepOptions.model,
-        stopWhen: undefined,
         stream: true,
         streamOptions: options.streamOptions != null
           ? objCamelToSnake(options.streamOptions)
           : undefined,
+        telemetry: undefined,
         toolChoice: stepOptions.toolChoice,
         tools,
       })
