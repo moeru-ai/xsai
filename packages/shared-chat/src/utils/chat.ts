@@ -2,7 +2,7 @@ import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
 import type { Message, Tool, ToolChoice } from '../types'
 
-import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { postJSON } from '@xsai/shared'
 
 /** @see {@link https://platform.openai.com/docs/api-reference/chat/create} */
 export interface ChatOptions extends CommonRequestOptions {
@@ -40,21 +40,13 @@ export interface ChatOptions extends CommonRequestOptions {
 }
 
 export const chat = async <T extends WithUnknown<ChatOptions>>(options: T) =>
-  (options.fetch ?? globalThis.fetch)(requestURL('chat/completions', options.baseURL), {
-    body: requestBody({
-      ...options,
-      maxSteps: undefined,
-      onEvent: undefined,
-      onFinish: undefined,
-      onStepFinish: undefined,
-      prepareStep: undefined,
-      stopWhen: undefined,
-      tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
-    }),
-    headers: requestHeaders({
-      'Content-Type': 'application/json',
-      ...options.headers,
-    }, options.apiKey),
-    method: 'POST',
-    signal: options.abortSignal,
-  }).then(responseCatch)
+  postJSON('chat/completions', {
+    ...options,
+    maxSteps: undefined,
+    onEvent: undefined,
+    onFinish: undefined,
+    onStepFinish: undefined,
+    prepareStep: undefined,
+    stopWhen: undefined,
+    tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
+  })

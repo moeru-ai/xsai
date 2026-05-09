@@ -1,6 +1,6 @@
 import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
-import { requestBody, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { postJSON } from '@xsai/shared'
 
 export interface GenerateSpeechOptions extends CommonRequestOptions {
   input: string
@@ -12,14 +12,5 @@ export interface GenerateSpeechOptions extends CommonRequestOptions {
 }
 
 export const generateSpeech = async (options: WithUnknown<GenerateSpeechOptions>): Promise<ArrayBuffer> =>
-  (options.fetch ?? globalThis.fetch)(requestURL('audio/speech', options.baseURL), {
-    body: requestBody(options),
-    headers: requestHeaders({
-      'Content-Type': 'application/json',
-      ...options.headers,
-    }, options.apiKey),
-    method: 'POST',
-    signal: options.abortSignal,
-  })
-    .then(responseCatch)
+  postJSON('audio/speech', options)
     .then(async res => res.arrayBuffer())
