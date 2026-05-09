@@ -1,6 +1,6 @@
 import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
-import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
+import { postJSON, responseJSON } from '@xsai/shared'
 
 export interface EmbedOptions extends CommonRequestOptions {
   /** The number of dimensions the resulting output embeddings should have. */
@@ -33,16 +33,7 @@ export interface EmbedResult {
 }
 
 export const embed = async (options: WithUnknown<EmbedOptions>): Promise<EmbedResult> =>
-  (options.fetch ?? globalThis.fetch)(requestURL('embeddings', options.baseURL), {
-    body: requestBody(options),
-    headers: requestHeaders({
-      'Content-Type': 'application/json',
-      ...options.headers,
-    }, options.apiKey),
-    method: 'POST',
-    signal: options.abortSignal,
-  })
-    .then(responseCatch)
+  postJSON('embeddings', options)
     .then(responseJSON<EmbedResponse>)
     .then(({ data, usage }) => ({
       embedding: data[0].embedding,

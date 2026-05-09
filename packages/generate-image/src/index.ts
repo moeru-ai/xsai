@@ -1,6 +1,6 @@
 import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
-import { requestBody, requestHeaders, requestURL, responseCatch, responseJSON } from '@xsai/shared'
+import { postJSON, responseCatch, responseJSON } from '@xsai/shared'
 
 export interface GenerateImageOptions extends CommonRequestOptions {
   /**
@@ -96,16 +96,7 @@ const responseBlobAsDataURL = async (res: Response): Promise<string> =>
 
 /** @experimental */
 export const generateImage = async (options: WithUnknown<GenerateImageOptions>): Promise<GenerateImageResult> =>
-  (options.fetch ?? globalThis.fetch)(requestURL('images/generations', options.baseURL), {
-    body: requestBody(options),
-    headers: requestHeaders({
-      'Content-Type': 'application/json',
-      ...options.headers,
-    }, options.apiKey),
-    method: 'POST',
-    signal: options.abortSignal,
-  })
-    .then(responseCatch)
+  postJSON('images/generations', options)
     .then(responseJSON<GenerateImageResponse>)
     .then(async ({ data }) =>
       Promise.all(

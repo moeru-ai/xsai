@@ -6,7 +6,7 @@ import type { FullEvent } from '../types/event-full'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { StopCondition } from '../types/stop-when'
 
-import { DelayedPromise, objCamelToSnake, requestBody, requestHeaders, requestURL, responseCatch, trampoline } from '@xsai/shared'
+import { DelayedPromise, objCamelToSnake, postJSON, trampoline } from '@xsai/shared'
 import { computeTotalUsage, executeTool, resolvePrepareStep } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
@@ -206,30 +206,22 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       steps,
       toolChoice: options.toolChoice,
     })
-    const res = await (options.fetch ?? globalThis.fetch)(requestURL('responses', options.baseURL), {
-      body: requestBody({
-        ...options,
-        input: stepOptions.input,
-        model: stepOptions.model,
-        onEvent: undefined,
-        onFinish: undefined,
-        onStepFinish: undefined,
-        prepareStep: undefined,
-        stopWhen: undefined,
-        stream: true,
-        streamOptions: options.streamOptions != null
-          ? objCamelToSnake(options.streamOptions)
-          : undefined,
-        toolChoice: stepOptions.toolChoice,
-        tools: options.tools?.map(toFunctionTool),
-      }),
-      headers: requestHeaders({
-        'Content-Type': 'application/json',
-        ...options.headers,
-      }, options.apiKey),
-      method: 'POST',
-      signal: options.abortSignal,
-    }).then(responseCatch)
+    const res = await postJSON('responses', {
+      ...options,
+      input: stepOptions.input,
+      model: stepOptions.model,
+      onEvent: undefined,
+      onFinish: undefined,
+      onStepFinish: undefined,
+      prepareStep: undefined,
+      stopWhen: undefined,
+      stream: true,
+      streamOptions: options.streamOptions != null
+        ? objCamelToSnake(options.streamOptions)
+        : undefined,
+      toolChoice: stepOptions.toolChoice,
+      tools: options.tools?.map(toFunctionTool),
+    })
 
     return res.body!
       .pipeThrough(new TextDecoderStream())

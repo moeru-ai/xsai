@@ -50,7 +50,7 @@ export type XSAIErrorCode
     | 'tool_execution_error'
 
 export class XSAIError extends Error {
-  code: XSAIErrorCode
+  declare code: XSAIErrorCode
 
   constructor(message: string, code: XSAIErrorCode, options: ErrorOptions = {}) {
     super(message, { cause: options.cause })
@@ -64,13 +64,13 @@ export class XSAIError extends Error {
 }
 
 export class APICallError extends XSAIError {
-  requestBody?: string
-  response: Response
-  responseBody?: string
-  responseHeaders: Record<string, string>
-  statusCode: number
-  statusText: string
-  url: string
+  declare requestBody?: string
+  declare response: Response
+  declare responseBody?: string
+  declare responseHeaders: Record<string, string>
+  declare statusCode: number
+  declare statusText: string
+  declare url: string
 
   constructor(message: string, options: APICallErrorOptions) {
     super(message, 'api_call_error', options)
@@ -85,11 +85,11 @@ export class APICallError extends XSAIError {
 }
 
 export class InvalidResponseError extends XSAIError {
-  body?: unknown
-  contentType?: null | string
+  declare body?: unknown
+  declare contentType?: null | string
   declare reason: InvalidResponseErrorOptions['reason']
-  response?: Response
-  responseBody?: string
+  declare response?: Response
+  declare responseBody?: string
 
   constructor(message: string, options: InvalidResponseErrorOptions) {
     super(message, 'invalid_response', options)
@@ -98,10 +98,10 @@ export class InvalidResponseError extends XSAIError {
 }
 
 export class InvalidToolCallError extends XSAIError {
-  availableTools?: string[]
+  declare availableTools?: string[]
   declare reason: InvalidToolCallErrorOptions['reason']
-  toolCall: unknown
-  toolName?: string
+  declare toolCall: unknown
+  declare toolName?: string
 
   constructor(message: string, options: InvalidToolCallErrorOptions) {
     super(message, 'invalid_tool_call', options)
@@ -110,7 +110,7 @@ export class InvalidToolCallError extends XSAIError {
 }
 
 export class InvalidToolInputError extends XSAIError {
-  toolInput: unknown
+  declare toolInput: unknown
   declare toolName: string
 
   constructor(message: string, options: InvalidToolInputErrorOptions) {
@@ -120,7 +120,7 @@ export class InvalidToolInputError extends XSAIError {
 }
 
 export class JSONParseError extends XSAIError {
-  text: string
+  declare text: string
 
   constructor(message: string, options: JSONParseErrorOptions) {
     super(message, 'json_parse_error', options)
@@ -129,7 +129,7 @@ export class JSONParseError extends XSAIError {
 }
 
 export class RemoteAPIError extends XSAIError {
-  response?: Response
+  declare response?: Response
   declare responseBody: string
 
   constructor(message: string, options: RemoteAPIErrorOptions) {
@@ -139,8 +139,8 @@ export class RemoteAPIError extends XSAIError {
 }
 
 export class ToolExecutionError extends XSAIError {
-  toolCallId?: string
-  toolInput: unknown
+  declare toolCallId?: string
+  declare toolInput: unknown
   declare toolName: string
 
   constructor(message: string, options: ToolExecutionErrorOptions) {

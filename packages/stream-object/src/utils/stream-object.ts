@@ -1,6 +1,7 @@
 import type { StreamTextOptions, StreamTextResult } from '@xsai/stream-text'
-import type { PartialDeep } from 'type-fest'
 import type { Schema } from 'xsschema'
+
+import type { PartialDeep } from '../types/partial-deep'
 
 import { streamText } from '@xsai/stream-text'
 import { strictJsonSchema, toJsonSchema } from 'xsschema'

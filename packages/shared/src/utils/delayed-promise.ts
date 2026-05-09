@@ -15,9 +15,9 @@ export class DelayedPromise<T> {
     return this._promise
   }
 
-  private _promise: Promise<T> | undefined
-  private _reject: ((error: unknown) => void) | undefined
-  private _resolve: ((value: T) => void) | undefined
+  private declare _promise: Promise<T> | undefined
+  private declare _reject: ((error: unknown) => void) | undefined
+  private declare _resolve: ((value: T) => void) | undefined
 
   private status:
     | { error: unknown, type: 'rejected' }
