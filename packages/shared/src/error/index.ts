@@ -50,9 +50,9 @@ export type XSAIErrorCode
     | 'tool_execution_error'
 
 export class XSAIError extends Error {
-  declare code: XSAIErrorCode
+  declare code: (string & {}) | XSAIErrorCode
 
-  constructor(message: string, code: XSAIErrorCode, options: ErrorOptions = {}) {
+  constructor(message: string, code: (string & {}) | XSAIErrorCode, options: ErrorOptions = {}) {
     super(message, { cause: options.cause })
     this.code = code
     this.name = new.target.name

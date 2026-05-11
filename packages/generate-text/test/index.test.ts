@@ -80,12 +80,16 @@ describe('@xsai/generate-text', () => {
       toolCallId: undefined,
     })
 
-    // eslint-disable-next-line no-console
-    console.log(steps)
     expect(steps.length).toBe(2)
-    expect(steps[0].toolCalls.map(cleanToolCallId)).toStrictEqual([
+    expect(steps[0].toolCalls.map(({ args, ...rest }) => ({
+      ...cleanToolCallId(rest),
+      args: JSON.parse(args) as Record<string, unknown>,
+    }))).toStrictEqual([
       {
-        args: '{"a":"114514","b":"1919810"}',
+        args: {
+          a: '114514',
+          b: '1919810',
+        },
         toolCallType: 'function',
         toolName: 'add',
       },

@@ -7,6 +7,44 @@ import { z } from 'zod'
 
 import { responses } from '../src'
 
+const normalizeParsedJSON = (value: unknown): unknown => {
+  if (Array.isArray(value))
+    return value.map(normalizeParsedJSON)
+
+  if (value != null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort((a, b) => a.localeCompare(b))
+        .map(key => [key, normalizeParsedJSON((value as Record<string, unknown>)[key])]),
+    )
+  }
+
+  return value
+}
+
+const normalizeJSON = (value: unknown): unknown => {
+  if (Array.isArray(value))
+    return value.map(normalizeJSON)
+
+  if (value != null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value)
+        .map(([key, item]) => [key, normalizeJSON(item)]),
+    )
+  }
+
+  if (typeof value === 'string') {
+    try {
+      return JSON.stringify(normalizeParsedJSON(JSON.parse(value)))
+    }
+    catch {
+      return value
+    }
+  }
+
+  return value
+}
+
 describe('@xsai-ext/responses basic', async () => {
   it('basic', async () => {
     const { eventStream, fullStream, reasoningTextStream, textStream, totalUsage, usage } = responses({
@@ -29,12 +67,12 @@ describe('@xsai-ext/responses basic', async () => {
 
     const chunks: FullEvent[] = []
     for await (const chunk of fullStream) {
-      chunks.push(chunk)
+      chunks.push(normalizeJSON(chunk) as FullEvent)
     }
 
     const events: Event[] = []
     for await (const event of eventStream) {
-      events.push(event)
+      events.push(normalizeJSON(event) as Event)
     }
 
     expect(text.length).toBeGreaterThan(1)
