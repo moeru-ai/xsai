@@ -822,6 +822,15 @@ export const createQianfan = (apiKey: string, baseURL = 'https://qianfan.baidubc
 )
 
 /**
+ * Create a NEAR AI Cloud TEE Inference Provider
+ * @see {@link https://cloud-api.near.ai/v1/model/list}
+ */
+export const createNearAI = (apiKey: string, baseURL = 'https://cloud-api.near.ai/v1') => merge(
+  createChatProvider({ apiKey, baseURL }),
+  createModelProvider({ apiKey, baseURL }),
+)
+
+/**
  * Create a Tencent Hunyuan Provider
  * @see {@link https://cloud.tencent.com/document/product/1729}
  */

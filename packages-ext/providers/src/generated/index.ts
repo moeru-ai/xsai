@@ -92,6 +92,7 @@ import {
   createZhipuai,
   createZhipuaiCodingPlan,
   createQianfan,
+  createNearAI,
   createTencentHunyuan,
   createOllama,
   createLitellm,
@@ -897,6 +898,15 @@ export const zhipuaiCodingPlan = createZhipuaiCodingPlan(process.env.ZHIPU_API_K
  * - apiKey - `QIANFAN_API_KEY`
  */
 export const qianfan = createQianfan(process.env.QIANFAN_API_KEY ?? '')
+
+/**
+ * NEAR AI Cloud TEE Inference Provider
+ * @see {@link https://cloud-api.near.ai/v1/model/list}
+ * @remarks
+ * - baseURL - `https://cloud-api.near.ai/v1`
+ * - apiKey - `NEARAI_API_KEY`
+ */
+export const nearai = createNearAI(process.env.NEARAI_API_KEY ?? '')
 
 /**
  * Tencent Hunyuan Provider
