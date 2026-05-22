@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { nearai, nvidia } from '../src'
-import { createNearAI } from '../src/create'
+import { createNearai } from '../src/create'
 
 describe('@xsai-ext/providers', () => {
   it('nvidia', () => {
@@ -22,8 +22,8 @@ describe('@xsai-ext/providers', () => {
     expect(result.model).toBe(model)
   })
 
-  it('createNearAI', () => {
-    const provider = createNearAI('test-key', 'https://example.test/v1')
+  it('createNearai', () => {
+    const provider = createNearai('test-key', 'https://example.test/v1')
 
     expect(provider.model()).toStrictEqual({
       apiKey: 'test-key',

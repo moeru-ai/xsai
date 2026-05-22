@@ -11,18 +11,6 @@ export const extraProviders: CodeGenProvider[] = [
     name: 'Baidu Qianfan',
   },
   {
-    apiKey: ['NEARAI_API_KEY'],
-    baseURL: 'https://cloud-api.near.ai/v1',
-    capabilities: {},
-    doc: 'https://cloud-api.near.ai/v1/model/list',
-    id: 'nearai',
-    models: [],
-    name: 'NEAR AI Cloud TEE Inference',
-    overrides: {
-      create: 'NearAI',
-    },
-  },
-  {
     apiKey: ['TENCENT_HUNYUAN_API_KEY'],
     baseURL: 'https://api.hunyuan.cloud.tencent.com/v1/',
     capabilities: {

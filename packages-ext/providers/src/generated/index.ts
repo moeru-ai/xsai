@@ -4,41 +4,53 @@ import process from 'node:process'
 
 import {
   createAbacus,
+  createAbliterationAi,
   createAlibaba,
   createAlibabaCn,
   createAlibabaCodingPlan,
   createAlibabaCodingPlanCn,
+  createAmbient,
+  createAtomicChat,
+  createAuriko,
   createBailing,
   createBaseten,
   createBerget,
   createCerebras,
   createChutes,
+  createClaudinio,
   createCloudferroSherlock,
   createCohere,
   createCortecs,
+  createCrof,
   createDeepinfra,
   createDeepSeek,
+  createDigitalocean,
   createDinference,
   createDrun,
   createEvroc,
   createFastrouter,
+  createFirepass,
   createFireworks,
-  createFirmware,
   createFriendli,
+  createFrogbot,
   createGithubCopilot,
   createGithubModels,
+  createGmicloud,
   createGoogleGenerativeAI,
   createGroq,
   createHelicone,
+  createHpcAi,
   createHuggingface,
   createIflowcn,
   createInception,
+  createInceptron,
   createInference,
   createIoNet,
   createJiekou,
   createKilo,
   createKimiForCoding,
   createKuaeCloudCodingPlan,
+  createLilac,
   createLlama,
   createLlmgateway,
   createLmstudio,
@@ -49,13 +61,16 @@ import {
   createMinimaxCnCodingPlan,
   createMinimaxCodingPlan,
   createMistral,
+  createMixlayer,
   createMoark,
   createModelscope,
   createMoonshotai,
   createMoonshotaiCn,
   createMorph,
   createNanoGpt,
+  createNearai,
   createNebius,
+  createNeuralwatt,
   createNova,
   createNovitaAi,
   createNvidia,
@@ -63,6 +78,7 @@ import {
   createOpenAI,
   createOpencode,
   createOpencodeGo,
+  createOrcarouter,
   createOvhcloud,
   createPerplexity,
   createPerplexityAgent,
@@ -70,29 +86,40 @@ import {
   createPrivatemodeAi,
   createQihangAi,
   createQiniuAi,
+  createRegoloAi,
   createRequesty,
+  createRoutingRun,
+  createSarvam,
   createScaleway,
   createSiliconFlow,
   createSiliconflowCn,
   createStackit,
   createStepfun,
+  createStepfunAi,
   createSubmodel,
   createSynthetic,
   createTencentCodingPlan,
+  createTencentTokenhub,
+  createTheGridAi,
+  createUmansAiCodingPlan,
   createUpstage,
   createVenice,
   createVivgrid,
   createVultr,
+  createWaferAi,
   createWandb,
   createXai,
   createXiaomi,
+  createXiaomiTokenPlanAms,
+  createXiaomiTokenPlanCn,
+  createXiaomiTokenPlanSgp,
+  createXpersona,
   createZai,
   createZaiCodingPlan,
   createZenmux,
   createZhipuai,
   createZhipuaiCodingPlan,
   createQianfan,
-  createNearAI,
   createTencentHunyuan,
   createOllama,
   createLitellm,
@@ -106,6 +133,15 @@ import {
  * - apiKey - `ABACUS_API_KEY`
  */
 export const abacus = createAbacus(process.env.ABACUS_API_KEY ?? '')
+
+/**
+ * abliteration.ai Provider
+ * @see {@link https://docs.abliteration.ai/models}
+ * @remarks
+ * - baseURL - `https://api.abliteration.ai/v1`
+ * - apiKey - `ABLIT_KEY`
+ */
+export const abliterationAi = createAbliterationAi(process.env.ABLIT_KEY ?? '')
 
 /**
  * Alibaba Provider
@@ -142,6 +178,33 @@ export const alibabaCodingPlan = createAlibabaCodingPlan(process.env.ALIBABA_COD
  * - apiKey - `ALIBABA_CODING_PLAN_API_KEY`
  */
 export const alibabaCodingPlanCn = createAlibabaCodingPlanCn(process.env.ALIBABA_CODING_PLAN_API_KEY ?? '')
+
+/**
+ * Ambient Provider
+ * @see {@link https://ambient.xyz}
+ * @remarks
+ * - baseURL - `https://api.ambient.xyz/v1`
+ * - apiKey - `AMBIENT_API_KEY`
+ */
+export const ambient = createAmbient(process.env.AMBIENT_API_KEY ?? '')
+
+/**
+ * Atomic Chat Provider
+ * @see {@link https://atomic.chat}
+ * @remarks
+ * - baseURL - `http://127.0.0.1:1337/v1`
+ * - apiKey - `ATOMIC_CHAT_API_KEY`
+ */
+export const atomicChat = createAtomicChat(process.env.ATOMIC_CHAT_API_KEY ?? '')
+
+/**
+ * Auriko Provider
+ * @see {@link https://docs.auriko.ai}
+ * @remarks
+ * - baseURL - `https://api.auriko.ai/v1`
+ * - apiKey - `AURIKO_API_KEY`
+ */
+export const auriko = createAuriko(process.env.AURIKO_API_KEY ?? '')
 
 /**
  * Bailing Provider
@@ -189,6 +252,15 @@ export const cerebras = createCerebras(process.env.CEREBRAS_API_KEY ?? '')
 export const chutes = createChutes(process.env.CHUTES_API_KEY ?? '')
 
 /**
+ * Claudinio Provider
+ * @see {@link https://claudin.io}
+ * @remarks
+ * - baseURL - `https://api.claudin.io/v1`
+ * - apiKey - `CLAUDINIO_API_KEY`
+ */
+export const claudinio = createClaudinio(process.env.CLAUDINIO_API_KEY ?? '')
+
+/**
  * CloudFerro Sherlock Provider
  * @see {@link https://docs.sherlock.cloudferro.com/}
  * @remarks
@@ -216,6 +288,15 @@ export const cohere = createCohere(process.env.COHERE_API_KEY ?? '')
 export const cortecs = createCortecs(process.env.CORTECS_API_KEY ?? '')
 
 /**
+ * CrofAI Provider
+ * @see {@link https://crof.ai/docs}
+ * @remarks
+ * - baseURL - `https://crof.ai/v1`
+ * - apiKey - `CROF_API_KEY`
+ */
+export const crof = createCrof(process.env.CROF_API_KEY ?? '')
+
+/**
  * Deep Infra Provider
  * @see {@link https://deepinfra.com/models}
  * @remarks
@@ -232,6 +313,15 @@ export const deepinfra = createDeepinfra(process.env.DEEPINFRA_API_KEY ?? '')
  * - apiKey - `DEEPSEEK_API_KEY`
  */
 export const deepseek = createDeepSeek(process.env.DEEPSEEK_API_KEY ?? '')
+
+/**
+ * DigitalOcean Provider
+ * @see {@link https://docs.digitalocean.com/products/gradient-ai-platform/details/models/}
+ * @remarks
+ * - baseURL - `https://inference.do-ai.run/v1`
+ * - apiKey - `DIGITALOCEAN_ACCESS_TOKEN`
+ */
+export const digitalocean = createDigitalocean(process.env.DIGITALOCEAN_ACCESS_TOKEN ?? '')
 
 /**
  * DInference Provider
@@ -270,6 +360,15 @@ export const evroc = createEvroc(process.env.EVROC_API_KEY ?? '')
 export const fastrouter = createFastrouter(process.env.FASTROUTER_API_KEY ?? '')
 
 /**
+ * Fireworks (Firepass) Provider
+ * @see {@link https://docs.fireworks.ai/firepass}
+ * @remarks
+ * - baseURL - `https://api.fireworks.ai/inference/v1/`
+ * - apiKey - `FIREPASS_API_KEY`
+ */
+export const firepass = createFirepass(process.env.FIREPASS_API_KEY ?? '')
+
+/**
  * Fireworks AI Provider
  * @see {@link https://fireworks.ai/docs/}
  * @remarks
@@ -279,15 +378,6 @@ export const fastrouter = createFastrouter(process.env.FASTROUTER_API_KEY ?? '')
 export const fireworks = createFireworks(process.env.FIREWORKS_API_KEY ?? '')
 
 /**
- * Firmware Provider
- * @see {@link https://docs.frogbot.ai}
- * @remarks
- * - baseURL - `https://app.frogbot.ai/api/v1`
- * - apiKey - `FIRMWARE_API_KEY`
- */
-export const firmware = createFirmware(process.env.FIRMWARE_API_KEY ?? '')
-
-/**
  * Friendli Provider
  * @see {@link https://friendli.ai/docs/guides/serverless_endpoints/introduction}
  * @remarks
@@ -295,6 +385,15 @@ export const firmware = createFirmware(process.env.FIRMWARE_API_KEY ?? '')
  * - apiKey - `FRIENDLI_TOKEN`
  */
 export const friendli = createFriendli(process.env.FRIENDLI_TOKEN ?? '')
+
+/**
+ * FrogBot Provider
+ * @see {@link https://docs.frogbot.ai}
+ * @remarks
+ * - baseURL - `https://app.frogbot.ai/api/v1`
+ * - apiKey - `FROGBOT_API_KEY`
+ */
+export const frogbot = createFrogbot(process.env.FROGBOT_API_KEY ?? '')
 
 /**
  * GitHub Copilot Provider
@@ -315,13 +414,22 @@ export const githubCopilot = createGithubCopilot(process.env.GITHUB_TOKEN ?? '')
 export const githubModels = createGithubModels(process.env.GITHUB_TOKEN ?? '')
 
 /**
+ * GMI Cloud Provider
+ * @see {@link https://docs.gmicloud.ai/inference-engine/api-reference/llm-api-reference}
+ * @remarks
+ * - baseURL - `https://api.gmi-serving.com/v1`
+ * - apiKey - `GMICLOUD_API_KEY`
+ */
+export const gmicloud = createGmicloud(process.env.GMICLOUD_API_KEY ?? '')
+
+/**
  * Google Provider
- * @see {@link https://ai.google.dev/gemini-api/docs/pricing}
+ * @see {@link https://ai.google.dev/gemini-api/docs/models}
  * @remarks
  * - baseURL - `https://generativelanguage.googleapis.com/v1beta/openai/`
- * - apiKey - `GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY`
+ * - apiKey - `GOOGLE_API_KEY or GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY`
  */
-export const google = createGoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? process.env.GEMINI_API_KEY ?? '')
+export const google = createGoogleGenerativeAI(process.env.GOOGLE_API_KEY ?? process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? process.env.GEMINI_API_KEY ?? '')
 
 /**
  * Groq Provider
@@ -340,6 +448,15 @@ export const groq = createGroq(process.env.GROQ_API_KEY ?? '')
  * - apiKey - `HELICONE_API_KEY`
  */
 export const helicone = createHelicone(process.env.HELICONE_API_KEY ?? '')
+
+/**
+ * HPC-AI Provider
+ * @see {@link https://www.hpc-ai.com/doc/docs/quickstart/}
+ * @remarks
+ * - baseURL - `https://api.hpc-ai.com/inference/v1`
+ * - apiKey - `HPC_AI_API_KEY`
+ */
+export const hpcAi = createHpcAi(process.env.HPC_AI_API_KEY ?? '')
 
 /**
  * Hugging Face Provider
@@ -367,6 +484,15 @@ export const iflowcn = createIflowcn(process.env.IFLOW_API_KEY ?? '')
  * - apiKey - `INCEPTION_API_KEY`
  */
 export const inception = createInception(process.env.INCEPTION_API_KEY ?? '')
+
+/**
+ * Inceptron Provider
+ * @see {@link https://docs.inceptron.io}
+ * @remarks
+ * - baseURL - `https://api.inceptron.io/v1`
+ * - apiKey - `INCEPTRON_API_KEY`
+ */
+export const inceptron = createInceptron(process.env.INCEPTRON_API_KEY ?? '')
 
 /**
  * Inference Provider
@@ -421,6 +547,15 @@ export const kimiForCoding = createKimiForCoding(process.env.KIMI_API_KEY ?? '')
  * - apiKey - `KUAE_API_KEY`
  */
 export const kuaeCloudCodingPlan = createKuaeCloudCodingPlan(process.env.KUAE_API_KEY ?? '')
+
+/**
+ * Lilac Provider
+ * @see {@link https://docs.getlilac.com/inference/models}
+ * @remarks
+ * - baseURL - `https://api.getlilac.com/v1`
+ * - apiKey - `LILAC_API_KEY`
+ */
+export const lilac = createLilac(process.env.LILAC_API_KEY ?? '')
 
 /**
  * Llama Provider
@@ -486,8 +621,8 @@ export const minimax = createMinimax(process.env.MINIMAX_API_KEY ?? '')
 export const minimaxCn = createMinimaxCn(process.env.MINIMAX_API_KEY ?? '')
 
 /**
- * MiniMax Coding Plan (minimaxi.com) Provider
- * @see {@link https://platform.minimaxi.com/docs/coding-plan/intro}
+ * MiniMax Token Plan (minimaxi.com) Provider
+ * @see {@link https://platform.minimaxi.com/docs/token-plan/intro}
  * @remarks
  * - baseURL - `https://api.minimaxi.com/anthropic/v1`
  * - apiKey - `MINIMAX_API_KEY`
@@ -495,8 +630,8 @@ export const minimaxCn = createMinimaxCn(process.env.MINIMAX_API_KEY ?? '')
 export const minimaxCnCodingPlan = createMinimaxCnCodingPlan(process.env.MINIMAX_API_KEY ?? '')
 
 /**
- * MiniMax Coding Plan (minimax.io) Provider
- * @see {@link https://platform.minimax.io/docs/coding-plan/intro}
+ * MiniMax Token Plan (minimax.io) Provider
+ * @see {@link https://platform.minimax.io/docs/token-plan/intro}
  * @remarks
  * - baseURL - `https://api.minimax.io/anthropic/v1`
  * - apiKey - `MINIMAX_API_KEY`
@@ -511,6 +646,15 @@ export const minimaxCodingPlan = createMinimaxCodingPlan(process.env.MINIMAX_API
  * - apiKey - `MISTRAL_API_KEY`
  */
 export const mistral = createMistral(process.env.MISTRAL_API_KEY ?? '')
+
+/**
+ * Mixlayer Provider
+ * @see {@link https://docs.mixlayer.com}
+ * @remarks
+ * - baseURL - `https://models.mixlayer.ai/v1`
+ * - apiKey - `MIXLAYER_API_KEY`
+ */
+export const mixlayer = createMixlayer(process.env.MIXLAYER_API_KEY ?? '')
 
 /**
  * Moark Provider
@@ -567,6 +711,15 @@ export const morph = createMorph(process.env.MORPH_API_KEY ?? '')
 export const nanoGpt = createNanoGpt(process.env.NANO_GPT_API_KEY ?? '')
 
 /**
+ * NEAR AI Cloud Provider
+ * @see {@link https://docs.near.ai/}
+ * @remarks
+ * - baseURL - `https://cloud-api.near.ai/v1`
+ * - apiKey - `NEARAI_API_KEY`
+ */
+export const nearai = createNearai(process.env.NEARAI_API_KEY ?? '')
+
+/**
  * Nebius Token Factory Provider
  * @see {@link https://docs.tokenfactory.nebius.com/}
  * @remarks
@@ -574,6 +727,15 @@ export const nanoGpt = createNanoGpt(process.env.NANO_GPT_API_KEY ?? '')
  * - apiKey - `NEBIUS_API_KEY`
  */
 export const nebius = createNebius(process.env.NEBIUS_API_KEY ?? '')
+
+/**
+ * Neuralwatt Provider
+ * @see {@link https://portal.neuralwatt.com/docs}
+ * @remarks
+ * - baseURL - `https://api.neuralwatt.com/v1`
+ * - apiKey - `NEURALWATT_API_KEY`
+ */
+export const neuralwatt = createNeuralwatt(process.env.NEURALWATT_API_KEY ?? '')
 
 /**
  * Nova Provider
@@ -639,6 +801,15 @@ export const opencode = createOpencode(process.env.OPENCODE_API_KEY ?? '')
 export const opencodeGo = createOpencodeGo(process.env.OPENCODE_API_KEY ?? '')
 
 /**
+ * OrcaRouter Provider
+ * @see {@link https://docs.orcarouter.ai}
+ * @remarks
+ * - baseURL - `https://api.orcarouter.ai/v1`
+ * - apiKey - `ORCAROUTER_API_KEY`
+ */
+export const orcarouter = createOrcarouter(process.env.ORCAROUTER_API_KEY ?? '')
+
+/**
  * OVHcloud AI Endpoints Provider
  * @see {@link https://www.ovhcloud.com/en/public-cloud/ai-endpoints/catalog//}
  * @remarks
@@ -702,6 +873,15 @@ export const qihangAi = createQihangAi(process.env.QIHANG_API_KEY ?? '')
 export const qiniuAi = createQiniuAi(process.env.QINIU_API_KEY ?? '')
 
 /**
+ * Regolo AI Provider
+ * @see {@link https://docs.regolo.ai/}
+ * @remarks
+ * - baseURL - `https://api.regolo.ai/v1`
+ * - apiKey - `REGOLO_API_KEY`
+ */
+export const regoloAi = createRegoloAi(process.env.REGOLO_API_KEY ?? '')
+
+/**
  * Requesty Provider
  * @see {@link https://requesty.ai/solution/llm-routing/models}
  * @remarks
@@ -709,6 +889,24 @@ export const qiniuAi = createQiniuAi(process.env.QINIU_API_KEY ?? '')
  * - apiKey - `REQUESTY_API_KEY`
  */
 export const requesty = createRequesty(process.env.REQUESTY_API_KEY ?? '')
+
+/**
+ * routing.run Provider
+ * @see {@link https://docs.routing.run/api-reference/models}
+ * @remarks
+ * - baseURL - `https://api.routing.run/v1`
+ * - apiKey - `ROUTING_RUN_API_KEY`
+ */
+export const routingRun = createRoutingRun(process.env.ROUTING_RUN_API_KEY ?? '')
+
+/**
+ * Sarvam AI Provider
+ * @see {@link https://docs.sarvam.ai/api-reference-docs/getting-started/models}
+ * @remarks
+ * - baseURL - `https://api.sarvam.ai/v1`
+ * - apiKey - `SARVAM_API_KEY`
+ */
+export const sarvam = createSarvam(process.env.SARVAM_API_KEY ?? '')
 
 /**
  * Scaleway Provider
@@ -756,6 +954,15 @@ export const stackit = createStackit(process.env.STACKIT_API_KEY ?? '')
 export const stepfun = createStepfun(process.env.STEPFUN_API_KEY ?? '')
 
 /**
+ * StepFun Provider
+ * @see {@link https://platform.stepfun.ai/docs/en/step-plan/integrations/open-code}
+ * @remarks
+ * - baseURL - `https://api.stepfun.ai/step_plan/v1`
+ * - apiKey - `STEPFUN_API_KEY`
+ */
+export const stepfunAi = createStepfunAi(process.env.STEPFUN_API_KEY ?? '')
+
+/**
  * submodel Provider
  * @see {@link https://submodel.gitbook.io}
  * @remarks
@@ -781,6 +988,33 @@ export const synthetic = createSynthetic(process.env.SYNTHETIC_API_KEY ?? '')
  * - apiKey - `TENCENT_CODING_PLAN_API_KEY`
  */
 export const tencentCodingPlan = createTencentCodingPlan(process.env.TENCENT_CODING_PLAN_API_KEY ?? '')
+
+/**
+ * Tencent TokenHub Provider
+ * @see {@link https://cloud.tencent.com/document/product/1823/130050}
+ * @remarks
+ * - baseURL - `https://tokenhub.tencentmaas.com/v1`
+ * - apiKey - `TENCENT_TOKENHUB_API_KEY`
+ */
+export const tencentTokenhub = createTencentTokenhub(process.env.TENCENT_TOKENHUB_API_KEY ?? '')
+
+/**
+ * The Grid AI Provider
+ * @see {@link https://thegrid.ai/docs}
+ * @remarks
+ * - baseURL - `https://api.thegrid.ai/v1`
+ * - apiKey - `THEGRIDAI_API_KEY`
+ */
+export const theGridAi = createTheGridAi(process.env.THEGRIDAI_API_KEY ?? '')
+
+/**
+ * Umans AI Coding Plan Provider
+ * @see {@link https://app.umans.ai/offers/code/docs}
+ * @remarks
+ * - baseURL - `https://api.code.umans.ai/v1`
+ * - apiKey - `UMANS_AI_CODING_PLAN_API_KEY`
+ */
+export const umansAiCodingPlan = createUmansAiCodingPlan(process.env.UMANS_AI_CODING_PLAN_API_KEY ?? '')
 
 /**
  * Upstage Provider
@@ -819,6 +1053,15 @@ export const vivgrid = createVivgrid(process.env.VIVGRID_API_KEY ?? '')
 export const vultr = createVultr(process.env.VULTR_API_KEY ?? '')
 
 /**
+ * Wafer Provider
+ * @see {@link https://docs.wafer.ai/wafer-pass}
+ * @remarks
+ * - baseURL - `https://pass.wafer.ai/v1`
+ * - apiKey - `WAFER_API_KEY`
+ */
+export const waferAi = createWaferAi(process.env.WAFER_API_KEY ?? '')
+
+/**
  * Weights & Biases Provider
  * @see {@link https://docs.wandb.ai/guides/integrations/inference/}
  * @remarks
@@ -844,6 +1087,42 @@ export const xai = createXai(process.env.XAI_API_KEY ?? '')
  * - apiKey - `XIAOMI_API_KEY`
  */
 export const xiaomi = createXiaomi(process.env.XIAOMI_API_KEY ?? '')
+
+/**
+ * Xiaomi Token Plan (Europe) Provider
+ * @see {@link https://platform.xiaomimimo.com/#/docs}
+ * @remarks
+ * - baseURL - `https://token-plan-ams.xiaomimimo.com/v1`
+ * - apiKey - `XIAOMI_API_KEY`
+ */
+export const xiaomiTokenPlanAms = createXiaomiTokenPlanAms(process.env.XIAOMI_API_KEY ?? '')
+
+/**
+ * Xiaomi Token Plan (China) Provider
+ * @see {@link https://platform.xiaomimimo.com/#/docs}
+ * @remarks
+ * - baseURL - `https://token-plan-cn.xiaomimimo.com/v1`
+ * - apiKey - `XIAOMI_API_KEY`
+ */
+export const xiaomiTokenPlanCn = createXiaomiTokenPlanCn(process.env.XIAOMI_API_KEY ?? '')
+
+/**
+ * Xiaomi Token Plan (Singapore) Provider
+ * @see {@link https://platform.xiaomimimo.com/#/docs}
+ * @remarks
+ * - baseURL - `https://token-plan-sgp.xiaomimimo.com/v1`
+ * - apiKey - `XIAOMI_API_KEY`
+ */
+export const xiaomiTokenPlanSgp = createXiaomiTokenPlanSgp(process.env.XIAOMI_API_KEY ?? '')
+
+/**
+ * Xpersona Provider
+ * @see {@link https://www.xpersona.co/docs}
+ * @remarks
+ * - baseURL - `https://www.xpersona.co/v1`
+ * - apiKey - `XPERSONA_API_KEY`
+ */
+export const xpersona = createXpersona(process.env.XPERSONA_API_KEY ?? '')
 
 /**
  * Z.AI Provider
@@ -898,15 +1177,6 @@ export const zhipuaiCodingPlan = createZhipuaiCodingPlan(process.env.ZHIPU_API_K
  * - apiKey - `QIANFAN_API_KEY`
  */
 export const qianfan = createQianfan(process.env.QIANFAN_API_KEY ?? '')
-
-/**
- * NEAR AI Cloud TEE Inference Provider
- * @see {@link https://cloud-api.near.ai/v1/model/list}
- * @remarks
- * - baseURL - `https://cloud-api.near.ai/v1`
- * - apiKey - `NEARAI_API_KEY`
- */
-export const nearai = createNearAI(process.env.NEARAI_API_KEY ?? '')
 
 /**
  * Tencent Hunyuan Provider
