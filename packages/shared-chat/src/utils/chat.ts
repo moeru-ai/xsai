@@ -42,12 +42,13 @@ export interface ChatOptions extends CommonRequestOptions {
 export const chat = async <T extends WithUnknown<ChatOptions>>(options: T) =>
   postJSON('chat/completions', {
     ...options,
-    experimentalToolCallControl: undefined,
     maxSteps: undefined,
     onEvent: undefined,
     onFinish: undefined,
     onStepFinish: undefined,
+    postToolCall: undefined,
     prepareStep: undefined,
+    preToolCall: undefined,
     stopWhen: undefined,
     tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
   })

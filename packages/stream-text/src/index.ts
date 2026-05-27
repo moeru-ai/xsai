@@ -1,5 +1,5 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, ExecuteToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, ToolCallControl, ToolMessage, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, ExecuteToolResult, FinishReason, Message, PostToolCall, PrepareStep, PreToolCall, StopCondition, ToolCall, ToolMessage, Usage } from '@xsai/shared-chat'
 
 import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
@@ -12,11 +12,12 @@ export type * from './types/chunk'
 export type * from './types/event'
 
 export interface StreamTextOptions extends ChatOptions {
-  experimentalToolCallControl?: ToolCallControl
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
   onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
+  postToolCall?: PostToolCall
   prepareStep?: PrepareStep
+  preToolCall?: PreToolCall
   /** @default `stepCountAtLeast(1)` */
   stopWhen?: StopCondition<Message>
   /**
@@ -213,10 +214,12 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
       const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
 
       const execute = async () => {
-        if (options.experimentalToolCallControl == null) {
+        if (options.preToolCall == null && options.postToolCall == null) {
           return Promise.all(validToolCalls.map(async toolCall => executeTool({
             abortSignal: options.abortSignal,
             messages,
+            postToolCall: options.postToolCall,
+            preToolCall: options.preToolCall,
             toolCall,
             tools: options.tools,
           })))
@@ -227,8 +230,9 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
         for (const toolCall of validToolCalls) {
           const result = await executeTool({
             abortSignal: options.abortSignal,
-            experimentalToolCallControl: options.experimentalToolCallControl,
             messages,
+            postToolCall: options.postToolCall,
+            preToolCall: options.preToolCall,
             toolCall,
             tools: options.tools,
           })

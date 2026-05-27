@@ -1,4 +1,4 @@
-import type { CompletionToolCall, CompletionToolResult, Message, Tool, ToolCall, ToolCallControl, ToolCallControlContext, ToolExecuteResult, ToolMessage } from '../types'
+import type { CompletionToolCall, CompletionToolResult, Message, PostToolCall, PreToolCall, Tool, ToolCall, ToolExecuteOptions, ToolExecuteResult, ToolMessage } from '../types'
 
 import { InvalidToolCallError, InvalidToolInputError, ToolExecutionError } from '@xsai/shared'
 
@@ -6,8 +6,9 @@ import { toToolMessageContent } from './internal/to-tool-message-content'
 
 export interface ExecuteToolOptions<T = ToolMessage['content']> {
   abortSignal?: AbortSignal
-  experimentalToolCallControl?: ToolCallControl
   messages: Message[]
+  postToolCall?: PostToolCall
+  preToolCall?: PreToolCall
   toolCall: ToolCall
   tools?: Tool[]
   wrapResult?: (result: ToolExecuteResult) => T
@@ -37,25 +38,19 @@ const parseToolInput = (toolName: string, input: string) => {
 }
 
 const runTool = async (tool: Tool, options: {
-  abortSignal?: AbortSignal
-  messages: Message[]
   parsedArgs: Record<string, unknown>
-  toolCallId: string
+  toolExecuteOptions: ToolExecuteOptions
 }) => {
   try {
-    return await tool.execute(options.parsedArgs, {
-      abortSignal: options.abortSignal,
-      messages: options.messages,
-      toolCallId: options.toolCallId,
-    })
+    return await tool.execute(options.parsedArgs, options.toolExecuteOptions)
   }
   catch (cause) {
-    if (isAbortError(cause, options.abortSignal))
+    if (isAbortError(cause, options.toolExecuteOptions.abortSignal))
       throw cause
 
     throw new ToolExecutionError(`Tool "${tool.function.name}" execution failed.`, {
       cause,
-      toolCallId: options.toolCallId,
+      toolCallId: options.toolExecuteOptions.toolCallId,
       toolInput: options.parsedArgs,
       toolName: tool.function.name,
     })
@@ -122,8 +117,8 @@ const findTool = (tools: Tool[] | undefined, toolName: string, toolCall: Complet
   return tool
 }
 
-const applyPostToolCall = async (control: ToolCallControl | undefined, toolResult: CompletionToolResult, context: ToolCallControlContext): Promise<CompletionToolResult> => {
-  const next = await control?.postToolCall?.(toolResult, context)
+const applyPostToolCall = async (postToolCall: PostToolCall | undefined, toolResult: CompletionToolResult, options: ToolExecuteOptions): Promise<CompletionToolResult> => {
+  const next = await postToolCall?.(toolResult, options)
 
   if (next == null)
     return toolResult
@@ -132,7 +127,7 @@ const applyPostToolCall = async (control: ToolCallControl | undefined, toolResul
   return next
 }
 
-export const executeTool = async <T = ToolMessage['content']>({ abortSignal, experimentalToolCallControl, messages, toolCall, tools, wrapResult }: ExecuteToolOptions<T>): Promise<ExecuteToolResult<T>> => {
+export const executeTool = async <T = ToolMessage['content']>({ abortSignal, messages, postToolCall, preToolCall, toolCall, tools, wrapResult }: ExecuteToolOptions<T>): Promise<ExecuteToolResult<T>> => {
   const toolName = toolCall.function.name
   const toolArguments = toolCall.function.arguments
 
@@ -150,17 +145,18 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, exp
     })
   }
 
-  const controlContext: ToolCallControlContext = {
+  const toolExecuteOptions: ToolExecuteOptions = {
     abortSignal,
     messages,
+    toolCallId: toolCall.id,
   }
   const wrap = wrapResult ?? toToolMessageContent as (result: ToolExecuteResult) => T
   const originalCompletionToolCall = toCompletionToolCall(toolCall, toolName, toolArguments)
-  const preResult = await experimentalToolCallControl?.preToolCall?.(originalCompletionToolCall, controlContext)
+  const preResult = await preToolCall?.(originalCompletionToolCall, toolExecuteOptions)
 
   if (isCompletionToolResult(preResult)) {
     assertSameToolCallId(originalCompletionToolCall.toolCallId, preResult.toolCallId, 'preToolCall result')
-    const completionToolResult = await applyPostToolCall(experimentalToolCallControl, preResult, controlContext)
+    const completionToolResult = await applyPostToolCall(postToolCall, preResult, toolExecuteOptions)
 
     return {
       completionToolCall: originalCompletionToolCall,
@@ -183,15 +179,13 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, exp
   const parsedArgs = parseToolInput(completionToolCall.toolName, completionToolCall.args)
 
   const result = await runTool(tool, {
-    abortSignal,
-    messages,
     parsedArgs,
-    toolCallId: completionToolCall.toolCallId,
+    toolExecuteOptions,
   })
   const completionToolResult = await applyPostToolCall(
-    experimentalToolCallControl,
+    postToolCall,
     toCompletionToolResult(completionToolCall, parsedArgs, result),
-    controlContext,
+    toolExecuteOptions,
   )
 
   return {

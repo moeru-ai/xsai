@@ -173,17 +173,15 @@ describe('@xsai/generate-text', () => {
 
     const result = await generateText({
       baseURL: 'https://example.com/v1/',
-      experimentalToolCallControl: {
-        preToolCall: toolCall => ({
-          args: { command: 'git status' },
-          result: 'TOOL_HITL_REJECTED: denied by reviewer',
-          toolCallId: toolCall.toolCallId,
-          toolName: toolCall.toolName,
-        }),
-      },
       fetch,
       messages: [{ content: 'check repo', role: 'user' }],
       model: 'test-model',
+      preToolCall: toolCall => ({
+        args: { command: 'git status' },
+        result: 'TOOL_HITL_REJECTED: denied by reviewer',
+        toolCallId: toolCall.toolCallId,
+        toolName: toolCall.toolName,
+      }),
       tools: [runCommand],
     })
 

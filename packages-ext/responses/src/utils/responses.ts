@@ -1,4 +1,4 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, PrepareStep, ToolCallControl, Usage } from '@xsai/shared-chat'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, PostToolCall, PrepareStep, PreToolCall, Usage } from '@xsai/shared-chat'
 
 import type { FunctionCall, FunctionCallOutput, ItemParam, ResponseResource } from '../generated'
 import type { Event } from '../types/event'
@@ -20,13 +20,14 @@ export interface ResponsesOptions extends OpenResponsesOptions {
   abortSignal?: AbortSignal
   apiKey?: string
   baseURL: string | URL
-  experimentalToolCallControl?: ToolCallControl
   fetch?: typeof globalThis.fetch
   headers?: Record<string, string>
   onEvent?: (event: Event) => Promise<unknown> | unknown
   onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
+  postToolCall?: PostToolCall
   prepareStep?: PrepareStep<ItemParam[], NonNullable<OpenResponsesOptions['toolChoice']>>
+  preToolCall?: PreToolCall
   /** @default `stepCountAtLeast(1)` */
   stopWhen?: StopCondition
 }
@@ -209,13 +210,14 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     })
     const res = await postJSON('responses', {
       ...options,
-      experimentalToolCallControl: undefined,
       input: stepOptions.input,
       model: stepOptions.model,
       onEvent: undefined,
       onFinish: undefined,
       onStepFinish: undefined,
+      postToolCall: undefined,
       prepareStep: undefined,
+      preToolCall: undefined,
       stopWhen: undefined,
       stream: true,
       streamOptions: options.streamOptions != null
@@ -239,8 +241,9 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   }) => {
     const { completionToolCall, completionToolResult, result } = await executeTool({
       abortSignal: options.abortSignal,
-      experimentalToolCallControl: options.experimentalToolCallControl,
       messages: [],
+      postToolCall: options.postToolCall,
+      preToolCall: options.preToolCall,
       toolCall: toToolCall(functionCall),
       tools: options.tools,
       wrapResult: toFunctionCallOutput,

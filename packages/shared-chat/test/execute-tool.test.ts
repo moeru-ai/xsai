@@ -130,19 +130,17 @@ describe('@xsai/shared-chat executeTool control', () => {
     const tool = createWeatherTool(input => `weather:${(input as { city: string }).city}`)
 
     const result = await executeTool({
-      experimentalToolCallControl: {
-        postToolCall: (toolResult, context) => {
-          seen.push(['post', toolResult, context.messages.length])
-          return {
-            ...toolResult,
-            result: 'patched result',
-          }
-        },
-        preToolCall: (toolCall, context) => {
-          seen.push(['pre', toolCall, context.messages.length])
-        },
-      },
       messages: [...messages],
+      postToolCall: (toolResult, options) => {
+        seen.push(['post', toolResult, options.messages.length, options.toolCallId])
+        return {
+          ...toolResult,
+          result: 'patched result',
+        }
+      },
+      preToolCall: (toolCall, options) => {
+        seen.push(['pre', toolCall, options.messages.length, options.toolCallId])
+      },
       toolCall: createToolCall(),
       tools: [tool],
     })
@@ -155,8 +153,8 @@ describe('@xsai/shared-chat executeTool control', () => {
     })
     expect(result.completionToolResult.result).toBe('patched result')
     expect(seen).toMatchObject([
-      ['pre', { toolCallId: 'call_1', toolName: 'weather' }, 1],
-      ['post', { result: 'weather:Taipei', toolCallId: 'call_1', toolName: 'weather' }, 1],
+      ['pre', { toolCallId: 'call_1', toolName: 'weather' }, 1, 'call_1'],
+      ['post', { result: 'weather:Taipei', toolCallId: 'call_1', toolName: 'weather' }, 1, 'call_1'],
     ])
   })
 
@@ -164,13 +162,11 @@ describe('@xsai/shared-chat executeTool control', () => {
     const tool = createWeatherTool(input => `weather:${(input as { city: string }).city}`)
 
     const result = await executeTool({
-      experimentalToolCallControl: {
-        preToolCall: toolCall => ({
-          ...toolCall,
-          args: '{"city":"Hong Kong"}',
-        }),
-      },
       messages: [...messages],
+      preToolCall: toolCall => ({
+        ...toolCall,
+        args: '{"city":"Hong Kong"}',
+      }),
       toolCall: createToolCall(),
       tools: [tool],
     })
@@ -194,14 +190,12 @@ describe('@xsai/shared-chat executeTool control', () => {
     }
 
     const result = await executeTool({
-      experimentalToolCallControl: {
-        postToolCall: toolResult => ({
-          ...toolResult,
-          result: `${String(toolResult.result)} after post`,
-        }),
-        preToolCall: () => syntheticResult,
-      },
       messages: [...messages],
+      postToolCall: toolResult => ({
+        ...toolResult,
+        result: `${String(toolResult.result)} after post`,
+      }),
+      preToolCall: () => syntheticResult,
       toolCall: createToolCall(),
       tools: [tool],
     })
@@ -215,13 +209,11 @@ describe('@xsai/shared-chat executeTool control', () => {
     const tool = createWeatherTool(() => 'sunny')
 
     await expect(executeTool({
-      experimentalToolCallControl: {
-        preToolCall: toolCall => ({
-          ...toolCall,
-          toolCallId: 'call_2',
-        }),
-      },
       messages: [...messages],
+      preToolCall: toolCall => ({
+        ...toolCall,
+        toolCallId: 'call_2',
+      }),
       toolCall: createToolCall(),
       tools: [tool],
     })).rejects.toMatchObject({
@@ -229,13 +221,11 @@ describe('@xsai/shared-chat executeTool control', () => {
     })
 
     await expect(executeTool({
-      experimentalToolCallControl: {
-        postToolCall: toolResult => ({
-          ...toolResult,
-          toolCallId: 'call_2',
-        }),
-      },
       messages: [...messages],
+      postToolCall: toolResult => ({
+        ...toolResult,
+        toolCallId: 'call_2',
+      }),
       toolCall: createToolCall(),
       tools: [tool],
     })).rejects.toMatchObject({
