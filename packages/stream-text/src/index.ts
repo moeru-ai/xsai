@@ -1,5 +1,5 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, Usage } from '@xsai/shared-chat'
+import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, ExecuteToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, ToolCallControl, ToolMessage, Usage } from '@xsai/shared-chat'
 
 import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
@@ -12,6 +12,7 @@ export type * from './types/chunk'
 export type * from './types/event'
 
 export interface StreamTextOptions extends ChatOptions {
+  experimentalToolCallControl?: ToolCallControl
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
   onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
@@ -211,17 +212,37 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     if (tool_calls.length !== 0) {
       const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
 
-      const results = await Promise.all(
-        validToolCalls.map(async toolCall => executeTool({
-          abortSignal: options.abortSignal,
-          messages,
-          toolCall,
-          tools: options.tools,
-        })),
-      )
+      const execute = async () => {
+        if (options.experimentalToolCallControl == null) {
+          return Promise.all(validToolCalls.map(async toolCall => executeTool({
+            abortSignal: options.abortSignal,
+            messages,
+            toolCall,
+            tools: options.tools,
+          })))
+        }
+
+        const results: ExecuteToolResult<ToolMessage['content']>[] = []
+
+        for (const toolCall of validToolCalls) {
+          const result = await executeTool({
+            abortSignal: options.abortSignal,
+            experimentalToolCallControl: options.experimentalToolCallControl,
+            messages,
+            toolCall,
+            tools: options.tools,
+          })
+
+          results.push(result)
+        }
+
+        return results
+      }
+      const results = await execute()
 
       for (const { completionToolCall, completionToolResult, result } of results) {
         toolCalls.push(completionToolCall)
+
         toolResults.push(completionToolResult)
         messages.push({
           content: result,

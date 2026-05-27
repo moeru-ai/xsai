@@ -126,4 +126,76 @@ describe('@xsai/generate-text', () => {
 
     expect(reasoningText?.length).toBeGreaterThan(1)
   })
+
+  it('lets tool hooks provide synthetic results inside the tool loop', async () => {
+    const responses = [
+      {
+        choices: [{
+          finish_reason: 'tool_calls',
+          index: 0,
+          message: {
+            content: '',
+            role: 'assistant',
+            tool_calls: [{
+              function: {
+                arguments: '{"command":"git status"}',
+                name: 'runCommand',
+              },
+              id: 'call_1',
+              type: 'function',
+            }],
+          },
+        }],
+        created: 1,
+        id: 'chatcmpl_1',
+        model: 'test-model',
+        object: 'chat.completion',
+        system_fingerprint: 'fingerprint',
+        usage: {
+          completion_tokens: 1,
+          prompt_tokens: 1,
+          total_tokens: 2,
+        },
+      },
+    ]
+    const fetch: typeof globalThis.fetch = async () => new Response(JSON.stringify(responses.shift()))
+    const calls: string[] = []
+    const runCommand = await tool({
+      execute: ({ command }) => {
+        calls.push(command)
+        return `ran ${command}`
+      },
+      name: 'runCommand',
+      parameters: object({
+        command: string(),
+      }),
+    })
+
+    const result = await generateText({
+      baseURL: 'https://example.com/v1/',
+      experimentalToolCallControl: {
+        preToolCall: toolCall => ({
+          args: { command: 'git status' },
+          result: 'TOOL_HITL_REJECTED: denied by reviewer',
+          toolCallId: toolCall.toolCallId,
+          toolName: toolCall.toolName,
+        }),
+      },
+      fetch,
+      messages: [{ content: 'check repo', role: 'user' }],
+      model: 'test-model',
+      tools: [runCommand],
+    })
+
+    expect(result.finishReason).toBe('tool_calls')
+    expect(result.toolResults).toStrictEqual([{
+      args: {
+        command: 'git status',
+      },
+      result: 'TOOL_HITL_REJECTED: denied by reviewer',
+      toolCallId: 'call_1',
+      toolName: 'runCommand',
+    }])
+    expect(calls).toStrictEqual([])
+  })
 })

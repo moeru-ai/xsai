@@ -108,4 +108,58 @@ describe('@xsai/stream-text tool', async () => {
       },
     ])
   })
+
+  it('emits a synthetic tool result when preToolCall returns one', async () => {
+    const body = [
+      'data: {"choices":[{"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"call_1","type":"function","function":{"name":"runCommand","arguments":""}}]},"index":0}],"created":1,"id":"chunk_1","model":"test-model","object":"chat.completion.chunk","system_fingerprint":"fingerprint"}\n\n',
+      'data: {"choices":[{"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"call_1","type":"function","function":{"arguments":"{\\"command\\":\\"git status\\"}"}}]},"index":0}],"created":1,"id":"chunk_2","model":"test-model","object":"chat.completion.chunk","system_fingerprint":"fingerprint"}\n\n',
+      'data: {"choices":[{"delta":{"role":"assistant"},"finish_reason":"tool_calls","index":0}],"created":1,"id":"chunk_3","model":"test-model","object":"chat.completion.chunk","system_fingerprint":"fingerprint","usage":{"completion_tokens":1,"prompt_tokens":1,"total_tokens":2}}\n\n',
+    ].join('')
+    const fetch: typeof globalThis.fetch = async () => new Response(body, {
+      headers: {
+        'content-type': 'text/event-stream',
+      },
+    })
+    let executed = false
+    const runCommand = await tool({
+      execute: () => {
+        executed = true
+        return 'ran command'
+      },
+      name: 'runCommand',
+      parameters: object({
+        command: string(),
+      }),
+    })
+
+    const { eventStream, steps } = streamText({
+      baseURL: 'https://example.com/v1/',
+      experimentalToolCallControl: {
+        preToolCall: toolCall => ({
+          args: { command: 'git status' },
+          result: 'TOOL_HITL_REJECTED: denied by reviewer',
+          toolCallId: toolCall.toolCallId,
+          toolName: toolCall.toolName,
+        }),
+      },
+      fetch,
+      messages: [{ content: 'check repo', role: 'user' }],
+      model: 'test-model',
+      tools: [runCommand],
+    })
+
+    const events: StreamTextEvent[] = []
+    for await (const event of eventStream) {
+      events.push(event)
+    }
+
+    expect(executed).toBe(false)
+    expect(events.find(event => event.type === 'tool-result')).toMatchObject({
+      result: 'TOOL_HITL_REJECTED: denied by reviewer',
+      toolCallId: 'call_1',
+      toolName: 'runCommand',
+      type: 'tool-result',
+    })
+    expect((await steps)[0].finishReason).toBe('tool_calls')
+  })
 })

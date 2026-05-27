@@ -1,4 +1,4 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, PrepareStep, Usage } from '@xsai/shared-chat'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, PrepareStep, ToolCallControl, Usage } from '@xsai/shared-chat'
 
 import type { FunctionCall, FunctionCallOutput, ItemParam, ResponseResource } from '../generated'
 import type { Event } from '../types/event'
@@ -20,6 +20,7 @@ export interface ResponsesOptions extends OpenResponsesOptions {
   abortSignal?: AbortSignal
   apiKey?: string
   baseURL: string | URL
+  experimentalToolCallControl?: ToolCallControl
   fetch?: typeof globalThis.fetch
   headers?: Record<string, string>
   onEvent?: (event: Event) => Promise<unknown> | unknown
@@ -208,6 +209,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     })
     const res = await postJSON('responses', {
       ...options,
+      experimentalToolCallControl: undefined,
       input: stepOptions.input,
       model: stepOptions.model,
       onEvent: undefined,
@@ -237,11 +239,14 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   }) => {
     const { completionToolCall, completionToolResult, result } = await executeTool({
       abortSignal: options.abortSignal,
+      experimentalToolCallControl: options.experimentalToolCallControl,
       messages: [],
       toolCall: toToolCall(functionCall),
       tools: options.tools,
       wrapResult: toFunctionCallOutput,
     })
+
+    step.toolCalls.push(completionToolCall)
 
     const functionCallOutput: FunctionCallOutput = {
       call_id: functionCall.call_id,
@@ -251,7 +256,6 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       type: 'function_call_output',
     }
 
-    step.toolCalls.push(completionToolCall)
     step.toolResults.push(completionToolResult)
     input.push(normalizeOutput(functionCallOutput))
     step.events.push({
