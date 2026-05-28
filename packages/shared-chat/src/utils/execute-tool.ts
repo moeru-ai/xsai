@@ -137,12 +137,10 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
   if (preToolCallResult) {
     assertSameToolCallId(completionToolCall.toolCallId, preToolCallResult.toolCallId, 'preToolCallResult')
 
-    if ('result' in preToolCallResult) {
+    if ('result' in preToolCallResult) // CompletionToolResult
       completionToolResult = preToolCallResult
-    }
-    else if ('toolCallType' in preToolCallResult) {
+    else // CompletionToolCall
       completionToolCall = preToolCallResult
-    }
   }
 
   if (completionToolResult == null) {
@@ -157,8 +155,8 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
     completionToolResult = {
       args: parsedArgs,
       result,
-      toolCallId: toolCall.id,
-      toolName,
+      toolCallId: completionToolCall.toolCallId,
+      toolName: completionToolCall.toolName,
     }
   }
 
