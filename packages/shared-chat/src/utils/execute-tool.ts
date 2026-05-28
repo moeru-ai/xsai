@@ -68,8 +68,8 @@ const runTool = async (tool: Tool, options: {
   }
 }
 
-const assertSameToolCallId = (source: string, next: string, label: string) => {
-  if (source === next)
+const assertSameToolCallId = (source: string, next: CompletionToolCall | CompletionToolResult, label: string) => {
+  if (source === next.toolCallId)
     return
 
   throw new InvalidToolCallError(`${label} must preserve toolCallId "${source}".`, {
@@ -135,7 +135,7 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
   // preToolCall
   const preToolCallResult = await preToolCall?.(completionToolCall, toolExecuteOptions)
   if (preToolCallResult) {
-    assertSameToolCallId(completionToolCall.toolCallId, preToolCallResult.toolCallId, 'preToolCallResult')
+    assertSameToolCallId(completionToolCall.toolCallId, preToolCallResult, 'preToolCallResult')
 
     if ('result' in preToolCallResult) // CompletionToolResult
       completionToolResult = preToolCallResult
@@ -163,7 +163,7 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
   // postToolCall
   const postToolCallResult = await postToolCall?.(completionToolResult, toolExecuteOptions)
   if (postToolCallResult) {
-    assertSameToolCallId(completionToolResult.toolCallId, postToolCallResult.toolCallId, 'postToolCallResult')
+    assertSameToolCallId(completionToolResult.toolCallId, postToolCallResult, 'postToolCallResult')
     completionToolResult = postToolCallResult
   }
 
