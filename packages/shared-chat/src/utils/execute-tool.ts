@@ -1,4 +1,15 @@
-import type { CompletionToolCall, CompletionToolResult, Message, Tool, ToolCall, ToolExecuteResult, ToolMessage } from '../types'
+import type {
+  CompletionToolCall,
+  CompletionToolResult,
+  Message,
+  PostToolCall,
+  PreToolCall,
+  Tool,
+  ToolCall,
+  ToolExecuteOptions,
+  ToolExecuteResult,
+  ToolMessage,
+} from '../types'
 
 import { InvalidToolCallError, InvalidToolInputError, ToolExecutionError } from '@xsai/shared'
 
@@ -7,6 +18,8 @@ import { toToolMessageContent } from './internal/to-tool-message-content'
 export interface ExecuteToolOptions<T = ToolMessage['content']> {
   abortSignal?: AbortSignal
   messages: Message[]
+  postToolCall?: PostToolCall
+  preToolCall?: PreToolCall
   toolCall: ToolCall
   tools?: Tool[]
   wrapResult?: (result: ToolExecuteResult) => T
@@ -36,32 +49,58 @@ const parseToolInput = (toolName: string, input: string) => {
 }
 
 const runTool = async (tool: Tool, options: {
-  abortSignal?: AbortSignal
-  messages: Message[]
   parsedArgs: Record<string, unknown>
-  toolCall: ToolCall
+  toolExecuteOptions: ToolExecuteOptions
 }) => {
   try {
-    return await tool.execute(options.parsedArgs, {
-      abortSignal: options.abortSignal,
-      messages: options.messages,
-      toolCallId: options.toolCall.id,
-    })
+    return await tool.execute(options.parsedArgs, options.toolExecuteOptions)
   }
   catch (cause) {
-    if (isAbortError(cause, options.abortSignal))
+    if (isAbortError(cause, options.toolExecuteOptions.abortSignal))
       throw cause
 
     throw new ToolExecutionError(`Tool "${tool.function.name}" execution failed.`, {
       cause,
-      toolCallId: options.toolCall.id,
+      toolCallId: options.toolExecuteOptions.toolCallId,
       toolInput: options.parsedArgs,
       toolName: tool.function.name,
     })
   }
 }
 
-export const executeTool = async <T = ToolMessage['content']>({ abortSignal, messages, toolCall, tools, wrapResult }: ExecuteToolOptions<T>): Promise<ExecuteToolResult<T>> => {
+const assertSameToolCallId = (source: string, next: CompletionToolCall | CompletionToolResult, label: string) => {
+  if (source === next.toolCallId)
+    return
+
+  throw new InvalidToolCallError(`${label} must preserve toolCallId "${source}".`, {
+    reason: 'tool_call_id_mismatch',
+    toolCall: next,
+  })
+}
+
+const findTool = (tools: Tool[] | undefined, toolName: string, toolCall: CompletionToolCall) => {
+  const tool = tools?.find(tool => tool.function.name === toolName)
+
+  if (!tool) {
+    const availableTools = tools?.map(tool => tool.function.name)
+    const availableToolsErrorMsg = (availableTools == null || availableTools.length === 0)
+      ? 'No tools are available'
+      : `Available tools: ${availableTools.join(', ')}`
+
+    throw new InvalidToolCallError(`Model tried to call unavailable tool "${toolName}", ${availableToolsErrorMsg}.`, {
+      availableTools,
+      reason: 'unknown_tool',
+      toolCall,
+      toolName,
+    })
+  }
+
+  return tool
+}
+
+export const executeTool = async <T = ToolMessage['content']>({ abortSignal, messages, postToolCall, preToolCall, toolCall, tools, wrapResult }: ExecuteToolOptions<T>): Promise<ExecuteToolResult<T>> => {
+  const wrap = wrapResult ?? toToolMessageContent as (result: ToolExecuteResult) => T
+
   const toolName = toolCall.function.name
   const toolArguments = toolCall.function.arguments
 
@@ -79,42 +118,58 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
     })
   }
 
-  const tool = tools?.find(tool => tool.function.name === toolName)
-
-  if (!tool) {
-    const availableTools = tools?.map(tool => tool.function.name)
-    const availableToolsErrorMsg = (availableTools == null || availableTools.length === 0)
-      ? 'No tools are available'
-      : `Available tools: ${availableTools.join(', ')}`
-    throw new InvalidToolCallError(`Model tried to call unavailable tool "${toolName}", ${availableToolsErrorMsg}.`, {
-      availableTools,
-      reason: 'unknown_tool',
-      toolCall,
-      toolName,
-    })
+  const toolExecuteOptions: ToolExecuteOptions = {
+    abortSignal,
+    messages,
+    toolCallId: toolCall.id,
   }
 
-  const parsedArgs = parseToolInput(toolName, toolArguments)
-  const result = await runTool(tool, { abortSignal, messages, parsedArgs, toolCall })
-  const wrappedResult = (wrapResult ?? toToolMessageContent as (result: ToolExecuteResult) => T)(result)
-
-  const completionToolCall: CompletionToolCall = {
+  let completionToolCall: CompletionToolCall = {
     args: toolArguments,
     toolCallId: toolCall.id,
-    toolCallType: toolCall.type,
+    toolCallType: 'function',
     toolName,
   }
+  let completionToolResult: CompletionToolResult | undefined
 
-  const completionToolResult: CompletionToolResult = {
-    args: parsedArgs,
-    result,
-    toolCallId: toolCall.id,
-    toolName,
+  // preToolCall
+  const preToolCallResult = await preToolCall?.(completionToolCall, toolExecuteOptions)
+  if (preToolCallResult) {
+    assertSameToolCallId(completionToolCall.toolCallId, preToolCallResult, 'preToolCallResult')
+
+    if ('result' in preToolCallResult) // CompletionToolResult
+      completionToolResult = preToolCallResult
+    else // CompletionToolCall
+      completionToolCall = preToolCallResult
+  }
+
+  if (completionToolResult == null) {
+    const tool = findTool(tools, completionToolCall.toolName, completionToolCall)
+    const parsedArgs = parseToolInput(completionToolCall.toolName, completionToolCall.args)
+
+    const result = await runTool(tool, {
+      parsedArgs,
+      toolExecuteOptions,
+    })
+
+    completionToolResult = {
+      args: parsedArgs,
+      result,
+      toolCallId: completionToolCall.toolCallId,
+      toolName: completionToolCall.toolName,
+    }
+  }
+
+  // postToolCall
+  const postToolCallResult = await postToolCall?.(completionToolResult, toolExecuteOptions)
+  if (postToolCallResult) {
+    assertSameToolCallId(completionToolResult.toolCallId, postToolCallResult, 'postToolCallResult')
+    completionToolResult = postToolCallResult
   }
 
   return {
     completionToolCall,
     completionToolResult,
-    result: wrappedResult,
+    result: wrap(completionToolResult.result),
   }
 }

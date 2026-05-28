@@ -1,12 +1,28 @@
 import type { TrampolineFn, WithUnknown } from '@xsai/shared'
-import type { AssistantMessage, ChatCompletionUsage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, Usage } from '@xsai/shared-chat'
+import type {
+  AssistantMessage,
+  ChatCompletionUsage,
+  ChatOptions,
+  CompletionStep,
+  CompletionToolCall,
+  CompletionToolResult,
+  FinishReason,
+  Message,
+  PostToolCall,
+  PrepareStep,
+  PreToolCall,
+  StopCondition,
+  Usage,
+} from '@xsai/shared-chat'
 
 import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
 import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
+  postToolCall?: PostToolCall
   prepareStep?: PrepareStep
+  preToolCall?: PreToolCall
   /** @internal */
   steps?: CompletionStep<true>[]
   /** @default `stepCountAtLeast(1)` */
@@ -96,6 +112,8 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
           msgToolCalls.map(async toolCall => executeTool({
             abortSignal: options.abortSignal,
             messages,
+            postToolCall: options.postToolCall,
+            preToolCall: options.preToolCall,
             toolCall,
             tools: options.tools,
           })),

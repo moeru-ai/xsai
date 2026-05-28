@@ -46,7 +46,9 @@ export const chat = async <T extends WithUnknown<ChatOptions>>(options: T) =>
     onEvent: undefined,
     onFinish: undefined,
     onStepFinish: undefined,
+    postToolCall: undefined,
     prepareStep: undefined,
+    preToolCall: undefined,
     stopWhen: undefined,
     tools: options.tools?.map(({ execute: _execute, ...tool }) => tool),
   })

@@ -1,5 +1,18 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, PrepareStep, StopCondition, ToolCall, Usage } from '@xsai/shared-chat'
+import type {
+  ChatOptions,
+  CompletionStep,
+  CompletionToolCall,
+  CompletionToolResult,
+  FinishReason,
+  Message,
+  PostToolCall,
+  PrepareStep,
+  PreToolCall,
+  StopCondition,
+  ToolCall,
+  Usage,
+} from '@xsai/shared-chat'
 
 import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
@@ -15,7 +28,9 @@ export interface StreamTextOptions extends ChatOptions {
   onEvent?: (event: StreamTextEvent) => Promise<unknown> | unknown
   onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
+  postToolCall?: PostToolCall
   prepareStep?: PrepareStep
+  preToolCall?: PreToolCall
   /** @default `stepCountAtLeast(1)` */
   stopWhen?: StopCondition<Message>
   /**
@@ -215,6 +230,8 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
         validToolCalls.map(async toolCall => executeTool({
           abortSignal: options.abortSignal,
           messages,
+          postToolCall: options.postToolCall,
+          preToolCall: options.preToolCall,
           toolCall,
           tools: options.tools,
         })),

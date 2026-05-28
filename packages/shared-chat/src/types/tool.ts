@@ -14,6 +14,17 @@ export interface CompletionToolResult {
   toolName: string
 }
 
+export type PostToolCall = (toolResult: CompletionToolResult, options: ToolExecuteOptions) =>
+  | CompletionToolResult
+  | Promise<CompletionToolResult | void>
+  | void
+
+export type PreToolCall = (toolCall: CompletionToolCall, options: ToolExecuteOptions) =>
+  | CompletionToolCall
+  | CompletionToolResult
+  | Promise<CompletionToolCall | CompletionToolResult | void>
+  | void
+
 export interface Tool {
   execute: (input: unknown, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
   function: {
