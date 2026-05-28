@@ -249,8 +249,6 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       wrapResult: toFunctionCallOutput,
     })
 
-    step.toolCalls.push(completionToolCall)
-
     const functionCallOutput: FunctionCallOutput = {
       call_id: functionCall.call_id,
       id: crypto.randomUUID(),
@@ -259,6 +257,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       type: 'function_call_output',
     }
 
+    step.toolCalls.push(completionToolCall)
     step.toolResults.push(completionToolResult)
     input.push(normalizeOutput(functionCallOutput))
     step.events.push({

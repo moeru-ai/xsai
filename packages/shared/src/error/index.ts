@@ -20,7 +20,7 @@ export interface InvalidToolCallErrorOptions extends ErrorOptions {
   toolName?: string
 }
 
-export type InvalidToolCallReason = 'missing_arguments' | 'missing_name' | 'unknown_tool'
+export type InvalidToolCallReason = 'missing_arguments' | 'missing_name' | 'tool_call_id_mismatch' | 'unknown_tool'
 
 export interface InvalidToolInputErrorOptions extends ErrorOptions {
   toolInput: unknown

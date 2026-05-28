@@ -1,5 +1,18 @@
 import type { WithUnknown } from '@xsai/shared'
-import type { ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, ExecuteToolResult, FinishReason, Message, PostToolCall, PrepareStep, PreToolCall, StopCondition, ToolCall, ToolMessage, Usage } from '@xsai/shared-chat'
+import type {
+  ChatOptions,
+  CompletionStep,
+  CompletionToolCall,
+  CompletionToolResult,
+  FinishReason,
+  Message,
+  PostToolCall,
+  PrepareStep,
+  PreToolCall,
+  StopCondition,
+  ToolCall,
+  Usage,
+} from '@xsai/shared-chat'
 
 import type { StreamTextChunkResult } from './types/chunk'
 import type { StreamTextEvent } from './types/event'
@@ -213,40 +226,19 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
     if (tool_calls.length !== 0) {
       const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
 
-      const execute = async () => {
-        if (options.preToolCall == null && options.postToolCall == null) {
-          return Promise.all(validToolCalls.map(async toolCall => executeTool({
-            abortSignal: options.abortSignal,
-            messages,
-            postToolCall: options.postToolCall,
-            preToolCall: options.preToolCall,
-            toolCall,
-            tools: options.tools,
-          })))
-        }
-
-        const results: ExecuteToolResult<ToolMessage['content']>[] = []
-
-        for (const toolCall of validToolCalls) {
-          const result = await executeTool({
-            abortSignal: options.abortSignal,
-            messages,
-            postToolCall: options.postToolCall,
-            preToolCall: options.preToolCall,
-            toolCall,
-            tools: options.tools,
-          })
-
-          results.push(result)
-        }
-
-        return results
-      }
-      const results = await execute()
+      const results = await Promise.all(
+        validToolCalls.map(async toolCall => executeTool({
+          abortSignal: options.abortSignal,
+          messages,
+          postToolCall: options.postToolCall,
+          preToolCall: options.preToolCall,
+          toolCall,
+          tools: options.tools,
+        })),
+      )
 
       for (const { completionToolCall, completionToolResult, result } of results) {
         toolCalls.push(completionToolCall)
-
         toolResults.push(completionToolResult)
         messages.push({
           content: result,

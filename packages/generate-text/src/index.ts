@@ -1,5 +1,19 @@
 import type { TrampolineFn, WithUnknown } from '@xsai/shared'
-import type { AssistantMessage, ChatCompletionUsage, ChatOptions, CompletionStep, CompletionToolCall, CompletionToolResult, ExecuteToolResult, FinishReason, Message, PostToolCall, PrepareStep, PreToolCall, StopCondition, ToolMessage, Usage } from '@xsai/shared-chat'
+import type {
+  AssistantMessage,
+  ChatCompletionUsage,
+  ChatOptions,
+  CompletionStep,
+  CompletionToolCall,
+  CompletionToolResult,
+  FinishReason,
+  Message,
+  PostToolCall,
+  PrepareStep,
+  PreToolCall,
+  StopCondition,
+  Usage,
+} from '@xsai/shared-chat'
 
 import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
 import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
@@ -47,7 +61,6 @@ export interface GenerateTextResult {
 }
 
 /** @internal */
-
 const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promise<TrampolineFn<GenerateTextResult>> => {
   const messages: Message[] = options.steps == null
     ? structuredClone(options.messages)
@@ -72,7 +85,6 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
     totalUsage: undefined,
   })
     .then(responseJSON<GenerateTextResponse>)
-
     .then(async (res) => {
       const { choices } = res
       const usage = normalizeChatCompletionUsage(res.usage)
@@ -96,40 +108,19 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
       messages.push(message)
 
       if (msgToolCalls.length > 0) {
-        const execute = async () => {
-          if (options.preToolCall == null && options.postToolCall == null) {
-            return Promise.all(msgToolCalls.map(async toolCall => executeTool({
-              abortSignal: options.abortSignal,
-              messages,
-              postToolCall: options.postToolCall,
-              preToolCall: options.preToolCall,
-              toolCall,
-              tools: options.tools,
-            })))
-          }
-
-          const results: ExecuteToolResult<ToolMessage['content']>[] = []
-
-          for (const toolCall of msgToolCalls) {
-            const result = await executeTool({
-              abortSignal: options.abortSignal,
-              messages,
-              postToolCall: options.postToolCall,
-              preToolCall: options.preToolCall,
-              toolCall,
-              tools: options.tools,
-            })
-
-            results.push(result)
-          }
-
-          return results
-        }
-        const results = await execute()
+        const results = await Promise.all(
+          msgToolCalls.map(async toolCall => executeTool({
+            abortSignal: options.abortSignal,
+            messages,
+            postToolCall: options.postToolCall,
+            preToolCall: options.preToolCall,
+            toolCall,
+            tools: options.tools,
+          })),
+        )
 
         for (const { completionToolCall, completionToolResult, result } of results) {
           toolCalls.push(completionToolCall)
-
           toolResults.push(completionToolResult)
           messages.push({
             content: result,
