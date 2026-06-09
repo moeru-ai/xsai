@@ -1,0 +1,38 @@
+---
+title: Speech
+description: Streams audio from the input text.
+---
+
+import { PkgSizeBadge } from '@/components/pkg-size-badge'
+
+<PkgSizeBadge pkg="@xsai/stream-speech" />
+
+```package-install
+npm i @xsai/stream-speech
+```
+
+## Examples
+
+### Basic
+
+```ts
+import { streamSpeech } from '@xsai/stream-speech'
+import { env } from 'node:process'
+import PCMPlayer from 'pcm-player'
+
+const { fullStream, usage } = await streamSpeech({
+  apiKey: env.OPENAI_API_KEY!,
+  baseURL: 'https://api.openai.com/v1/',
+  input: 'The quick brown fox jumped over the lazy dog.',
+  model: 'gpt-4o-mini-tts',
+  voice: 'alloy',
+  responseFormat: 'pcm',
+})
+
+const player = new PCMPlayer(options)
+
+for (const bytes of fullStream)
+  player.feed(toArrayBuffer(bytes.buffer))
+
+console.log(await usage)
+```
