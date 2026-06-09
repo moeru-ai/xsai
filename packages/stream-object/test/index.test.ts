@@ -1,4 +1,4 @@
-import type { StreamTextChunkResult, StreamTextEvent } from '@xsai/stream-text'
+import type { StreamTextChunkResult } from '@xsai/stream-text'
 
 import { describe, expect, it, vi } from 'vitest'
 
@@ -38,7 +38,7 @@ describe('@xsai/stream-object', () => {
 
     expect(objects.at(-1)!.answer).toBe('YES')
 
-    const events: StreamTextEvent[] = []
+    const events: ExtractReadableStream<typeof eventStream>[] = []
     for await (const event of eventStream) {
       events.push(event)
     }

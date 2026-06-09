@@ -3,16 +3,25 @@
 exports[`@xsai/stream-text basic > basic 1`] = `
 [
   {
-    "text": "YES",
-    "type": "text-delta",
+    "type": "step.start",
   },
   {
-    "text": "",
-    "type": "text-delta",
+    "type": "text.start",
   },
   {
-    "finishReason": "stop",
-    "type": "finish",
+    "delta": "YES",
+    "type": "text.delta",
+  },
+  {
+    "delta": "",
+    "type": "text.delta",
+  },
+  {
+    "content": "YES",
+    "type": "text.done",
+  },
+  {
+    "type": "step.done",
     "usage": undefined,
   },
 ]
@@ -33,96 +42,105 @@ exports[`@xsai/stream-text basic > basic 2`] = `
 exports[`@xsai/stream-text basic > includes usage 1`] = `
 [
   {
-    "text": "Sure",
-    "type": "text-delta",
+    "type": "step.start",
   },
   {
-    "text": ",",
-    "type": "text-delta",
+    "type": "text.start",
   },
   {
-    "text": " here",
-    "type": "text-delta",
+    "delta": "Sure",
+    "type": "text.delta",
   },
   {
-    "text": "'s",
-    "type": "text-delta",
+    "delta": ",",
+    "type": "text.delta",
   },
   {
-    "text": " a",
-    "type": "text-delta",
+    "delta": " here",
+    "type": "text.delta",
   },
   {
-    "text": " quick",
-    "type": "text-delta",
+    "delta": "'s",
+    "type": "text.delta",
   },
   {
-    "text": " one",
-    "type": "text-delta",
+    "delta": " a",
+    "type": "text.delta",
   },
   {
-    "text": ":",
-    "type": "text-delta",
+    "delta": " quick",
+    "type": "text.delta",
   },
   {
-    "text": " Why",
-    "type": "text-delta",
+    "delta": " one",
+    "type": "text.delta",
   },
   {
-    "text": " don",
-    "type": "text-delta",
+    "delta": ":",
+    "type": "text.delta",
   },
   {
-    "text": "'t",
-    "type": "text-delta",
+    "delta": " Why",
+    "type": "text.delta",
   },
   {
-    "text": " scientists",
-    "type": "text-delta",
+    "delta": " don",
+    "type": "text.delta",
   },
   {
-    "text": " trust",
-    "type": "text-delta",
+    "delta": "'t",
+    "type": "text.delta",
   },
   {
-    "text": " atoms",
-    "type": "text-delta",
+    "delta": " scientists",
+    "type": "text.delta",
   },
   {
-    "text": "?",
-    "type": "text-delta",
+    "delta": " trust",
+    "type": "text.delta",
   },
   {
-    "text": " Because",
-    "type": "text-delta",
+    "delta": " atoms",
+    "type": "text.delta",
   },
   {
-    "text": " they",
-    "type": "text-delta",
+    "delta": "?",
+    "type": "text.delta",
   },
   {
-    "text": " make",
-    "type": "text-delta",
+    "delta": " Because",
+    "type": "text.delta",
   },
   {
-    "text": " up",
-    "type": "text-delta",
+    "delta": " they",
+    "type": "text.delta",
   },
   {
-    "text": " everything",
-    "type": "text-delta",
+    "delta": " make",
+    "type": "text.delta",
   },
   {
-    "text": "!",
-    "type": "text-delta",
+    "delta": " up",
+    "type": "text.delta",
   },
   {
-    "text": "",
-    "type": "text-delta",
+    "delta": " everything",
+    "type": "text.delta",
   },
   {
-    "finishReason": "stop",
-    "type": "finish",
+    "delta": "!",
+    "type": "text.delta",
+  },
+  {
+    "delta": "",
+    "type": "text.delta",
+  },
+  {
+    "content": "Sure, here's a quick one: Why don't scientists trust atoms? Because they make up everything!",
+    "type": "text.done",
+  },
+  {
+    "type": "step.done",
     "usage": {
       "inputTokens": 24,
       "outputTokens": 22,
@@ -151,100 +169,109 @@ exports[`@xsai/stream-text basic > includes usage 2`] = `
 exports[`@xsai/stream-text basic > stream 1`] = `
 [
   {
-    "text": "Sure",
-    "type": "text-delta",
+    "type": "step.start",
   },
   {
-    "text": ",",
-    "type": "text-delta",
+    "type": "text.start",
   },
   {
-    "text": " here",
-    "type": "text-delta",
+    "delta": "Sure",
+    "type": "text.delta",
   },
   {
-    "text": "'s",
-    "type": "text-delta",
+    "delta": ",",
+    "type": "text.delta",
   },
   {
-    "text": " a",
-    "type": "text-delta",
+    "delta": " here",
+    "type": "text.delta",
   },
   {
-    "text": " joke",
-    "type": "text-delta",
+    "delta": "'s",
+    "type": "text.delta",
   },
   {
-    "text": " for",
-    "type": "text-delta",
+    "delta": " a",
+    "type": "text.delta",
   },
   {
-    "text": " you",
-    "type": "text-delta",
+    "delta": " joke",
+    "type": "text.delta",
   },
   {
-    "text": ":",
-    "type": "text-delta",
+    "delta": " for",
+    "type": "text.delta",
   },
   {
-    "text": " Why",
-    "type": "text-delta",
+    "delta": " you",
+    "type": "text.delta",
   },
   {
-    "text": " don",
-    "type": "text-delta",
+    "delta": ":",
+    "type": "text.delta",
   },
   {
-    "text": "'t",
-    "type": "text-delta",
+    "delta": " Why",
+    "type": "text.delta",
   },
   {
-    "text": " scientists",
-    "type": "text-delta",
+    "delta": " don",
+    "type": "text.delta",
   },
   {
-    "text": " trust",
-    "type": "text-delta",
+    "delta": "'t",
+    "type": "text.delta",
   },
   {
-    "text": " atoms",
-    "type": "text-delta",
+    "delta": " scientists",
+    "type": "text.delta",
   },
   {
-    "text": "?",
-    "type": "text-delta",
+    "delta": " trust",
+    "type": "text.delta",
   },
   {
-    "text": " Because",
-    "type": "text-delta",
+    "delta": " atoms",
+    "type": "text.delta",
   },
   {
-    "text": " they",
-    "type": "text-delta",
+    "delta": "?",
+    "type": "text.delta",
   },
   {
-    "text": " make",
-    "type": "text-delta",
+    "delta": " Because",
+    "type": "text.delta",
   },
   {
-    "text": " up",
-    "type": "text-delta",
+    "delta": " they",
+    "type": "text.delta",
   },
   {
-    "text": " everything",
-    "type": "text-delta",
+    "delta": " make",
+    "type": "text.delta",
   },
   {
-    "text": "!",
-    "type": "text-delta",
+    "delta": " up",
+    "type": "text.delta",
   },
   {
-    "text": "",
-    "type": "text-delta",
+    "delta": " everything",
+    "type": "text.delta",
   },
   {
-    "finishReason": "stop",
-    "type": "finish",
+    "delta": "!",
+    "type": "text.delta",
+  },
+  {
+    "delta": "",
+    "type": "text.delta",
+  },
+  {
+    "content": "Sure, here's a joke for you: Why don't scientists trust atoms? Because they make up everything!",
+    "type": "text.done",
+  },
+  {
+    "type": "step.done",
     "usage": undefined,
   },
 ]

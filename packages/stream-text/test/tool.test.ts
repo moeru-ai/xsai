@@ -1,4 +1,4 @@
-import type { StreamTextEvent } from '../src/types/event'
+import type { Event } from '@xsai/shared-chat'
 
 import { clean } from '@xsai/shared'
 import { tool } from '@xsai/tool'
@@ -45,40 +45,40 @@ describe('@xsai/stream-text tool', async () => {
       tools: [add],
     })
 
-    const events: StreamTextEvent[] = []
+    const events: Event[] = []
     for await (const event of eventStream) {
       // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
       events.push(clean({
         ...event,
         toolCallId: undefined,
-      }) as unknown as StreamTextEvent)
+      }) as unknown as Event)
     }
 
-    expect(events.find(e => e.type === 'tool-call-streaming-start')).toStrictEqual({
+    expect(events.find(e => e.type === 'tool-call.start')).toStrictEqual({
       toolName: 'add',
-      type: 'tool-call-streaming-start',
+      type: 'tool-call.start',
     })
 
-    const toolCallEvent = events.find(e => e.type === 'tool-call')
+    const toolCallEvent = events.find(e => e.type === 'tool-call.done')
 
     expect(toolCallEvent).toMatchObject({
       toolCallType: 'function',
       toolName: 'add',
-      type: 'tool-call',
+      type: 'tool-call.done',
     })
     expect(JSON.parse(toolCallEvent!.args)).toStrictEqual({
       a: '114514',
       b: '1919810',
     })
 
-    expect(events.find(e => e.type === 'tool-result')).toStrictEqual({
+    expect(events.find(e => e.type === 'tool-result.done')).toStrictEqual({
       args: {
         a: '114514',
         b: '1919810',
       },
       result: '2034324',
       toolName: 'add',
-      type: 'tool-result',
+      type: 'tool-result.done',
     })
 
     const allSteps = await steps
@@ -146,17 +146,17 @@ describe('@xsai/stream-text tool', async () => {
       tools: [runCommand],
     })
 
-    const events: StreamTextEvent[] = []
+    const events: Event[] = []
     for await (const event of eventStream) {
       events.push(event)
     }
 
     expect(executed).toBe(false)
-    expect(events.find(event => event.type === 'tool-result')).toMatchObject({
+    expect(events.find(event => event.type === 'tool-result.done')).toMatchObject({
       result: 'TOOL_HITL_REJECTED: denied by reviewer',
       toolCallId: 'call_1',
       toolName: 'runCommand',
-      type: 'tool-result',
+      type: 'tool-result.done',
     })
     expect((await steps)[0].finishReason).toBe('tool_calls')
   })

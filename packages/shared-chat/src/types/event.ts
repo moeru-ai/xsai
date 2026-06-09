@@ -1,9 +1,9 @@
-import type { Usage } from '@xsai/shared-chat'
-
-import type { ErrorPayload, ItemField } from '../generated'
+import type { CompletionToolCall, CompletionToolResult } from './tool'
+import type { Usage } from './usage'
 
 export interface ErrorEvent {
-  error: ErrorPayload
+  cause?: unknown
+  message: string
   type: 'error'
 }
 
@@ -21,24 +21,24 @@ export type Event = ErrorEvent
   | ToolCallStartEvent
   | ToolResultDoneEvent
 
+export type EventType = Event['type']
+
 export interface ReasoningDeltaEvent {
   delta: string
   type: 'reasoning.delta'
 }
 
 export interface ReasoningDoneEvent {
-  text: string
+  content: string
   type: 'reasoning.done'
 }
 
 export interface ReasoningStartEvent {
-  outputIndex: number
   type: 'reasoning.start'
 }
 
 export interface StepDoneEvent {
   // TODO: reason
-  output: ItemField[]
   type: 'step.done'
   usage?: Usage
 }
@@ -53,12 +53,11 @@ export interface TextDeltaEvent {
 }
 
 export interface TextDoneEvent {
-  text: string
+  content: string
   type: 'text.done'
 }
 
 export interface TextStartEvent {
-  outputIndex: number
   type: 'text.start'
 }
 
@@ -67,29 +66,14 @@ export interface ToolCallDeltaEvent {
   type: 'tool-call.delta'
 }
 
-export interface ToolCallDoneEvent {
-  toolCall: {
-    arguments: string
-    id: string
-    name: string
-  }
+export interface ToolCallDoneEvent extends CompletionToolCall {
   type: 'tool-call.done'
 }
 
-export interface ToolCallStartEvent {
-  outputIndex: number
-  toolCall: {
-    id: string
-    name: string
-  }
+export interface ToolCallStartEvent extends Omit<CompletionToolCall, 'args' | 'toolCallType'> {
   type: 'tool-call.start'
 }
 
-export interface ToolResultDoneEvent {
-  toolResult: {
-    id: string
-    name: string
-    output: unknown
-  }
+export interface ToolResultDoneEvent extends CompletionToolResult {
   type: 'tool-result.done'
 }

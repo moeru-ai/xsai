@@ -1,4 +1,3 @@
-export type * from './types/event'
 export type * from './types/event-full'
 export type * from './types/open-responses-options'
 export type * from './types/stop-when'
