@@ -509,6 +509,9 @@ importers:
       '@xsai/stream-object':
         specifier: 'workspace:'
         version: link:../../packages/stream-object
+      '@xsai/stream-speech':
+        specifier: 'workspace:'
+        version: link:../../packages/stream-speech
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../../packages/stream-text
@@ -666,6 +669,18 @@ importers:
       valibot:
         specifier: catalog:schema
         version: 1.0.0(typescript@6.0.2)
+
+  packages/stream-speech:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+      '@xsai/shared-chat':
+        specifier: 'workspace:'
+        version: link:../shared-chat
+      '@xsai/shared-stream':
+        specifier: 'workspace:'
+        version: link:../shared-stream
 
   packages/stream-text:
     dependencies:

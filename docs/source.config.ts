@@ -33,6 +33,7 @@ export default defineConfig({
         transformerTwoslash({
           twoslashOptions: {
             compilerOptions: {
+              lib: ['esnext', 'dom'],
               types: ['node'],
             },
           },

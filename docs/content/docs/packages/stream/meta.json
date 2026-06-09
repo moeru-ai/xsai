@@ -4,6 +4,7 @@
   "pages": [
     "text",
     "object",
+    "speech",
     "transcription"
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "xsai",
+  "name": "@xsai/stream-speech",
   "type": "module",
   "version": "0.5.0-beta.5",
   "description": "extra-small AI SDK.",
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai.git",
-    "directory": "packages-top/xsai"
+    "directory": "packages/stream-speech"
   },
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "keywords": [
@@ -18,9 +18,7 @@
     "ai"
   ],
   "sideEffects": false,
-  "exports": {
-    ".": "./src/index.ts"
-  },
+  "exports": "./src/index.ts",
   "files": [
     "dist"
   ],
@@ -39,23 +37,8 @@
     "build": "pkgroll"
   },
   "dependencies": {
-    "@xsai/embed": "workspace:",
-    "@xsai/generate-image": "workspace:",
-    "@xsai/generate-object": "workspace:",
-    "@xsai/generate-speech": "workspace:",
-    "@xsai/generate-text": "workspace:",
-    "@xsai/generate-transcription": "workspace:",
-    "@xsai/model": "workspace:",
     "@xsai/shared": "workspace:",
     "@xsai/shared-chat": "workspace:",
-    "@xsai/shared-stream": "workspace:",
-    "@xsai/stream-object": "workspace:",
-    "@xsai/stream-speech": "workspace:",
-    "@xsai/stream-text": "workspace:",
-    "@xsai/stream-transcription": "workspace:",
-    "@xsai/tool": "workspace:",
-    "@xsai/utils-chat": "workspace:",
-    "@xsai/utils-reasoning": "workspace:",
-    "@xsai/utils-stream": "workspace:"
+    "@xsai/shared-stream": "workspace:"
   }
 }
