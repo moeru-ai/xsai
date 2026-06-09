@@ -1,9 +1,8 @@
 import type { Usage } from '@xsai/shared-chat'
 
-import type { ErrorPayload, ItemField } from '../generated'
-
 export interface ErrorEvent {
-  error: ErrorPayload
+  cause?: unknown
+  message: string
   type: 'error'
 }
 
@@ -27,18 +26,16 @@ export interface ReasoningDeltaEvent {
 }
 
 export interface ReasoningDoneEvent {
-  text: string
+  content: string
   type: 'reasoning.done'
 }
 
 export interface ReasoningStartEvent {
-  outputIndex: number
   type: 'reasoning.start'
 }
 
 export interface StepDoneEvent {
   // TODO: reason
-  output: ItemField[]
   type: 'step.done'
   usage?: Usage
 }
@@ -53,12 +50,11 @@ export interface TextDeltaEvent {
 }
 
 export interface TextDoneEvent {
-  text: string
+  content: string
   type: 'text.done'
 }
 
 export interface TextStartEvent {
-  outputIndex: number
   type: 'text.start'
 }
 
@@ -67,29 +63,26 @@ export interface ToolCallDeltaEvent {
   type: 'tool-call.delta'
 }
 
+// TODO: extends CompletionToolCall
 export interface ToolCallDoneEvent {
-  toolCall: {
-    arguments: string
-    id: string
-    name: string
-  }
+  args: string
+  toolCallId: string
+  toolName: string
   type: 'tool-call.done'
 }
 
+// TODO: extends Omit<CompletionToolCall, 'args'>
 export interface ToolCallStartEvent {
-  outputIndex: number
-  toolCall: {
-    id: string
-    name: string
-  }
+  toolCallId: string
+  toolName: string
   type: 'tool-call.start'
 }
 
+// TODO: extends CompletionToolResult
 export interface ToolResultDoneEvent {
-  toolResult: {
-    id: string
-    name: string
-    output: unknown
-  }
+  args: unknown
+  result: unknown
+  toolCallId: string
+  toolName: string
   type: 'tool-result.done'
 }

@@ -107,14 +107,14 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     // eslint-disable-next-line ts/switch-exhaustiveness-check
     switch (event.type) {
       case 'error':
-        return [{ error: event.error, type: 'error' }]
+        return [{ cause: event.error, message: event.error.message, type: 'error' }]
       case 'response.completed':
       case 'response.failed':
       case 'response.incomplete':
-        return [{ output: event.response.output, type: 'step.done', usage: event.response.usage != null ? normalizeUsage(event.response.usage) : undefined }]
+        return [{ type: 'step.done', usage: event.response.usage != null ? normalizeUsage(event.response.usage) : undefined }]
       case 'response.content_part.added':
         return event.part.type === 'output_text' || event.part.type === 'text' || event.part.type === 'refusal'
-          ? [{ outputIndex: event.output_index, type: 'text.start' }]
+          ? [{ type: 'text.start' }]
           : []
       case 'response.created':
         return [{ type: 'step.start' }]
@@ -124,15 +124,12 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         return []
       case 'response.output_item.added': {
         if (event.item?.type === 'reasoning')
-          return [{ outputIndex: event.output_index, type: 'reasoning.start' }]
+          return [{ type: 'reasoning.start' }]
 
         if (event.item?.type === 'function_call') {
           return [{
-            outputIndex: event.output_index,
-            toolCall: {
-              id: event.item.call_id,
-              name: event.item.name,
-            },
+            toolCallId: event.item.call_id,
+            toolName: event.item.name,
             type: 'tool-call.start',
           }]
         }
@@ -143,15 +140,15 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       case 'response.refusal.delta':
         return [{ delta: event.delta, type: 'text.delta' }]
       case 'response.output_text.done':
-        return [{ text: event.text, type: 'text.done' }]
+        return [{ content: event.text, type: 'text.done' }]
       case 'response.reasoning.delta':
       case 'response.reasoning_summary_text.delta':
         return [{ delta: event.delta, type: 'reasoning.delta' }]
       case 'response.reasoning.done':
       case 'response.reasoning_summary_text.done':
-        return [{ text: event.text, type: 'reasoning.done' }]
+        return [{ content: event.text, type: 'reasoning.done' }]
       case 'response.refusal.done':
-        return [{ text: event.refusal, type: 'text.done' }]
+        return [{ content: event.refusal, type: 'text.done' }]
       default:
         return []
     }
@@ -261,18 +258,10 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     step.toolResults.push(completionToolResult)
     input.push(normalizeOutput(functionCallOutput))
     step.events.push({
-      toolCall: {
-        arguments: completionToolCall.args,
-        id: completionToolCall.toolCallId,
-        name: completionToolCall.toolName,
-      },
+      ...completionToolCall,
       type: 'tool-call.done',
     }, {
-      toolResult: {
-        id: completionToolResult.toolCallId,
-        name: completionToolResult.toolName,
-        output: completionToolResult.result,
-      },
+      ...completionToolResult,
       type: 'tool-result.done',
     })
   }
