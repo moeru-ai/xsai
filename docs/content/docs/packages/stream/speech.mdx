@@ -29,7 +29,11 @@ const { fullStream, usage } = await streamSpeech({
   responseFormat: 'pcm',
 })
 
-const player = new PCMPlayer(options)
+const player = new PCMPlayer({
+  inputCodec: 'Int16',
+  channels: 1,
+  sampleRate: 24000,
+})
 
 for (const bytes of fullStream)
   player.feed(toArrayBuffer(bytes.buffer))
