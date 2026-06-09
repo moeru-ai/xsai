@@ -51,7 +51,10 @@ export const streamSpeech = async (options: WithUnknown<StreamSpeechOptions>): P
   const usage = new DelayedPromise<undefined | Usage>()
   let usageResolved = false
 
-  const response = await postJSON('audio/speech', options)
+  const response = await postJSON('audio/speech', {
+    ...options,
+    streamFormat: 'sse',
+  })
 
   const fullStream = response.body!
     .pipeThrough(new TextDecoderStream())
