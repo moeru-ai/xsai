@@ -1,4 +1,4 @@
-import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, Message, StreamTextEvent, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
+import type { AssistantMessage, CompletionStep, CompletionToolCall, CompletionToolResult, Event, FinishReason, Message, StreamTextOptions, StreamTextResult, ToolCall, Usage, WithUnknown } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 import type { StreamTextChunkResult } from '../types/stream-text-chunk'
@@ -33,15 +33,15 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   const resultTotalUsage = new DelayedPromise<undefined | Usage>()
 
   // output
-  const [eventStream, eventCtrl] = createControlledStream<StreamTextEvent>()
+  const [eventStream, eventCtrl] = createControlledStream<Event>()
   const [fullStream, fullCtrl] = createControlledStream<StreamTextChunkResult>()
   const [textStream, textCtrl] = createControlledStream<string>()
   const [reasoningTextStream, reasoningTextCtrl] = createControlledStream<string>()
 
-  const pushEvent = (stepEvent: StreamTextEvent) => {
-    eventCtrl.current?.enqueue(stepEvent)
+  const pushEvent = (event: Event) => {
+    eventCtrl.current?.enqueue(event)
 
-    void options.onEvent?.(stepEvent)
+    void options.onEvent?.(event)
   }
 
   const pushStep = (step: CompletionStep) => {
@@ -108,6 +108,10 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       const toolCalls: CompletionToolCall[] = []
       const toolResults: CompletionToolResult[] = []
       let finishReason: FinishReason = 'other'
+      let reasoningStarted = false
+      let textStarted = false
+
+      pushEvent({ type: 'step.start' })
 
       await stream!
         .pipeThrough(new TextDecoderStream())
@@ -133,14 +137,22 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
               if (reasoningField !== 'reasoning')
                 reasoningField = 'reasoning'
 
-              pushEvent({ text: choice.delta.reasoning, type: 'reasoning-delta' })
+              if (!reasoningStarted) {
+                reasoningStarted = true
+                pushEvent({ type: 'reasoning.start' })
+              }
+              pushEvent({ delta: choice.delta.reasoning, type: 'reasoning.delta' })
               pushReasoningText(choice.delta.reasoning)
             }
             else if (choice.delta.reasoning_content != null) {
               if (reasoningField !== 'reasoning_content')
                 reasoningField = 'reasoning_content'
 
-              pushEvent({ text: choice.delta.reasoning_content, type: 'reasoning-delta' })
+              if (!reasoningStarted) {
+                reasoningStarted = true
+                pushEvent({ type: 'reasoning.start' })
+              }
+              pushEvent({ delta: choice.delta.reasoning_content, type: 'reasoning.delta' })
               pushReasoningText(choice.delta.reasoning_content)
             }
 
@@ -149,14 +161,20 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
 
             if (choice.delta.tool_calls?.length === 0 || choice.delta.tool_calls == null) {
               if (choice.delta.content != null) {
-                pushEvent({ text: choice.delta.content, type: 'text-delta' })
+                if (!textStarted) {
+                  textStarted = true
+                  pushEvent({ type: 'text.start' })
+                }
+                pushEvent({ delta: choice.delta.content, type: 'text.delta' })
                 pushText(choice.delta.content)
               }
               else if (choice.delta.refusal != null) {
-                pushEvent({ error: choice.delta.refusal, type: 'error' })
-              }
-              else if (choice.finish_reason != null) {
-                pushEvent({ finishReason: choice.finish_reason, type: 'finish', usage })
+                if (!textStarted) {
+                  textStarted = true
+                  pushEvent({ type: 'text.start' })
+                }
+                pushEvent({ delta: choice.delta.refusal, type: 'text.delta' })
+                pushText(choice.delta.refusal)
               }
             }
             else {
@@ -175,22 +193,24 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
                   pushEvent({
                     toolCallId: toolCall.id,
                     toolName: toolCall.function.name!,
-                    type: 'tool-call-streaming-start',
+                    type: 'tool-call.start',
                   })
+                  if (toolCall.function.arguments != null && toolCall.function.arguments.length > 0)
+                    pushEvent({ delta: toolCall.function.arguments, type: 'tool-call.delta' })
                 }
                 else {
                   tool_calls[index].function.arguments! += toolCall.function.arguments
-                  pushEvent({
-                    argsTextDelta: toolCall.function.arguments!,
-                    toolCallId: toolCall.id,
-                    toolName: toolCall.function.name ?? tool_calls[index].function.name!,
-                    type: 'tool-call-delta',
-                  })
+                  pushEvent({ delta: toolCall.function.arguments!, type: 'tool-call.delta' })
                 }
               }
             }
           },
         }))
+
+      if (reasoningStarted)
+        pushEvent({ content: reasoningText ?? '', type: 'reasoning.done' })
+      if (textStarted)
+        pushEvent({ content: text, type: 'text.done' })
 
       const message: AssistantMessage = {
         ...(reasoningField != null ? { [reasoningField]: reasoningText } : {}),
@@ -222,17 +242,9 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
             tool_call_id: completionToolCall.toolCallId,
           })
 
-          pushEvent({ ...completionToolCall, type: 'tool-call' })
-          pushEvent({ ...completionToolResult, type: 'tool-result' })
+          pushEvent({ ...completionToolCall, type: 'tool-call.done' })
+          pushEvent({ ...completionToolResult, type: 'tool-result.done' })
         }
-      }
-      else {
-      // TODO: should we add this on tool calls finish?
-        pushEvent({
-          finishReason,
-          type: 'finish',
-          usage,
-        })
       }
 
       const step: CompletionStep = {
@@ -249,6 +261,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       })
       const willContinue = toolCalls.length > 0 && !stop
       pushStep(step)
+      pushEvent({ type: 'step.done', usage })
 
       // Telemetry
       span.setAttributes({

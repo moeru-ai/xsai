@@ -1,5 +1,6 @@
+import type { Event } from '@xsai/shared-chat'
+
 import type { StreamTextChunkResult } from '../src/types/chunk'
-import type { StreamTextEvent } from '../src/types/event'
 
 import { describe, expect, it } from 'vitest'
 
@@ -29,13 +30,15 @@ describe('@xsai/stream-text basic', async () => {
     }
     expect(text.toUpperCase()).toBe('YES')
 
-    const events: StreamTextEvent[] = []
+    const events: Event[] = []
     for await (const event of eventStream) {
-      events.push(event.type === 'text-delta'
+      events.push(event.type === 'text.delta' || event.type === 'text.done'
         ? {
             ...event,
             // Yes => YES
-            text: event.text.toUpperCase(),
+            ...(event.type === 'text.delta'
+              ? { delta: event.delta.toUpperCase() }
+              : { content: event.content.toUpperCase() }),
           }
         : event,
       )
@@ -75,7 +78,7 @@ describe('@xsai/stream-text basic', async () => {
     }
     expect(text.length).toBeGreaterThan(1)
 
-    const events: StreamTextEvent[] = []
+    const events: Event[] = []
     for await (const event of eventStream) {
       events.push(event)
     }
@@ -110,7 +113,7 @@ describe('@xsai/stream-text basic', async () => {
     }
     expect(text.length).toBeGreaterThan(1)
 
-    const events: StreamTextEvent[] = []
+    const events: Event[] = []
     for await (const event of eventStream) {
       events.push(event)
     }
@@ -139,6 +142,8 @@ describe('@xsai/stream-text basic', async () => {
     const reasoningText = []
     for await (const t of reasoningTextStream) {
       reasoningText.push(t)
+      if (reasoningText.length > 1)
+        break
     }
     expect(reasoningText.length).toBeGreaterThan(1)
   })
