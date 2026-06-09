@@ -1,7 +1,6 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, FinishReason, PostToolCall, PrepareStep, PreToolCall, Usage } from '@xsai/shared-chat'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, Event, FinishReason, PostToolCall, PrepareStep, PreToolCall, Usage } from '@xsai/shared-chat'
 
 import type { FunctionCall, FunctionCallOutput, ItemParam, ResponseResource } from '../generated'
-import type { Event } from '../types/event'
 import type { FullEvent } from '../types/event-full'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { StopCondition } from '../types/stop-when'

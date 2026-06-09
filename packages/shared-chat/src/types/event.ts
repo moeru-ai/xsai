@@ -1,4 +1,5 @@
-import type { Usage } from '@xsai/shared-chat'
+import type { CompletionToolCall, CompletionToolResult } from './tool'
+import type { Usage } from './usage'
 
 export interface ErrorEvent {
   cause?: unknown
@@ -19,6 +20,8 @@ export type Event = ErrorEvent
   | ToolCallDoneEvent
   | ToolCallStartEvent
   | ToolResultDoneEvent
+
+export type EventType = Event['type']
 
 export interface ReasoningDeltaEvent {
   delta: string
@@ -63,26 +66,14 @@ export interface ToolCallDeltaEvent {
   type: 'tool-call.delta'
 }
 
-// TODO: extends CompletionToolCall
-export interface ToolCallDoneEvent {
-  args: string
-  toolCallId: string
-  toolName: string
+export interface ToolCallDoneEvent extends CompletionToolCall {
   type: 'tool-call.done'
 }
 
-// TODO: extends Omit<CompletionToolCall, 'args'>
-export interface ToolCallStartEvent {
-  toolCallId: string
-  toolName: string
+export interface ToolCallStartEvent extends Omit<CompletionToolCall, 'args' | 'toolCallType'> {
   type: 'tool-call.start'
 }
 
-// TODO: extends CompletionToolResult
-export interface ToolResultDoneEvent {
-  args: unknown
-  result: unknown
-  toolCallId: string
-  toolName: string
+export interface ToolResultDoneEvent extends CompletionToolResult {
   type: 'tool-result.done'
 }

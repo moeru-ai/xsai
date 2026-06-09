@@ -1,3 +1,4 @@
+export type * from './event'
 export type * from './finish-reason'
 export type * from './message'
 export type * from './message-content'
