@@ -50,6 +50,7 @@
     "@xsai/shared-chat": "workspace:",
     "@xsai/shared-stream": "workspace:",
     "@xsai/stream-object": "workspace:",
+    "@xsai/stream-speech": "workspace:",
     "@xsai/stream-text": "workspace:",
     "@xsai/stream-transcription": "workspace:",
     "@xsai/tool": "workspace:",

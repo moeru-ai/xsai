@@ -509,6 +509,9 @@ importers:
       '@xsai/stream-object':
         specifier: 'workspace:'
         version: link:../../packages/stream-object
+      '@xsai/stream-speech':
+        specifier: 'workspace:'
+        version: link:../../packages/stream-speech
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../../packages/stream-text
