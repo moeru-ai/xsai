@@ -8,7 +8,7 @@ export interface CompletionToolCall {
 }
 
 export interface CompletionToolResult {
-  args: Record<string, unknown>
+  args: unknown
   result: ToolExecuteResult
   toolCallId: string
   toolName: string
@@ -34,6 +34,7 @@ export interface Tool {
     strict?: boolean
   }
   type: 'function'
+  validate?: (input: unknown) => Promise<ToolValidateResult> | ToolValidateResult
 }
 
 export interface ToolExecuteOptions {
@@ -43,3 +44,14 @@ export interface ToolExecuteOptions {
 }
 
 export type ToolExecuteResult = object | string | unknown[]
+
+export interface ToolValidateFailure {
+  readonly issues: readonly { readonly message: string }[]
+}
+
+export type ToolValidateResult = ToolValidateFailure | ToolValidateSuccess
+
+export interface ToolValidateSuccess {
+  readonly issues?: never
+  readonly value: unknown
+}
