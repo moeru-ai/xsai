@@ -1,9 +1,9 @@
 import type { Tool, ToolExecuteOptions, ToolExecuteResult } from '@xsai/shared-chat'
-import type { Schema } from 'xsschema'
+import type { Schema, SchemaWithJson } from 'xsschema'
 
-import { strictJsonSchema, toJsonSchema } from 'xsschema'
+import { strictJsonSchema } from 'xsschema'
 
-export interface ToolOptions<T extends Schema> {
+export interface DefineToolOptions<T extends Schema & SchemaWithJson> {
   description?: string
   execute: (input: Schema.InferInput<T>, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
   name: string
@@ -12,9 +12,8 @@ export interface ToolOptions<T extends Schema> {
   strict?: boolean
 }
 
-/** @remarks recommend using `defineTool` instead. */
-export const tool = async <T extends Schema>({ description, execute, name, parameters, strict }: ToolOptions<T>): Promise<Tool> => {
-  const schema = await toJsonSchema(parameters)
+export const defineTool = <T extends Schema & SchemaWithJson>({ description, execute, name, parameters, strict }: DefineToolOptions<T>): Tool => {
+  const schema = parameters['~standard'].jsonSchema.input({ target: 'draft-07' })
 
   return {
     execute,

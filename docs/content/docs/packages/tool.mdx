@@ -13,9 +13,38 @@ npm i @xsai/tool
 
 ## Examples
 
+### defineTool
+
+Use this when your schema library already supports [Standard JSON Schema](https://standardschema.dev/json-schema).
+
+It is synchronous, and it is the recommended option over `tool()`.
+
+```ts twoslash
+import { defineTool } from '@xsai/tool'
+import * as z from 'zod'
+
+const weatherSchema = z.object({
+  location: z.string().describe('The location to get the weather for'),
+}).describe('Get the weather in a location')
+
+const weather = defineTool({
+  description: 'Get the weather in a location',
+  execute: ({ location }) => JSON.stringify({
+    location,
+    temperature: 42,
+  }),
+  name: 'weather',
+  parameters: weatherSchema,
+})
+```
+
 ### tool
 
 accepts a `StandardSchemaV1`, automatically infers the type.
+
+<Callout>
+  `tool()` converts schema inputs to JSON Schema internally, so it remains async. Use it when your schema library does not already provide `StandardJSONSchemaV1`.
+</Callout>
 
 <Callout>
   For convenience, we use `valibot` as an example.
