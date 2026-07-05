@@ -26,6 +26,6 @@ export const defineTool = <T extends Schema & SchemaWithJson>({ description, exe
       strict: strict ?? true,
     },
     type: 'function',
-    validate: (input) => parameters['~standard'].validate(input),
+    validate: async input => parameters['~standard'].validate(input),
   }
 }
