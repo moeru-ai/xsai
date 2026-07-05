@@ -5,7 +5,7 @@ import { strictJsonSchema } from 'xsschema'
 
 export interface DefineToolOptions<T extends Schema & SchemaWithJson> {
   description?: string
-  execute: (input: Schema.InferInput<T>, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
+  execute: (input: Schema.InferOutput<T>, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
   name: string
   parameters: T
   /** @default true */
@@ -26,5 +26,6 @@ export const defineTool = <T extends Schema & SchemaWithJson>({ description, exe
       strict: strict ?? true,
     },
     type: 'function',
+    validate: parameters['~standard'].validate,
   }
 }

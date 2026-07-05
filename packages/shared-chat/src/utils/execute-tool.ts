@@ -35,25 +35,44 @@ const isAbortError = (error: unknown, abortSignal?: AbortSignal) =>
   (abortSignal?.aborted === true && error === abortSignal.reason)
   || (error instanceof Error && error.name === 'AbortError')
 
-const parseToolInput = (toolName: string, input: string) => {
+const parseToolInput = async (tool: Tool, input: string): Promise<unknown> => {
+  let result: unknown
+
   try {
-    return JSON.parse(input.trim() || '{}') as Record<string, unknown>
+    result = JSON.parse(input.trim() || '{}') as unknown
   }
   catch (cause) {
-    throw new InvalidToolInputError(`Failed to parse tool input for "${toolName}".`, {
+    throw new InvalidToolInputError(`Failed to parse tool input for "${tool.function.name}".`, {
       cause,
       toolInput: input,
-      toolName,
+      toolName: tool.function.name,
     })
   }
+
+  if (tool.validate) {
+    const validated = await tool.validate?.(result)
+
+    if (validated.issues) {
+      throw new InvalidToolInputError(`Tool input validation failed for "${tool.function.name}".`, {
+        cause: validated.issues,
+        toolInput: input,
+        toolName: tool.function.name,
+      })
+    }
+
+    if (validated.value != null)
+      result = validated.value
+  }
+
+  return result
 }
 
 const runTool = async (tool: Tool, options: {
-  parsedArgs: Record<string, unknown>
+  args: unknown
   toolExecuteOptions: ToolExecuteOptions
 }) => {
   try {
-    return await tool.execute(options.parsedArgs, options.toolExecuteOptions)
+    return await tool.execute(options.args, options.toolExecuteOptions)
   }
   catch (cause) {
     if (isAbortError(cause, options.toolExecuteOptions.abortSignal))
@@ -62,7 +81,7 @@ const runTool = async (tool: Tool, options: {
     throw new ToolExecutionError(`Tool "${tool.function.name}" execution failed.`, {
       cause,
       toolCallId: options.toolExecuteOptions.toolCallId,
-      toolInput: options.parsedArgs,
+      toolInput: options.args,
       toolName: tool.function.name,
     })
   }
@@ -145,15 +164,15 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
 
   if (completionToolResult == null) {
     const tool = findTool(tools, completionToolCall.toolName, completionToolCall)
-    const parsedArgs = parseToolInput(completionToolCall.toolName, completionToolCall.args)
+    const args = await parseToolInput(tool, completionToolCall.args)
 
     const result = await runTool(tool, {
-      parsedArgs,
+      args,
       toolExecuteOptions,
     })
 
     completionToolResult = {
-      args: parsedArgs,
+      args,
       result,
       toolCallId: completionToolCall.toolCallId,
       toolName: completionToolCall.toolName,

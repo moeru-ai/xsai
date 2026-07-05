@@ -100,6 +100,63 @@ describe('@xsai/shared-chat executeTool errors', () => {
     }
   })
 
+  it('throws InvalidToolInputError when tool input validation fails', async () => {
+    expect.assertions(5)
+
+    let executed = false
+    const tool = {
+      ...createWeatherTool(() => {
+        executed = true
+        return 'ok'
+      }),
+      validate: () => ({
+        issues: [{ message: 'city is required' }],
+      }),
+    } satisfies Tool
+
+    try {
+      await executeTool({
+        messages: [...messages],
+        toolCall: createToolCall(),
+        tools: [tool],
+      })
+    }
+    catch (error) {
+      expect(InvalidToolInputError.isInstance(error)).toBe(true)
+
+      if (!InvalidToolInputError.isInstance(error))
+        throw error
+
+      expect(error.toolName).toBe('weather')
+      expect(error.toolInput).toStrictEqual({ city: 'Taipei' })
+      expect(error.cause).toStrictEqual([{ message: 'city is required' }])
+      expect(executed).toBe(false)
+    }
+  })
+
+  it('executes tools with validated input values', async () => {
+    const seen: unknown[] = []
+    const tool = {
+      ...createWeatherTool((input) => {
+        seen.push(input)
+        return `weather:${(input as { city: string }).city}`
+      }),
+      validate: () => ({
+        value: { city: 'Validated Taipei' },
+      }),
+    } satisfies Tool
+
+    const result = await executeTool({
+      messages: [...messages],
+      toolCall: createToolCall(),
+      tools: [tool],
+    })
+
+    expect(result.result).toBe('weather:Validated Taipei')
+    expect(result.completionToolResult.args).toStrictEqual({ city: 'Validated Taipei' })
+    expect(seen).toStrictEqual([{ city: 'Validated Taipei' }])
+  })
+
   it('throws ToolExecutionError and keeps the original cause', async () => {
     const tool = createWeatherTool(() => {
       throw new TypeError('boom')

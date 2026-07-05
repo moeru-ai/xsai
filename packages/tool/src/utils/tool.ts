@@ -5,7 +5,7 @@ import { strictJsonSchema, toJsonSchema } from 'xsschema'
 
 export interface ToolOptions<T extends Schema> {
   description?: string
-  execute: (input: Schema.InferInput<T>, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
+  execute: (input: Schema.InferOutput<T>, options: ToolExecuteOptions) => Promise<ToolExecuteResult> | ToolExecuteResult
   name: string
   parameters: T
   /** @default true */
@@ -27,5 +27,6 @@ export const tool = async <T extends Schema>({ description, execute, name, param
       strict: strict ?? true,
     },
     type: 'function',
+    validate: parameters['~standard'].validate,
   }
 }
