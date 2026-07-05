@@ -50,18 +50,17 @@ const parseToolInput = async (tool: Tool, input: string): Promise<unknown> => {
   }
 
   if (tool.validate) {
-    const validated = await tool.validate?.(result)
+    const validated = await tool.validate(result)
 
     if (validated.issues) {
       throw new InvalidToolInputError(`Tool input validation failed for "${tool.function.name}".`, {
         cause: validated.issues,
-        toolInput: input,
+        toolInput: result,
         toolName: tool.function.name,
       })
     }
 
-    if (validated.value != null)
-      result = validated.value
+    result = validated.value
   }
 
   return result
