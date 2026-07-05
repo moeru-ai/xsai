@@ -27,6 +27,6 @@ export const tool = async <T extends Schema>({ description, execute, name, param
       strict: strict ?? true,
     },
     type: 'function',
-    validate: parameters['~standard'].validate,
+    validate: (input) => parameters['~standard'].validate(input),
   }
 }
