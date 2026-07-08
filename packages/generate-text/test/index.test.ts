@@ -69,7 +69,6 @@ describe('@xsai/generate-text', () => {
         },
       ],
       model: 'qwen3.5:0.8b',
-      reasoningEffort: 'high',
       seed: 1145141919810,
       stopWhen: stepCountAtLeast(2),
       toolChoice: 'required',
@@ -117,10 +116,18 @@ describe('@xsai/generate-text', () => {
   it('reasoning', async () => {
     const { reasoningText } = await generateText({
       baseURL: 'http://localhost:11434/v1/',
-      messages: [{
-        content: 'How many letter r are in strawberry?',
-        role: 'user',
-      }],
+      maxOutputTokens: 810,
+      maxTokens: 810,
+      messages: [
+        {
+          content: 'You are a helpful assistant.',
+          role: 'system',
+        },
+        {
+          content: 'This is a test, so please answer \'YES\' and nothing else.',
+          role: 'user',
+        },
+      ],
       model: 'qwen3.5:0.8b',
       reasoningEffort: 'low' as 'minimal',
       seed: 114514,
