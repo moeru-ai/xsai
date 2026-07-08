@@ -1,6 +1,6 @@
 import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 
-import { DelayedPromise, requestHeaders, requestURL, responseCatch } from '@xsai/shared'
+import { requestHeaders, requestURL, responseCatch } from '@xsai/shared'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export interface StreamTranscriptionDelta {
@@ -34,7 +34,7 @@ export interface StreamTranscriptionResult {
 export const streamTranscription = (options: WithUnknown<StreamTranscriptionOptions>): StreamTranscriptionResult => {
   const [textStream, textStreamCtrl] = createControlledStream<string>()
   const [fullStream, fullStreamCtrl] = createControlledStream<StreamTranscriptionDelta>()
-  const fullText = new DelayedPromise<string>()
+  const fullText = Promise.withResolvers<string>()
   let text = ''
 
   const doStream = async () => {

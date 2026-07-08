@@ -4,7 +4,7 @@ import type { WithTelemetry } from '../types/options'
 import type { StreamTextChunkResult } from '../types/stream-text-chunk'
 
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
-import { chat, computeTotalUsage, DelayedPromise, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolvePrepareStep, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolvePrepareStep, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -27,10 +27,10 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
   let reasoningField: 'reasoning' | 'reasoning_content' | undefined
 
   // result state
-  const resultSteps = new DelayedPromise<CompletionStep[]>()
-  const resultMessages = new DelayedPromise<Message[]>()
-  const resultUsage = new DelayedPromise<undefined | Usage>()
-  const resultTotalUsage = new DelayedPromise<undefined | Usage>()
+  const resultSteps = Promise.withResolvers<CompletionStep[]>()
+  const resultMessages = Promise.withResolvers<Message[]>()
+  const resultUsage = Promise.withResolvers<undefined | Usage>()
+  const resultTotalUsage = Promise.withResolvers<undefined | Usage>()
 
   // output
   const [eventStream, eventCtrl] = createControlledStream<Event>()

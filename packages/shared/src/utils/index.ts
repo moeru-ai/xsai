@@ -1,6 +1,5 @@
 export { objCamelToSnake, strCamelToSnake } from './case'
 export { clean } from './clean'
-export { DelayedPromise } from './delayed-promise'
 export { postJSON } from './post-json'
 export { requestBody } from './request-body'
 export { requestHeaders } from './request-headers'
