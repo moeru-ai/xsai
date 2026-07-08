@@ -3,28 +3,28 @@ import { describe, expect, it } from 'vitest'
 import { listModels, retrieveModel } from '../src'
 
 describe('@xsai/model', () => {
-  const model = 'qwen3.5:0.8b'
+  const modelId = 'qwen3.5:0.8b'
 
   it('listModels', async () => {
     const models = await listModels({
       baseURL: 'http://localhost:11434/v1/',
     })
 
-    const granite = models.find(({ id }) => id === model)!
+    const model = models.find(({ id }) => id === modelId)!
 
-    expect(granite.id).toBe(model)
-    expect(granite.object).toBe('model')
-    expect(granite.owned_by).toBe('library')
+    expect(model.id).toBe(model)
+    expect(model.object).toBe('model')
+    expect(model.owned_by).toBe('library')
   })
 
   it('retrieveModel', async () => {
-    const granite = await retrieveModel({
+    const model = await retrieveModel({
       baseURL: 'http://localhost:11434/v1/',
-      model,
+      model: modelId,
     })
 
-    expect(granite.id).toBe(model)
-    expect(granite.object).toBe('model')
-    expect(granite.owned_by).toBe('library')
+    expect(model.id).toBe(model)
+    expect(model.object).toBe('model')
+    expect(model.owned_by).toBe('library')
   })
 })
