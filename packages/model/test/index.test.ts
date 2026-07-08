@@ -12,7 +12,7 @@ describe('@xsai/model', () => {
 
     const model = models.find(({ id }) => id === modelId)!
 
-    expect(model.id).toBe(model)
+    expect(model.id).toBe(modelId)
     expect(model.object).toBe('model')
     expect(model.owned_by).toBe('library')
   })
@@ -23,7 +23,7 @@ describe('@xsai/model', () => {
       model: modelId,
     })
 
-    expect(model.id).toBe(model)
+    expect(model.id).toBe(modelId)
     expect(model.object).toBe('model')
     expect(model.owned_by).toBe('library')
   })
