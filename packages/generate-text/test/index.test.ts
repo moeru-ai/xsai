@@ -24,7 +24,7 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'granite4:1b-h',
+      model: 'qwen3.5:0.8b',
       onStepFinish: result => (step = result),
       seed: 114514,
     })
@@ -68,7 +68,7 @@ describe('@xsai/generate-text', () => {
           role: 'user',
         },
       ],
-      model: 'granite4:350m-h',
+      model: 'qwen3.5:0.8b',
       seed: 1145141919810,
       stopWhen: stepCountAtLeast(2),
       toolChoice: 'required',
@@ -120,7 +120,7 @@ describe('@xsai/generate-text', () => {
         content: 'How many letter r are in strawberry?',
         role: 'user',
       }],
-      model: 'qwen3:0.6b',
+      model: 'qwen3.5:0.8b',
       seed: 114514,
     })
 

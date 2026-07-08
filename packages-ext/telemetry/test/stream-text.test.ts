@@ -25,7 +25,7 @@ describe.sequential('streamText', () => {
         content: 'This is a test, so please answer \'YES\' and nothing else.',
         role: 'user',
       }],
-      model: 'granite4:1b-h',
+      model: 'qwen3.5:0.8b',
       onFinish: async () => {
         const spans = memoryExporter.getFinishedSpans()
         const names = spans.map(s => s.name)

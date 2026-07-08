@@ -34,11 +34,11 @@ describe('@xsai/stream-text tool', async () => {
           role: 'system',
         },
         {
-          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
+          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool with { "a": "114514", "b": "1919810" } args to solve the problem.',
           role: 'user',
         },
       ],
-      model: 'granite4:350m-h',
+      model: 'qwen3.5:0.8b',
       seed: 1145141919810,
       stopWhen: stepCountAtLeast(2),
       toolChoice: 'required',

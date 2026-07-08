@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { listModels, retrieveModel } from '../src'
 
 describe('@xsai/model', () => {
-  const model = 'granite4:350m-h'
+  const model = 'qwen3.5:0.8b'
 
   it('listModels', async () => {
     const models = await listModels({

@@ -82,7 +82,7 @@ describe('extractReasoning', () => {
   //         role: 'user',
   //       },
   //     ],
-  //     model: 'qwen3:0.6b',
+  //     model: 'qwen3.5:0.8b',
   //   })
 
   //   const {
@@ -282,7 +282,7 @@ describe('extractReasoningStream', () => {
   //         role: 'user',
   //       },
   //     ],
-  //     model: 'qwen3:0.6b',
+  //     model: 'qwen3.5:0.8b',
   //   })
 
   //   const {

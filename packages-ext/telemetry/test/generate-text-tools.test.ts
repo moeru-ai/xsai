@@ -37,7 +37,7 @@ describe.sequential('generateText with tools', () => {
         content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
         role: 'user',
       }],
-      model: 'granite4:1b-h',
+      model: 'qwen3.5:0.8b',
       seed: 114514,
       stopWhen: stepCountAtLeast(5),
       tools: [add],
