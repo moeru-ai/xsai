@@ -8,6 +8,7 @@ export const createControlledStream = <T>() => {
   }
 
   const stream = new ReadableStream<T>({
+    cancel: () => controller.current = undefined,
     start: currentController => controller.current = currentController,
   })
 
@@ -15,11 +16,17 @@ export const createControlledStream = <T>() => {
 }
 
 export const closeControllers = (...controllers: ReadableStreamControllerRef<unknown>[]) => {
-  for (const controller of controllers)
-    controller.current?.close()
+  for (const controller of controllers) {
+    const current = controller.current
+    controller.current = undefined
+    current?.close()
+  }
 }
 
 export const errorControllers = (reason: unknown, ...controllers: ReadableStreamControllerRef<unknown>[]) => {
-  for (const controller of controllers)
-    controller.current?.error(reason)
+  for (const controller of controllers) {
+    const current = controller.current
+    controller.current = undefined
+    current?.error(reason)
+  }
 }
