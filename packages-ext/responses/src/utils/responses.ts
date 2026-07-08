@@ -5,7 +5,7 @@ import type { FullEvent } from '../types/event-full'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { StopCondition } from '../types/stop-when'
 
-import { DelayedPromise, objCamelToSnake, postJSON, trampoline } from '@xsai/shared'
+import { objCamelToSnake, postJSON, trampoline } from '@xsai/shared'
 import { computeTotalUsage, executeTool, resolvePrepareStep } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
@@ -154,10 +154,10 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
   }
 
   // result state
-  const resultInput = new DelayedPromise<ItemParam[]>()
-  const resultSteps = new DelayedPromise<CompletionStep[]>()
-  const resultUsage = new DelayedPromise<undefined | Usage>()
-  const resultTotalUsage = new DelayedPromise<undefined | Usage>()
+  const resultInput = Promise.withResolvers<ItemParam[]>()
+  const resultSteps = Promise.withResolvers<CompletionStep[]>()
+  const resultUsage = Promise.withResolvers<undefined | Usage>()
+  const resultTotalUsage = Promise.withResolvers<undefined | Usage>()
 
   // output
   const [fullStream, fullCtrl] = createControlledStream<FullEvent>()

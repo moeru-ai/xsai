@@ -1,7 +1,7 @@
 import type { CommonRequestOptions, WithUnknown } from '@xsai/shared'
 import type { Usage } from '@xsai/shared-chat'
 
-import { DelayedPromise, postJSON } from '@xsai/shared'
+import { postJSON } from '@xsai/shared'
 import { EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 export interface StreamSpeechDelta {
@@ -48,7 +48,7 @@ export interface StreamSpeechResult {
 
 /** @experimental */
 export const streamSpeech = async (options: WithUnknown<StreamSpeechOptions>): Promise<StreamSpeechResult> => {
-  const usage = new DelayedPromise<undefined | Usage>()
+  const usage = Promise.withResolvers<undefined | Usage>()
   let usageResolved = false
 
   const response = await postJSON('audio/speech', {

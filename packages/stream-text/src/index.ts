@@ -17,7 +17,7 @@ import type {
 
 import type { StreamTextChunkResult } from './types/chunk'
 
-import { DelayedPromise, objCamelToSnake, trampoline } from '@xsai/shared'
+import { objCamelToSnake, trampoline } from '@xsai/shared'
 import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
@@ -66,10 +66,10 @@ export const streamText = (options: WithUnknown<StreamTextOptions>): StreamTextR
   let reasoningField: 'reasoning' | 'reasoning_content' | undefined
 
   // result state
-  const resultSteps = new DelayedPromise<CompletionStep[]>()
-  const resultMessages = new DelayedPromise<Message[]>()
-  const resultUsage = new DelayedPromise<undefined | Usage>()
-  const resultTotalUsage = new DelayedPromise<undefined | Usage>()
+  const resultSteps = Promise.withResolvers<CompletionStep[]>()
+  const resultMessages = Promise.withResolvers<Message[]>()
+  const resultUsage = Promise.withResolvers<undefined | Usage>()
+  const resultTotalUsage = Promise.withResolvers<undefined | Usage>()
 
   // output
   const [eventStream, eventCtrl] = createControlledStream<Event>()
