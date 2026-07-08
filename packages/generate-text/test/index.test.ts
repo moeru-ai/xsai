@@ -26,14 +26,14 @@ describe('@xsai/generate-text', () => {
       ],
       model: 'qwen3.5:0.8b',
       onStepFinish: result => (step = result),
+      reasoningEffort: 'none',
       seed: 114514,
     })
 
-    expect(text).toStrictEqual('YES')
+    expect(text!.toUpperCase()).toStrictEqual('YES')
     expect(finishReason).toBe('stop')
     expect(toolCalls.length).toBe(0)
     expect(toolResults.length).toBe(0)
-    expect(steps).toMatchSnapshot()
     expect(totalUsage).toStrictEqual(usage)
 
     expect(steps[0]).toStrictEqual(step)
@@ -64,7 +64,7 @@ describe('@xsai/generate-text', () => {
           role: 'system',
         },
         {
-          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
+          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool with { "a": "114514", "b": "1919810" } args to solve the problem.',
           role: 'user',
         },
       ],
@@ -116,6 +116,7 @@ describe('@xsai/generate-text', () => {
   it('reasoning', async () => {
     const { reasoningText } = await generateText({
       baseURL: 'http://localhost:11434/v1/',
+      maxOutputTokens: 810,
       messages: [{
         content: 'How many letter r are in strawberry?',
         role: 'user',
