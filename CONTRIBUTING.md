@@ -21,13 +21,11 @@ We weren't supposed to connect to OpenAI's paid APIs while testing, so we chose 
 
 It uses [Ollama](https://github.com/ollama/ollama).
 
-The model used may change as needed, currently `granite3.3:2b` (chat completion, tool calling), `qwen3:0.6b` (reasoning), and `all-minilm` (embedding).
+The model used may change as needed, currently `qwen3.5:0.8b` (chat completion, tool calling, reasoning), and `all-minilm` (embedding).
 
 ```bash
 ollama pull all-minilm
-ollama pull granite4:350m-h
-ollama pull granite4:1b-h
-ollama pull qwen3:0.6b
+ollama pull qwen3.5:0.8b
 ollama serve
 ```
 
