@@ -115,4 +115,34 @@ describe('@xsai/shared-stream', () => {
     await expect(thirdReader.read()).rejects.toThrow('boom')
     await expect(fourthReader.read()).rejects.toThrow('boom')
   })
+
+  it('clears controller refs after close, error, and cancel', async () => {
+    const [closedStream, closedCtrl] = createControlledStream<string>()
+    const closedReader = closedStream.getReader()
+
+    closeControllers(closedCtrl)
+    closeControllers(closedCtrl)
+
+    expect(closedCtrl.current).toBeUndefined()
+    await expect(closedReader.read()).resolves.toMatchObject({ done: true })
+
+    const [erroredStream, erroredCtrl] = createControlledStream<string>()
+    const erroredReader = erroredStream.getReader()
+    const error = new Error('boom')
+
+    errorControllers(error, erroredCtrl)
+    errorControllers(error, erroredCtrl)
+
+    expect(erroredCtrl.current).toBeUndefined()
+    await expect(erroredReader.read()).rejects.toThrow('boom')
+
+    const [cancelledStream, cancelledCtrl] = createControlledStream<string>()
+    const cancelledReader = cancelledStream.getReader()
+
+    await cancelledReader.cancel()
+
+    expect(cancelledCtrl.current).toBeUndefined()
+    expect(() => cancelledCtrl.current?.enqueue('ignored')).not.toThrow()
+    expect(() => closeControllers(cancelledCtrl)).not.toThrow()
+  })
 })
