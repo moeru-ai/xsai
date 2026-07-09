@@ -1,12 +1,20 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`@xsai/stream-object > basic 1`] = `
+exports[`@xsai/stream-object > basic 1`] = `""`;
+
+exports[`@xsai/stream-object > basic 2`] = `
+{
+  "": undefined,
+}
+`;
+
+exports[`@xsai/stream-object > basic 3`] = `
 {
   "answer": "",
 }
 `;
 
-exports[`@xsai/stream-object > basic 2`] = `
+exports[`@xsai/stream-object > basic 4`] = `
 {
   "answer": "YES",
 }
