@@ -26,7 +26,6 @@ describe('@xsai/generate-text', () => {
       ],
       model: 'qwen3.5:2b',
       onStepFinish: result => (step = result),
-      reasoningEffort: 'none',
       seed: 114514,
     })
 
@@ -64,7 +63,7 @@ describe('@xsai/generate-text', () => {
           role: 'system',
         },
         {
-          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool with { "a": "114514", "b": "1919810" } args to solve the problem.',
+          content: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
           role: 'user',
         },
       ],
