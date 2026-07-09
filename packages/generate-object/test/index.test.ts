@@ -82,7 +82,7 @@ describe('@xsai/generate-object', () => {
           role: 'system',
         },
         {
-          content: 'give me 5 fruits',
+          content: 'give me 5 fruits name',
           role: 'user',
         },
       ],
