@@ -51,7 +51,7 @@ describe('@xsai-ext/responses basic', async () => {
       baseURL: 'http://localhost:11434/v1/',
       input: 'Hello!',
       instructions: 'You are a helpful assistant.',
-      model: 'qwen3.5:0.8b',
+      model: 'qwen3.5:2b',
       reasoning: { effort: 'low' },
     })
 
@@ -102,7 +102,7 @@ describe('@xsai-ext/responses basic', async () => {
       baseURL: 'http://localhost:11434/v1/',
       input: 'How many times does 114514 plus 1919810 equal? Please try to call the `add` tool to solve the problem.',
       instructions: 'You are a helpful assistant.',
-      model: 'qwen3.5:0.8b',
+      model: 'qwen3.5:2b',
       reasoning: { effort: 'low' },
       toolChoice: 'required',
       tools: [add],

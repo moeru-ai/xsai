@@ -57,7 +57,7 @@ jobs:
           path: ~/.ollama
           key: ${{ runner.os }}-ollama
       - run: ollama pull all-minilm
-      - run: ollama pull qwen3.5:0.8b
+      - run: ollama pull qwen3.5:2b
       - run: ollama serve > /dev/null 2>&1 &
 
       - run: pnpm install

@@ -20,7 +20,7 @@ describe('@xsai/stream-text basic', async () => {
           role: 'user',
         },
       ],
-      model: 'qwen3.5:0.8b',
+      model: 'qwen3.5:2b',
       seed: 114514,
     })
 
@@ -68,7 +68,7 @@ describe('@xsai/stream-text basic', async () => {
           role: 'user',
         },
       ],
-      model: 'qwen3.5:0.8b',
+      model: 'qwen3.5:2b',
       seed: 114514,
     })
 
@@ -100,7 +100,7 @@ describe('@xsai/stream-text basic', async () => {
           role: 'user',
         },
       ],
-      model: 'qwen3.5:0.8b',
+      model: 'qwen3.5:2b',
       seed: 114514,
       streamOptions: {
         includeUsage: true,
@@ -135,7 +135,7 @@ describe('@xsai/stream-text basic', async () => {
         content: 'How many letter r are in strawberry?',
         role: 'user',
       }],
-      model: 'qwen3.5:0.8b',
+      model: 'qwen3.5:2b',
       seed: 114514,
     })
 

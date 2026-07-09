@@ -23,7 +23,7 @@ describe.sequential('generateText', () => {
         content: 'This is a test, so please answer \'YES\' and nothing else.',
         role: 'user',
       }],
-      model: 'qwen3.5:0.8b',
+      model: 'qwen3.5:2b',
       seed: 114514,
     })
 

@@ -38,7 +38,7 @@ describe('@xsai/stream-text tool', async () => {
           role: 'user',
         },
       ],
-      model: 'qwen3.5:0.8b',
+      model: 'qwen3.5:2b',
       seed: 1145141919810,
       stopWhen: stepCountAtLeast(2),
       toolChoice: 'required',
