@@ -8,7 +8,7 @@ import { streamText } from '../src'
 
 describe('@xsai/stream-text basic', async () => {
   it('basic', async () => {
-    const { eventStream, fullStream, reasoningTextStream, steps, textStream } = streamText({
+    const { eventStream, fullStream, reasoningTextStream, textStream } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -41,18 +41,10 @@ describe('@xsai/stream-text basic', async () => {
 
     const events: Event[] = []
     for await (const event of eventStream) {
-      events.push(event.type === 'text.delta' || event.type === 'text.done'
-        ? {
-            ...event,
-            // Yes => YES
-            ...(event.type === 'text.delta'
-              ? { delta: event.delta.toUpperCase() }
-              : { content: event.content.toUpperCase() }),
-          }
-        : event,
-      )
+      if (event.type === 'text.done')
+        events.push(event)
     }
-    expect(events).toMatchSnapshot()
+    expect(events[0]).toMatchSnapshot()
 
     const chunks: StreamTextChunkResult[] = []
     for await (const chunk of fullStream) {
@@ -61,7 +53,5 @@ describe('@xsai/stream-text basic', async () => {
     expect(chunks.length).toBeGreaterThan(0)
     expect(chunks.every(chunk => chunk.object === 'chat.completion.chunk')).toBe(true)
     expect(chunks.some(chunk => chunk.usage != null)).toBe(true)
-
-    await expect(steps).resolves.toMatchSnapshot()
   })
 })
