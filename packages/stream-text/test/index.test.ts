@@ -8,7 +8,7 @@ import { streamText } from '../src'
 
 describe('@xsai/stream-text basic', async () => {
   it('basic', async () => {
-    const { eventStream, fullStream, steps, textStream } = streamText({
+    const { eventStream, fullStream, reasoningTextStream, steps, textStream } = streamText({
       baseURL: 'http://localhost:11434/v1/',
       messages: [
         {
@@ -22,7 +22,16 @@ describe('@xsai/stream-text basic', async () => {
       ],
       model: 'qwen3.5:2b',
       seed: 114514,
+      streamOptions: {
+        includeUsage: true,
+      },
     })
+
+    const reasoningText = []
+    for await (const t of reasoningTextStream) {
+      reasoningText.push(t)
+    }
+    expect(reasoningText.length).toBeGreaterThan(1)
 
     let text = ''
     for await (const t of textStream) {
@@ -51,100 +60,8 @@ describe('@xsai/stream-text basic', async () => {
     }
     expect(chunks.length).toBeGreaterThan(0)
     expect(chunks.every(chunk => chunk.object === 'chat.completion.chunk')).toBe(true)
-
-    await expect(steps).resolves.toMatchSnapshot()
-  })
-
-  it('stream', async () => {
-    const { eventStream, steps, textStream } = streamText({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [
-        {
-          content: 'You are a helpful assistant.',
-          role: 'system',
-        },
-        {
-          content: 'tell me a joke',
-          role: 'user',
-        },
-      ],
-      model: 'qwen3.5:2b',
-      seed: 114514,
-    })
-
-    const text = []
-    for await (const t of textStream) {
-      text.push(t)
-    }
-    expect(text.length).toBeGreaterThan(1)
-
-    const events: Event[] = []
-    for await (const event of eventStream) {
-      events.push(event)
-    }
-    expect(events).toMatchSnapshot()
-
-    await expect(steps).resolves.toMatchSnapshot()
-  })
-
-  it('includes usage', async () => {
-    const { eventStream, fullStream, steps, textStream } = streamText({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [
-        {
-          content: 'You are a helpful assistant.',
-          role: 'system',
-        },
-        {
-          content: 'Please tell a short joke',
-          role: 'user',
-        },
-      ],
-      model: 'qwen3.5:2b',
-      seed: 114514,
-      streamOptions: {
-        includeUsage: true,
-      },
-    })
-
-    const text = []
-    for await (const t of textStream) {
-      text.push(t)
-    }
-    expect(text.length).toBeGreaterThan(1)
-
-    const events: Event[] = []
-    for await (const event of eventStream) {
-      events.push(event)
-    }
-    expect(events).toMatchSnapshot()
-
-    const chunks: StreamTextChunkResult[] = []
-    for await (const chunk of fullStream) {
-      chunks.push(chunk)
-    }
     expect(chunks.some(chunk => chunk.usage != null)).toBe(true)
 
     await expect(steps).resolves.toMatchSnapshot()
-  })
-
-  it('reasoning', async () => {
-    const { reasoningTextStream } = streamText({
-      baseURL: 'http://localhost:11434/v1/',
-      messages: [{
-        content: 'How many letter r are in strawberry?',
-        role: 'user',
-      }],
-      model: 'qwen3.5:2b',
-      seed: 114514,
-    })
-
-    const reasoningText = []
-    for await (const t of reasoningTextStream) {
-      reasoningText.push(t)
-      if (reasoningText.length > 1)
-        break
-    }
-    expect(reasoningText.length).toBeGreaterThan(1)
   })
 })
