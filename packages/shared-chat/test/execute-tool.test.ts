@@ -163,7 +163,7 @@ describe('@xsai/shared-chat executeTool errors', () => {
     })
 
     expect(result.completionToolResult).toStrictEqual({
-      args: '{"city":"Taipei"}',
+      args: { city: 'Taipei' },
       isError: true,
       result: 'Tool "weather" execution failed: boom',
       toolCallId: 'call_1',
@@ -251,6 +251,7 @@ describe('@xsai/shared-chat executeTool control', () => {
   })
 
   it('lets postToolCall observe and override an error result', async () => {
+    let observedArgs: unknown
     let observedError: boolean | undefined
     const tool = createWeatherTool(() => {
       throw new Error('boom')
@@ -259,6 +260,7 @@ describe('@xsai/shared-chat executeTool control', () => {
     const result = await executeTool({
       messages: [...messages],
       postToolCall: (toolResult) => {
+        observedArgs = toolResult.args
         observedError = toolResult.isError
         return {
           ...toolResult,
@@ -270,6 +272,7 @@ describe('@xsai/shared-chat executeTool control', () => {
       tools: [tool],
     })
 
+    expect(observedArgs).toStrictEqual({ city: 'Taipei' })
     expect(observedError).toBe(true)
     expect(result.completionToolResult).toMatchObject({
       isError: false,

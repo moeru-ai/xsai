@@ -142,6 +142,7 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
     toolName,
   }
   let completionToolResult: CompletionToolResult | undefined
+  let parsedArgs: unknown
   let shouldPostToolCall = false
 
   // preToolCall
@@ -157,16 +158,16 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
 
   completionToolResult ??= await catchToolError(completionToolCall, abortSignal, async () => {
     const tool = findTool(tools, completionToolCall.toolName, completionToolCall)
-    const args = await parseToolInput(tool, completionToolCall.args)
+    parsedArgs = await parseToolInput(tool, completionToolCall.args)
 
     if (abortSignal?.aborted === true)
-      return createErrorToolResult(completionToolCall, args, abortSignal.reason, abortSignal)
+      return createErrorToolResult(completionToolCall, parsedArgs, abortSignal.reason, abortSignal)
 
     shouldPostToolCall = true
-    const result = await tool.execute(args, toolExecuteOptions)
+    const result = await tool.execute(parsedArgs, toolExecuteOptions)
 
     return {
-      args,
+      args: parsedArgs,
       result,
       toolCallId: completionToolCall.toolCallId,
       toolName: completionToolCall.toolName,
@@ -175,6 +176,7 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
 
   // postToolCall
   if (shouldPostToolCall) {
+    completionToolResult.args = parsedArgs
     const postToolCallResult = await catchToolError(completionToolResult, abortSignal, async toolResult => postToolCall?.(toolResult, toolExecuteOptions))
     if (postToolCallResult) {
       assertSameToolCallId(completionToolResult.toolCallId, postToolCallResult, 'postToolCallResult')
