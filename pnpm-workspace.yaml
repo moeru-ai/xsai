@@ -82,3 +82,9 @@ catalogs:
 
 onlyBuiltDependencies:
   - unrs-resolver
+
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+  protobufjs: false
+  sharp: false
