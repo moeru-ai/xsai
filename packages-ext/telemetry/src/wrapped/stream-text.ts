@@ -259,7 +259,7 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         step,
         steps: [...steps, step],
       })
-      const willContinue = toolCalls.length > 0 && !stop
+      const willContinue = toolCalls.length > 0 && !stop && options.abortSignal?.aborted !== true
       pushStep(step)
       pushEvent({ type: 'step.done', usage })
 

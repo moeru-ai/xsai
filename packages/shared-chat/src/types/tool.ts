@@ -9,6 +9,7 @@ export interface CompletionToolCall {
 
 export interface CompletionToolResult {
   args: unknown
+  isError?: boolean
   result: ToolExecuteResult
   toolCallId: string
   toolName: string

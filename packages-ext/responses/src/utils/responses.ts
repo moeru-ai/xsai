@@ -307,6 +307,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
           })
 
           shouldContinue = input.at(-1)?.type === 'function_call_output'
+            && options.abortSignal?.aborted !== true
             && !shouldStop(stopWhen, {
               input,
               step: completionStep,
