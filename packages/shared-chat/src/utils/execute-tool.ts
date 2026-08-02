@@ -11,7 +11,7 @@ import type {
   ToolMessage,
 } from '../types'
 
-import { InvalidToolCallError, InvalidToolInputError, ToolExecutionError } from '@xsai/shared'
+import { InvalidToolCallError, InvalidToolInputError } from '@xsai/shared'
 
 import { toToolMessageContent } from './internal/to-tool-message-content'
 
@@ -30,10 +30,6 @@ export interface ExecuteToolResult<T = ToolMessage['content']> {
   completionToolResult: CompletionToolResult
   result: T
 }
-
-const isAbortError = (error: unknown, abortSignal?: AbortSignal) =>
-  (abortSignal?.aborted === true && error === abortSignal.reason)
-  || (error instanceof Error && error.name === 'AbortError')
 
 const parseToolInput = async (tool: Tool, input: string): Promise<unknown> => {
   let result: unknown
@@ -66,23 +62,20 @@ const parseToolInput = async (tool: Tool, input: string): Promise<unknown> => {
   return result
 }
 
-const runTool = async (tool: Tool, options: {
-  args: unknown
-  toolExecuteOptions: ToolExecuteOptions
-}) => {
+const createErrorToolResult = (toolCall: CompletionToolCall | CompletionToolResult, args: unknown, cause: unknown, abortSignal?: AbortSignal): CompletionToolResult => ({
+  args,
+  isError: true,
+  result: `Tool "${toolCall.toolName}" execution failed: ${abortSignal?.aborted === true ? 'This operation was aborted' : cause instanceof Error ? cause.message : String(cause)}`,
+  toolCallId: toolCall.toolCallId,
+  toolName: toolCall.toolName,
+})
+
+const catchToolError = async <T, C extends CompletionToolCall | CompletionToolResult>(toolCall: C, abortSignal: AbortSignal | undefined, callback: (toolCall: C) => Promise<T> | T): Promise<CompletionToolResult | T> => {
   try {
-    return await tool.execute(options.args, options.toolExecuteOptions)
+    return await callback(toolCall)
   }
   catch (cause) {
-    if (isAbortError(cause, options.toolExecuteOptions.abortSignal))
-      throw cause
-
-    throw new ToolExecutionError(`Tool "${tool.function.name}" execution failed.`, {
-      cause,
-      toolCallId: options.toolExecuteOptions.toolCallId,
-      toolInput: options.args,
-      toolName: tool.function.name,
-    })
+    return createErrorToolResult(toolCall, InvalidToolInputError.isInstance(cause) ? cause.toolInput : toolCall.args, cause, abortSignal)
   }
 }
 
@@ -149,9 +142,10 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
     toolName,
   }
   let completionToolResult: CompletionToolResult | undefined
+  let shouldPostToolCall = false
 
   // preToolCall
-  const preToolCallResult = await preToolCall?.(completionToolCall, toolExecuteOptions)
+  const preToolCallResult = await catchToolError(completionToolCall, abortSignal, async toolCall => preToolCall?.(toolCall, toolExecuteOptions))
   if (preToolCallResult) {
     assertSameToolCallId(completionToolCall.toolCallId, preToolCallResult, 'preToolCallResult')
 
@@ -161,28 +155,31 @@ export const executeTool = async <T = ToolMessage['content']>({ abortSignal, mes
       completionToolCall = preToolCallResult
   }
 
-  if (completionToolResult == null) {
+  completionToolResult ??= await catchToolError(completionToolCall, abortSignal, async () => {
     const tool = findTool(tools, completionToolCall.toolName, completionToolCall)
     const args = await parseToolInput(tool, completionToolCall.args)
 
-    const result = await runTool(tool, {
-      args,
-      toolExecuteOptions,
-    })
+    if (abortSignal?.aborted === true)
+      return createErrorToolResult(completionToolCall, args, abortSignal.reason, abortSignal)
 
-    completionToolResult = {
+    shouldPostToolCall = true
+    const result = await tool.execute(args, toolExecuteOptions)
+
+    return {
       args,
       result,
       toolCallId: completionToolCall.toolCallId,
       toolName: completionToolCall.toolName,
     }
-  }
+  })
 
   // postToolCall
-  const postToolCallResult = await postToolCall?.(completionToolResult, toolExecuteOptions)
-  if (postToolCallResult) {
-    assertSameToolCallId(completionToolResult.toolCallId, postToolCallResult, 'postToolCallResult')
-    completionToolResult = postToolCallResult
+  if (shouldPostToolCall) {
+    const postToolCallResult = await catchToolError(completionToolResult, abortSignal, async toolResult => postToolCall?.(toolResult, toolExecuteOptions))
+    if (postToolCallResult) {
+      assertSameToolCallId(completionToolResult.toolCallId, postToolCallResult, 'postToolCallResult')
+      completionToolResult = postToolCallResult
+    }
   }
 
   return {
