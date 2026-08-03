@@ -5,7 +5,7 @@ import { tool } from '@xsai/tool'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 
-import { responses } from '../src'
+import { responses, stepCountAtLeast } from '../src'
 
 const normalizeParsedJSON = (value: unknown): unknown => {
   if (Array.isArray(value))
@@ -104,6 +104,7 @@ describe('@xsai-ext/responses basic', async () => {
       instructions: 'You are a helpful assistant.',
       model: 'qwen3.5:0.8b',
       reasoning: { effort: 'low' },
+      stopWhen: stepCountAtLeast(2),
       toolChoice: 'required',
       tools: [add],
     })

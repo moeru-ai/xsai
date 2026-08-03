@@ -584,6 +584,9 @@ importers:
       '@xsai/generate-text':
         specifier: 'workspace:'
         version: link:../generate-text
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
       xsschema:
         specifier: 'workspace:'
         version: link:../../packages-top/xsschema
@@ -653,6 +656,9 @@ importers:
 
   packages/stream-object:
     dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
       '@xsai/stream-text':
         specifier: 'workspace:'
         version: link:../stream-text

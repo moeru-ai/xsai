@@ -109,7 +109,7 @@ describe('@xsai/stream-text tool', async () => {
     ])
   })
 
-  it('emits a synthetic tool result when preToolCall returns one', async () => {
+  it('hands tool calls off without executing them by default', async () => {
     const body = [
       'data: {"choices":[{"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"call_1","type":"function","function":{"name":"runCommand","arguments":""}}]},"index":0}],"created":1,"id":"chunk_1","model":"test-model","object":"chat.completion.chunk","system_fingerprint":"fingerprint"}\n\n',
       'data: {"choices":[{"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"call_1","type":"function","function":{"arguments":"{\\"command\\":\\"git status\\"}"}}]},"index":0}],"created":1,"id":"chunk_2","model":"test-model","object":"chat.completion.chunk","system_fingerprint":"fingerprint"}\n\n',
@@ -152,12 +152,12 @@ describe('@xsai/stream-text tool', async () => {
     }
 
     expect(executed).toBe(false)
-    expect(events.find(event => event.type === 'tool-result.done')).toMatchObject({
-      result: 'TOOL_HITL_REJECTED: denied by reviewer',
+    expect(events.find(event => event.type === 'tool-result.done')).toBeUndefined()
+    expect((await steps)[0].finishReason).toBe('tool_calls')
+    expect((await steps)[0].toolCalls).toMatchObject([{
+      args: '{"command":"git status"}',
       toolCallId: 'call_1',
       toolName: 'runCommand',
-      type: 'tool-result.done',
-    })
-    expect((await steps)[0].finishReason).toBe('tool_calls')
+    }])
   })
 })

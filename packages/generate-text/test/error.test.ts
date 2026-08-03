@@ -1,4 +1,4 @@
-import type { Tool } from '@xsai/shared-chat'
+import type { Tool, ToolExecuteOptions } from '@xsai/shared-chat'
 
 import { describe, expect, it } from 'vitest'
 
@@ -6,6 +6,89 @@ import { generateText } from '../src'
 import { stepCountAtLeast } from '../src/shared-chat'
 
 describe('@xsai/generate-text errors', () => {
+  it('returns tool calls for manual execution by default', async () => {
+    const completion = (message: Record<string, unknown>, finish_reason: string, id: string) => ({
+      choices: [{ finish_reason, index: 0, message }],
+      created: 1,
+      id,
+      model: 'test-model',
+      object: 'chat.completion',
+      system_fingerprint: 'fingerprint',
+      usage: {
+        completion_tokens: 1,
+        prompt_tokens: 1,
+        total_tokens: 2,
+      },
+    })
+    const responses = [
+      completion({
+        content: '',
+        role: 'assistant',
+        tool_calls: [{
+          function: {
+            arguments: '{"value":"input"}',
+            name: 'runCommand',
+          },
+          id: 'call_1',
+          type: 'function',
+        }],
+      }, 'tool_calls', 'chatcmpl_1'),
+      completion({ content: 'done', role: 'assistant' }, 'stop', 'chatcmpl_2'),
+    ]
+    const fetch: typeof globalThis.fetch = async () => new Response(JSON.stringify(responses.shift()))
+    let executed = false
+    let preToolCallCalls = 0
+    const runCommand = {
+      execute: (input: unknown, _options: ToolExecuteOptions) => {
+        executed = true
+        return `ran ${(input as { value: string }).value}`
+      },
+      function: {
+        name: 'runCommand',
+        parameters: {},
+      },
+      type: 'function',
+    } satisfies Tool
+
+    const options = {
+      baseURL: 'https://example.com/v1/',
+      fetch,
+      messages: [{ content: 'run it', role: 'user' as const }],
+      model: 'test-model',
+      preToolCall: () => {
+        preToolCallCalls++
+      },
+      stopWhen: stepCountAtLeast(1),
+      tools: [runCommand],
+    }
+    const pending = await generateText(options)
+
+    expect(pending.toolCalls).toStrictEqual([{
+      args: '{"value":"input"}',
+      toolCallId: 'call_1',
+      toolCallType: 'function',
+      toolName: 'runCommand',
+    }])
+    expect(pending.toolResults).toStrictEqual([])
+    expect(executed).toBe(false)
+    expect(preToolCallCalls).toBe(0)
+
+    const call = pending.toolCalls[0]
+    const result = runCommand.execute(JSON.parse(call.args), {
+      messages: pending.messages,
+      toolCallId: call.toolCallId,
+    })
+    pending.messages.push({
+      content: result,
+      role: 'tool',
+      tool_call_id: call.toolCallId,
+    })
+
+    const final = await generateText({ ...options, messages: pending.messages })
+    expect(executed).toBe(true)
+    expect(final.text).toBe('done')
+  })
+
   it('throws InvalidResponseError when the provider returns no choices', async () => {
     const fetch: typeof globalThis.fetch = async () => new Response(JSON.stringify({
       choices: [],

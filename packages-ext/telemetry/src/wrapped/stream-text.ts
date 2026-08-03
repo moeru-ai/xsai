@@ -4,7 +4,7 @@ import type { WithTelemetry } from '../types/options'
 import type { StreamTextChunkResult } from '../types/stream-text-chunk'
 
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
-import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolvePrepareStep, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, objCamelToSnake, resolvePrepareStep, shouldStop, stepCountAtLeast, toCompletionToolCall, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -105,8 +105,6 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       }
 
       const tool_calls: ToolCall[] = []
-      const toolCalls: CompletionToolCall[] = []
-      const toolResults: CompletionToolResult[] = []
       let finishReason: FinishReason = 'other'
       let reasoningStarted = false
       let textStarted = false
@@ -221,31 +219,15 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
       messages.push(message)
       span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
 
-      if (tool_calls.length !== 0) {
-        const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
+      const validToolCalls = tool_calls.filter((tc): tc is ToolCall => tc != null)
+      const toolCalls: CompletionToolCall[] = validToolCalls.map(toCompletionToolCall)
+      const toolResults: CompletionToolResult[] = []
 
-        const results = await Promise.all(
-          validToolCalls.map(async toolCall => executeTool({
-            abortSignal: options.abortSignal,
-            messages,
-            toolCall,
-            tools,
-          })),
-        )
+      if (options.abortSignal?.aborted === true)
+        throw options.abortSignal.reason ?? new Error('This operation was aborted')
 
-        for (const { completionToolCall, completionToolResult, result } of results) {
-          toolCalls.push(completionToolCall)
-          toolResults.push(completionToolResult)
-          messages.push({
-            content: result,
-            role: 'tool',
-            tool_call_id: completionToolCall.toolCallId,
-          })
-
-          pushEvent({ ...completionToolCall, type: 'tool-call.done' })
-          pushEvent({ ...completionToolResult, type: 'tool-result.done' })
-        }
-      }
+      for (const toolCall of toolCalls)
+        pushEvent({ ...toolCall, type: 'tool-call.done' })
 
       const step: CompletionStep = {
         finishReason,
@@ -259,7 +241,32 @@ export const streamText = (options: WithUnknown<WithTelemetry<StreamTextOptions>
         step,
         steps: [...steps, step],
       })
-      const willContinue = toolCalls.length > 0 && !stop && options.abortSignal?.aborted !== true
+
+      if (!stop && validToolCalls.length > 0) {
+        const results = await Promise.all(
+          validToolCalls.map(async toolCall => executeTool({
+            abortSignal: options.abortSignal,
+            messages,
+            toolCall,
+            tools,
+          })),
+        )
+
+        toolCalls.length = 0
+        for (const { completionToolCall, completionToolResult, result } of results) {
+          toolCalls.push(completionToolCall)
+          toolResults.push(completionToolResult)
+          messages.push({
+            content: result,
+            role: 'tool',
+            tool_call_id: completionToolCall.toolCallId,
+          })
+
+          pushEvent({ ...completionToolResult, type: 'tool-result.done' })
+        }
+      }
+
+      const willContinue = validToolCalls.length > 0 && !stop && !options.abortSignal?.aborted
       pushStep(step)
       pushEvent({ type: 'step.done', usage })
 

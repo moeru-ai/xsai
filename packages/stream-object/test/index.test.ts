@@ -52,6 +52,32 @@ describe('@xsai/stream-object', () => {
     expect(chunks.every(chunk => chunk.object === 'chat.completion.chunk')).toBe(true)
   })
 
+  it('should throw if the response has no text', async () => {
+    const body = 'data: {"choices":[{"delta":{"role":"assistant","tool_calls":[{"index":0,"id":"call_1","type":"function","function":{"name":"lookup","arguments":"{}"}}]},"index":0}],"created":1,"id":"chunk_1","model":"test-model","object":"chat.completion.chunk"}\n\n'
+      + 'data: {"choices":[{"delta":{"role":"assistant"},"finish_reason":"tool_calls","index":0}],"created":1,"id":"chunk_2","model":"test-model","object":"chat.completion.chunk","system_fingerprint":"fingerprint","usage":{"completion_tokens":1,"prompt_tokens":1,"total_tokens":2}}\n\n'
+    const fetch: typeof globalThis.fetch = async () => new Response(body, {
+      headers: {
+        'content-type': 'text/event-stream',
+      },
+    })
+    const { textStream } = await streamObject({
+      baseURL: 'https://example.com/v1/',
+      fetch,
+      messages: [{ content: 'lookup', role: 'user' }],
+      model: 'test-model',
+      schema: v.object({ answer: v.string() }),
+    })
+
+    await expect((async () => {
+      for await (const chunk of textStream) {
+        expect(chunk).toBeTypeOf('string')
+      }
+    })()).rejects.toMatchObject({
+      code: 'invalid_response',
+      reason: 'empty_body',
+    })
+  })
+
   it('string array', async () => {
     const { elementStream } = await streamObject({
       baseURL: 'http://localhost:11434/v1/',

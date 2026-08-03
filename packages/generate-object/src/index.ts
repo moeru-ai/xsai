@@ -2,6 +2,7 @@ import type { GenerateTextOptions, GenerateTextResult } from '@xsai/generate-tex
 import type { Schema } from 'xsschema'
 
 import { generateText } from '@xsai/generate-text'
+import { InvalidResponseError } from '@xsai/shared'
 import { strictJsonSchema, toJsonSchema, validate } from 'xsschema'
 
 import { wrap } from './_wrap'
@@ -48,7 +49,13 @@ export async function generateObject<T extends Schema>(options: GenerateObjectOp
     schemaName: undefined, // Remove schemaName from options
     strict: undefined, // Remove strict from options
   }).then(async ({ finishReason, messages, steps, text, toolCalls, toolResults, totalUsage, usage }) => {
-    const json: unknown = JSON.parse(text!)
+    if (text == null || text.length === 0) {
+      throw new InvalidResponseError('Cannot generate an object from an empty response.', {
+        reason: 'empty_body',
+      })
+    }
+
+    const json: unknown = JSON.parse(text)
 
     if (options.output === 'array') {
       return {

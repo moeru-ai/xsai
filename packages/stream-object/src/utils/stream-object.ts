@@ -3,6 +3,7 @@ import type { Schema } from 'xsschema'
 
 import type { PartialDeep } from '../types/partial-deep'
 
+import { InvalidResponseError } from '@xsai/shared'
 import { streamText } from '@xsai/stream-text'
 import { strictJsonSchema, toJsonSchema } from 'xsschema'
 
@@ -68,6 +69,18 @@ export async function streamObject<T extends Schema>(
     schemaName: undefined,
     strict: undefined,
   })
+
+  let textLength = 0
+  textStream = textStream.pipeThrough(new TransformStream<string, string>({
+    flush: () => {
+      if (textLength === 0)
+        throw new InvalidResponseError('Cannot stream an object from an empty response.', { reason: 'empty_body' })
+    },
+    transform: (chunk, controller) => {
+      textLength += chunk.length
+      controller.enqueue(chunk)
+    },
+  }))
 
   let elementStream: ReadableStream<Schema.InferOutput<T>> | undefined
   let partialObjectStream: ReadableStream<PartialDeep<Schema.InferOutput<T>>> | undefined

@@ -16,7 +16,7 @@ import type {
 } from '@xsai/shared-chat'
 
 import { InvalidResponseError, responseJSON, trampoline } from '@xsai/shared'
-import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast } from '@xsai/shared-chat'
+import { chat, computeTotalUsage, executeTool, normalizeChatCompletionUsage, resolvePrepareStep, shouldStop, stepCountAtLeast, toCompletionToolCall } from '@xsai/shared-chat'
 
 export interface GenerateTextOptions extends ChatOptions {
   onStepFinish?: (step: CompletionStep<true>) => Promise<unknown> | unknown
@@ -98,16 +98,35 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         })
       }
 
-      const toolCalls: CompletionToolCall[] = []
-      const toolResults: CompletionToolResult[] = []
-
       const { finish_reason: finishReason, message } = choices[0]
       const msgToolCalls = message?.tool_calls ?? []
+      const toolCalls: CompletionToolCall[] = msgToolCalls.map(toCompletionToolCall)
+      const toolResults: CompletionToolResult[] = []
+
       const stopWhen: StopCondition<Message> = options.stopWhen ?? stepCountAtLeast(1)
 
       messages.push(message)
 
-      if (msgToolCalls.length > 0) {
+      const step: CompletionStep<true> = {
+        finishReason,
+        text: Array.isArray(message.content)
+          ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
+          : message.content,
+        toolCalls,
+        toolResults,
+        usage,
+      }
+
+      if (options.abortSignal?.aborted === true)
+        throw options.abortSignal.reason ?? new Error('This operation was aborted')
+
+      const stop = shouldStop(stopWhen, {
+        input: messages,
+        step,
+        steps: [...steps, step],
+      })
+
+      if (!stop && msgToolCalls.length > 0) {
         const results = await Promise.all(
           msgToolCalls.map(async toolCall => executeTool({
             abortSignal: options.abortSignal,
@@ -119,6 +138,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
           })),
         )
 
+        toolCalls.length = 0
         for (const { completionToolCall, completionToolResult, result } of results) {
           toolCalls.push(completionToolCall)
           toolResults.push(completionToolResult)
@@ -130,21 +150,7 @@ const rawGenerateText = async (options: WithUnknown<GenerateTextOptions>): Promi
         }
       }
 
-      const step: CompletionStep<true> = {
-        finishReason,
-        text: Array.isArray(message.content)
-          ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
-          : message.content,
-        toolCalls,
-        toolResults,
-        usage,
-      }
-      const stop = shouldStop(stopWhen, {
-        input: messages,
-        step,
-        steps: [...steps, step],
-      })
-      const willContinue = toolCalls.length > 0 && !stop && options.abortSignal?.aborted !== true
+      const willContinue = toolCalls.length > 0 && !stop && !options.abortSignal?.aborted
 
       steps.push(step)
 

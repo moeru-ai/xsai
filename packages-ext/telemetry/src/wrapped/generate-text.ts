@@ -1,8 +1,8 @@
-import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, TrampolineFn, WithUnknown } from 'xsai'
+import type { CompletionStep, CompletionToolCall, CompletionToolResult, GenerateTextOptions, GenerateTextResponse, GenerateTextResult, Message, ToolCall, TrampolineFn, WithUnknown } from 'xsai'
 
 import type { WithTelemetry } from '../types/options'
 
-import { chat, computeTotalUsage, executeTool, InvalidResponseError, normalizeChatCompletionUsage, resolvePrepareStep, responseJSON, shouldStop, stepCountAtLeast, trampoline } from 'xsai'
+import { chat, computeTotalUsage, executeTool, InvalidResponseError, normalizeChatCompletionUsage, resolvePrepareStep, responseJSON, shouldStop, stepCountAtLeast, toCompletionToolCall, trampoline } from 'xsai'
 
 import { getTracer } from '../utils/get-tracer'
 import { recordSpan } from '../utils/record-span'
@@ -60,17 +60,36 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             })
           }
 
-          const toolCalls: CompletionToolCall[] = []
+          const { finish_reason: finishReason, message } = choices[0]
+          const msgToolCalls: ToolCall[] = message?.tool_calls ?? []
+          const toolCalls: CompletionToolCall[] = msgToolCalls.map(toCompletionToolCall)
           const toolResults: CompletionToolResult[] = []
 
-          const { finish_reason: finishReason, message } = choices[0]
-          const msgToolCalls = message?.tool_calls ?? []
           const stopWhen = options.stopWhen ?? stepCountAtLeast(1)
 
           messages.push(message)
           span.setAttribute('gen_ai.output.messages', JSON.stringify([message]))
 
-          if (msgToolCalls.length > 0) {
+          const step: CompletionStep<true> = {
+            finishReason,
+            text: Array.isArray(message.content)
+              ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
+              : message.content,
+            toolCalls,
+            toolResults,
+            usage,
+          }
+
+          if (options.abortSignal?.aborted === true)
+            throw options.abortSignal.reason ?? new Error('This operation was aborted')
+
+          const stop = shouldStop(stopWhen, {
+            input: messages,
+            step,
+            steps: [...steps, step],
+          })
+
+          if (!stop && msgToolCalls.length > 0) {
             const results = await Promise.all(
               msgToolCalls.map(async toolCall => executeTool({
                 abortSignal: options.abortSignal,
@@ -80,6 +99,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
               })),
             )
 
+            toolCalls.length = 0
             for (const { completionToolCall, completionToolResult, result } of results) {
               toolCalls.push(completionToolCall)
               toolResults.push(completionToolResult)
@@ -91,22 +111,7 @@ export const generateText = async (options: WithUnknown<WithTelemetry<GenerateTe
             }
           }
 
-          const step: CompletionStep<true> = {
-            finishReason,
-            text: Array.isArray(message.content)
-
-              ? message.content.filter(m => m.type === 'text').map(m => m.text).join('\n')
-              : message.content,
-            toolCalls,
-            toolResults,
-            usage,
-          }
-          const stop = shouldStop(stopWhen, {
-            input: messages,
-            step,
-            steps: [...steps, step],
-          })
-          const willContinue = toolCalls.length > 0 && !stop && options.abortSignal?.aborted !== true
+          const willContinue = toolCalls.length > 0 && !stop && !options.abortSignal?.aborted
 
           steps.push(step)
 
