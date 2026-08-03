@@ -39,8 +39,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/stream-text": "workspace:",
     "@xsai/shared": "workspace:",
+    "@xsai/stream-text": "workspace:",
     "xsschema": "workspace:"
   },
   "devDependencies": {
