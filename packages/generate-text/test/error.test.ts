@@ -37,6 +37,7 @@ describe('@xsai/generate-text errors', () => {
     ]
     const fetch: typeof globalThis.fetch = async () => new Response(JSON.stringify(responses.shift()))
     let executed = false
+    let preToolCallCalls = 0
     const runCommand = {
       execute: (input: unknown, _options: ToolExecuteOptions) => {
         executed = true
@@ -54,6 +55,10 @@ describe('@xsai/generate-text errors', () => {
       fetch,
       messages: [{ content: 'run it', role: 'user' as const }],
       model: 'test-model',
+      preToolCall: () => {
+        preToolCallCalls++
+      },
+      stopWhen: stepCountAtLeast(1),
       tools: [runCommand],
     }
     const pending = await generateText(options)
@@ -66,6 +71,7 @@ describe('@xsai/generate-text errors', () => {
     }])
     expect(pending.toolResults).toStrictEqual([])
     expect(executed).toBe(false)
+    expect(preToolCallCalls).toBe(0)
 
     const call = pending.toolCalls[0]
     const result = runCommand.execute(JSON.parse(call.args), {
