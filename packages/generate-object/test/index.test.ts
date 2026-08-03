@@ -49,6 +49,48 @@ describe('@xsai/generate-object', () => {
     await expect(g).rejects.toThrow()
   })
 
+  it('should throw if the response has no text', async () => {
+    const fetch: typeof globalThis.fetch = async () => new Response(JSON.stringify({
+      choices: [{
+        finish_reason: 'tool_calls',
+        index: 0,
+        message: {
+          content: '',
+          role: 'assistant',
+          tool_calls: [{
+            function: {
+              arguments: '{}',
+              name: 'lookup',
+            },
+            id: 'call_1',
+            type: 'function',
+          }],
+        },
+      }],
+      created: 1,
+      id: 'chatcmpl_1',
+      model: 'test-model',
+      object: 'chat.completion',
+      system_fingerprint: 'fingerprint',
+      usage: {
+        completion_tokens: 1,
+        prompt_tokens: 1,
+        total_tokens: 2,
+      },
+    }))
+
+    await expect(generateObject({
+      baseURL: 'https://example.com/v1/',
+      fetch,
+      messages: [{ content: 'lookup', role: 'user' }],
+      model: 'test-model',
+      schema: v.object({ answer: v.string() }),
+    })).rejects.toMatchObject({
+      code: 'invalid_response',
+      reason: 'empty_body',
+    })
+  })
+
   it('object', async () => {
     const { object } = await generateObject({
       baseURL: 'http://localhost:11434/v1/',

@@ -157,6 +157,26 @@ describe('@xsai/generate-text', () => {
           total_tokens: 2,
         },
       },
+      {
+        choices: [{
+          finish_reason: 'stop',
+          index: 0,
+          message: {
+            content: 'done',
+            role: 'assistant',
+          },
+        }],
+        created: 1,
+        id: 'chatcmpl_2',
+        model: 'test-model',
+        object: 'chat.completion',
+        system_fingerprint: 'fingerprint',
+        usage: {
+          completion_tokens: 1,
+          prompt_tokens: 1,
+          total_tokens: 2,
+        },
+      },
     ]
     const fetch: typeof globalThis.fetch = async () => new Response(JSON.stringify(responses.shift()))
     const calls: string[] = []
@@ -182,11 +202,11 @@ describe('@xsai/generate-text', () => {
         toolCallId: toolCall.toolCallId,
         toolName: toolCall.toolName,
       }),
+      stopWhen: stepCountAtLeast(2),
       tools: [runCommand],
     })
 
-    expect(result.finishReason).toBe('tool_calls')
-    expect(result.toolResults).toStrictEqual([{
+    expect(result.steps[0].toolResults).toStrictEqual([{
       args: {
         command: 'git status',
       },

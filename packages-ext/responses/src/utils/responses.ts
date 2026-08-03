@@ -6,7 +6,7 @@ import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { StopCondition } from '../types/stop-when'
 
 import { objCamelToSnake, postJSON, trampoline } from '@xsai/shared'
-import { computeTotalUsage, executeTool, resolvePrepareStep } from '@xsai/shared-chat'
+import { computeTotalUsage, executeTool, resolvePrepareStep, toCompletionToolCall } from '@xsai/shared-chat'
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { normalizeInput } from './normalize-input'
@@ -230,11 +230,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       .getReader()
   }
 
-  const pushFunctionCallOutput = async (functionCall: FunctionCall, step: {
-    events: Event[]
-    toolCalls: CompletionToolCall[]
-    toolResults: CompletionToolResult[]
-  }) => {
+  const executeFunctionCall = async (functionCall: FunctionCall) => {
     const { completionToolCall, completionToolResult, result } = await executeTool({
       abortSignal: options.abortSignal,
       messages: [],
@@ -253,22 +249,13 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       type: 'function_call_output',
     }
 
-    step.toolCalls.push(completionToolCall)
-    step.toolResults.push(completionToolResult)
-    input.push(normalizeOutput(functionCallOutput))
-    step.events.push({
-      ...completionToolCall,
-      type: 'tool-call.done',
-    }, {
-      ...completionToolResult,
-      type: 'tool-result.done',
-    })
+    return { completionToolCall, completionToolResult, functionCallOutput }
   }
 
-  const handleOutputItemDone = async (event: Extract<FullEvent, { type: 'response.output_item.done' }>, step: {
+  const handleOutputItemDone = (event: Extract<FullEvent, { type: 'response.output_item.done' }>, step: {
     events: Event[]
+    functionCalls: FunctionCall[]
     toolCalls: CompletionToolCall[]
-    toolResults: CompletionToolResult[]
   }) => {
     if (event.item == null)
       return
@@ -276,12 +263,17 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     input.push(normalizeOutput(event.item))
 
     if (event.item.type === 'function_call') {
-      await pushFunctionCallOutput(event.item, step)
+      step.functionCalls.push(event.item)
+      const toolCall = toCompletionToolCall(toToolCall(event.item))
+      step.toolCalls.push(toolCall)
+      step.events.push({ ...toolCall, type: 'tool-call.done' })
     }
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const doStream = async () => {
     const reader = await createReader()
+    const functionCalls: FunctionCall[] = []
     const toolCalls: CompletionToolCall[] = []
     const toolResults: CompletionToolResult[] = []
 
@@ -293,7 +285,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
       let shouldContinue = false
       const events = mapFullEvent(event)
-      const step = { events, toolCalls, toolResults }
+      const step = { events, functionCalls, toolCalls, toolResults }
 
       // eslint-disable-next-line ts/switch-exhaustiveness-check
       switch (event.type) {
@@ -306,13 +298,31 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
             toolResults,
           })
 
-          shouldContinue = input.at(-1)?.type === 'function_call_output'
-            && options.abortSignal?.aborted !== true
-            && !shouldStop(stopWhen, {
-              input,
-              step: completionStep,
-              steps: [...steps, completionStep],
-            })
+          if (options.abortSignal?.aborted === true)
+            throw options.abortSignal.reason ?? new Error('This operation was aborted')
+
+          const stop = shouldStop(stopWhen, {
+            input,
+            step: completionStep,
+            steps: [...steps, completionStep],
+          })
+
+          if (!stop && functionCalls.length > 0) {
+            const stepDoneEvent = events.pop()
+            const results = await Promise.all(functionCalls.map(executeFunctionCall))
+
+            toolCalls.length = 0
+            for (const { completionToolCall, completionToolResult, functionCallOutput } of results) {
+              toolCalls.push(completionToolCall)
+              toolResults.push(completionToolResult)
+              input.push(normalizeOutput(functionCallOutput))
+              events.push({ ...completionToolResult, type: 'tool-result.done' })
+            }
+            if (stepDoneEvent != null)
+              events.push(stepDoneEvent)
+          }
+
+          shouldContinue = functionCalls.length > 0 && !stop && !options.abortSignal?.aborted
 
           pushStep(completionStep)
 
@@ -333,7 +343,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
           })
           break
         case 'response.output_item.done':
-          await handleOutputItemDone(event, step)
+          handleOutputItemDone(event, step)
           break
         default:
           break

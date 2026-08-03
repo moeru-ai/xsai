@@ -31,6 +31,13 @@ export interface ExecuteToolResult<T = ToolMessage['content']> {
   result: T
 }
 
+export const toCompletionToolCall = (toolCall: ToolCall): CompletionToolCall => ({
+  args: toolCall.function.arguments ?? '',
+  toolCallId: toolCall.id,
+  toolCallType: 'function',
+  toolName: toolCall.function.name ?? '',
+})
+
 const parseToolInput = async (tool: Tool, input: string): Promise<unknown> => {
   let result: unknown
 
