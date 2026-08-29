@@ -10,7 +10,7 @@ describe('@xsai/embed', () => {
       model: 'all-minilm',
     })
 
-    expect(embedding.length).toBe(384)
+    expect(embedding).toHaveLength(384)
     expect(usage.prompt_tokens).toBe(7)
     expect(usage.total_tokens).toBe(7)
   })

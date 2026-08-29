@@ -47,11 +47,10 @@ describe('@xsai/stream-text tool', async () => {
 
     const events: Event[] = []
     for await (const event of eventStream) {
-      // eslint-disable-next-line @masknet/type-no-force-cast-via-top-type
       events.push(clean({
         ...event,
         toolCallId: undefined,
-      }) as unknown as Event)
+      }))
     }
 
     expect(events.find(e => e.type === 'tool-call.start')).toStrictEqual({
@@ -88,7 +87,7 @@ describe('@xsai/stream-text tool', async () => {
       toolCallId: undefined,
     })
 
-    expect(allSteps.length).toBe(2)
+    expect(allSteps).toHaveLength(2)
     expect(allSteps[0].toolCalls.map(cleanToolCallId)).toMatchObject([{
       toolCallType: 'function',
       toolName: 'add',

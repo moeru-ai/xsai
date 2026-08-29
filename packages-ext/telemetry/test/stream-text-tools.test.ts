@@ -8,7 +8,7 @@ import { z } from 'zod/v4'
 import { streamText } from '../src'
 import { cleanAttributes } from './fixtures/clean-attributes'
 
-describe.sequential('streamText with tools', () => {
+describe('streamText with tools', () => {
   const memoryExporter = new InMemorySpanExporter()
   const tracerProvider = new NodeTracerProvider({
     spanProcessors: [

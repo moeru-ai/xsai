@@ -8,7 +8,7 @@ import { z } from 'zod/v4'
 import { generateText } from '../src'
 import { cleanAttributes } from './fixtures/clean-attributes'
 
-describe.sequential('generateText with tools', () => {
+describe('generateText with tools', () => {
   const memoryExporter = new InMemorySpanExporter()
   const tracerProvider = new NodeTracerProvider({
     spanProcessors: [

@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { streamText } from '../src'
 import { cleanAttributes } from './fixtures/clean-attributes'
 
-describe.sequential('streamText', () => {
+describe('streamText', () => {
   const memoryExporter = new InMemorySpanExporter()
   const tracerProvider = new NodeTracerProvider({
     spanProcessors: [

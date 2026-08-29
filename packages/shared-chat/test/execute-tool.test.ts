@@ -52,7 +52,7 @@ describe('@xsai/shared-chat executeTool errors', () => {
         },
         id: 'call_1',
         type: 'function',
-      } as ToolCall,
+      },
       tools: [],
     })).rejects.toMatchObject({
       code: 'invalid_tool_call',
@@ -69,7 +69,7 @@ describe('@xsai/shared-chat executeTool errors', () => {
         },
         id: 'call_1',
         type: 'function',
-      } as ToolCall,
+      },
       tools: [],
     })).rejects.toMatchObject({
       code: 'invalid_tool_call',
