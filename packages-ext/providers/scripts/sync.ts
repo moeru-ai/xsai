@@ -32,7 +32,7 @@ const providers = await fetch('https://models.dev/api.json')
   )
 
 const [autoProviders, manualProviders] = providers
-  .filter(({ api, env }) => api != null && !api.includes('${') && env.some(e => SUFFIX.some(s => e.endsWith(s))))
+  .filter(({ api, env, id }) => manualProviderKeys.includes(id) || (api != null && !api.includes('${') && env.some(e => SUFFIX.some(s => e.endsWith(s)))))
   .map(toCodeGenProvider)
   .reduce(([auto, manual], provider) => {
     if (manualProviderKeys.includes(provider.id))
@@ -42,12 +42,6 @@ const [autoProviders, manualProviders] = providers
 
     return [auto, manual]
   }, [[], []] as [CodeGenProvider[], CodeGenProvider[]])
-
-const forceManualProviders = providers
-  .filter(p => p.api == null && manualProviderKeys.includes(p.id))
-  .map(toCodeGenProvider)
-
-manualProviders.push(...forceManualProviders)
 
 autoProviders.push(...extraProviders)
 
