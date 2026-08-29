@@ -13,10 +13,6 @@ exports[`@xsai/stream-text basic > basic 1`] = `
     "type": "text.delta",
   },
   {
-    "delta": "",
-    "type": "text.delta",
-  },
-  {
     "content": "YES",
     "type": "text.done",
   },
@@ -68,11 +64,15 @@ exports[`@xsai/stream-text basic > includes usage 1`] = `
     "type": "text.delta",
   },
   {
-    "delta": " quick",
+    "delta": " joke",
     "type": "text.delta",
   },
   {
-    "delta": " one",
+    "delta": " for",
+    "type": "text.delta",
+  },
+  {
+    "delta": " you",
     "type": "text.delta",
   },
   {
@@ -132,19 +132,15 @@ exports[`@xsai/stream-text basic > includes usage 1`] = `
     "type": "text.delta",
   },
   {
-    "delta": "",
-    "type": "text.delta",
-  },
-  {
-    "content": "Sure, here's a quick one: Why don't scientists trust atoms? Because they make up everything!",
+    "content": "Sure, here's a joke for you: Why don't scientists trust atoms? Because they make up everything!",
     "type": "text.done",
   },
   {
     "type": "step.done",
     "usage": {
       "inputTokens": 24,
-      "outputTokens": 22,
-      "totalTokens": 46,
+      "outputTokens": 23,
+      "totalTokens": 47,
     },
   },
 ]
@@ -154,13 +150,13 @@ exports[`@xsai/stream-text basic > includes usage 2`] = `
 [
   {
     "finishReason": "stop",
-    "text": "Sure, here's a quick one: Why don't scientists trust atoms? Because they make up everything!",
+    "text": "Sure, here's a joke for you: Why don't scientists trust atoms? Because they make up everything!",
     "toolCalls": [],
     "toolResults": [],
     "usage": {
       "inputTokens": 24,
-      "outputTokens": 22,
-      "totalTokens": 46,
+      "outputTokens": 23,
+      "totalTokens": 47,
     },
   },
 ]
@@ -260,10 +256,6 @@ exports[`@xsai/stream-text basic > stream 1`] = `
   },
   {
     "delta": "!",
-    "type": "text.delta",
-  },
-  {
-    "delta": "",
     "type": "text.delta",
   },
   {
