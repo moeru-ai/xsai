@@ -43,7 +43,6 @@
     "xsai": "workspace:"
   },
   "devDependencies": {
-    "@langfuse/otel": "catalog:",
     "@opentelemetry/sdk-trace-base": "catalog:",
     "@opentelemetry/sdk-trace-node": "catalog:",
     "zod": "catalog:schema-dev"

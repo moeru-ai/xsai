@@ -17,7 +17,6 @@ packages:
 catalog:
   '@antfu/eslint-config': ^9.2.0
   '@hey-api/openapi-ts': ^0.99.0
-  '@langfuse/otel': ^5.11.0
   '@moeru/eslint-config': ^0.1.0-beta.20
   '@moeru/std': ^0.1.0-beta.20
   '@moeru/tsconfig': ^0.1.0-beta.20
