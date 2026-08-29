@@ -4,14 +4,6 @@ import {
   merge,
 } from '../../utils'
 
-declare global {
-  interface Uint8ArrayConstructor {
-    // Baseline 2025
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64
-    fromBase64: (base64: string) => Uint8Array
-  }
-}
-
 /**
  * Create a Player2 Provider
  * @see {@link https://player2.game}
