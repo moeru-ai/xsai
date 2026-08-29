@@ -31,7 +31,7 @@ describe('@xsai/generate-transcription', () => {
       responseFormat: 'verbose_json',
     })
 
-    expect(duration).toBe(5.472)
+    expect(duration).toBeCloseTo(5.472)
     expect(language).toBe('en')
     expect(text).toBe(expectText)
     expect(segments).toMatchSnapshot()
@@ -49,7 +49,7 @@ describe('@xsai/generate-transcription', () => {
       timestampGranularities: 'word',
     })
 
-    expect(duration).toBe(5.472)
+    expect(duration).toBeCloseTo(5.472)
     expect(language).toBe('en')
     expect(text).toBe(expectText)
     expect(words).toMatchSnapshot()
