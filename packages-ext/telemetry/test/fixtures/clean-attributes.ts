@@ -1,5 +1,5 @@
 import type { Attributes, AttributeValue } from '@opentelemetry/api'
-import type { Message } from 'xsai'
+import type { Message, ToolCall } from 'xsai'
 
 const normalizeJSON = (value: unknown): unknown => {
   if (Array.isArray(value))
@@ -31,14 +31,20 @@ const cleanJSON = (value: string | undefined) => {
 const cleanMessages = (m: string) =>
   JSON.stringify((JSON.parse(m) as Message[]).map((message) => {
     if (message.role === 'assistant') {
-      message.tool_calls = message.tool_calls?.map(toolCall => ({
-        ...toolCall,
-        function: {
-          ...toolCall.function,
-          arguments: cleanJSON(toolCall.function.arguments),
-        },
-        id: '',
-      }))
+      message.tool_calls = message.tool_calls?.map((toolCall): ToolCall => {
+        const functionCall = 'arguments' in toolCall.function
+          ? {
+              ...toolCall.function,
+              arguments: cleanJSON(toolCall.function.arguments) ?? '',
+            }
+          : toolCall.function
+
+        return {
+          ...toolCall,
+          function: functionCall,
+          id: '',
+        }
+      })
       message.content = ''
     }
 

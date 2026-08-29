@@ -1,4 +1,5 @@
-import type { Event } from '../src/types/event'
+import type { Event } from '@xsai/shared-chat'
+
 import type { FullEvent } from '../src/types/event-full'
 
 import { tool } from '@xsai/tool'
