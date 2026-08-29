@@ -24,6 +24,7 @@ words:
   - deepinfra
   - deepseek
   - elevenlabs
+  - esbuild
   - eslintcache
   - essentialai
   - fireworksai
@@ -71,6 +72,7 @@ words:
   - oxlint
   - pkgroll
   - Plateforme
+  - protobufjs
   - qwen
   - redocly
   - reranker
@@ -90,6 +92,7 @@ words:
   - theguild
   - togetherai
   - tput
+  - tsdown
   - twoslash
   - typeschema
   - unrs

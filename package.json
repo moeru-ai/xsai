@@ -20,7 +20,6 @@
     "@moeru/eslint-config": "catalog:",
     "@moeru/tsconfig": "catalog:",
     "@pnpm/find-workspace-dir": "catalog:",
-    "@types/eslint": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "automd": "catalog:",
