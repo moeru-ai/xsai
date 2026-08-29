@@ -5,57 +5,93 @@ import process from 'node:process'
 import {
   createAbacus,
   createAbliterationAi,
+  createAgentrouter,
+  createAgnes,
+  createAiRouter,
+  createAiand,
+  createAixy,
+  createAkiIo,
   createAlibaba,
   createAlibabaCn,
   createAlibabaCodingPlan,
   createAlibabaCodingPlanCn,
+  createAlibabaTokenPlan,
+  createAlibabaTokenPlanCn,
   createAmbient,
+  createAmd,
+  createAnyapi,
+  createArcee,
   createAtomicChat,
   createAuriko,
   createBailing,
   createBaseten,
   createBerget,
+  createBlueclaw,
   createCerebras,
   createChutes,
   createClaudinio,
+  createClinePass,
   createCloudferroSherlock,
   createCohere,
+  createCoralbricks,
   createCortecs,
   createCrof,
+  createCrossmodel,
+  createCrusoe,
+  createDaoxe,
   createDeepinfra,
   createDeepSeek,
   createDigitalocean,
   createDinference,
   createDrun,
+  createEbcloud,
+  createEcho,
+  createEdenai,
+  createEmpiriolabs,
   createEvroc,
   createFastrouter,
-  createFirepass,
   createFireworks,
+  createFreemodel,
   createFriendli,
   createFrogbot,
   createGithubCopilot,
-  createGithubModels,
   createGmicloud,
   createGoogleGenerativeAI,
+  createGreenpt,
   createGroq,
   createHelicone,
+  createHetzner,
   createHpcAi,
   createHuggingface,
+  createHyper,
   createIflowcn,
+  createImpossibl,
   createInception,
   createInceptron,
   createInference,
+  createInferx,
   createIoNet,
+  createIteracompute,
+  createJalapeno,
   createJiekou,
+  createKenari,
   createKilo,
   createKimiForCoding,
+  createKosmik,
   createKuaeCloudCodingPlan,
   createLilac,
   createLlama,
   createLlmgateway,
+  createLlmgatewayProviders,
+  createLlmtech,
+  createLlmtr,
   createLmstudio,
+  createLongcat,
   createLucidquery,
+  createLynkr,
   createMeganova,
+  createMergeGateway,
+  createMeta,
   createMinimax,
   createMinimaxCn,
   createMinimaxCnCodingPlan,
@@ -63,6 +99,9 @@ import {
   createMistral,
   createMixlayer,
   createMoark,
+  createModal,
+  createModelOracleAi,
+  createModelis,
   createModelscope,
   createMoonshotai,
   createMoonshotaiCn,
@@ -70,41 +109,67 @@ import {
   createNanoGpt,
   createNearai,
   createNebius,
+  createNeosmith,
   createNeuralwatt,
   createNova,
   createNovitaAi,
   createNvidia,
+  createOfox,
   createOllamaCloud,
   createOpenAI,
   createOpencode,
   createOpencodeGo,
+  createOpenreason,
+  createOpper,
   createOrcarouter,
   createOvhcloud,
+  createPendra,
   createPerplexity,
   createPerplexityAgent,
+  createPioneer,
   createPoe,
+  createPoolside,
   createPrivatemodeAi,
   createQihangAi,
   createQiniuAi,
   createRegoloAi,
   createRequesty,
   createRoutingRun,
+  createRuninfra,
+  createSakana,
   createSarvam,
   createScaleway,
+  createScnetTokenPlan,
+  createScxAi,
   createSiliconFlow,
   createSiliconflowCn,
   createStackit,
+  createStandardcompute,
   createStepfun,
   createStepfunAi,
+  createStepfunAiStepPlan,
+  createStepfunStepPlan,
+  createSubconscious,
   createSubmodel,
   createSynthetic,
   createTencentCodingPlan,
+  createTencentTokenPlan,
   createTencentTokenhub,
+  createTensorx,
   createTheGridAi,
+  createThinkingmachines,
+  createTinfoil,
+  createTokengo,
+  createTrustedrouter,
+  createUmansAi,
   createUmansAiCodingPlan,
+  createUnorouter,
   createUpstage,
+  createVancine,
   createVenice,
   createVivgrid,
+  createVolcengine,
+  createVolcengineCodingPlan,
   createVultr,
   createWaferAi,
   createWandb,
@@ -116,6 +181,8 @@ import {
   createXpersona,
   createZai,
   createZaiCodingPlan,
+  createZeldoc,
+  createZenifra,
   createZenmux,
   createZhipuai,
   createZhipuaiCodingPlan,
@@ -142,6 +209,60 @@ export const abacus = createAbacus(process.env.ABACUS_API_KEY ?? '')
  * - apiKey - `ABLIT_KEY`
  */
 export const abliterationAi = createAbliterationAi(process.env.ABLIT_KEY ?? '')
+
+/**
+ * AgentRouter Provider
+ * @see {@link https://agentrouter.org/docs/opencode.html}
+ * @remarks
+ * - baseURL - `https://agentrouter.org/v1`
+ * - apiKey - `AGENTROUTER_API_KEY`
+ */
+export const agentrouter = createAgentrouter(process.env.AGENTROUTER_API_KEY ?? '')
+
+/**
+ * Agnes AI Provider
+ * @see {@link https://agnes-ai.com/doc}
+ * @remarks
+ * - baseURL - `https://apihub.agnes-ai.com/v1`
+ * - apiKey - `AGNES_API_KEY`
+ */
+export const agnes = createAgnes(process.env.AGNES_API_KEY ?? '')
+
+/**
+ * AI-ROUTER Provider
+ * @see {@link https://ai-router.dev/openai-compatible-api-gateway/}
+ * @remarks
+ * - baseURL - `https://api.ai-router.dev/v1`
+ * - apiKey - `AI_ROUTER_API_KEY`
+ */
+export const aiRouter = createAiRouter(process.env.AI_ROUTER_API_KEY ?? '')
+
+/**
+ * ai& Provider
+ * @see {@link https://docs.aiand.com/}
+ * @remarks
+ * - baseURL - `https://api.aiand.com/v1`
+ * - apiKey - `AIAND_API_KEY`
+ */
+export const aiand = createAiand(process.env.AIAND_API_KEY ?? '')
+
+/**
+ * Aixy Provider
+ * @see {@link https://docs.aixy-gateway.com/integrations/overview}
+ * @remarks
+ * - baseURL - `https://api.aixy-gateway.com/v1`
+ * - apiKey - `AIXY_API_KEY`
+ */
+export const aixy = createAixy(process.env.AIXY_API_KEY ?? '')
+
+/**
+ * AKI.IO Provider
+ * @see {@link https://aki.io/docs/}
+ * @remarks
+ * - baseURL - `https://aki.io/v1`
+ * - apiKey - `AKI_IO_API_KEY`
+ */
+export const akiIo = createAkiIo(process.env.AKI_IO_API_KEY ?? '')
 
 /**
  * Alibaba Provider
@@ -180,6 +301,24 @@ export const alibabaCodingPlan = createAlibabaCodingPlan(process.env.ALIBABA_COD
 export const alibabaCodingPlanCn = createAlibabaCodingPlanCn(process.env.ALIBABA_CODING_PLAN_API_KEY ?? '')
 
 /**
+ * Alibaba Token Plan Provider
+ * @see {@link https://www.alibabacloud.com/help/en/model-studio/token-plan-overview}
+ * @remarks
+ * - baseURL - `https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1`
+ * - apiKey - `ALIBABA_TOKEN_PLAN_API_KEY`
+ */
+export const alibabaTokenPlan = createAlibabaTokenPlan(process.env.ALIBABA_TOKEN_PLAN_API_KEY ?? '')
+
+/**
+ * Alibaba Token Plan (China) Provider
+ * @see {@link https://www.alibabacloud.com/help/zh/model-studio/token-plan-overview}
+ * @remarks
+ * - baseURL - `https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1`
+ * - apiKey - `ALIBABA_TOKEN_PLAN_API_KEY`
+ */
+export const alibabaTokenPlanCn = createAlibabaTokenPlanCn(process.env.ALIBABA_TOKEN_PLAN_API_KEY ?? '')
+
+/**
  * Ambient Provider
  * @see {@link https://ambient.xyz}
  * @remarks
@@ -187,6 +326,33 @@ export const alibabaCodingPlanCn = createAlibabaCodingPlanCn(process.env.ALIBABA
  * - apiKey - `AMBIENT_API_KEY`
  */
 export const ambient = createAmbient(process.env.AMBIENT_API_KEY ?? '')
+
+/**
+ * AMD Provider
+ * @see {@link https://developer.amd.com.cn/radeon/tokenfactory}
+ * @remarks
+ * - baseURL - `https://developer.amd.com.cn/radeon/api/v1`
+ * - apiKey - `AMD_API_KEY`
+ */
+export const amd = createAmd(process.env.AMD_API_KEY ?? '')
+
+/**
+ * AnyAPI Provider
+ * @see {@link https://docs.anyapi.ai}
+ * @remarks
+ * - baseURL - `https://api.anyapi.ai/v1`
+ * - apiKey - `ANYAPI_API_KEY`
+ */
+export const anyapi = createAnyapi(process.env.ANYAPI_API_KEY ?? '')
+
+/**
+ * Arcee Provider
+ * @see {@link https://docs.arcee.ai}
+ * @remarks
+ * - baseURL - `https://api.arcee.ai/api/v1`
+ * - apiKey - `ARCEE_API_KEY`
+ */
+export const arcee = createArcee(process.env.ARCEE_API_KEY ?? '')
 
 /**
  * Atomic Chat Provider
@@ -217,7 +383,7 @@ export const bailing = createBailing(process.env.BAILING_API_TOKEN ?? '')
 
 /**
  * Baseten Provider
- * @see {@link https://docs.baseten.co/development/model-apis/overview}
+ * @see {@link https://docs.baseten.co/inference/model-apis/overview}
  * @remarks
  * - baseURL - `https://inference.baseten.co/v1`
  * - apiKey - `BASETEN_API_KEY`
@@ -232,6 +398,15 @@ export const baseten = createBaseten(process.env.BASETEN_API_KEY ?? '')
  * - apiKey - `BERGET_API_KEY`
  */
 export const berget = createBerget(process.env.BERGET_API_KEY ?? '')
+
+/**
+ * Blue Claw Provider
+ * @see {@link https://blueclaw.network}
+ * @remarks
+ * - baseURL - `https://openai.blueclaw.network/v1`
+ * - apiKey - `BLUECLAW_API_KEY`
+ */
+export const blueclaw = createBlueclaw(process.env.BLUECLAW_API_KEY ?? '')
 
 /**
  * Cerebras Provider
@@ -261,6 +436,15 @@ export const chutes = createChutes(process.env.CHUTES_API_KEY ?? '')
 export const claudinio = createClaudinio(process.env.CLAUDINIO_API_KEY ?? '')
 
 /**
+ * ClinePass Provider
+ * @see {@link https://docs.cline.bot/getting-started/clinepass}
+ * @remarks
+ * - baseURL - `https://api.cline.bot/api/v1`
+ * - apiKey - `CLINE_API_KEY`
+ */
+export const clinePass = createClinePass(process.env.CLINE_API_KEY ?? '')
+
+/**
  * CloudFerro Sherlock Provider
  * @see {@link https://docs.sherlock.cloudferro.com/}
  * @remarks
@@ -279,6 +463,15 @@ export const cloudferroSherlock = createCloudferroSherlock(process.env.CLOUDFERR
 export const cohere = createCohere(process.env.COHERE_API_KEY ?? '')
 
 /**
+ * CoralBricks Provider
+ * @see {@link https://www.coralbricks.ai/docs}
+ * @remarks
+ * - baseURL - `https://inference.coralbricks.ai/v1`
+ * - apiKey - `CORAL_API_KEY`
+ */
+export const coralbricks = createCoralbricks(process.env.CORAL_API_KEY ?? '')
+
+/**
  * Cortecs Provider
  * @see {@link https://api.cortecs.ai/v1/models}
  * @remarks
@@ -295,6 +488,33 @@ export const cortecs = createCortecs(process.env.CORTECS_API_KEY ?? '')
  * - apiKey - `CROF_API_KEY`
  */
 export const crof = createCrof(process.env.CROF_API_KEY ?? '')
+
+/**
+ * CrossModel Provider
+ * @see {@link https://www.crossmodel.ai/docs}
+ * @remarks
+ * - baseURL - `https://api.crossmodel.ai/v1`
+ * - apiKey - `CROSSMODEL_API_KEY`
+ */
+export const crossmodel = createCrossmodel(process.env.CROSSMODEL_API_KEY ?? '')
+
+/**
+ * Crusoe Provider
+ * @see {@link https://docs.crusoecloud.com/managed-inference/overview}
+ * @remarks
+ * - baseURL - `https://api.inference.crusoecloud.com/v1`
+ * - apiKey - `CRUSOE_API_KEY`
+ */
+export const crusoe = createCrusoe(process.env.CRUSOE_API_KEY ?? '')
+
+/**
+ * DaoXE Provider
+ * @see {@link https://daoxe.com/pricing}
+ * @remarks
+ * - baseURL - `https://daoxe.com/v1`
+ * - apiKey - `DAOXE_API_KEY`
+ */
+export const daoxe = createDaoxe(process.env.DAOXE_API_KEY ?? '')
 
 /**
  * Deep Infra Provider
@@ -342,6 +562,42 @@ export const dinference = createDinference(process.env.DINFERENCE_API_KEY ?? '')
 export const drun = createDrun(process.env.DRUN_API_KEY ?? '')
 
 /**
+ * EBCloud Provider
+ * @see {@link https://docs.ebtech.com/ai/model-api.html}
+ * @remarks
+ * - baseURL - `https://maas-api.ebcloud.com/v1`
+ * - apiKey - `EBCLOUD_API_KEY`
+ */
+export const ebcloud = createEbcloud(process.env.EBCLOUD_API_KEY ?? '')
+
+/**
+ * Echo Provider
+ * @see {@link https://echo.tracerml.ai/docs/api}
+ * @remarks
+ * - baseURL - `https://echo.tracerml.ai/v1`
+ * - apiKey - `ECHO_API_KEY`
+ */
+export const echo = createEcho(process.env.ECHO_API_KEY ?? '')
+
+/**
+ * Eden AI Provider
+ * @see {@link https://docs.edenai.co}
+ * @remarks
+ * - baseURL - `https://api.edenai.run/v3`
+ * - apiKey - `EDENAI_API_KEY`
+ */
+export const edenai = createEdenai(process.env.EDENAI_API_KEY ?? '')
+
+/**
+ * EmpirioLabs AI Provider
+ * @see {@link https://docs.empiriolabs.ai}
+ * @remarks
+ * - baseURL - `https://api.empiriolabs.ai/v1`
+ * - apiKey - `EMPIRIOLABS_API_KEY`
+ */
+export const empiriolabs = createEmpiriolabs(process.env.EMPIRIOLABS_API_KEY ?? '')
+
+/**
  * evroc Provider
  * @see {@link https://docs.evroc.com/products/think/overview.html}
  * @remarks
@@ -360,15 +616,6 @@ export const evroc = createEvroc(process.env.EVROC_API_KEY ?? '')
 export const fastrouter = createFastrouter(process.env.FASTROUTER_API_KEY ?? '')
 
 /**
- * Fireworks (Firepass) Provider
- * @see {@link https://docs.fireworks.ai/firepass}
- * @remarks
- * - baseURL - `https://api.fireworks.ai/inference/v1/`
- * - apiKey - `FIREPASS_API_KEY`
- */
-export const firepass = createFirepass(process.env.FIREPASS_API_KEY ?? '')
-
-/**
  * Fireworks AI Provider
  * @see {@link https://fireworks.ai/docs/}
  * @remarks
@@ -376,6 +623,15 @@ export const firepass = createFirepass(process.env.FIREPASS_API_KEY ?? '')
  * - apiKey - `FIREWORKS_API_KEY`
  */
 export const fireworks = createFireworks(process.env.FIREWORKS_API_KEY ?? '')
+
+/**
+ * FreeModel Provider
+ * @see {@link https://freemodel.dev}
+ * @remarks
+ * - baseURL - `https://cc.freemodel.dev/v1`
+ * - apiKey - `FREEMODEL_API_KEY`
+ */
+export const freemodel = createFreemodel(process.env.FREEMODEL_API_KEY ?? '')
 
 /**
  * Friendli Provider
@@ -405,15 +661,6 @@ export const frogbot = createFrogbot(process.env.FROGBOT_API_KEY ?? '')
 export const githubCopilot = createGithubCopilot(process.env.GITHUB_TOKEN ?? '')
 
 /**
- * GitHub Models Provider
- * @see {@link https://docs.github.com/en/github-models}
- * @remarks
- * - baseURL - `https://models.github.ai/inference`
- * - apiKey - `GITHUB_TOKEN`
- */
-export const githubModels = createGithubModels(process.env.GITHUB_TOKEN ?? '')
-
-/**
  * GMI Cloud Provider
  * @see {@link https://docs.gmicloud.ai/inference-engine/api-reference/llm-api-reference}
  * @remarks
@@ -430,6 +677,15 @@ export const gmicloud = createGmicloud(process.env.GMICLOUD_API_KEY ?? '')
  * - apiKey - `GOOGLE_API_KEY or GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY`
  */
 export const google = createGoogleGenerativeAI(process.env.GOOGLE_API_KEY ?? process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? process.env.GEMINI_API_KEY ?? '')
+
+/**
+ * GreenPT Provider
+ * @see {@link https://docs.greenpt.ai}
+ * @remarks
+ * - baseURL - `https://api.greenpt.ai/v1`
+ * - apiKey - `GREENPT_API_KEY`
+ */
+export const greenpt = createGreenpt(process.env.GREENPT_API_KEY ?? '')
 
 /**
  * Groq Provider
@@ -450,6 +706,15 @@ export const groq = createGroq(process.env.GROQ_API_KEY ?? '')
 export const helicone = createHelicone(process.env.HELICONE_API_KEY ?? '')
 
 /**
+ * Hetzner Provider
+ * @see {@link https://experiments.hetzner.com/docs/inference}
+ * @remarks
+ * - baseURL - `https://inference.hetzner.com/api/v1`
+ * - apiKey - `HETZNER_API_KEY`
+ */
+export const hetzner = createHetzner(process.env.HETZNER_API_KEY ?? '')
+
+/**
  * HPC-AI Provider
  * @see {@link https://www.hpc-ai.com/doc/docs/quickstart/}
  * @remarks
@@ -468,6 +733,15 @@ export const hpcAi = createHpcAi(process.env.HPC_AI_API_KEY ?? '')
 export const huggingface = createHuggingface(process.env.HF_TOKEN ?? '')
 
 /**
+ * Charm Hyper Provider
+ * @see {@link https://hyper.charm.land}
+ * @remarks
+ * - baseURL - `https://hyper.charm.land/v1`
+ * - apiKey - `HYPER_API_KEY`
+ */
+export const hyper = createHyper(process.env.HYPER_API_KEY ?? '')
+
+/**
  * iFlow Provider
  * @see {@link https://platform.iflow.cn/en/docs}
  * @remarks
@@ -475,6 +749,15 @@ export const huggingface = createHuggingface(process.env.HF_TOKEN ?? '')
  * - apiKey - `IFLOW_API_KEY`
  */
 export const iflowcn = createIflowcn(process.env.IFLOW_API_KEY ?? '')
+
+/**
+ * Impossibl Provider
+ * @see {@link https://impossibl.com/docs/models}
+ * @remarks
+ * - baseURL - `https://api.impossibl.com/v1`
+ * - apiKey - `IMPOSSIBL_API_KEY`
+ */
+export const impossibl = createImpossibl(process.env.IMPOSSIBL_API_KEY ?? '')
 
 /**
  * Inception Provider
@@ -504,6 +787,15 @@ export const inceptron = createInceptron(process.env.INCEPTRON_API_KEY ?? '')
 export const inference = createInference(process.env.INFERENCE_API_KEY ?? '')
 
 /**
+ * InferX Provider
+ * @see {@link https://model.inferx.net/endpoints}
+ * @remarks
+ * - baseURL - `https://model.inferx.net/endpoints/v1`
+ * - apiKey - `INFERX_API_KEY`
+ */
+export const inferx = createInferx(process.env.INFERX_API_KEY ?? '')
+
+/**
  * IO.NET Provider
  * @see {@link https://io.net/docs/guides/intelligence/io-intelligence}
  * @remarks
@@ -513,6 +805,24 @@ export const inference = createInference(process.env.INFERENCE_API_KEY ?? '')
 export const ioNet = createIoNet(process.env.IOINTELLIGENCE_API_KEY ?? '')
 
 /**
+ * IteraCompute Provider
+ * @see {@link https://iteracompute.com/docs.html}
+ * @remarks
+ * - baseURL - `https://api.iteracompute.com/v1`
+ * - apiKey - `ITERACOMPUTE_API_KEY`
+ */
+export const iteracompute = createIteracompute(process.env.ITERACOMPUTE_API_KEY ?? '')
+
+/**
+ * Jalapeno Cloud Provider
+ * @see {@link https://www.jalapeno-cloud.ai/docs/}
+ * @remarks
+ * - baseURL - `https://api.jalapeno-cloud.ai/v1`
+ * - apiKey - `JALAPENO_API_KEY`
+ */
+export const jalapeno = createJalapeno(process.env.JALAPENO_API_KEY ?? '')
+
+/**
  * Jiekou.AI Provider
  * @see {@link https://docs.jiekou.ai/docs/support/quickstart?utm_source=github_models.dev}
  * @remarks
@@ -520,6 +830,15 @@ export const ioNet = createIoNet(process.env.IOINTELLIGENCE_API_KEY ?? '')
  * - apiKey - `JIEKOU_API_KEY`
  */
 export const jiekou = createJiekou(process.env.JIEKOU_API_KEY ?? '')
+
+/**
+ * Kenari Provider
+ * @see {@link https://kenari.id/docs}
+ * @remarks
+ * - baseURL - `https://kenari.id/v1`
+ * - apiKey - `KENARI_API_KEY`
+ */
+export const kenari = createKenari(process.env.KENARI_API_KEY ?? '')
 
 /**
  * Kilo Gateway Provider
@@ -532,12 +851,21 @@ export const kilo = createKilo(process.env.KILO_API_KEY ?? '')
 
 /**
  * Kimi For Coding Provider
- * @see {@link https://www.kimi.com/coding/docs/en/third-party-agents.html}
+ * @see {@link https://www.kimi.com/code/docs/en/third-party-tools/other-coding-agents.html}
  * @remarks
  * - baseURL - `https://api.kimi.com/coding/v1`
  * - apiKey - `KIMI_API_KEY`
  */
 export const kimiForCoding = createKimiForCoding(process.env.KIMI_API_KEY ?? '')
+
+/**
+ * Kosmik Compute Provider
+ * @see {@link https://api.koscompute.com/docs/}
+ * @remarks
+ * - baseURL - `https://api.koscompute.com/v1`
+ * - apiKey - `KOSMIK_API_KEY`
+ */
+export const kosmik = createKosmik(process.env.KOSMIK_API_KEY ?? '')
 
 /**
  * KUAE Cloud Coding Plan Provider
@@ -567,13 +895,40 @@ export const lilac = createLilac(process.env.LILAC_API_KEY ?? '')
 export const llama = createLlama(process.env.LLAMA_API_KEY ?? '')
 
 /**
- * LLM Gateway Provider
+ * DevPass (LLM Gateway) Provider
  * @see {@link https://llmgateway.io/docs}
  * @remarks
  * - baseURL - `https://api.llmgateway.io/v1`
  * - apiKey - `LLMGATEWAY_API_KEY`
  */
 export const llmgateway = createLlmgateway(process.env.LLMGATEWAY_API_KEY ?? '')
+
+/**
+ * LLM Gateway Provider
+ * @see {@link https://llmgateway.io/docs}
+ * @remarks
+ * - baseURL - `https://api.llmgateway.io/v1`
+ * - apiKey - `LLMGATEWAY_API_KEY`
+ */
+export const llmgatewayProviders = createLlmgatewayProviders(process.env.LLMGATEWAY_API_KEY ?? '')
+
+/**
+ * LLM Tech Provider
+ * @see {@link https://llmtech.eu/models/qwen3.8-27b}
+ * @remarks
+ * - baseURL - `https://api.llmtech.eu/v1`
+ * - apiKey - `LLMTECH_API_KEY`
+ */
+export const llmtech = createLlmtech(process.env.LLMTECH_API_KEY ?? '')
+
+/**
+ * LLMTR Provider
+ * @see {@link https://llmtr.com/docs}
+ * @remarks
+ * - baseURL - `https://llmtr.com/v1`
+ * - apiKey - `LLMTR_API_KEY`
+ */
+export const llmtr = createLlmtr(process.env.LLMTR_API_KEY ?? '')
 
 /**
  * LMStudio Provider
@@ -585,13 +940,31 @@ export const llmgateway = createLlmgateway(process.env.LLMGATEWAY_API_KEY ?? '')
 export const lmstudio = createLmstudio(process.env.LMSTUDIO_API_KEY ?? '')
 
 /**
- * LucidQuery AI Provider
- * @see {@link https://lucidquery.com/api/docs}
+ * LongCat Provider
+ * @see {@link https://longcat.chat/platform/docs/}
  * @remarks
- * - baseURL - `https://lucidquery.com/api/v1`
+ * - baseURL - `https://api.longcat.chat/openai`
+ * - apiKey - `LONGCAT_API_KEY`
+ */
+export const longcat = createLongcat(process.env.LONGCAT_API_KEY ?? '')
+
+/**
+ * LucidQuery Provider
+ * @see {@link https://lucidquery.com/docs}
+ * @remarks
+ * - baseURL - `https://api.lucidquery.com/v1`
  * - apiKey - `LUCIDQUERY_API_KEY`
  */
 export const lucidquery = createLucidquery(process.env.LUCIDQUERY_API_KEY ?? '')
+
+/**
+ * Lynkr Provider
+ * @see {@link https://github.com/Fast-Editor/Lynkr}
+ * @remarks
+ * - baseURL - `http://127.0.0.1:8081/v1`
+ * - apiKey - `LYNKR_API_KEY`
+ */
+export const lynkr = createLynkr(process.env.LYNKR_API_KEY ?? '')
 
 /**
  * Meganova Provider
@@ -601,6 +974,24 @@ export const lucidquery = createLucidquery(process.env.LUCIDQUERY_API_KEY ?? '')
  * - apiKey - `MEGANOVA_API_KEY`
  */
 export const meganova = createMeganova(process.env.MEGANOVA_API_KEY ?? '')
+
+/**
+ * Merge Gateway Provider
+ * @see {@link https://docs.merge.dev/merge-gateway}
+ * @remarks
+ * - baseURL - `https://api-gateway.merge.dev/v1/ai-sdk`
+ * - apiKey - `MERGE_GATEWAY_API_KEY`
+ */
+export const mergeGateway = createMergeGateway(process.env.MERGE_GATEWAY_API_KEY ?? '')
+
+/**
+ * Meta Provider
+ * @see {@link https://dev.meta.ai/docs}
+ * @remarks
+ * - baseURL - `https://api.meta.ai/v1`
+ * - apiKey - `META_MODEL_API_KEY`
+ */
+export const meta = createMeta(process.env.META_MODEL_API_KEY ?? '')
 
 /**
  * MiniMax (minimax.io) Provider
@@ -666,6 +1057,33 @@ export const mixlayer = createMixlayer(process.env.MIXLAYER_API_KEY ?? '')
 export const moark = createMoark(process.env.MOARK_API_KEY ?? '')
 
 /**
+ * Modal Provider
+ * @see {@link https://modal.com/docs/guide/endpoints}
+ * @remarks
+ * - baseURL - `https://inference.us-west.modal.direct/v1`
+ * - apiKey - `MODAL_PROXY_TOKEN`
+ */
+export const modal = createModal(process.env.MODAL_PROXY_TOKEN ?? '')
+
+/**
+ * Model Oracle AI Provider
+ * @see {@link https://modeloracle.com/setup/}
+ * @remarks
+ * - baseURL - `https://api.modeloracle.com/api/v1`
+ * - apiKey - `MODEL_ORACLE_API_KEY`
+ */
+export const modelOracleAi = createModelOracleAi(process.env.MODEL_ORACLE_API_KEY ?? '')
+
+/**
+ * Modelis Provider
+ * @see {@link https://modelishub.com/pricing}
+ * @remarks
+ * - baseURL - `https://modelishub.com/v1`
+ * - apiKey - `MODELIS_API_KEY`
+ */
+export const modelis = createModelis(process.env.MODELIS_API_KEY ?? '')
+
+/**
  * ModelScope Provider
  * @see {@link https://modelscope.cn/docs/model-service/API-Inference/intro}
  * @remarks
@@ -729,6 +1147,15 @@ export const nearai = createNearai(process.env.NEARAI_API_KEY ?? '')
 export const nebius = createNebius(process.env.NEBIUS_API_KEY ?? '')
 
 /**
+ * NeoSmith Provider
+ * @see {@link https://neosmith.ai/docs}
+ * @remarks
+ * - baseURL - `https://router.neosmith.ai/v1`
+ * - apiKey - `NEOSMITH_API_KEY`
+ */
+export const neosmith = createNeosmith(process.env.NEOSMITH_API_KEY ?? '')
+
+/**
  * Neuralwatt Provider
  * @see {@link https://portal.neuralwatt.com/docs}
  * @remarks
@@ -763,6 +1190,15 @@ export const novitaAi = createNovitaAi(process.env.NOVITA_API_KEY ?? '')
  * - apiKey - `NVIDIA_API_KEY`
  */
 export const nvidia = createNvidia(process.env.NVIDIA_API_KEY ?? '')
+
+/**
+ * Ofox Provider
+ * @see {@link https://ofox.ai/docs}
+ * @remarks
+ * - baseURL - `https://api.ofox.ai/v1`
+ * - apiKey - `OFOX_API_KEY`
+ */
+export const ofox = createOfox(process.env.OFOX_API_KEY ?? '')
 
 /**
  * Ollama Cloud Provider
@@ -801,6 +1237,24 @@ export const opencode = createOpencode(process.env.OPENCODE_API_KEY ?? '')
 export const opencodeGo = createOpencodeGo(process.env.OPENCODE_API_KEY ?? '')
 
 /**
+ * OpenReason Provider
+ * @see {@link https://openreason.app/docs}
+ * @remarks
+ * - baseURL - `https://api.openreason.app/v1`
+ * - apiKey - `OPENREASON_API_KEY`
+ */
+export const openreason = createOpenreason(process.env.OPENREASON_API_KEY ?? '')
+
+/**
+ * Opper Provider
+ * @see {@link https://opper.ai/models}
+ * @remarks
+ * - baseURL - `https://api.opper.ai/v3/compat`
+ * - apiKey - `OPPER_API_KEY`
+ */
+export const opper = createOpper(process.env.OPPER_API_KEY ?? '')
+
+/**
  * OrcaRouter Provider
  * @see {@link https://docs.orcarouter.ai}
  * @remarks
@@ -817,6 +1271,15 @@ export const orcarouter = createOrcarouter(process.env.ORCAROUTER_API_KEY ?? '')
  * - apiKey - `OVHCLOUD_API_KEY`
  */
 export const ovhcloud = createOvhcloud(process.env.OVHCLOUD_API_KEY ?? '')
+
+/**
+ * Pendra Provider
+ * @see {@link https://pendra.ai/docs/integrations/opencode}
+ * @remarks
+ * - baseURL - `https://api.pendra.ai/api/v1`
+ * - apiKey - `PENDRA_API_KEY`
+ */
+export const pendra = createPendra(process.env.PENDRA_API_KEY ?? '')
 
 /**
  * Perplexity Provider
@@ -837,6 +1300,15 @@ export const perplexity = createPerplexity(process.env.PERPLEXITY_API_KEY ?? '')
 export const perplexityAgent = createPerplexityAgent(process.env.PERPLEXITY_API_KEY ?? '')
 
 /**
+ * Pioneer Provider
+ * @see {@link https://agent.pioneer.ai/llms.txt}
+ * @remarks
+ * - baseURL - `https://api.pioneer.ai/v1`
+ * - apiKey - `PIONEER_API_KEY`
+ */
+export const pioneer = createPioneer(process.env.PIONEER_API_KEY ?? '')
+
+/**
  * Poe Provider
  * @see {@link https://creator.poe.com/docs/external-applications/openai-compatible-api}
  * @remarks
@@ -844,6 +1316,15 @@ export const perplexityAgent = createPerplexityAgent(process.env.PERPLEXITY_API_
  * - apiKey - `POE_API_KEY`
  */
 export const poe = createPoe(process.env.POE_API_KEY ?? '')
+
+/**
+ * Poolside Provider
+ * @see {@link https://platform.poolside.ai}
+ * @remarks
+ * - baseURL - `https://inference.poolside.ai/v1`
+ * - apiKey - `POOLSIDE_API_KEY`
+ */
+export const poolside = createPoolside(process.env.POOLSIDE_API_KEY ?? '')
 
 /**
  * Privatemode AI Provider
@@ -900,6 +1381,24 @@ export const requesty = createRequesty(process.env.REQUESTY_API_KEY ?? '')
 export const routingRun = createRoutingRun(process.env.ROUTING_RUN_API_KEY ?? '')
 
 /**
+ * RunInfra Provider
+ * @see {@link https://runinfra.ai/docs}
+ * @remarks
+ * - baseURL - `https://api.runinfra.ai/v1`
+ * - apiKey - `RUNINFRA_GATEWAY_KEY`
+ */
+export const runinfra = createRuninfra(process.env.RUNINFRA_GATEWAY_KEY ?? '')
+
+/**
+ * Sakana AI Provider
+ * @see {@link https://console.sakana.ai/models}
+ * @remarks
+ * - baseURL - `https://api.sakana.ai/v1`
+ * - apiKey - `SAKANA_API_KEY`
+ */
+export const sakana = createSakana(process.env.SAKANA_API_KEY ?? '')
+
+/**
  * Sarvam AI Provider
  * @see {@link https://docs.sarvam.ai/api-reference-docs/getting-started/models}
  * @remarks
@@ -916,6 +1415,24 @@ export const sarvam = createSarvam(process.env.SARVAM_API_KEY ?? '')
  * - apiKey - `SCALEWAY_API_KEY`
  */
 export const scaleway = createScaleway(process.env.SCALEWAY_API_KEY ?? '')
+
+/**
+ * SCNet Token Plan Provider
+ * @see {@link https://www.scnet.cn/ac/openapi/doc/2.0/moduleapi/plans/token-plan.html}
+ * @remarks
+ * - baseURL - `https://api.scnet.cn/api/llm/v1`
+ * - apiKey - `SCNET_API_KEY`
+ */
+export const scnetTokenPlan = createScnetTokenPlan(process.env.SCNET_API_KEY ?? '')
+
+/**
+ * SCX.ai Provider
+ * @see {@link https://platform.scx.ai/docs}
+ * @remarks
+ * - baseURL - `https://api.scx.ai/v1`
+ * - apiKey - `SCX_API_KEY`
+ */
+export const scxAi = createScxAi(process.env.SCX_API_KEY ?? '')
 
 /**
  * SiliconFlow Provider
@@ -945,7 +1462,16 @@ export const siliconflowCn = createSiliconflowCn(process.env.SILICONFLOW_CN_API_
 export const stackit = createStackit(process.env.STACKIT_API_KEY ?? '')
 
 /**
- * StepFun Provider
+ * Standard Compute Provider
+ * @see {@link https://standardcompute.com/models}
+ * @remarks
+ * - baseURL - `https://api.stdcmpt.com/v1`
+ * - apiKey - `STANDARDCOMPUTE_API_KEY`
+ */
+export const standardcompute = createStandardcompute(process.env.STANDARDCOMPUTE_API_KEY ?? '')
+
+/**
+ * StepFun (China) Provider
  * @see {@link https://platform.stepfun.com/docs/zh/overview/concept}
  * @remarks
  * - baseURL - `https://api.stepfun.com/v1`
@@ -954,13 +1480,40 @@ export const stackit = createStackit(process.env.STACKIT_API_KEY ?? '')
 export const stepfun = createStepfun(process.env.STEPFUN_API_KEY ?? '')
 
 /**
- * StepFun Provider
- * @see {@link https://platform.stepfun.ai/docs/en/step-plan/integrations/open-code}
+ * StepFun (Global) Provider
+ * @see {@link https://platform.stepfun.ai/docs/en/overview/concept}
+ * @remarks
+ * - baseURL - `https://api.stepfun.ai/v1`
+ * - apiKey - `STEPFUN_API_KEY`
+ */
+export const stepfunAi = createStepfunAi(process.env.STEPFUN_API_KEY ?? '')
+
+/**
+ * StepFun Step Plan (Global) Provider
+ * @see {@link https://platform.stepfun.ai/docs/en/step-plan/integrations/reasoning-api}
  * @remarks
  * - baseURL - `https://api.stepfun.ai/step_plan/v1`
  * - apiKey - `STEPFUN_API_KEY`
  */
-export const stepfunAi = createStepfunAi(process.env.STEPFUN_API_KEY ?? '')
+export const stepfunAiStepPlan = createStepfunAiStepPlan(process.env.STEPFUN_API_KEY ?? '')
+
+/**
+ * StepFun Step Plan (China) Provider
+ * @see {@link https://platform.stepfun.com/docs/zh/step-plan/integrations/reasoning-api}
+ * @remarks
+ * - baseURL - `https://api.stepfun.com/step_plan/v1`
+ * - apiKey - `STEPFUN_API_KEY`
+ */
+export const stepfunStepPlan = createStepfunStepPlan(process.env.STEPFUN_API_KEY ?? '')
+
+/**
+ * Subconscious Provider
+ * @see {@link https://docs.subconscious.dev}
+ * @remarks
+ * - baseURL - `https://api.subconscious.dev/v1`
+ * - apiKey - `SUBCONSCIOUS_API_KEY`
+ */
+export const subconscious = createSubconscious(process.env.SUBCONSCIOUS_API_KEY ?? '')
 
 /**
  * submodel Provider
@@ -990,6 +1543,15 @@ export const synthetic = createSynthetic(process.env.SYNTHETIC_API_KEY ?? '')
 export const tencentCodingPlan = createTencentCodingPlan(process.env.TENCENT_CODING_PLAN_API_KEY ?? '')
 
 /**
+ * Tencent Token Plan Provider
+ * @see {@link https://cloud.tencent.com/document/product/1823/130060}
+ * @remarks
+ * - baseURL - `https://api.lkeap.cloud.tencent.com/plan/v3`
+ * - apiKey - `TENCENT_TOKEN_PLAN_API_KEY`
+ */
+export const tencentTokenPlan = createTencentTokenPlan(process.env.TENCENT_TOKEN_PLAN_API_KEY ?? '')
+
+/**
  * Tencent TokenHub Provider
  * @see {@link https://cloud.tencent.com/document/product/1823/130050}
  * @remarks
@@ -999,13 +1561,67 @@ export const tencentCodingPlan = createTencentCodingPlan(process.env.TENCENT_COD
 export const tencentTokenhub = createTencentTokenhub(process.env.TENCENT_TOKENHUB_API_KEY ?? '')
 
 /**
+ * TensorX Provider
+ * @see {@link https://docs.tensorx.ai/}
+ * @remarks
+ * - baseURL - `https://api.tensorx.ai/v1`
+ * - apiKey - `TENSORX_API_KEY`
+ */
+export const tensorx = createTensorx(process.env.TENSORX_API_KEY ?? '')
+
+/**
  * The Grid AI Provider
  * @see {@link https://thegrid.ai/docs}
  * @remarks
  * - baseURL - `https://api.thegrid.ai/v1`
- * - apiKey - `THEGRIDAI_API_KEY`
+ * - apiKey - `THEGRID_API_KEY`
  */
-export const theGridAi = createTheGridAi(process.env.THEGRIDAI_API_KEY ?? '')
+export const theGridAi = createTheGridAi(process.env.THEGRID_API_KEY ?? '')
+
+/**
+ * Thinking Machines Provider
+ * @see {@link https://tinker-docs.thinkingmachines.ai/tinker/compatible-apis/anthropic/}
+ * @remarks
+ * - baseURL - `https://tinker.thinkingmachines.dev/services/tinker-prod/anthropic/api/v1`
+ * - apiKey - `TINKER_API_KEY`
+ */
+export const thinkingmachines = createThinkingmachines(process.env.TINKER_API_KEY ?? '')
+
+/**
+ * Tinfoil Provider
+ * @see {@link https://docs.tinfoil.sh}
+ * @remarks
+ * - baseURL - `https://inference.tinfoil.sh/v1`
+ * - apiKey - `TINFOIL_API_KEY`
+ */
+export const tinfoil = createTinfoil(process.env.TINFOIL_API_KEY ?? '')
+
+/**
+ * TokenGo Provider
+ * @see {@link https://www.tokengo.com/docs}
+ * @remarks
+ * - baseURL - `https://api.tokengo.com/v1`
+ * - apiKey - `TOKENGO_API_KEY`
+ */
+export const tokengo = createTokengo(process.env.TOKENGO_API_KEY ?? '')
+
+/**
+ * TrustedRouter Provider
+ * @see {@link https://trustedrouter.com/docs}
+ * @remarks
+ * - baseURL - `https://api.trustedrouter.com/v1`
+ * - apiKey - `TRUSTEDROUTER_API_KEY`
+ */
+export const trustedrouter = createTrustedrouter(process.env.TRUSTEDROUTER_API_KEY ?? '')
+
+/**
+ * Umans AI Provider
+ * @see {@link https://app.umans.ai/offers/code/docs/orgs}
+ * @remarks
+ * - baseURL - `https://api.code.umans.ai/v1`
+ * - apiKey - `UMANS_AI_API_KEY`
+ */
+export const umansAi = createUmansAi(process.env.UMANS_AI_API_KEY ?? '')
 
 /**
  * Umans AI Coding Plan Provider
@@ -1017,6 +1633,15 @@ export const theGridAi = createTheGridAi(process.env.THEGRIDAI_API_KEY ?? '')
 export const umansAiCodingPlan = createUmansAiCodingPlan(process.env.UMANS_AI_CODING_PLAN_API_KEY ?? '')
 
 /**
+ * UnoRouter Provider
+ * @see {@link https://unorouter.com/models}
+ * @remarks
+ * - baseURL - `https://api.unorouter.com/v1`
+ * - apiKey - `UNOROUTER_API_KEY`
+ */
+export const unorouter = createUnorouter(process.env.UNOROUTER_API_KEY ?? '')
+
+/**
  * Upstage Provider
  * @see {@link https://developers.upstage.ai/docs/apis/chat}
  * @remarks
@@ -1024,6 +1649,15 @@ export const umansAiCodingPlan = createUmansAiCodingPlan(process.env.UMANS_AI_CO
  * - apiKey - `UPSTAGE_API_KEY`
  */
 export const upstage = createUpstage(process.env.UPSTAGE_API_KEY ?? '')
+
+/**
+ * Vancine Provider
+ * @see {@link https://vancine.com/docs}
+ * @remarks
+ * - baseURL - `https://vancine.com/v1`
+ * - apiKey - `VANCINE_API_KEY`
+ */
+export const vancine = createVancine(process.env.VANCINE_API_KEY ?? '')
 
 /**
  * Venice AI Provider
@@ -1042,6 +1676,24 @@ export const venice = createVenice(process.env.VENICE_API_KEY ?? '')
  * - apiKey - `VIVGRID_API_KEY`
  */
 export const vivgrid = createVivgrid(process.env.VIVGRID_API_KEY ?? '')
+
+/**
+ * Volcengine Ark Provider
+ * @see {@link https://www.volcengine.com/docs/82379/1330310}
+ * @remarks
+ * - baseURL - `https://ark.cn-beijing.volces.com/api/v3`
+ * - apiKey - `ARK_API_KEY`
+ */
+export const volcengine = createVolcengine(process.env.ARK_API_KEY ?? '')
+
+/**
+ * Volcengine Ark Coding Plan Provider
+ * @see {@link https://www.volcengine.com/docs/82379/1928261}
+ * @remarks
+ * - baseURL - `https://ark.cn-beijing.volces.com/api/coding/v3`
+ * - apiKey - `ARK_CODING_PLAN_API_KEY`
+ */
+export const volcengineCodingPlan = createVolcengineCodingPlan(process.env.ARK_CODING_PLAN_API_KEY ?? '')
 
 /**
  * Vultr Provider
@@ -1141,6 +1793,24 @@ export const zai = createZai(process.env.ZHIPU_API_KEY ?? '')
  * - apiKey - `ZHIPU_API_KEY`
  */
 export const zaiCodingPlan = createZaiCodingPlan(process.env.ZHIPU_API_KEY ?? '')
+
+/**
+ * Zeldoc Provider
+ * @see {@link https://docs.zeldoc.ai}
+ * @remarks
+ * - baseURL - `https://api.zeldoc.ai/v1`
+ * - apiKey - `ZELDOC_API_KEY`
+ */
+export const zeldoc = createZeldoc(process.env.ZELDOC_API_KEY ?? '')
+
+/**
+ * Zenifra Provider
+ * @see {@link https://docs.zenifra.com}
+ * @remarks
+ * - baseURL - `https://ai.zenifra.com/v1`
+ * - apiKey - `ZENIFRA_AI_KEY`
+ */
+export const zenifra = createZenifra(process.env.ZENIFRA_AI_KEY ?? '')
 
 /**
  * ZenMux Provider

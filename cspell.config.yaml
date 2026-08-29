@@ -4,6 +4,7 @@ dictionaryDefinitions: []
 dictionaries: []
 words:
   - AAAAIGZ
+  - aion
   - Airi
   - all-minilm
   - antfu
@@ -24,6 +25,7 @@ words:
   - deepseek
   - elevenlabs
   - eslintcache
+  - essentialai
   - fireworksai
   - fishaudio
   - flac
@@ -34,6 +36,7 @@ words:
   - hexgrad
   - Hunyuan
   - importantimport
+  - kimi
   - koemotion
   - Kokoro
   - kwaa
@@ -52,6 +55,7 @@ words:
   - modelcontextprotocol
   - moeru
   - moeru-ai
+  - moonshotai
   - mxbai-embed-large
   - nemo
   - nemotron
@@ -73,16 +77,19 @@ words:
   - rhasspy
   - scule
   - siliconflow
+  - slerp
   - sonarjs
   - SoVITS
   - speaches
   - specdec
+  - speciale
   - SSML
   - Stepfun
   - sury
   - Systran
   - theguild
   - togetherai
+  - tput
   - twoslash
   - typeschema
   - unrs
