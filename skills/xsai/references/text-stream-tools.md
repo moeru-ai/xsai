@@ -44,23 +44,23 @@ Use `streamText` when the user wants incremental output or tool events.
 It returns immediately and exposes:
 
 - `textStream`
-- `fullStream`
 - `reasoningTextStream`
+- `eventStream`
+- `fullStream` as parsed provider chat-completion chunks
 - `messages` as a promise
 - `steps` as a promise
 - `usage` as a promise
 - `totalUsage` as a promise
 
-`fullStream` may contain events such as:
+`eventStream` yields normalized events for each step:
 
-- `text-delta`
-- `reasoning-delta`
-- `tool-call-streaming-start`
-- `tool-call-delta`
-- `tool-call`
-- `tool-result`
-- `finish`
-- `error`
+- `step.start` and `step.done` (with optional usage on `step.done`)
+- `reasoning.start`, `reasoning.delta`, and `reasoning.done`
+- `text.start`, `text.delta`, and `text.done`
+- `tool-call.start`, `tool-call.delta`, and `tool-call.done`
+- `tool-result.done`
+
+Event names use dot notation. Use `textStream` for plain text, `eventStream` for normalized text, reasoning, and tool events, and `fullStream` when the caller needs provider-level chat completion chunks.
 
 ## Tool loops
 

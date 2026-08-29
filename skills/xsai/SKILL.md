@@ -58,7 +58,8 @@ Use this skill for `xsai` code, package selection, API selection, canonical exam
 - `baseURL` and `model` are usually required in practice for xsAI calls.
 - `apiKey` is provider-dependent. Most hosted providers need it; local or proxy endpoints may not. In Node.js, prefer `process.env`. In browsers, prefer reading from `localStorage`. Do not recommend hardcoding API keys.
 - xsAI is OpenAI-compatible-first. Do not imply support for non-compatible provider APIs.
-- `streamText()` returns immediately; callers consume `textStream`, `fullStream`, and result promises asynchronously.
+- `streamText()` returns immediately; callers consume `textStream`, `reasoningTextStream`, `eventStream`, and `fullStream`, plus result promises asynchronously.
+- `eventStream` yields normalized dot-delimited events for step, reasoning, text, and tool lifecycle updates; `fullStream` yields parsed provider chat-completion chunks.
 - `streamObject()` is async because schema conversion happens before streaming starts.
 - `stopWhen` controls repeated tool-use loops with explicit stop predicates such as `stepCountAtLeast()` and `hasToolCall()`.
 - `generateObject()`, `streamObject()`, and `tool()` rely on `xsschema`; some schema vendors need extra JSON Schema converter packages.

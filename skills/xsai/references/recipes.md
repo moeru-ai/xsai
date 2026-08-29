@@ -59,7 +59,7 @@ const add = await tool({
   }),
 })
 
-const { fullStream } = streamText({
+const { eventStream } = streamText({
   apiKey: env.OPENAI_API_KEY!,
   baseURL: 'https://api.openai.com/v1/',
   messages: [
@@ -80,12 +80,12 @@ const { fullStream } = streamText({
 
 const text: string[] = []
 
-for await (const event of fullStream) {
-  if (event.type === 'text-delta') {
-    text.push(event.text)
+for await (const event of eventStream) {
+  if (event.type === 'text.delta') {
+    text.push(event.delta)
   }
 
-  if (event.type === 'tool-call' || event.type === 'tool-result') {
+  if (event.type === 'tool-call.done' || event.type === 'tool-result.done') {
     console.log(event)
   }
 }
@@ -93,7 +93,7 @@ for await (const event of fullStream) {
 console.log(text.join(''))
 ```
 
-Use `textStream` for plain live text. Use `fullStream` when the caller needs tool events, reasoning deltas, or finish metadata.
+Use `textStream` for plain live text. Use `eventStream` for normalized tool events, reasoning deltas, and step metadata. Use `fullStream` when the caller needs provider-level chat completion chunks.
 
 ## Validated structured output
 

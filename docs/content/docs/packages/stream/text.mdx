@@ -47,14 +47,24 @@ for await (const textPart of textStream) {
 console.log(text)
 ```
 
-### Streams
+### Streams and events
 
 `streamText()` exposes multiple streams for different levels of detail:
 
 - `textStream`: text deltas only
 - `reasoningTextStream`: reasoning deltas only, when the model emits them
-- `eventStream`: normalized xsAI events, such as `text-delta`, `reasoning-delta`, `tool-call`, `tool-result`, and `finish`
+- `eventStream`: normalized xsAI events
 - `fullStream`: parsed chat completion chunks from the provider
+
+`eventStream` emits events for each step. Depending on the response, a step can include:
+
+- `step.start` and `step.done` (with optional usage on `step.done`)
+- `reasoning.start`, `reasoning.delta`, and `reasoning.done`
+- `text.start`, `text.delta`, and `text.done`
+- `tool-call.start`, `tool-call.delta`, and `tool-call.done`
+- `tool-result.done`
+
+Event names use dot notation. Use `eventStream` for normalized text, reasoning, and tool events; use `fullStream` when you need the provider's original chat completion chunks.
 
 ```ts twoslash
 import { streamText } from '@xsai/stream-text'
@@ -71,7 +81,11 @@ const { eventStream, fullStream } = streamText({
 })
 
 for await (const event of eventStream) {
-  console.log(event.type)
+  if (event.type === 'text.delta')
+    console.log(event.delta)
+
+  if (event.type === 'step.done')
+    console.log('step usage:', event.usage)
 }
 
 for await (const chunk of fullStream) {
