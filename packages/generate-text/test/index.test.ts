@@ -80,7 +80,7 @@ describe('@xsai/generate-text', () => {
       toolCallId: undefined,
     })
 
-    expect(steps).toBe(2)
+    expect(steps).toHaveLength(2)
     expect(steps[0].toolCalls.map(({ args, ...rest }) => ({
       ...cleanToolCallId(rest),
       args: JSON.parse(args) as Record<string, unknown>,
