@@ -46,6 +46,7 @@ Important result shapes:
 - array mode: `elementStream`
 
 `streamObject` is async because schema conversion happens before the text stream starts.
+Like `streamText`, it also exposes `textStream`, `eventStream`, and `fullStream`, plus the result promises.
 
 ## Tool helpers
 
