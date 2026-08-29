@@ -100,6 +100,7 @@ export interface OpenRouterOptions {
  * @see {@link https://openrouter.ai/models}
  */
 export const createOpenRouter = (apiKey: string, baseURL = 'https://openrouter.ai/api/v1/') => merge(
+  // eslint-disable-next-line ts/no-unnecessary-type-assertion
   {
     chat: (model: string, openRouterOptions?: OpenRouterOptions) => {
       const requestOptions: CommonRequestOptions = { apiKey, baseURL, model }

@@ -31,8 +31,8 @@ describe('@xsai/generate-text', () => {
 
     expect(text).toStrictEqual('YES')
     expect(finishReason).toBe('stop')
-    expect(toolCalls.length).toBe(0)
-    expect(toolResults.length).toBe(0)
+    expect(toolCalls).toHaveLength(0)
+    expect(toolResults).toHaveLength(0)
     expect(steps).toMatchSnapshot()
     expect(totalUsage).toStrictEqual(usage)
 
@@ -80,7 +80,7 @@ describe('@xsai/generate-text', () => {
       toolCallId: undefined,
     })
 
-    expect(steps.length).toBe(2)
+    expect(steps).toHaveLength(2)
     expect(steps[0].toolCalls.map(({ args, ...rest }) => ({
       ...cleanToolCallId(rest),
       args: JSON.parse(args) as Record<string, unknown>,

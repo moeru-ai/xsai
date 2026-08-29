@@ -1,4 +1,3 @@
-import { LangfuseSpanProcessor } from '@langfuse/otel'
 import { InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { describe, expect, it } from 'vitest'
@@ -11,7 +10,6 @@ describe('embed', () => {
   const tracerProvider = new NodeTracerProvider({
     spanProcessors: [
       new SimpleSpanProcessor(memoryExporter),
-      new LangfuseSpanProcessor(),
     ],
   })
   tracerProvider.register()
@@ -24,7 +22,7 @@ describe('embed', () => {
       model: 'all-minilm',
     })
 
-    expect(embedding.length).toBe(384)
+    expect(embedding).toHaveLength(384)
     expect(usage.prompt_tokens).toBe(7)
     expect(usage.total_tokens).toBe(7)
 

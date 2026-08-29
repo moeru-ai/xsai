@@ -12,10 +12,8 @@ export interface SmoothStreamOptions {
 }
 
 const CHUNKING_REGEXPS = {
-  // eslint-disable-next-line sonarjs/slow-regex
-  line: /[^\n]*\n/,
-  // eslint-disable-next-line sonarjs/slow-regex
-  word: /\s*\S+\s+/,
+  line: /^[^\n]*\n/,
+  word: /^\s*\S+\s+/,
 }
 
 /**

@@ -68,5 +68,5 @@ export const cleanAttributes = (attributes: Attributes) => Object.fromEntries(
 
       return [key, value]
     })
-    .filter(([_, v]) => v != null) as [string, AttributeValue][],
+    .filter(([, v]) => v != null) as [string, AttributeValue][],
 )

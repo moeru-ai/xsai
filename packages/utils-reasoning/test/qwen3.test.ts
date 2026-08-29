@@ -107,15 +107,64 @@ const randomSplitTextToStream = (text: string): ReadableStream<string> => new Re
   },
 })
 
+const reasoningStreamCases = [
+  {
+    expectedReasoning: 'reasoning',
+    expectedText: ' text.',
+    name: 'should extract reasoning with default options',
+    options: undefined,
+    text: '<think>reasoning</think> text.',
+  },
+  {
+    expectedReasoning: 'reasoning',
+    expectedText: ' text.',
+    name: 'should extract reasoning from a stream',
+    options: { tagName: 'think' },
+    text: '<think>reasoning</think> text.',
+  },
+  {
+    expectedReasoning: '',
+    expectedText: 'This is a test text.',
+    name: 'should return the original text if no reasoning is found',
+    options: { tagName: 'think' },
+    text: 'This is a test text.',
+  },
+  {
+    expectedReasoning: '',
+    expectedText: '',
+    name: 'should handle empty strings',
+    options: { tagName: 'think' },
+    text: '',
+  },
+  {
+    expectedReasoning: 'reasoning',
+    expectedText: '',
+    name: 'should handle reasoning only',
+    options: { tagName: 'think' },
+    text: '<think>reasoning</think>',
+  },
+  {
+    expectedReasoning: 'reasoning1\nreasoning2',
+    expectedText: 'text1\ntext2',
+    name: 'should handle multiple reasoning tags',
+    options: { tagName: 'think' },
+    text: '<think>reasoning1</think>text1<think>reasoning2</think>text2',
+  },
+  {
+    expectedReasoning: 'reasoning',
+    expectedText: ' This is a test.',
+    name: 'should handle startWithReasoning option',
+    options: { startWithReasoning: true, tagName: 'think' },
+    text: 'reasoning</think> This is a test.',
+  },
+] as const
+
 describe('extractReasoningStream', () => {
-  it('should extract reasoning with default options', async () => {
-    const text = '<think>reasoning</think> text.'
+  it.each(reasoningStreamCases)('$name', async ({ expectedReasoning, expectedText, options, text }) => {
     const stream = randomSplitTextToStream(text)
-
-    const {
-      reasoningStream,
-      textStream,
-    } = extractReasoningStream(stream)
+    const { reasoningStream, textStream } = options == null
+      ? extractReasoningStream(stream)
+      : extractReasoningStream(stream, options)
 
     let reasoningResult = ''
     for await (const chunk of reasoningStream) {
@@ -127,146 +176,8 @@ describe('extractReasoningStream', () => {
       textResult += chunk
     }
 
-    expect(reasoningResult).toEqual('reasoning')
-    expect(textResult).toEqual(' text.')
-  })
-
-  it('should extract reasoning from a stream', async () => {
-    const text = '<think>reasoning</think> text.'
-    const stream = randomSplitTextToStream(text)
-
-    const {
-      reasoningStream,
-      textStream,
-    } = extractReasoningStream(stream, { tagName: 'think' })
-
-    let reasoningResult = ''
-    for await (const chunk of reasoningStream) {
-      reasoningResult += chunk
-    }
-
-    let textResult = ''
-    for await (const chunk of textStream) {
-      textResult += chunk
-    }
-
-    expect(reasoningResult).toEqual('reasoning')
-    expect(textResult).toEqual(' text.')
-  })
-
-  it('should return the original text if no reasoning is found', async () => {
-    const text = 'This is a test text.'
-    const stream = randomSplitTextToStream(text)
-
-    const {
-      reasoningStream,
-      textStream,
-    } = extractReasoningStream(stream, { tagName: 'think' })
-
-    let reasoningResult = ''
-    for await (const chunk of reasoningStream) {
-      reasoningResult += chunk
-    }
-
-    let textResult = ''
-    for await (const chunk of textStream) {
-      textResult += chunk
-    }
-
-    expect(reasoningResult).toEqual('')
-    expect(textResult).toEqual('This is a test text.')
-  })
-
-  it('should handle empty strings', async () => {
-    const text = ''
-    const stream = randomSplitTextToStream(text)
-
-    const {
-      reasoningStream,
-      textStream,
-    } = extractReasoningStream(stream, { tagName: 'think' })
-
-    let reasoningResult = ''
-    for await (const chunk of reasoningStream) {
-      reasoningResult += chunk
-    }
-
-    let textResult = ''
-    for await (const chunk of textStream) {
-      textResult += chunk
-    }
-
-    expect(reasoningResult).toEqual('')
-    expect(textResult).toEqual('')
-  })
-
-  it('should handle reasoning only', async () => {
-    const text = '<think>reasoning</think>'
-    const stream = randomSplitTextToStream(text)
-
-    const {
-      reasoningStream,
-      textStream,
-    } = extractReasoningStream(stream, { tagName: 'think' })
-
-    let reasoningResult = ''
-    for await (const chunk of reasoningStream) {
-      reasoningResult += chunk
-    }
-
-    let textResult = ''
-    for await (const chunk of textStream) {
-      textResult += chunk
-    }
-
-    expect(reasoningResult).toEqual('reasoning')
-    expect(textResult).toEqual('')
-  })
-
-  it('should handle multiple reasoning tags', async () => {
-    const text = '<think>reasoning1</think>text1<think>reasoning2</think>text2'
-    const stream = randomSplitTextToStream(text)
-
-    const {
-      reasoningStream,
-      textStream,
-    } = extractReasoningStream(stream, { tagName: 'think' })
-
-    let reasoningResult = ''
-    for await (const chunk of reasoningStream) {
-      reasoningResult += chunk
-    }
-
-    let textResult = ''
-    for await (const chunk of textStream) {
-      textResult += chunk
-    }
-
-    expect(reasoningResult).toEqual('reasoning1\nreasoning2')
-    expect(textResult).toEqual('text1\ntext2')
-  })
-
-  it('should handle startWithReasoning option', async () => {
-    const text = 'reasoning</think> This is a test.'
-    const stream = randomSplitTextToStream(text)
-
-    const {
-      reasoningStream,
-      textStream,
-    } = extractReasoningStream(stream, { startWithReasoning: true, tagName: 'think' })
-
-    let reasoningResult = ''
-    for await (const chunk of reasoningStream) {
-      reasoningResult += chunk
-    }
-
-    let textResult = ''
-    for await (const chunk of textStream) {
-      textResult += chunk
-    }
-
-    expect(reasoningResult).toEqual('reasoning')
-    expect(textResult).toEqual(' This is a test.')
+    expect(reasoningResult).toEqual(expectedReasoning)
+    expect(textResult).toEqual(expectedText)
   })
 
   // it('real qwen3 test', async () => {
