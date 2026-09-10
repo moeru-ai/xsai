@@ -149,7 +149,11 @@ describe('normalizeTools', () => {
       },
       {
         name: 'noop',
-        parameters: tools[1].inputSchema,
+        parameters: {
+          additionalProperties: false,
+          properties: undefined,
+          type: 'object',
+        },
         strict: true,
         type: 'function',
       },
