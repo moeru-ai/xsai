@@ -75,6 +75,27 @@ describe('normalizeInput', () => {
     ])
   })
 
+  it('normalizes rich tool result content', () => {
+    expect(normalizeInput([{
+      content: [{
+        callId: 'call_1',
+        output: [
+          { data: new URL('https://example.com/result.png'), detail: 'low', type: 'image' },
+          { text: '{"temperature":24}', type: 'text' },
+        ],
+        type: 'tool-result',
+      }],
+      role: 'user',
+    }])).toEqual([{
+      call_id: 'call_1',
+      output: [
+        { detail: 'low', image_url: 'https://example.com/result.png', type: 'input_image' },
+        { text: '{"temperature":24}', type: 'input_text' },
+      ],
+      type: 'function_call_output',
+    }])
+  })
+
   it('normalizes reasoning content as a reasoning item', () => {
     expect(normalizeInput([{
       content: [{

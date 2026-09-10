@@ -6,6 +6,7 @@ import type {
   TextPart,
   ToolCallPart,
   ToolResultPart,
+  ToolResultPartContent,
 } from '@xsai/text-primitives'
 
 import type {
@@ -81,9 +82,18 @@ const normalizeToolCallPart = (part: ToolCallPart): FunctionCallItemParam => ({
   type: 'function_call',
 })
 
+const normalizeToolResultContent = (content: ToolResultPartContent): InputImageContentParamAutoParam | InputTextContentParam => {
+  switch (content.type) {
+    case 'image':
+      return normalizeImagePart(content)
+    case 'text':
+      return { text: content.text, type: 'input_text' }
+  }
+}
+
 const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemParam => ({
   call_id: part.callId,
-  output: part.output,
+  output: Array.isArray(part.output) ? part.output.map(normalizeToolResultContent) : part.output,
   type: 'function_call_output',
 })
 
