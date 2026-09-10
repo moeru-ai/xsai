@@ -9,12 +9,9 @@
     "build": "turbo build",
     "build:packages": "turbo -F=!./docs build",
     "bump": "bumpp",
-    "docs:dev": "pnpm -rF @xsai/docs dev",
     "lint": "moeru-lint .",
     "test": "pnpm -r --workspace-concurrency=1 test",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "test:speech": "pnpm -r test:speech",
-    "test:transcription": "pnpm -r test:transcription"
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
