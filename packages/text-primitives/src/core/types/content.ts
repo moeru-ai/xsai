@@ -70,6 +70,8 @@ export interface ToolCallPart {
 
 export interface ToolResultPart {
   callId: string
-  output: string
+  output: string | ToolResultPartContent[]
   type: 'tool-result'
 }
+
+export type ToolResultPartContent = ImagePart | TextPart
