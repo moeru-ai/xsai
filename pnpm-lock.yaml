@@ -267,6 +267,9 @@ importers:
       '@xsai/text-primitives':
         specifier: 'workspace:'
         version: link:../text-primitives
+      xsschema:
+        specifier: 'workspace:'
+        version: link:../xsschema
 
   packages/xsschema:
     devDependencies:

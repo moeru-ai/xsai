@@ -28,7 +28,8 @@ export const tool = <TInput extends StandardJSONSchemaV1, TOutput extends Standa
   execute: options.execute != null
     ? async (input) => {
       // TODO: validate
-      const result = options.execute(input)
+      // eslint-disable-next-line ts/await-thenable
+      const result = await options.execute(input)
       if (options.outputSchema) // TODO: validate
         return JSON.stringify(result)
       else

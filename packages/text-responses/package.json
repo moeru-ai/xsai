@@ -29,6 +29,7 @@
     "@xsai/text-primitives": "workspace:"
   },
   "devDependencies": {
-    "@xsai/text-primitives": "workspace:"
+    "@xsai/text-primitives": "workspace:",
+    "xsschema": "workspace:"
   }
 }
