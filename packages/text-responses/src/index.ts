@@ -7,6 +7,7 @@ import { normalizeInput, normalizeTools, ResponsesEventStream } from './utils'
 export const responses = (modelOptions: ModelOptions): Model => ({
   metadata: {
     api: 'responses',
+    baseURL: modelOptions.baseURL,
     model: modelOptions.model,
   },
   stream: async (textOptions) => {
@@ -18,10 +19,7 @@ export const responses = (modelOptions: ModelOptions): Model => ({
         stream: true,
         tools: normalizeTools(textOptions.tools),
       }),
-      headers: {
-        'Content-Type': 'application/json',
-        ...requestHeaders(modelOptions.apiKey, modelOptions.extraHeaders),
-      },
+      headers: requestHeaders(modelOptions.apiKey, modelOptions.extraHeaders),
       method: 'POST',
       signal: textOptions.signal,
     })
