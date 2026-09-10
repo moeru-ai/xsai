@@ -9,7 +9,7 @@ export interface Model {
 
 export interface ModelMetadata {
   api?: string
-  baseURL?: string
+  baseURL?: string | URL
   model?: string
   provider?: string
 }
