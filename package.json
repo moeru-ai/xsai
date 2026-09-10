@@ -12,11 +12,13 @@
     "docs:dev": "pnpm -rF @xsai/docs dev",
     "lint": "moeru-lint .",
     "test": "pnpm -r --workspace-concurrency=1 test",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "test:speech": "pnpm -r test:speech",
     "test:transcription": "pnpm -r test:transcription"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
+    "@hey-api/openapi-ts": "catalog:",
     "@moeru/eslint-config": "catalog:",
     "@moeru/tsconfig": "catalog:",
     "@pnpm/find-workspace-dir": "catalog:",

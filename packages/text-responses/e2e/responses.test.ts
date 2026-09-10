@@ -1,0 +1,34 @@
+import type { Event } from '@xsai/text-primitives'
+
+import { describe, expect, it } from 'vitest'
+
+import { responses } from '../src'
+
+const baseURL = process.env.XSAI_E2E_BASE_URL ?? 'http://localhost:11434/v1/'
+const modelName = process.env.XSAI_E2E_MODEL ?? 'qwen3.5:0.8b'
+
+describe('responses e2e', () => {
+  it('streams a response from the local Ollama Responses API', async () => {
+    const stream = await responses({ baseURL, model: modelName }).stream({
+      input: 'Reply with exactly: e2e-ok',
+    })
+    const reader = stream.getReader()
+    const events: Event[] = []
+
+    while (true) {
+      const result = await reader.read()
+      if (result.done)
+        break
+
+      events.push(result.value)
+    }
+
+    const text = events
+      .filter((event): event is Extract<Event, { type: 'text.delta' }> => event.type === 'text.delta')
+      .map(event => event.delta)
+      .join('')
+
+    expect(text.length).toBeGreaterThan(0)
+    expect(events.some(event => event.type === 'finish')).toBe(true)
+  })
+})

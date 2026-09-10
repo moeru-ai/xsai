@@ -6,6 +6,7 @@
   "include": [
     "examples/**/src",
     "packages/**/src",
+    "packages/**/e2e",
     "packages/**/test"
   ]
 }

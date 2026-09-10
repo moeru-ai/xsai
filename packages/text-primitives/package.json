@@ -1,0 +1,31 @@
+{
+  "name": "@xsai/text-primitives",
+  "type": "module",
+  "version": "0.5.0",
+  "private": true,
+  "sideEffects": false,
+  "exports": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "pkgroll",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@standard-schema/spec": "catalog:",
+    "eventsource-parser": "catalog:"
+  }
+}

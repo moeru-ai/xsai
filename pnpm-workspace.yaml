@@ -1,21 +1,26 @@
 # eslint-disable pnpm/yaml-no-duplicate-catalog-item
 
-minimumReleaseAgeExclude:
-  - lucide-react@1.37.0
-
-shellEmulator: true
-
+minimumReleaseAgeExcludePrune: true
 trustPolicy: no-downgrade
+shellEmulator: true
 
 packages:
   - docs
   - examples/*
   - packages/*
-  - packages-ext/*
-  - packages-top/*
+
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+  protobufjs: false
+  sharp: false
+
+onlyBuiltDependencies:
+  - unrs-resolver
 
 catalog:
   '@antfu/eslint-config': ^9.5.1
+  '@hey-api/openapi-ts': ^0.99.0
   '@moeru/eslint-config': ^0.1.0-beta.20
   '@moeru/tsconfig': ^0.1.0-beta.20
   '@pnpm/find-workspace-dir': ^1000.1.5
@@ -27,6 +32,7 @@ catalog:
   bumpp: ^12.3.0
   eslint: ^10.10.0
   eslint-plugin-oxlint: ^1.82.0
+  eventsource-parser: ^4.1.0
   oxlint: ^1.82.0
   pkgroll: ^2.28.1
   tsdown: ^0.23.0
@@ -49,12 +55,3 @@ catalogs:
     effect: ^3.21.0
     sury: ^11.0.0-alpha.4
     zod: ^4.3.6
-
-onlyBuiltDependencies:
-  - unrs-resolver
-
-allowBuilds:
-  '@parcel/watcher': false
-  esbuild: false
-  protobufjs: false
-  sharp: false
