@@ -1,11 +1,11 @@
-import type { Event } from '@xsai/text-primitives'
+import type { Event, TextDeltaEvent } from '@xsai/text-primitives'
 
 import { describe, expect, it } from 'vitest'
 
 import { responses } from '../src'
 
-const baseURL = process.env.XSAI_E2E_BASE_URL ?? 'http://localhost:11434/v1/'
-const modelName = process.env.XSAI_E2E_MODEL ?? 'qwen3.5:0.8b'
+const baseURL = process.env.XSAI_E2E_BASE_URL!
+const modelName = process.env.XSAI_E2E_MODEL!
 
 describe('responses e2e', () => {
   it('streams a response from the local Ollama Responses API', async () => {
@@ -24,7 +24,7 @@ describe('responses e2e', () => {
     }
 
     const text = events
-      .filter((event): event is Extract<Event, { type: 'text.delta' }> => event.type === 'text.delta')
+      .filter((event): event is TextDeltaEvent => event.type === 'text.delta')
       .map(event => event.delta)
       .join('')
 
