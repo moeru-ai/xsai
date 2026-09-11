@@ -1,4 +1,4 @@
-import type { TextOptions } from '../text'
 import type { Event } from './event'
+import type { ModelContext } from './model-context'
 
-export type LanguageModel = (options: Omit<TextOptions, 'model'>) => Promise<ReadableStream<Event>>
+export type LanguageModel = (options: ModelContext) => Promise<ReadableStream<Event>>
