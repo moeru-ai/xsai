@@ -20,5 +20,6 @@ export interface ModelOptions {
   baseURL: string | URL
   extraBody?: Record<string, unknown>
   extraHeaders?: Record<string, string>
+  fetch?: typeof fetch
   model: string
 }
