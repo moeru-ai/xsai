@@ -1,28 +1,29 @@
-import type { Model, ModelOptions } from '@xsai/text-primitives'
+import type { HttpOptions } from '@xsai/shared'
+import type { Model } from '@xsai/text-primitives'
 
 import { EventSourceDataStream, EventSourceParserStream, requestHeaders, requestURL } from '@xsai/text-primitives'
 
 import { normalizeInput, normalizeTools, ResponsesEventStream } from './utils'
 
-export const responses = (modelOptions: ModelOptions): Model => ({
+export const responses = (options: HttpOptions): Model => ({
   metadata: {
     api: 'responses',
-    baseURL: modelOptions.baseURL,
-    model: modelOptions.model,
+    baseURL: options.baseURL,
+    model: options.model,
   },
-  stream: async (textOptions) => {
-    const res = await (modelOptions.fetch ?? fetch)(requestURL('responses', modelOptions.baseURL), {
+  stream: async (context) => {
+    const res = await (options.fetch ?? fetch)(requestURL('responses', options.baseURL), {
       body: JSON.stringify({
-        ...modelOptions.extraBody,
-        input: normalizeInput(textOptions.input),
-        instructions: textOptions.instructions,
-        model: modelOptions.model,
+        ...options.extraBody,
+        input: normalizeInput(context.input),
+        instructions: context.instructions,
+        model: options.model,
         stream: true,
-        tools: normalizeTools(textOptions.tools),
+        tools: normalizeTools(context.tools),
       }),
-      headers: requestHeaders(modelOptions.apiKey, modelOptions.extraHeaders),
+      headers: requestHeaders(options.apiKey, options.extraHeaders),
       method: 'POST',
-      signal: textOptions.signal,
+      signal: context.signal,
     })
 
     return res.body!
