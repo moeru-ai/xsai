@@ -65,11 +65,15 @@ describe('responses event stream', () => {
         type: 'response.output_item.done',
       }),
       message({
-        content_index: 0,
-        item_id: 'message_1',
+        item: {
+          content: [],
+          id: 'message_1',
+          role: 'assistant',
+          status: 'in_progress',
+          type: 'message',
+        },
         output_index: 1,
-        part: { text: '', type: 'output_text' },
-        type: 'response.content_part.added',
+        type: 'response.output_item.added',
       }),
       message({
         content_index: 0,
@@ -79,23 +83,37 @@ describe('responses event stream', () => {
         type: 'response.output_text.delta',
       }),
       message({
-        content_index: 0,
-        item_id: 'message_1',
+        item: {
+          content: [{ annotations: [], text: 'Hello', type: 'output_text' }],
+          id: 'message_1',
+          role: 'assistant',
+          status: 'completed',
+          type: 'message',
+        },
         output_index: 1,
-        part: { text: 'Hello', type: 'output_text' },
-        type: 'response.content_part.done',
+        type: 'response.output_item.done',
       }),
       message({
         response: {
           error: null,
           incomplete_details: null,
-          output: [{
-            content: [{ annotations: [], text: 'Hello', type: 'output_text' }],
-            id: 'message_1',
-            role: 'assistant',
-            status: 'completed',
-            type: 'message',
-          }],
+          output: [
+            {
+              arguments: '{"location":"Taipei"}',
+              call_id: 'call_1',
+              id: 'fc_1',
+              name: 'weather',
+              status: 'completed',
+              type: 'function_call',
+            },
+            {
+              content: [{ annotations: [], text: 'Hello', type: 'output_text' }],
+              id: 'message_1',
+              role: 'assistant',
+              status: 'completed',
+              type: 'message',
+            },
+          ],
           usage: {
             input_tokens: 3,
             output_tokens: 2,
@@ -138,7 +156,16 @@ describe('responses event stream', () => {
       { contentType: 'text', index: 1, type: 'content.end' },
       {
         message: {
-          content: 'Hello',
+          content: [
+            {
+              arguments: '{"location":"Taipei"}',
+              callId: 'call_1',
+              id: 'fc_1',
+              name: 'weather',
+              type: 'tool-call',
+            },
+            { text: 'Hello', type: 'text' },
+          ],
           id: 'message_1',
           role: 'assistant',
         },
@@ -180,7 +207,14 @@ describe('responses event stream', () => {
         response: {
           error: null,
           incomplete_details: { reason: 'max_output_tokens' },
-          output: [],
+          output: [{
+            content: [{ text: 'Think', type: 'reasoning_text' }],
+            encrypted_content: 'encrypted',
+            id: 'reasoning_1',
+            status: 'incomplete',
+            summary: [{ text: 'Think more', type: 'summary_text' }],
+            type: 'reasoning',
+          }],
           usage: null,
         },
         type: 'response.incomplete',
@@ -196,7 +230,18 @@ describe('responses event stream', () => {
       { delta: ' more', index: 0, type: 'reasoning.delta' },
       { contentType: 'reasoning', index: 0, type: 'content.end' },
       {
-        message: { content: '', role: 'assistant' },
+        message: {
+          content: [{
+            content: [
+              { text: 'Think more', type: 'summary' },
+              { text: 'Think', type: 'text' },
+              { text: 'encrypted', type: 'encrypted' },
+            ],
+            id: 'reasoning_1',
+            type: 'reasoning',
+          }],
+          role: 'assistant',
+        },
         reason: 'max_output_tokens',
         type: 'finish',
       },
