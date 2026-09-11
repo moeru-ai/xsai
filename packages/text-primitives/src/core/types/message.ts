@@ -6,7 +6,7 @@ export interface AssistantMessage {
   role: 'assistant'
 }
 
-export type AssistantMessageContent = ImagePart | ReasoningPart | TextPart | ToolCallPart
+export type AssistantMessageContent = ReasoningPart | TextPart | ToolCallPart
 
 export interface DeveloperMessage {
   content: readonly DeveloperMessageContent[] | string

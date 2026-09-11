@@ -52,9 +52,33 @@ describe('normalizeInput', () => {
       {
         content: [
           { detail: 'high', image_url: 'https://example.com/image.png', type: 'input_image' },
+        ],
+        role: 'user',
+        type: 'message',
+      },
+      {
+        content: [
           { file_url: 'https://example.com/document.pdf', type: 'input_file' },
+        ],
+        role: 'user',
+        type: 'message',
+      },
+      {
+        content: [
           { file_url: 'https://example.com/string-document.pdf', type: 'input_file' },
+        ],
+        role: 'user',
+        type: 'message',
+      },
+      {
+        content: [
           { file_data: 'JVBERi0xLjQ=', type: 'input_file' },
+        ],
+        role: 'user',
+        type: 'message',
+      },
+      {
+        content: [
           { text: 'What is in these files?', type: 'input_text' },
         ],
         role: 'user',
@@ -65,14 +89,27 @@ describe('normalizeInput', () => {
         call_id: 'call_1',
         id: 'fc_1',
         name: 'weather',
+        status: 'completed',
         type: 'function_call',
       },
       {
         call_id: 'call_1',
         output: '{"temperature":24}',
+        status: 'completed',
         type: 'function_call_output',
       },
     ])
+  })
+
+  it('sends parseable file data as a file URL', () => {
+    expect(normalizeInput([{
+      content: [{ data: 'data:application/pdf;base64,JVBERi0xLjQ=', type: 'file' }],
+      role: 'user',
+    }])).toEqual([{
+      content: [{ file_url: 'data:application/pdf;base64,JVBERi0xLjQ=', type: 'input_file' }],
+      role: 'user',
+      type: 'message',
+    }])
   })
 
   it('normalizes rich tool result content', () => {
@@ -92,6 +129,23 @@ describe('normalizeInput', () => {
         { detail: 'low', image_url: 'https://example.com/result.png', type: 'input_image' },
         { text: '{"temperature":24}', type: 'input_text' },
       ],
+      status: 'completed',
+      type: 'function_call_output',
+    }])
+  })
+
+  it('preserves a single text tool result block as an array', () => {
+    expect(normalizeInput([{
+      content: [{
+        callId: 'call_1',
+        output: [{ text: 'done', type: 'text' }],
+        type: 'tool-result',
+      }],
+      role: 'user',
+    }])).toEqual([{
+      call_id: 'call_1',
+      output: [{ text: 'done', type: 'input_text' }],
+      status: 'completed',
       type: 'function_call_output',
     }])
   })
@@ -112,6 +166,76 @@ describe('normalizeInput', () => {
       id: 'reasoning_1',
       summary: [{ text: 'Summary', type: 'summary_text' }],
       type: 'reasoning',
+    }])
+  })
+
+  it('preserves reasoning blocks and emits them before assistant output', () => {
+    expect(normalizeInput([{
+      content: [
+        { text: 'answer', type: 'text' },
+        {
+          content: [
+            { text: 'summary', type: 'summary' },
+            { text: 'private thought', type: 'text' },
+            { data: 'redacted thought', type: 'redacted' },
+          ],
+          id: 'reasoning_1',
+          type: 'reasoning',
+        },
+        { arguments: '{}', callId: 'call_1', id: 'fc_1', name: 'lookup', type: 'tool-call' },
+      ],
+      id: 'message_1',
+      role: 'assistant',
+    }])).toEqual([
+      {
+        content: [{ text: 'private thought', type: 'reasoning_text' }],
+        encrypted_content: 'redacted thought',
+        id: 'reasoning_1',
+        summary: [{ text: 'summary', type: 'summary_text' }],
+        type: 'reasoning',
+      },
+      {
+        content: [{ text: 'answer', type: 'output_text' }],
+        id: 'message_1',
+        role: 'assistant',
+        status: 'completed',
+        type: 'message',
+      },
+      {
+        arguments: '{}',
+        call_id: 'call_1',
+        id: 'fc_1',
+        name: 'lookup',
+        status: 'completed',
+        type: 'function_call',
+      },
+    ])
+  })
+
+  it('omits reasoning without a provider-issued id and keeps idless assistant text replayable', () => {
+    expect(normalizeInput([{
+      content: [
+        { content: [{ text: 'unreplayable', type: 'text' }], type: 'reasoning' },
+        { text: 'answer', type: 'text' },
+      ],
+      role: 'assistant',
+    }])).toEqual([{
+      content: 'answer',
+      role: 'assistant',
+      type: 'message',
+    }])
+  })
+
+  it('omits non-native function-call item ids', () => {
+    expect(normalizeInput([{
+      content: [{ arguments: '{}', callId: 'call_1', id: 'local-call-id', name: 'lookup', type: 'tool-call' }],
+      role: 'assistant',
+    }])).toEqual([{
+      arguments: '{}',
+      call_id: 'call_1',
+      name: 'lookup',
+      status: 'completed',
+      type: 'function_call',
     }])
   })
 })
