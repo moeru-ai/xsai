@@ -22,6 +22,9 @@
   "scripts": {
     "build": "pkgroll"
   },
+  "dependencies": {
+    "@xsai/shared": "workspace:"
+  },
   "devDependencies": {
     "@standard-schema/spec": "catalog:",
     "eventsource-parser": "catalog:"

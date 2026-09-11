@@ -1,9 +1,10 @@
 import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
+import type { Promisable } from '@xsai/shared'
 
 import type { ToolResultPartContent } from './types/content'
 
 export interface ExecutableTool extends Tool {
-  execute: (input: unknown) => Promise<string | ToolResultPartContent[]> | string | ToolResultPartContent[]
+  execute: (input: unknown) => Promisable<string | ToolResultPartContent[]>
 }
 
 export interface Tool {
@@ -17,8 +18,8 @@ export interface Tool {
 export interface ToolOptions<TInput extends StandardJSONSchemaV1, TOutput extends StandardJSONSchemaV1 | undefined = undefined> {
   description?: string
   execute?: (input: StandardSchemaV1.InferInput<TInput>) => TOutput extends StandardJSONSchemaV1
-    ? Promise<StandardSchemaV1.InferInput<TOutput>> | StandardSchemaV1.InferInput<TOutput>
-    : Promise<string | ToolResultPartContent[]> | string | ToolResultPartContent[]
+    ? Promisable<StandardSchemaV1.InferInput<TOutput>>
+    : Promisable<string | ToolResultPartContent[]>
   inputSchema: TInput
   name: string
   outputSchema?: TOutput
