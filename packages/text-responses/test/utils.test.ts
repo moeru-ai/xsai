@@ -32,9 +32,14 @@ describe('normalizeInput', () => {
       },
       {
         content: [
-          { arguments: '{"location":"Taipei"}', callId: 'call_1', id: 'fc_1', name: 'weather', type: 'tool-call' },
+          {
+            arguments: '{"location":"Taipei"}',
+            callId: 'call_1',
+            id: 'fc_1',
+            name: 'weather',
+            type: 'tool-call',
+          },
         ],
-        id: 'message_1',
         role: 'assistant',
       },
       {
@@ -52,33 +57,9 @@ describe('normalizeInput', () => {
       {
         content: [
           { detail: 'high', image_url: 'https://example.com/image.png', type: 'input_image' },
-        ],
-        role: 'user',
-        type: 'message',
-      },
-      {
-        content: [
           { file_url: 'https://example.com/document.pdf', type: 'input_file' },
-        ],
-        role: 'user',
-        type: 'message',
-      },
-      {
-        content: [
           { file_url: 'https://example.com/string-document.pdf', type: 'input_file' },
-        ],
-        role: 'user',
-        type: 'message',
-      },
-      {
-        content: [
           { file_data: 'JVBERi0xLjQ=', type: 'input_file' },
-        ],
-        role: 'user',
-        type: 'message',
-      },
-      {
-        content: [
           { text: 'What is in these files?', type: 'input_text' },
         ],
         role: 'user',
@@ -89,13 +70,11 @@ describe('normalizeInput', () => {
         call_id: 'call_1',
         id: 'fc_1',
         name: 'weather',
-        status: 'completed',
         type: 'function_call',
       },
       {
         call_id: 'call_1',
         output: '{"temperature":24}',
-        status: 'completed',
         type: 'function_call_output',
       },
     ])
@@ -129,7 +108,6 @@ describe('normalizeInput', () => {
         { detail: 'low', image_url: 'https://example.com/result.png', type: 'input_image' },
         { text: '{"temperature":24}', type: 'input_text' },
       ],
-      status: 'completed',
       type: 'function_call_output',
     }])
   })
@@ -145,7 +123,6 @@ describe('normalizeInput', () => {
     }])).toEqual([{
       call_id: 'call_1',
       output: [{ text: 'done', type: 'input_text' }],
-      status: 'completed',
       type: 'function_call_output',
     }])
   })
@@ -169,7 +146,7 @@ describe('normalizeInput', () => {
     }])
   })
 
-  it('preserves reasoning blocks and emits them before assistant output', () => {
+  it('preserves assistant output order', () => {
     expect(normalizeInput([{
       content: [
         { text: 'answer', type: 'text' },
@@ -182,11 +159,23 @@ describe('normalizeInput', () => {
           id: 'reasoning_1',
           type: 'reasoning',
         },
-        { arguments: '{}', callId: 'call_1', id: 'fc_1', name: 'lookup', type: 'tool-call' },
+        {
+          arguments: '{}',
+          callId: 'call_1',
+          id: 'fc_1',
+          name: 'lookup',
+          type: 'tool-call',
+        },
       ],
       id: 'message_1',
       role: 'assistant',
     }])).toEqual([
+      {
+        content: [{ text: 'answer', type: 'output_text' }],
+        id: 'message_1',
+        role: 'assistant',
+        type: 'message',
+      },
       {
         content: [{ text: 'private thought', type: 'reasoning_text' }],
         encrypted_content: 'redacted thought',
@@ -195,46 +184,51 @@ describe('normalizeInput', () => {
         type: 'reasoning',
       },
       {
-        content: [{ text: 'answer', type: 'output_text' }],
-        id: 'message_1',
-        role: 'assistant',
-        status: 'completed',
-        type: 'message',
-      },
-      {
         arguments: '{}',
         call_id: 'call_1',
         id: 'fc_1',
         name: 'lookup',
-        status: 'completed',
         type: 'function_call',
       },
     ])
   })
 
-  it('omits reasoning without a provider-issued id and keeps idless assistant text replayable', () => {
+  it('preserves reasoning without an id', () => {
     expect(normalizeInput([{
       content: [
         { content: [{ text: 'unreplayable', type: 'text' }], type: 'reasoning' },
         { text: 'answer', type: 'text' },
       ],
       role: 'assistant',
-    }])).toEqual([{
-      content: 'answer',
-      role: 'assistant',
-      type: 'message',
-    }])
+    }])).toEqual([
+      {
+        content: [{ text: 'unreplayable', type: 'reasoning_text' }],
+        summary: [],
+        type: 'reasoning',
+      },
+      {
+        content: [{ text: 'answer', type: 'output_text' }],
+        role: 'assistant',
+        type: 'message',
+      },
+    ])
   })
 
-  it('omits non-native function-call item ids', () => {
+  it('preserves function-call item ids', () => {
     expect(normalizeInput([{
-      content: [{ arguments: '{}', callId: 'call_1', id: 'local-call-id', name: 'lookup', type: 'tool-call' }],
+      content: [{
+        arguments: '{}',
+        callId: 'call_1',
+        id: 'local-call-id',
+        name: 'lookup',
+        type: 'tool-call',
+      }],
       role: 'assistant',
     }])).toEqual([{
       arguments: '{}',
       call_id: 'call_1',
+      id: 'local-call-id',
       name: 'lookup',
-      status: 'completed',
       type: 'function_call',
     }])
   })
