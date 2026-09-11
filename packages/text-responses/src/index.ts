@@ -17,7 +17,8 @@ export const responses = (options: HttpOptions): LanguageModel => async context 
     }),
     headers: requestHeaders(options.apiKey, options.extraHeaders),
     method: 'POST',
-    signal: context.signal,
+    // TODO: signal
+    // signal: context.signal,
   })
   // TODO: catch
     .then(res => res.body!

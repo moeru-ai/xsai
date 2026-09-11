@@ -9,7 +9,8 @@ const modelName = process.env.XSAI_E2E_MODEL!
 
 describe('responses e2e', () => {
   it('streams a response from the local Ollama Responses API', async () => {
-    const stream = await responses({ baseURL, model: modelName }).stream({
+    const model = responses({ baseURL, model: modelName })
+    const stream = await model({
       input: 'Reply with exactly: e2e-ok',
     })
 
