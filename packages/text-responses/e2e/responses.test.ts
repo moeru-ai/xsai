@@ -12,15 +12,10 @@ describe('responses e2e', () => {
     const stream = await responses({ baseURL, model: modelName }).stream({
       input: 'Reply with exactly: e2e-ok',
     })
-    const reader = stream.getReader()
+
     const events: Event[] = []
-
-    while (true) {
-      const result = await reader.read()
-      if (result.done)
-        break
-
-      events.push(result.value)
+    for await (const event of stream) {
+      events.push(event)
     }
 
     const text = events
