@@ -1,5 +1,5 @@
 import type {
-  Content,
+  AssistantMessage,
   FilePart,
   ImagePart,
   Message,
@@ -8,6 +8,7 @@ import type {
   ToolCallPart,
   ToolResultPart,
   ToolResultPartContent,
+  UserMessage,
 } from '@xsai/text-primitives'
 
 import type {
@@ -27,39 +28,33 @@ import type {
   UserMessageItemParam,
 } from '../generated'
 
-type MessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam | OutputTextContentParam
-type MessageItemParam = AssistantMessageItemParam | DeveloperMessageItemParam | SystemMessageItemParam | UserMessageItemParam
+type InputMessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam
 type NormalizedItemParam = ItemParam | ReasoningItem
 type ReasoningItem = Omit<ReasoningItemParam, 'content'> & {
-  content?: null | ReasoningTextContent[]
+  content?: ReasoningTextContent[]
 }
 
-const normalizeTextPart = (part: TextPart, role: Message['role']): InputTextContentParam | OutputTextContentParam => ({
+const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
   text: part.text,
-  type: role === 'assistant' ? 'output_text' : 'input_text',
+  type: 'input_text',
+})
+
+const normalizeOutputTextPart = (part: TextPart): OutputTextContentParam => ({
+  text: part.text,
+  type: 'output_text',
 })
 
 const normalizeImagePart = (part: ImagePart): InputImageContentParamAutoParam => ({
-  ...(part.detail == null ? {} : { detail: part.detail }),
+  ...(part.detail === undefined ? {} : { detail: part.detail }),
   image_url: part.data.toString(),
   type: 'input_image',
 })
 
-const normalizeFilePart = (part: FilePart): InputFileContentParam =>
-  URL.canParse(part.data)
-    ? {
-        file_url: part.data.toString(),
-        type: 'input_file',
-      }
-    : {
-        file_data: part.data.toString(),
-        type: 'input_file',
-      }
+const normalizeFilePart = (part: FilePart): InputFileContentParam => URL.canParse(part.data)
+  ? { file_url: part.data.toString(), type: 'input_file' }
+  : { file_data: part.data.toString(), type: 'input_file' }
 
-const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem | undefined => {
-  if (part.id == null)
-    return undefined
-
+const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem => {
   const summary: ReasoningSummaryContentParam[] = []
   const content: ReasoningTextContent[] = []
   let encryptedContent: string | undefined
@@ -67,10 +62,10 @@ const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem | undefined 
   for (const partContent of part.content) {
     switch (partContent.type) {
       case 'encrypted':
-        encryptedContent ??= partContent.text
+        encryptedContent = partContent.text
         break
       case 'redacted':
-        encryptedContent ??= partContent.data
+        encryptedContent = partContent.data
         break
       case 'summary':
         summary.push({ text: partContent.text, type: 'summary_text' })
@@ -83,8 +78,8 @@ const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem | undefined 
 
   return {
     ...(content.length === 0 ? {} : { content }),
-    ...(encryptedContent == null ? {} : { encrypted_content: encryptedContent }),
-    id: part.id,
+    ...(encryptedContent === undefined ? {} : { encrypted_content: encryptedContent }),
+    ...(part.id === undefined ? {} : { id: part.id }),
     summary,
     type: 'reasoning',
   }
@@ -93,9 +88,8 @@ const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem | undefined 
 const normalizeToolCallPart = (part: ToolCallPart): FunctionCallItemParam => ({
   arguments: part.arguments,
   call_id: part.callId,
-  ...(part.id.startsWith('fc_') ? { id: part.id } : {}),
+  id: part.id,
   name: part.name,
-  status: 'completed',
   type: 'function_call',
 })
 
@@ -104,80 +98,125 @@ const normalizeToolResultContent = (content: ToolResultPartContent): InputImageC
     case 'image':
       return normalizeImagePart(content)
     case 'text':
-      return { text: content.text, type: 'input_text' }
+      return normalizeInputTextPart(content)
   }
 }
 
-const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemParam => {
-  const output = Array.isArray(part.output) ? part.output.map(normalizeToolResultContent) : part.output
+const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemParam => ({
+  call_id: part.callId,
+  output: Array.isArray(part.output) ? part.output.map(normalizeToolResultContent) : part.output,
+  type: 'function_call_output',
+})
 
-  return {
-    call_id: part.callId,
-    output,
-    status: 'completed',
-    type: 'function_call_output',
+const normalizeAssistantMessage = (message: AssistantMessage): NormalizedItemParam[] => {
+  const createMessageItem = (content: OutputTextContentParam[], includeId = true): AssistantMessageItemParam => ({
+    content,
+    ...(includeId && message.id !== undefined ? { id: message.id } : {}),
+    role: 'assistant',
+    type: 'message',
+  })
+
+  if (typeof message.content === 'string')
+    return [createMessageItem([{ text: message.content, type: 'output_text' }])]
+
+  const items: NormalizedItemParam[] = []
+  let content: OutputTextContentParam[] = []
+  let includeId = true
+
+  const flushContent = (): void => {
+    if (content.length === 0)
+      return
+
+    items.push(createMessageItem(content, includeId))
+    content = []
+    includeId = false
   }
+
+  for (const part of message.content) {
+    switch (part.type) {
+      case 'reasoning':
+        flushContent()
+        items.push(normalizeReasoningPart(part))
+        break
+      case 'text':
+        content.push(normalizeOutputTextPart(part))
+        break
+      case 'tool-call':
+        flushContent()
+        items.push(normalizeToolCallPart(part))
+        break
+    }
+  }
+
+  flushContent()
+  return items
 }
 
-const normalizeMessagePart = (
-  part: Content,
-  role: Message['role'],
-  id: string | undefined,
-  createMessageItem: (content: MessageContent[] | string) => ItemParam,
-): NormalizedItemParam | undefined => {
-  switch (part.type) {
-    case 'file':
-      return createMessageItem([normalizeFilePart(part)])
-    case 'image':
-      return createMessageItem([normalizeImagePart(part)])
-    case 'reasoning':
-      return normalizeReasoningPart(part)
-    case 'text':
-      if (role === 'assistant' && part.text.length === 0)
-        return undefined
+const normalizeUserMessage = (message: UserMessage): NormalizedItemParam[] => {
+  const createMessageItem = (content: InputMessageContent[] | string): UserMessageItemParam => ({
+    content,
+    role: 'user',
+    type: 'message',
+  })
 
-      return createMessageItem(role === 'assistant' && id == null
-        ? part.text
-        : [normalizeTextPart(part, role)])
-    case 'tool-call':
-      return normalizeToolCallPart(part)
-    case 'tool-result':
-      return normalizeToolResultPart(part)
+  if (typeof message.content === 'string')
+    return [createMessageItem(message.content)]
+
+  const items: NormalizedItemParam[] = []
+  let content: InputMessageContent[] = []
+
+  const flushContent = (): void => {
+    if (content.length === 0)
+      return
+
+    items.push(createMessageItem(content))
+    content = []
   }
+
+  for (const part of message.content) {
+    switch (part.type) {
+      case 'file':
+        content.push(normalizeFilePart(part))
+        break
+      case 'image':
+        content.push(normalizeImagePart(part))
+        break
+      case 'text':
+        content.push(normalizeInputTextPart(part))
+        break
+      case 'tool-result':
+        flushContent()
+        items.push(normalizeToolResultPart(part))
+        break
+    }
+  }
+
+  flushContent()
+  return items
 }
 
 const normalizeMessage = (message: Message): NormalizedItemParam[] => {
-  const role = message.role
-  const id = role === 'assistant' ? message.id : undefined
-
-  const createMessageItem = (content: MessageContent[] | string): ItemParam => ({
-    content,
-    ...(id == null ? {} : { id }),
-    role,
-    ...(role === 'assistant' && id != null ? { status: 'completed' } : {}),
-    type: 'message',
-  } as MessageItemParam)
-
-  if (typeof message.content === 'string') {
-    if (role === 'assistant' && message.content.length === 0)
-      return []
-
-    return [createMessageItem(id == null || role !== 'assistant'
-      ? message.content
-      : [{ text: message.content, type: 'output_text' }])]
+  switch (message.role) {
+    case 'assistant':
+      return normalizeAssistantMessage(message)
+    case 'developer':
+      return [{
+        content: typeof message.content === 'string' ? message.content : message.content.map(normalizeInputTextPart),
+        role: 'developer',
+        type: 'message',
+      } satisfies DeveloperMessageItemParam]
+    case 'system':
+      return [{
+        content: typeof message.content === 'string' ? message.content : message.content.map(normalizeInputTextPart),
+        role: 'system',
+        type: 'message',
+      } satisfies SystemMessageItemParam]
+    case 'user':
+      return normalizeUserMessage(message)
   }
-
-  const items = message.content
-    .map(part => normalizeMessagePart(part, role, id, createMessageItem))
-    .filter((item): item is ItemParam => item != null)
-
-  return [
-    ...items.filter(item => item.type === 'reasoning'),
-    ...items.filter(item => item.type !== 'reasoning'),
-  ]
 }
 
 /** @internal */
 export const normalizeInput = (input: readonly Message[] | string): NormalizedItemParam[] => typeof input === 'string'
-  ? normalizeMessage({ content: input, role: 'user' })
+  ? [{ content: input, role: 'user', type: 'message' }]
   : input.flatMap(normalizeMessage)

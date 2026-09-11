@@ -280,6 +280,9 @@ importers:
       xsschema:
         specifier: 'workspace:'
         version: link:../xsschema
+      zod:
+        specifier: catalog:schema-dev
+        version: 4.3.6
 
   packages/xsschema:
     devDependencies:
