@@ -1,4 +1,4 @@
-import type { Event, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, Event, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -54,10 +54,27 @@ const normalizeReasoningDeltaEvent = (delta: string, index: number): Event => ({
   type: 'reasoning.delta',
 })
 
+const normalizeAssistantMessage = (output: Responses.ResponseResource['output']): AssistantMessage => {
+  const message = output.find(item => item.type === 'message' && item.role === 'assistant')
+  const text = output
+    .filter(item => item.type === 'message')
+    .flatMap(item => item.content)
+    .filter(part => part.type === 'output_text' || part.type === 'text' || part.type === 'refusal')
+    .map(part => part.type === 'refusal' ? part.refusal : part.text)
+    .join('')
+
+  return {
+    content: text,
+    ...(message == null || message.id == null ? {} : { id: message.id }),
+    role: 'assistant',
+  }
+}
+
 const normalizeFinishEvent = (event: Responses.ResponseCompletedStreamingEvent | Responses.ResponseFailedStreamingEvent | Responses.ResponseIncompleteStreamingEvent): Event => ({
   ...(event.response.error == null && event.response.incomplete_details == null
     ? {}
     : { reason: event.response.incomplete_details?.reason ?? event.response.error?.code }),
+  message: normalizeAssistantMessage(event.response.output),
   ...(event.response.usage == null ? {} : { usage: normalizeUsage(event.response.usage) }),
   type: 'finish',
 })
