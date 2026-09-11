@@ -18,7 +18,7 @@ export interface FilePart {
 
 export interface ImagePart {
   data: string | URL
-  detail?: 'auto' | 'high' | 'low' | 'original'
+  detail?: 'auto' | 'high' | 'low'
   type: 'image'
 }
 
