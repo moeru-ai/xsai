@@ -1,5 +1,5 @@
 export type * from './content'
 export type * from './event'
+export type * from './language-model'
 export type * from './message'
-export type * from './model'
 export type * from './usage'
