@@ -11,8 +11,9 @@ export const responses = (modelOptions: ModelOptions): Model => ({
     model: modelOptions.model,
   },
   stream: async (textOptions) => {
-    const res = await fetch(requestURL('responses', modelOptions.baseURL), {
+    const res = await (modelOptions.fetch ?? fetch)(requestURL('responses', modelOptions.baseURL), {
       body: JSON.stringify({
+        ...modelOptions.extraBody,
         input: normalizeInput(textOptions.input),
         instructions: textOptions.instructions,
         model: modelOptions.model,
