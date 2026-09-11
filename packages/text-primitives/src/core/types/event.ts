@@ -1,4 +1,5 @@
 import type { Content, ContentType } from './content'
+import type { AssistantMessage } from './message'
 import type { Usage } from './usage'
 
 export interface ContentEndEvent {
@@ -28,6 +29,7 @@ export type EventType = keyof EventMap
 
 export interface FinishEvent {
   // finishReason or incompleteDetailsReason
+  message: AssistantMessage
   reason?: string
   type: 'finish'
   usage?: Usage

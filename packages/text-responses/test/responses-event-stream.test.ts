@@ -89,6 +89,13 @@ describe('responses event stream', () => {
         response: {
           error: null,
           incomplete_details: null,
+          output: [{
+            content: [{ annotations: [], text: 'Hello', type: 'output_text' }],
+            id: 'message_1',
+            role: 'assistant',
+            status: 'completed',
+            type: 'message',
+          }],
           usage: {
             input_tokens: 3,
             output_tokens: 2,
@@ -130,6 +137,11 @@ describe('responses event stream', () => {
       { delta: 'Hello', index: 1, type: 'text.delta' },
       { contentType: 'text', index: 1, type: 'content.end' },
       {
+        message: {
+          content: 'Hello',
+          id: 'message_1',
+          role: 'assistant',
+        },
         type: 'finish',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
       },
@@ -168,6 +180,7 @@ describe('responses event stream', () => {
         response: {
           error: null,
           incomplete_details: { reason: 'max_output_tokens' },
+          output: [],
           usage: null,
         },
         type: 'response.incomplete',
@@ -182,7 +195,11 @@ describe('responses event stream', () => {
       { delta: 'Think', index: 0, type: 'reasoning.delta' },
       { delta: ' more', index: 0, type: 'reasoning.delta' },
       { contentType: 'reasoning', index: 0, type: 'content.end' },
-      { reason: 'max_output_tokens', type: 'finish' },
+      {
+        message: { content: '', role: 'assistant' },
+        reason: 'max_output_tokens',
+        type: 'finish',
+      },
     ])
   })
 })
