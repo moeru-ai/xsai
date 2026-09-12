@@ -12,6 +12,17 @@ export interface LanguageModelContext {
 
 export interface LanguageModelOptions {
   extraBody?: Record<string, unknown>
-  maxTokens?: number
+  maxOutputTokens?: number
+  /**
+   * Qualitative reasoning effort. Anthropic's `thinking.budget_tokens` is a
+   * different model — use `extraBody` there; this option is ignored on wires
+   * that take a token budget.
+   */
+  reasoningEffort?: 'high' | 'low' | 'medium' | 'none'
   signal?: AbortSignal
+  temperature?: number
+  toolChoice?: ToolChoice
+  topP?: number
 }
+
+export type ToolChoice = 'auto' | 'none' | 'required' | { name: string }
