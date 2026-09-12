@@ -3,7 +3,7 @@ import type { Event, EventSourceMessage } from '@xsai/text-primitives'
 import { EventSourceDataStream } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
-import { MessagesEventStream } from '../src/utils/messages-event-stream'
+import { messagesEventStream } from '../src/utils/messages-event-stream'
 
 const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
   const source = new ReadableStream<EventSourceMessage>({
@@ -16,7 +16,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
   })
   const stream = source
     .pipeThrough(new EventSourceDataStream())
-    .pipeThrough(new MessagesEventStream())
+    .pipeThrough(messagesEventStream())
   const reader = stream.getReader()
   const events: Event[] = []
 
@@ -197,7 +197,7 @@ describe('messages event stream', () => {
     ])
   })
 
-  it('maps provider error events without ending the stream', async () => {
+  it('maps provider error events and ends with an error finish', async () => {
     await expect(readEvents([
       message({
         error: { message: 'Overloaded', type: 'overloaded_error' },
@@ -208,6 +208,11 @@ describe('messages event stream', () => {
         cause: { message: 'Overloaded', type: 'overloaded_error' },
         message: 'Overloaded',
         type: 'error',
+      },
+      {
+        message: { content: [], role: 'assistant' },
+        reason: 'error',
+        type: 'finish',
       },
     ])
   })

@@ -11,7 +11,8 @@
     "bump": "bumpp",
     "lint": "moeru-lint .",
     "test": "pnpm -r --workspace-concurrency=1 test",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "typecheck": "tsc -b tsconfig.lib.json"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",

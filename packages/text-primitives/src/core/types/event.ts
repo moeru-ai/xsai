@@ -1,16 +1,15 @@
-import type { Content, ContentType } from './content'
 import type { FinishReason } from './finish-reason'
-import type { AssistantMessage } from './message'
+import type { AssistantMessage, AssistantMessageContent } from './message'
 import type { Usage } from './usage'
 
 export interface ContentEndEvent {
-  content: Content
+  content: AssistantMessageContent
   index: number
   type: 'content.end'
 }
 
 export interface ContentStartEvent {
-  contentType: ContentType
+  contentType: AssistantMessageContent['type']
   index: number
   type: 'content.start'
 }
