@@ -28,6 +28,7 @@ describe('responses options', () => {
     const { bodies, fetch } = capture()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
     const stream = await model({ input: 'hi' }, {
+      extraBody: { reasoning: { summary: 'detailed' } },
       maxOutputTokens: 10,
       reasoningEffort: 'high',
       temperature: 0.5,
@@ -39,7 +40,7 @@ describe('responses options', () => {
     expect(bodies).toHaveLength(1)
     expect(bodies[0]).toMatchObject({
       max_output_tokens: 10,
-      reasoning: { effort: 'high' },
+      reasoning: { effort: 'high', summary: 'detailed' },
       temperature: 0.5,
       tool_choice: { name: 'get_weather', type: 'function' },
       top_p: 0.9,

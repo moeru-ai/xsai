@@ -14,10 +14,25 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
       instructions: context.instructions,
       ...(modelOptions?.maxOutputTokens === undefined ? {} : { max_output_tokens: modelOptions.maxOutputTokens }),
       model: options.model,
-      ...(modelOptions?.reasoningEffort === undefined ? {} : { reasoning: { effort: modelOptions.reasoningEffort } }),
+      ...(modelOptions?.reasoningEffort === undefined
+        ? {}
+        : {
+            reasoning: {
+              ...options.extraBody?.reasoning as Record<string, unknown>,
+              ...modelOptions.extraBody?.reasoning as Record<string, unknown>,
+              effort: modelOptions.reasoningEffort,
+            },
+          }),
       stream: true,
       ...(modelOptions?.temperature === undefined ? {} : { temperature: modelOptions.temperature }),
-      ...(modelOptions?.toolChoice === undefined ? {} : { tool_choice: normalizeToolChoice(modelOptions.toolChoice) }),
+      ...(modelOptions?.toolChoice === undefined
+        ? {}
+        : {
+            tool_choice: normalizeToolChoice(modelOptions.toolChoice, {
+              ...options.extraBody?.tool_choice as Record<string, unknown>,
+              ...modelOptions.extraBody?.tool_choice as Record<string, unknown>,
+            }),
+          }),
       ...(modelOptions?.topP === undefined ? {} : { top_p: modelOptions.topP }),
       tools: normalizeTools(context.tools),
     }),
