@@ -88,7 +88,7 @@ describe('manual tool loop', () => {
     expect(requests[1].messages).toEqual([
       { content: 'What is the weather?', role: 'user' },
       {
-        content: null,
+        content: '',
         role: 'assistant',
         tool_calls: [{
           function: { arguments: '{"location":"Taipei"}', name: 'weather' },

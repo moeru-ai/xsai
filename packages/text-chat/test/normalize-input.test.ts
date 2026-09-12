@@ -44,7 +44,7 @@ describe('normalize input', () => {
     })).toEqual([
       { content: 'weather?', role: 'user' },
       {
-        content: null,
+        content: '',
         role: 'assistant',
         tool_calls: [{
           function: { arguments: '{"city":"Taipei"}', name: 'get_weather' },
@@ -54,6 +54,17 @@ describe('normalize input', () => {
       },
       { content: 'sunny', role: 'tool', tool_call_id: 'call_1' },
       { content: [{ text: 'thanks', type: 'text' }], role: 'user' },
+    ])
+  })
+
+  it('never sends empty tool output', () => {
+    expect(normalizeInput({
+      input: [{
+        content: [{ callId: 'call_1', output: '', type: 'tool-result' }],
+        role: 'user',
+      }],
+    })).toEqual([
+      { content: '(no output)', role: 'tool', tool_call_id: 'call_1' },
     ])
   })
 
