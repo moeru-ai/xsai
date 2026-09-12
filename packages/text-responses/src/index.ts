@@ -5,10 +5,11 @@ import { EventSourceDataStream, EventSourceParserStream, requestHeaders, request
 
 import { normalizeInput, normalizeTools, ResponsesEventStream } from './utils'
 
-export const responses = (options: HttpOptions): LanguageModel => async context =>
+export const responses = (options: HttpOptions): LanguageModel => async (context, modelOptions) =>
   (options.fetch ?? fetch)(requestURL('responses', options.baseURL), {
     body: JSON.stringify({
       ...options.extraBody,
+      ...modelOptions.extraBody,
       input: normalizeInput(context.input),
       instructions: context.instructions,
       model: options.model,
@@ -17,8 +18,7 @@ export const responses = (options: HttpOptions): LanguageModel => async context 
     }),
     headers: requestHeaders(options.apiKey, options.extraHeaders),
     method: 'POST',
-    // TODO: signal
-    // signal: context.signal,
+    signal: modelOptions.signal,
   })
   // TODO: catch
     .then(res => res.body!
