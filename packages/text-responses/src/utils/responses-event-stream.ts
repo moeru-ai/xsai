@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, FinishReason, PartAssembler, ReasoningPart, ReasoningPartContent, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, FinishReason, PartAssembler, PartStartInit, ReasoningPart, ReasoningPartContent, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -67,26 +67,45 @@ const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reas
   return { content: reasoningContent, id: item.id, type: 'reasoning' }
 }
 
+interface NormalizedOutputItem {
+  messageId?: string
+  part?: {
+    content: () => AssistantMessageContent
+    init?: PartStartInit
+    type: AssistantMessageContent['type']
+  }
+}
+
+const normalizeOutputItem = (item: Responses.ItemField): NormalizedOutputItem => {
+  switch (item.type) {
+    case 'compaction':
+    case 'function_call_output':
+      return {}
+    case 'function_call':
+      return {
+        part: {
+          content: () => normalizeToolCall(item),
+          init: { callId: item.call_id, id: item.id, name: item.name },
+          type: 'tool-call',
+        },
+      }
+    case 'message':
+      return { messageId: item.id, part: { content: () => normalizeTextPart(item), type: 'text' } }
+    case 'reasoning':
+      return { part: { content: () => normalizeReasoningPart(item), type: 'reasoning' } }
+  }
+}
+
 const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMessage => {
   const content: AssistantMessageContent[] = []
   let id: string | undefined
 
   for (const item of output) {
-    switch (item.type) {
-      case 'compaction':
-      case 'function_call_output':
-        break
-      case 'function_call':
-        content.push(normalizeToolCall(item))
-        break
-      case 'message':
-        id = item.id
-        content.push(normalizeTextPart(item))
-        break
-      case 'reasoning':
-        content.push(normalizeReasoningPart(item))
-        break
-    }
+    const normalized = normalizeOutputItem(item)
+    if (normalized.part !== undefined)
+      content.push(normalized.part.content())
+    if (normalized.messageId !== undefined)
+      id = normalized.messageId
   }
 
   return {
@@ -112,40 +131,21 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
 }
 
 const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
-  switch (item.type) {
-    case 'compaction':
-    case 'function_call_output':
-      break
-    case 'function_call':
-      asm.start(index, 'tool-call', { callId: item.call_id, id: item.id, name: item.name })
-      break
-    case 'message':
-      asm.start(index, 'text')
-      asm.meta({ messageId: item.id })
-      break
-    case 'reasoning':
-      asm.start(index, 'reasoning')
-      break
-  }
+  const normalized = normalizeOutputItem(item)
+  if (normalized.part === undefined)
+    return
+
+  asm.start(index, normalized.part.type, normalized.part.init)
+  if (normalized.messageId !== undefined)
+    asm.meta({ messageId: normalized.messageId })
 }
 
 const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
-  switch (item.type) {
-    case 'compaction':
-    case 'function_call_output':
-      break
-    // `output_item.done` carries the authoritative item; it overrides
-    // content accumulated from deltas.
-    case 'function_call':
-      asm.end(index, { content: normalizeToolCall(item) })
-      break
-    case 'message':
-      asm.end(index, { content: normalizeTextPart(item) })
-      break
-    case 'reasoning':
-      asm.end(index, { content: normalizeReasoningPart(item) })
-      break
-  }
+  const part = normalizeOutputItem(item).part
+  // `output_item.done` carries the authoritative item; it overrides
+  // content accumulated from deltas.
+  if (part !== undefined)
+    asm.end(index, { content: part.content() })
 }
 
 /** Converts Responses API SSE data to text primitive events. */
