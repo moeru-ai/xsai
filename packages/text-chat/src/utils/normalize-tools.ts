@@ -16,7 +16,7 @@ export const normalizeTools = (tools?: readonly Tool[]): ChatTool[] | undefined 
 }))
 
 /** @internal */
-export const normalizeToolChoice = (toolChoice: ToolChoice): ChatToolChoice =>
+export const normalizeToolChoice = (toolChoice: ToolChoice, extras?: Record<string, unknown>): ChatToolChoice =>
   typeof toolChoice === 'string'
     ? toolChoice
-    : { function: { name: toolChoice.name }, type: 'function' }
+    : { ...extras, function: { name: toolChoice.name }, type: 'function' }

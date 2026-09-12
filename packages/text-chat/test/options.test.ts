@@ -28,6 +28,7 @@ describe('chat options', () => {
     const { bodies, fetch } = capture()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
     const stream = await model({ input: 'hi' }, {
+      extraBody: { stream_options: { custom: true } },
       maxOutputTokens: 10,
       reasoningEffort: 'low',
       temperature: 0.5,
@@ -40,7 +41,7 @@ describe('chat options', () => {
     expect(bodies[0]).toMatchObject({
       max_tokens: 10,
       reasoning_effort: 'low',
-      stream_options: { include_usage: true },
+      stream_options: { custom: true, include_usage: true },
       temperature: 0.5,
       tool_choice: { function: { name: 'get_weather' }, type: 'function' },
       top_p: 0.9,

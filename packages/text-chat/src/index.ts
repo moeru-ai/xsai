@@ -19,10 +19,18 @@ export const chat = (options: HttpOptions): LanguageModel => async (context, mod
       stream: true,
       stream_options: {
         include_usage: true,
-        ...(options.extraBody?.stream_options as Record<string, unknown> | undefined),
+        ...options.extraBody?.stream_options as Record<string, unknown>,
+        ...modelOptions?.extraBody?.stream_options as Record<string, unknown>,
       },
       ...(modelOptions?.temperature === undefined ? {} : { temperature: modelOptions.temperature }),
-      ...(modelOptions?.toolChoice === undefined ? {} : { tool_choice: normalizeToolChoice(modelOptions.toolChoice) }),
+      ...(modelOptions?.toolChoice === undefined
+        ? {}
+        : {
+            tool_choice: normalizeToolChoice(modelOptions.toolChoice, {
+              ...options.extraBody?.tool_choice as Record<string, unknown>,
+              ...modelOptions.extraBody?.tool_choice as Record<string, unknown>,
+            }),
+          }),
       ...(modelOptions?.topP === undefined ? {} : { top_p: modelOptions.topP }),
       tools: normalizeTools(context.tools),
     }),

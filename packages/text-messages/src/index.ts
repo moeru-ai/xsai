@@ -20,13 +20,21 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
     body: JSON.stringify({
       ...options.extraBody,
       ...modelOptions?.extraBody,
+      ...(modelOptions?.reasoningEffort === undefined ? {} : { effort: modelOptions.reasoningEffort }),
       max_tokens: maxTokens,
       messages: inputMessages,
       model: options.model,
       stream: true,
       ...(system === undefined ? {} : { system }),
       ...(modelOptions?.temperature === undefined ? {} : { temperature: modelOptions.temperature }),
-      ...(modelOptions?.toolChoice === undefined ? {} : { tool_choice: normalizeToolChoice(modelOptions.toolChoice) }),
+      ...(modelOptions?.toolChoice === undefined
+        ? {}
+        : {
+            tool_choice: normalizeToolChoice(modelOptions.toolChoice, {
+              ...options.extraBody?.tool_choice as Record<string, unknown>,
+              ...modelOptions.extraBody?.tool_choice as Record<string, unknown>,
+            }),
+          }),
       ...(modelOptions?.topP === undefined ? {} : { top_p: modelOptions.topP }),
       tools: normalizeTools(context.tools),
     }),

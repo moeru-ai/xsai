@@ -28,7 +28,9 @@ describe('messages options', () => {
     const { bodies, fetch } = capture()
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
     const stream = await model({ input: 'hi' }, {
+      extraBody: { tool_choice: { disable_parallel_tool_use: true } },
       maxOutputTokens: 10,
+      reasoningEffort: 'max',
       temperature: 0.5,
       toolChoice: { name: 'get_weather' },
       topP: 0.9,
@@ -37,9 +39,10 @@ describe('messages options', () => {
 
     expect(bodies).toHaveLength(1)
     expect(bodies[0]).toMatchObject({
+      effort: 'max',
       max_tokens: 10,
       temperature: 0.5,
-      tool_choice: { name: 'get_weather', type: 'tool' },
+      tool_choice: { disable_parallel_tool_use: true, name: 'get_weather', type: 'tool' },
       top_p: 0.9,
     })
   })
