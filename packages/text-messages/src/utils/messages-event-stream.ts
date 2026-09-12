@@ -225,7 +225,15 @@ export class MessagesEventStream extends TransformStream<string, Event> {
 
     super({
       transform: (data, controller) => {
-        const event = mapEvent(JSON.parse(data) as MessagesEvent)
+        let wire: MessagesEvent
+        try {
+          wire = JSON.parse(data) as MessagesEvent
+        }
+        catch (error) {
+          controller.enqueue({ cause: error, message: 'malformed event data', type: 'error' })
+          return
+        }
+        const event = mapEvent(wire)
         if (event !== undefined)
           controller.enqueue(event)
       },

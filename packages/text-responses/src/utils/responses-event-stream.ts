@@ -213,7 +213,15 @@ export class ResponsesEventStream extends TransformStream<string, Event> {
           return
         }
 
-        const event = mapEvent(JSON.parse(data) as ResponsesEvent, toolNames)
+        let wire: ResponsesEvent
+        try {
+          wire = JSON.parse(data) as ResponsesEvent
+        }
+        catch (error) {
+          controller.enqueue({ cause: error, message: 'malformed event data', type: 'error' })
+          return
+        }
+        const event = mapEvent(wire, toolNames)
 
         if (event !== undefined)
           controller.enqueue(event)
