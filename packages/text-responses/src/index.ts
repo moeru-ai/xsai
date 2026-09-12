@@ -1,7 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
-import { mergedExtra, onlyDefined, wireRequest } from '@xsai/text-primitives'
+import { mergedExtra, wireRequest } from '@xsai/text-primitives'
 
 import { normalizeInput, normalizeToolChoice, normalizeTools, responsesEventStream } from './utils'
 
@@ -10,25 +10,19 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
     body: {
       input: normalizeInput(context.input),
       instructions: context.instructions,
-      ...onlyDefined({ max_output_tokens: modelOptions?.maxOutputTokens }),
+      max_output_tokens: modelOptions?.maxOutputTokens,
       model: options.model,
-      ...(modelOptions?.reasoningEffort === undefined
-        ? {}
+      reasoning: modelOptions?.reasoningEffort === undefined
+        ? undefined
         : {
-            reasoning: {
-              ...mergedExtra(options, modelOptions, 'reasoning'),
-              effort: modelOptions.reasoningEffort,
-            },
-          }),
+            ...mergedExtra(options, modelOptions, 'reasoning'),
+            effort: modelOptions.reasoningEffort,
+          },
       stream: true,
-      ...onlyDefined({ temperature: modelOptions?.temperature }),
-      ...(modelOptions?.toolChoice === undefined
-        ? {}
-        : {
-            tool_choice: normalizeToolChoice(modelOptions.toolChoice, mergedExtra(options, modelOptions, 'tool_choice')),
-          }),
-      ...onlyDefined({ top_p: modelOptions?.topP }),
+      temperature: modelOptions?.temperature,
+      tool_choice: normalizeToolChoice(modelOptions?.toolChoice, mergedExtra(options, modelOptions, 'tool_choice')),
       tools: normalizeTools(context.tools),
+      top_p: modelOptions?.topP,
     },
     path: 'responses',
   }, responsesEventStream())

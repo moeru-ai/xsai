@@ -1,7 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
-import { mergedExtra, onlyDefined, wireRequest } from '@xsai/text-primitives'
+import { mergedExtra, wireRequest } from '@xsai/text-primitives'
 
 import { messagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
@@ -18,26 +18,22 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
 
   return wireRequest(options, modelOptions, {
     body: {
-      ...onlyDefined({ effort: modelOptions?.reasoningEffort }),
+      effort: modelOptions?.reasoningEffort,
       max_tokens: maxTokens,
       messages: inputMessages,
       model: options.model,
       stream: true,
-      ...onlyDefined({ system }),
-      ...onlyDefined({ temperature: modelOptions?.temperature }),
-      ...(modelOptions?.toolChoice === undefined
-        ? {}
-        : {
-            tool_choice: normalizeToolChoice(modelOptions.toolChoice, mergedExtra(options, modelOptions, 'tool_choice')),
-          }),
-      ...onlyDefined({ top_p: modelOptions?.topP }),
+      system,
+      temperature: modelOptions?.temperature,
+      tool_choice: normalizeToolChoice(modelOptions?.toolChoice, mergedExtra(options, modelOptions, 'tool_choice')),
       tools: normalizeTools(context.tools),
+      top_p: modelOptions?.topP,
     },
     headers: {
       ...options.extraHeaders,
       'anthropic-version': ANTHROPIC_VERSION,
       'Content-Type': 'application/json',
-      ...onlyDefined({ 'x-api-key': options.apiKey }),
+      'x-api-key': options.apiKey,
     },
     path: 'messages',
   }, messagesEventStream())
