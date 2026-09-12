@@ -15,7 +15,7 @@ export interface ChatChunk {
     type?: string
   }
   id?: string
-  usage?: ChatUsage
+  usage?: ChatUsage | null
 }
 
 export type ChatContentPart

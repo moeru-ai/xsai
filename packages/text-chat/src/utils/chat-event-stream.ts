@@ -74,7 +74,7 @@ export const chatEventStream = () => {
 
     if (chunk.id !== undefined)
       asm.meta({ messageId: chunk.id })
-    if (chunk.usage !== undefined)
+    if (chunk.usage != null)
       asm.meta({ usage: normalizeUsage(chunk.usage) })
 
     for (const choice of chunk.choices ?? []) {

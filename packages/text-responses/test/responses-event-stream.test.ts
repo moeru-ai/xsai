@@ -189,6 +189,27 @@ describe('responses event stream', () => {
     ])
   })
 
+  it('maps failed responses to an error finish', async () => {
+    await expect(readEvents([
+      message({
+        response: {
+          error: { code: 'server_error', message: 'something went wrong' },
+          incomplete_details: null,
+          output: [],
+          usage: null,
+        },
+        type: 'response.failed',
+      }),
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      {
+        message: { content: [], role: 'assistant' },
+        reason: 'error',
+        type: 'finish',
+      },
+    ])
+  })
+
   it('maps reasoning output and incomplete reasons', async () => {
     await expect(readEvents([
       message({
