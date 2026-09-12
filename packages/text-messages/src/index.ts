@@ -5,6 +5,8 @@ import { EventSourceDataStream, EventSourceParserStream, requestURL, responseCat
 
 import { MessagesEventStream, normalizeInput, normalizeTools } from './utils'
 
+export type * from './metadata'
+
 const ANTHROPIC_VERSION = '2023-06-01'
 
 export const messages = (options: HttpOptions): LanguageModel => async (context, modelOptions) => {

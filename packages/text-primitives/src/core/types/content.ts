@@ -1,3 +1,5 @@
+import type { PartMetadata } from './metadata'
+
 export type Content = ContentMap[ContentType]
 
 export interface ContentMap {
@@ -25,6 +27,7 @@ export interface ImagePart {
 export interface ReasoningPart {
   content: ReasoningPartContent[]
   id?: string
+  metadata?: PartMetadata
   type: 'reasoning'
 }
 
@@ -50,7 +53,6 @@ export interface ReasoningPartSummaryContent {
 }
 
 export interface ReasoningPartTextContent {
-  signature?: string
   text: string
   type: 'text'
 }
