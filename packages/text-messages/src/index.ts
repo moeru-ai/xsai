@@ -1,7 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
-import { EventSourceDataStream, EventSourceParserStream, requestURL, responseCatch } from '@xsai/text-primitives'
+import { mergedExtra, onlyDefined, wireRequest } from '@xsai/text-primitives'
 
 import { messagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
@@ -16,41 +16,29 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
   if (typeof maxTokens !== 'number')
     throw new Error('maxOutputTokens is required for the Messages API')
 
-  return (options.fetch ?? fetch)(requestURL('messages', options.baseURL), {
-    body: JSON.stringify({
-      ...options.extraBody,
-      ...modelOptions?.extraBody,
-      ...(modelOptions?.reasoningEffort === undefined ? {} : { effort: modelOptions.reasoningEffort }),
+  return wireRequest(options, modelOptions, {
+    body: {
+      ...onlyDefined({ effort: modelOptions?.reasoningEffort }),
       max_tokens: maxTokens,
       messages: inputMessages,
       model: options.model,
       stream: true,
-      ...(system === undefined ? {} : { system }),
-      ...(modelOptions?.temperature === undefined ? {} : { temperature: modelOptions.temperature }),
+      ...onlyDefined({ system }),
+      ...onlyDefined({ temperature: modelOptions?.temperature }),
       ...(modelOptions?.toolChoice === undefined
         ? {}
         : {
-            tool_choice: normalizeToolChoice(modelOptions.toolChoice, {
-              ...options.extraBody?.tool_choice as Record<string, unknown>,
-              ...modelOptions.extraBody?.tool_choice as Record<string, unknown>,
-            }),
+            tool_choice: normalizeToolChoice(modelOptions.toolChoice, mergedExtra(options, modelOptions, 'tool_choice')),
           }),
-      ...(modelOptions?.topP === undefined ? {} : { top_p: modelOptions.topP }),
+      ...onlyDefined({ top_p: modelOptions?.topP }),
       tools: normalizeTools(context.tools),
-    }),
+    },
     headers: {
       ...options.extraHeaders,
       'anthropic-version': ANTHROPIC_VERSION,
       'Content-Type': 'application/json',
-      ...(options.apiKey === undefined ? {} : { 'x-api-key': options.apiKey }),
+      ...onlyDefined({ 'x-api-key': options.apiKey }),
     },
-    method: 'POST',
-    signal: modelOptions?.signal,
-  })
-    .then(responseCatch)
-    .then(res => res.body
-      .pipeThrough(new TextDecoderStream())
-      .pipeThrough(new EventSourceParserStream())
-      .pipeThrough(new EventSourceDataStream())
-      .pipeThrough(messagesEventStream()))
+    path: 'messages',
+  }, messagesEventStream())
 }

@@ -147,41 +147,29 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
       if (state === undefined || state.closed || reason !== undefined)
         return
 
-      if (state.type === 'tool-call') {
-        state.callId = acceptIdentity(state.callId, extra?.callId)
-        state.name = acceptIdentity(state.name, extra?.name)
-      }
-
       switch (state.type) {
         case 'reasoning':
-          state.text += text
-          break
         case 'text':
           state.text += text
+          if (text !== '') {
+            emit(state.type === 'reasoning'
+              ? { delta: text, index: state.index, type: 'reasoning.delta' }
+              : { delta: text, index: state.index, type: 'text.delta' })
+          }
           break
         case 'tool-call':
+          state.callId = acceptIdentity(state.callId, extra?.callId)
+          state.name = acceptIdentity(state.name, extra?.name)
           state.args += text
-          break
-      }
-
-      if (text === '')
-        return
-
-      switch (state.type) {
-        case 'reasoning':
-          emit({ delta: text, index: state.index, type: 'reasoning.delta' })
-          break
-        case 'text':
-          emit({ delta: text, index: state.index, type: 'text.delta' })
-          break
-        case 'tool-call':
-          emit({
-            delta: text,
-            id: state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`,
-            index: state.index,
-            ...(state.name === undefined ? {} : { name: state.name }),
-            type: 'tool-call.delta',
-          })
+          if (text !== '') {
+            emit({
+              delta: text,
+              id: state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`,
+              index: state.index,
+              ...(state.name === undefined ? {} : { name: state.name }),
+              type: 'tool-call.delta',
+            })
+          }
           break
       }
     },
