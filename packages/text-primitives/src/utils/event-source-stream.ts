@@ -16,12 +16,13 @@ export class EventSourceDataStream extends TransformStream<EventSourceMessage, s
         throw new Error('EventSourceDataStream: SSE stream ended without [DONE]')
       },
       transform: ({ data }, controller) => {
-        controller.enqueue(data)
-
         if (data === DONE) {
           done = true
           controller.terminate()
+          return
         }
+
+        controller.enqueue(data)
       },
     })
   }

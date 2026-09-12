@@ -255,6 +255,22 @@ importers:
 
   packages/shared: {}
 
+  packages/text-chat:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+    devDependencies:
+      '@xsai/text-primitives':
+        specifier: 'workspace:'
+        version: link:../text-primitives
+      xsschema:
+        specifier: 'workspace:'
+        version: link:../xsschema
+      zod:
+        specifier: catalog:schema-dev
+        version: 4.3.6
+
   packages/text-messages:
     dependencies:
       '@xsai/shared':
