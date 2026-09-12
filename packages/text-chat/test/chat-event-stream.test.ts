@@ -386,6 +386,30 @@ describe('chat event stream', () => {
     ])
   })
 
+  it('ignores null usage on non-terminal chunks', async () => {
+    await expect(readEvents([
+      message({
+        choices: [{ delta: { content: 'hi' }, finish_reason: 'stop', index: 0 }],
+        id: 'chatcmpl_1',
+        usage: null,
+      }),
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      { contentType: 'text', index: 0, type: 'content.start' },
+      { delta: 'hi', index: 0, type: 'text.delta' },
+      { content: { text: 'hi', type: 'text' }, index: 0, type: 'content.end' },
+      {
+        message: {
+          content: [{ text: 'hi', type: 'text' }],
+          id: 'chatcmpl_1',
+          role: 'assistant',
+        },
+        reason: 'stop',
+        type: 'finish',
+      },
+    ])
+  })
+
   it('maps refusal deltas to text and prefers simultaneous content', async () => {
     await expect(readEvents([
       message({
