@@ -8,22 +8,14 @@ import { requestURL } from './request-url'
 import { responseCatch } from './response-catch'
 
 export interface WireRequestInit {
-  /** Wire-shaped body fields; merged over both extraBody levels. */
+  /** Wire-shaped body fields; `undefined` fields are dropped before the extraBody merge. */
   body: Record<string, unknown>
   /** Require the SSE stream to end with a `[DONE]` frame. */
   checkDone?: boolean
-  /** Overrides the default `Authorization`/`Content-Type` headers. */
-  headers?: Record<string, string>
+  /** Overrides the default `Authorization`/`Content-Type` headers; `undefined` values are dropped. */
+  headers?: Record<string, string | undefined>
   path: string
 }
-
-/**
- * The fields of `fields` whose values are defined — spread into a request
- * body so absent options neither emit nor mask `extraBody` keys.
- * @internal
- */
-export const onlyDefined = (fields: Record<string, unknown>): Record<string, unknown> =>
-  Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined))
 
 /**
  * One nested `extraBody` field merged across the two levels: model-call
@@ -38,6 +30,9 @@ export const mergedExtra = (
   ...options.extraBody?.[key] as Record<string, unknown>,
   ...modelOptions?.extraBody?.[key] as Record<string, unknown>,
 })
+
+const definedOnly = <V>(fields: Record<string, undefined | V>): Record<string, V> =>
+  Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined)) as Record<string, V>
 
 /**
  * The shared wire-request mechanic: POST JSON to `init.path`, decode the SSE
@@ -55,9 +50,9 @@ export const wireRequest = async (
     body: JSON.stringify({
       ...options.extraBody,
       ...modelOptions?.extraBody,
-      ...init.body,
+      ...definedOnly(init.body),
     }),
-    headers: init.headers ?? requestHeaders(options.apiKey, options.extraHeaders),
+    headers: definedOnly(init.headers ?? requestHeaders(options.apiKey, options.extraHeaders)),
     method: 'POST',
     signal: modelOptions?.signal,
   })
