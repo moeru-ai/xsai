@@ -68,6 +68,8 @@ export interface ChatToolCallDelta {
   type?: 'function'
 }
 
+export type ChatToolChoice = 'auto' | 'none' | 'required' | { function: { name: string }, type: 'function' }
+
 export interface ChatUsage {
   completion_tokens?: number
   completion_tokens_details?: {

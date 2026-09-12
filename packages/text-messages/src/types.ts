@@ -97,6 +97,10 @@ export interface MessagesTool {
   name: string
 }
 
+export type MessagesToolChoice
+  = | { name: string, type: 'tool' }
+    | { type: 'any' | 'auto' | 'none' }
+
 export interface MessageStopEvent {
   type: 'message_stop'
 }

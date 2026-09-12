@@ -3,7 +3,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 
 import { EventSourceDataStream, EventSourceParserStream, requestHeaders, requestURL, responseCatch } from '@xsai/text-primitives'
 
-import { ChatEventStream, normalizeInput, normalizeTools } from './utils'
+import { ChatEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
 
@@ -12,14 +12,18 @@ export const chat = (options: HttpOptions): LanguageModel => async (context, mod
     body: JSON.stringify({
       ...options.extraBody,
       ...modelOptions?.extraBody,
-      ...(modelOptions?.maxTokens === undefined ? {} : { max_tokens: modelOptions.maxTokens }),
+      ...(modelOptions?.maxOutputTokens === undefined ? {} : { max_tokens: modelOptions.maxOutputTokens }),
       messages: normalizeInput(context),
       model: options.model,
+      ...(modelOptions?.reasoningEffort === undefined ? {} : { reasoning_effort: modelOptions.reasoningEffort }),
       stream: true,
       stream_options: {
         include_usage: true,
         ...(options.extraBody?.stream_options as Record<string, unknown> | undefined),
       },
+      ...(modelOptions?.temperature === undefined ? {} : { temperature: modelOptions.temperature }),
+      ...(modelOptions?.toolChoice === undefined ? {} : { tool_choice: normalizeToolChoice(modelOptions.toolChoice) }),
+      ...(modelOptions?.topP === undefined ? {} : { top_p: modelOptions.topP }),
       tools: normalizeTools(context.tools),
     }),
     headers: requestHeaders(options.apiKey, options.extraHeaders),

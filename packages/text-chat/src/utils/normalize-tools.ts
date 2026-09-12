@@ -1,6 +1,6 @@
-import type { Tool } from '@xsai/text-primitives'
+import type { Tool, ToolChoice } from '@xsai/text-primitives'
 
-import type { ChatTool } from '../types'
+import type { ChatTool, ChatToolChoice } from '../types'
 
 import { strictJsonSchema } from 'xsschema'
 
@@ -14,3 +14,9 @@ export const normalizeTools = (tools?: readonly Tool[]): ChatTool[] | undefined 
   },
   type: 'function',
 }))
+
+/** @internal */
+export const normalizeToolChoice = (toolChoice: ToolChoice): ChatToolChoice =>
+  typeof toolChoice === 'string'
+    ? toolChoice
+    : { function: { name: toolChoice.name }, type: 'function' }

@@ -1,6 +1,6 @@
-import type { Tool } from '@xsai/text-primitives'
+import type { Tool, ToolChoice } from '@xsai/text-primitives'
 
-import type { MessagesTool } from '../types'
+import type { MessagesTool, MessagesToolChoice } from '../types'
 
 /** @internal */
 export const normalizeTools = (tools?: readonly Tool[]): MessagesTool[] | undefined => tools?.map(tool => ({
@@ -8,3 +8,9 @@ export const normalizeTools = (tools?: readonly Tool[]): MessagesTool[] | undefi
   input_schema: tool.inputSchema,
   name: tool.name,
 }))
+
+/** @internal */
+export const normalizeToolChoice = (toolChoice: ToolChoice): MessagesToolChoice =>
+  typeof toolChoice === 'string'
+    ? { type: toolChoice === 'required' ? 'any' : toolChoice }
+    : { name: toolChoice.name, type: 'tool' }
