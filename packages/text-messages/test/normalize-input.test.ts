@@ -70,11 +70,12 @@ describe('normalize input', () => {
       input: [{
         content: [{
           content: [
-            { signature: 'sig_1', text: 'Think', type: 'text' },
+            { text: 'Think', type: 'text' },
             { data: 'redacted-data', type: 'redacted' },
             { text: 'summary text', type: 'summary' },
             { text: 'encrypted-data', type: 'encrypted' },
           ],
+          metadata: { messages: { signature: 'sig_1' } },
           type: 'reasoning',
         }],
         role: 'assistant',

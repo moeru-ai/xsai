@@ -97,11 +97,8 @@ const closeBlock = (block: BlockState): AssistantMessageContent => {
       return { text: block.text, type: 'text' }
     case 'thinking':
       return {
-        content: [{
-          ...(block.signature === undefined ? {} : { signature: block.signature }),
-          text: block.thinking,
-          type: 'text',
-        }],
+        content: [{ text: block.thinking, type: 'text' }],
+        ...(block.signature === undefined ? {} : { metadata: { messages: { signature: block.signature } } }),
         type: 'reasoning',
       }
     case 'tool_use':

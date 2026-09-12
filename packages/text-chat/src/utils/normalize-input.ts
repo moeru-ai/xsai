@@ -75,12 +75,14 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
 
   const content: ChatContentPart[] = []
   const reasoning: string[] = []
+  let reasoningField: 'reasoning' | 'reasoning_content' = 'reasoning_content'
   const toolCalls: NonNullable<ChatMessage['tool_calls']> = []
 
   for (const part of message.content) {
     switch (part.type) {
       case 'reasoning':
         reasoning.push(reasoningText(part))
+        reasoningField = part.metadata?.chat?.reasoning_field ?? reasoningField
         break
       case 'text':
         content.push(normalizeInputTextPart(part))
@@ -95,7 +97,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
     // Some gateways reject `content: null` even when tool_calls is set.
     content: content.length === 0 ? '' : content,
     role: 'assistant',
-    ...(reasoning.length === 0 ? {} : { reasoning_content: reasoning.join('') }),
+    ...(reasoning.length === 0 ? {} : { [reasoningField]: reasoning.join('') }),
     ...(toolCalls.length === 0 ? {} : { tool_calls: toolCalls }),
   }
 }

@@ -68,15 +68,16 @@ describe('normalize input', () => {
     ])
   })
 
-  it('maps reasoning text to reasoning_content on assistant messages', () => {
+  it('replays reasoning under the captured field name', () => {
     expect(normalizeInput({
       input: [{
         content: [
           {
             content: [
-              { signature: 'sig_1', text: 'Think', type: 'text' },
+              { text: 'Think', type: 'text' },
               { data: 'redacted-data', type: 'redacted' },
             ],
+            metadata: { chat: { reasoning_field: 'reasoning' } },
             type: 'reasoning',
           },
           { text: 'Done', type: 'text' },
@@ -85,6 +86,18 @@ describe('normalize input', () => {
       }],
     })).toEqual([{
       content: [{ text: 'Done', type: 'text' }],
+      reasoning: 'Think',
+      role: 'assistant',
+    }])
+
+    // The default field is reasoning_content.
+    expect(normalizeInput({
+      input: [{
+        content: [{ content: [{ text: 'Think', type: 'text' }], type: 'reasoning' }],
+        role: 'assistant',
+      }],
+    })).toEqual([{
+      content: '',
       reasoning_content: 'Think',
       role: 'assistant',
     }])

@@ -4,6 +4,7 @@ import type {
   FilePart,
   ImagePart,
   LanguageModelContext,
+  ReasoningPart,
   ReasoningPartContent,
   SystemMessageContent,
   TextPart,
@@ -88,12 +89,25 @@ const normalizeReasoningPartContent = (content: ReasoningPartContent): ContentBl
     case 'summary':
       return []
     case 'text':
-      return [{
-        ...(content.signature === undefined ? {} : { signature: content.signature }),
-        thinking: content.text,
-        type: 'thinking',
-      }]
+      return [{ thinking: content.text, type: 'thinking' }]
   }
+}
+
+const normalizeReasoningPart = (part: ReasoningPart): ContentBlock[] => {
+  const blocks = part.content.flatMap(normalizeReasoningPartContent)
+  const signature = part.metadata?.messages?.signature
+  if (signature === undefined)
+    return blocks
+
+  // A signature belongs to the thinking block it closed.
+  for (let i = blocks.length - 1; i >= 0; i--) {
+    const block = blocks[i]
+    if (block.type === 'thinking') {
+      block.signature = signature
+      break
+    }
+  }
+  return blocks
 }
 
 const normalizeToolCallPart = (part: ToolCallPart): ToolUseBlock => ({
@@ -119,7 +133,7 @@ const normalizeUserPart = (part: UserMessageContent): ContentBlock => {
 const normalizeAssistantPart = (part: AssistantMessageContent): ContentBlock[] => {
   switch (part.type) {
     case 'reasoning':
-      return part.content.flatMap(normalizeReasoningPartContent)
+      return normalizeReasoningPart(part)
     case 'text':
       return [{ text: part.text, type: 'text' }]
     case 'tool-call':

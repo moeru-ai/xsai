@@ -166,7 +166,8 @@ describe('messages event stream', () => {
       { delta: 'Think', index: 0, type: 'reasoning.delta' },
       {
         content: {
-          content: [{ signature: 'sig_1', text: 'Think', type: 'text' }],
+          content: [{ text: 'Think', type: 'text' }],
+          metadata: { messages: { signature: 'sig_1' } },
           type: 'reasoning',
         },
         index: 0,
@@ -175,7 +176,8 @@ describe('messages event stream', () => {
       {
         message: {
           content: [{
-            content: [{ signature: 'sig_1', text: 'Think', type: 'text' }],
+            content: [{ text: 'Think', type: 'text' }],
+            metadata: { messages: { signature: 'sig_1' } },
             type: 'reasoning',
           }],
           id: 'msg_1',
