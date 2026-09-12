@@ -2,8 +2,6 @@ import type { AssistantMessageContent, Event, FinishReason, Usage } from '@xsai/
 
 import type { ChatChunk, ChatDelta, ChatToolCallDelta, ChatUsage } from '../types'
 
-import { reconcileFinishReason } from '@xsai/text-primitives'
-
 interface ToolCallState {
   args: string
   id?: string
@@ -206,7 +204,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
           ...(messageId === undefined ? {} : { id: messageId }),
           role: 'assistant',
         },
-        reason: reconcileFinishReason(content, reason),
+        reason,
         type: 'finish',
         ...(usage === undefined ? {} : { usage: normalizeUsage(usage) }),
       }

@@ -8,8 +8,6 @@ import type {
   MessagesUsage,
 } from '../types'
 
-import { reconcileFinishReason } from '@xsai/text-primitives'
-
 type BlockState
   = | { data: string, type: 'redacted_thinking' }
     | { inputJson: string, toolCallId: string, toolName: string, type: 'tool_use' }
@@ -192,7 +190,7 @@ export class MessagesEventStream extends TransformStream<string, Event> {
           ...(messageId === undefined ? {} : { id: messageId }),
           role: 'assistant',
         },
-        reason: reconcileFinishReason(content, reason),
+        reason,
         type: 'finish',
         ...(usage === undefined ? {} : { usage }),
       }
