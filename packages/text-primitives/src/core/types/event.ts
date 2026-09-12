@@ -3,13 +3,13 @@ import type { AssistantMessage } from './message'
 import type { Usage } from './usage'
 
 export interface ContentEndEvent {
-  contentType: ContentType
+  content: Content
   index: number
   type: 'content.end'
 }
 
 export interface ContentStartEvent {
-  content: Content
+  contentType: ContentType
   index: number
   type: 'content.start'
 }

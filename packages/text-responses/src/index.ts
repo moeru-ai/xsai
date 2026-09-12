@@ -9,7 +9,7 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
   (options.fetch ?? fetch)(requestURL('responses', options.baseURL), {
     body: JSON.stringify({
       ...options.extraBody,
-      ...modelOptions.extraBody,
+      ...modelOptions?.extraBody,
       input: normalizeInput(context.input),
       instructions: context.instructions,
       model: options.model,
@@ -18,7 +18,7 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
     }),
     headers: requestHeaders(options.apiKey, options.extraHeaders),
     method: 'POST',
-    signal: modelOptions.signal,
+    signal: modelOptions?.signal,
   })
   // TODO: catch
     .then(res => res.body!

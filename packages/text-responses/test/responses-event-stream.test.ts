@@ -124,17 +124,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      {
-        content: {
-          arguments: '',
-          callId: 'call_1',
-          id: 'fc_1',
-          name: 'weather',
-          type: 'tool-call',
-        },
-        index: 0,
-        type: 'content.start',
-      },
+      { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
         delta: '{"location":',
         id: 'fc_1',
@@ -143,17 +133,19 @@ describe('responses event stream', () => {
         type: 'tool-call.delta',
       },
       {
-        contentType: 'tool-call',
+        content: {
+          arguments: '{"location":"Taipei"}',
+          callId: 'call_1',
+          id: 'fc_1',
+          name: 'weather',
+          type: 'tool-call',
+        },
         index: 0,
         type: 'content.end',
       },
-      {
-        content: { text: '', type: 'text' },
-        index: 1,
-        type: 'content.start',
-      },
+      { contentType: 'text', index: 1, type: 'content.start' },
       { delta: 'Hello', index: 1, type: 'text.delta' },
-      { contentType: 'text', index: 1, type: 'content.end' },
+      { content: { text: 'Hello', type: 'text' }, index: 1, type: 'content.end' },
       {
         message: {
           content: [
@@ -197,7 +189,10 @@ describe('responses event stream', () => {
       }),
       message({
         item: {
+          content: [{ text: 'Think', type: 'reasoning_text' }],
+          encrypted_content: 'encrypted',
           id: 'reasoning_1',
+          summary: [{ text: 'Think more', type: 'summary_text' }],
           type: 'reasoning',
         },
         output_index: 0,
@@ -221,14 +216,22 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      {
-        content: { content: [], id: 'reasoning_1', type: 'reasoning' },
-        index: 0,
-        type: 'content.start',
-      },
+      { contentType: 'reasoning', index: 0, type: 'content.start' },
       { delta: 'Think', index: 0, type: 'reasoning.delta' },
       { delta: ' more', index: 0, type: 'reasoning.delta' },
-      { contentType: 'reasoning', index: 0, type: 'content.end' },
+      {
+        content: {
+          content: [
+            { text: 'Think more', type: 'summary' },
+            { text: 'Think', type: 'text' },
+            { text: 'encrypted', type: 'encrypted' },
+          ],
+          id: 'reasoning_1',
+          type: 'reasoning',
+        },
+        index: 0,
+        type: 'content.end',
+      },
       {
         message: {
           content: [{

@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, Event, ReasoningPartContent, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, Event, ReasoningPart, ReasoningPartContent, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -44,6 +44,27 @@ const normalizeToolCall = (item: Responses.FunctionCall): ToolCallPart => ({
   type: 'tool-call',
 })
 
+const normalizeTextPart = (item: Extract<Responses.ItemField, { type: 'message' }>): TextPart => ({
+  text: (item.content as Array<Responses.OutputTextContent | Responses.RefusalContent | Responses.TextContent>)
+    .map(part => part.type === 'refusal' ? part.refusal : part.text)
+    .join(''),
+  type: 'text',
+})
+
+const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reasoning' }>): ReasoningPart => {
+  const summary = item.summary as Responses.SummaryTextContent[]
+  const reasoning = item.content as Responses.ReasoningTextContent[] | undefined
+  const reasoningContent: ReasoningPartContent[] = [
+    ...summary.map(part => ({ text: part.text, type: 'summary' as const })),
+    ...reasoning?.map(part => ({ text: part.text, type: 'text' as const })) ?? [],
+  ]
+
+  if (item.encrypted_content !== undefined)
+    reasoningContent.push({ text: item.encrypted_content, type: 'encrypted' })
+
+  return { content: reasoningContent, id: item.id, type: 'reasoning' }
+}
+
 const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMessage => {
   const content: AssistantMessageContent[] = []
   let id: string | undefined
@@ -56,30 +77,13 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
       case 'function_call':
         content.push(normalizeToolCall(item))
         break
-      case 'message': {
-        const parts = item.content as Array<Responses.OutputTextContent | Responses.RefusalContent | Responses.TextContent>
-
+      case 'message':
         id = item.id
-        content.push(...parts.map(part => ({
-          text: part.type === 'refusal' ? part.refusal : part.text,
-          type: 'text' as const,
-        })))
+        content.push(normalizeTextPart(item))
         break
-      }
-      case 'reasoning': {
-        const summary = item.summary as Responses.SummaryTextContent[]
-        const reasoning = item.content as Responses.ReasoningTextContent[] | undefined
-        const reasoningContent: ReasoningPartContent[] = [
-          ...summary.map(part => ({ text: part.text, type: 'summary' as const })),
-          ...reasoning?.map(part => ({ text: part.text, type: 'text' as const })) ?? [],
-        ]
-
-        if (item.encrypted_content !== undefined)
-          reasoningContent.push({ text: item.encrypted_content, type: 'encrypted' })
-
-        content.push({ content: reasoningContent, id: item.id, type: 'reasoning' })
+      case 'reasoning':
+        content.push(normalizeReasoningPart(item))
         break
-      }
     }
   }
 
@@ -108,19 +112,11 @@ const normalizeContentStartEvent = (item: Responses.ItemField, index: number, to
       return undefined
     case 'function_call':
       toolNames.set(item.id, item.name)
-      return {
-        content: normalizeToolCall(item),
-        index,
-        type: 'content.start',
-      }
+      return { contentType: 'tool-call', index, type: 'content.start' }
     case 'message':
-      return { content: { text: '', type: 'text' }, index, type: 'content.start' }
+      return { contentType: 'text', index, type: 'content.start' }
     case 'reasoning':
-      return {
-        content: { content: [], id: item.id, type: 'reasoning' },
-        index,
-        type: 'content.start',
-      }
+      return { contentType: 'reasoning', index, type: 'content.start' }
   }
 }
 
@@ -130,11 +126,11 @@ const normalizeContentEndEvent = (item: Responses.ItemField, index: number): Eve
     case 'function_call_output':
       return undefined
     case 'function_call':
-      return { contentType: 'tool-call', index, type: 'content.end' }
+      return { content: normalizeToolCall(item), index, type: 'content.end' }
     case 'message':
-      return { contentType: 'text', index, type: 'content.end' }
+      return { content: normalizeTextPart(item), index, type: 'content.end' }
     case 'reasoning':
-      return { contentType: 'reasoning', index, type: 'content.end' }
+      return { content: normalizeReasoningPart(item), index, type: 'content.end' }
   }
 }
 
