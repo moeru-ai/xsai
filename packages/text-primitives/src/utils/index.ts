@@ -1,4 +1,5 @@
 export * from './event-source-stream'
+export * from './finish-reason'
 export * from './http-error'
 export * from './request-headers'
 export * from './request-url'
