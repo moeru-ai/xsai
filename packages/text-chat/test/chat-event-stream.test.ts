@@ -423,6 +423,33 @@ describe('chat event stream', () => {
     ])
   })
 
+  it('skips delta-less choice frames and reports malformed chunks as errors', async () => {
+    await expect(readEvents([
+      // Azure prepends prompt_filter_results frames with a delta-less choice.
+      { data: '{"choices":[{"index":0,"finish_reason":null}],"id":"chatcmpl_1"}' },
+      message({
+        choices: [{ delta: { content: 'hi' }, finish_reason: 'stop', index: 0 }],
+        id: 'chatcmpl_1',
+      }),
+      { data: 'not json' },
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      { contentType: 'text', index: 0, type: 'content.start' },
+      { delta: 'hi', index: 0, type: 'text.delta' },
+      { content: { text: 'hi', type: 'text' }, index: 0, type: 'content.end' },
+      { cause: expect.any(SyntaxError) as unknown, message: 'malformed event data', type: 'error' },
+      {
+        message: {
+          content: [{ text: 'hi', type: 'text' }],
+          id: 'chatcmpl_1',
+          role: 'assistant',
+        },
+        reason: 'stop',
+        type: 'finish',
+      },
+    ])
+  })
+
   it('maps provider error chunks to error events and an error finish', async () => {
     await expect(readEvents([
       message({
