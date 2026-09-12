@@ -175,10 +175,10 @@ describe('chat event stream', () => {
     ])
   })
 
-  it('maps reasoning_content deltas to reasoning events', async () => {
+  it('maps reasoning deltas to reasoning events and records the field used', async () => {
     await expect(readEvents([
       message({
-        choices: [{ delta: { reasoning_content: 'Think' }, finish_reason: null, index: 0 }],
+        choices: [{ delta: { reasoning: 'Think' }, finish_reason: null, index: 0 }],
         id: 'chatcmpl_1',
       }),
       message({
@@ -196,7 +196,11 @@ describe('chat event stream', () => {
       { contentType: 'text', index: 1, type: 'content.start' },
       { delta: 'Done', index: 1, type: 'text.delta' },
       {
-        content: { content: [{ text: 'Think', type: 'text' }], type: 'reasoning' },
+        content: {
+          content: [{ text: 'Think', type: 'text' }],
+          metadata: { chat: { reasoning_field: 'reasoning' } },
+          type: 'reasoning',
+        },
         index: 0,
         type: 'content.end',
       },
@@ -204,7 +208,11 @@ describe('chat event stream', () => {
       {
         message: {
           content: [
-            { content: [{ text: 'Think', type: 'text' }], type: 'reasoning' },
+            {
+              content: [{ text: 'Think', type: 'text' }],
+              metadata: { chat: { reasoning_field: 'reasoning' } },
+              type: 'reasoning',
+            },
             { text: 'Done', type: 'text' },
           ],
           id: 'chatcmpl_1',

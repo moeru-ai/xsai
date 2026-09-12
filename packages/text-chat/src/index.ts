@@ -5,6 +5,8 @@ import { EventSourceDataStream, EventSourceParserStream, requestHeaders, request
 
 import { ChatEventStream, normalizeInput, normalizeTools } from './utils'
 
+export type * from './metadata'
+
 export const chat = (options: HttpOptions): LanguageModel => async (context, modelOptions) =>
   (options.fetch ?? fetch)(requestURL('chat/completions', options.baseURL), {
     body: JSON.stringify({

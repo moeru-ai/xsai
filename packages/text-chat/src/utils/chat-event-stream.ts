@@ -51,6 +51,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
     const parts: (AssistantMessageContent | undefined)[] = []
     let nextIndex = 0
     let reasoningIndex: number | undefined
+    let reasoningField: 'reasoning' | 'reasoning_content' | undefined
     let reasoningText = ''
     let textIndex: number | undefined
     let text = ''
@@ -95,6 +96,9 @@ export class ChatEventStream extends TransformStream<string, Event> {
     const onDelta = (events: Event[], delta: ChatDelta): void => {
       const reasoning = delta.reasoning_content ?? delta.reasoning
       if (reasoning !== undefined && reasoning !== '') {
+        // Ollama emits `reasoning`, DeepSeek `reasoning_content`; remember
+        // which field this wire used so replays write the same one.
+        reasoningField ??= delta.reasoning_content !== undefined ? 'reasoning_content' : 'reasoning'
         reasoningIndex ??= startPart(events, 'reasoning')
         reasoningText += reasoning
         events.push({ delta: reasoning, index: reasoningIndex, type: 'reasoning.delta' })
@@ -122,8 +126,13 @@ export class ChatEventStream extends TransformStream<string, Event> {
 
       partsClosed = true
 
-      if (reasoningIndex !== undefined)
-        parts[reasoningIndex] = { content: [{ text: reasoningText, type: 'text' }], type: 'reasoning' }
+      if (reasoningIndex !== undefined) {
+        parts[reasoningIndex] = {
+          content: [{ text: reasoningText, type: 'text' }],
+          ...(reasoningField === undefined ? {} : { metadata: { chat: { reasoning_field: reasoningField } } }),
+          type: 'reasoning',
+        }
+      }
 
       if (textIndex !== undefined)
         parts[textIndex] = { text, type: 'text' }
