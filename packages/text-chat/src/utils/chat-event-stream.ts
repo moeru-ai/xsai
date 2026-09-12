@@ -1,18 +1,8 @@
-import type { AssistantMessageContent, Event, FinishReason, Usage } from '@xsai/text-primitives'
+import type { FinishReason, PartAssembler, Usage } from '@xsai/text-primitives'
 
-import type { ChatChunk, ChatDelta, ChatToolCallDelta, ChatUsage } from '../types'
+import type { ChatChunk, ChatDelta, ChatUsage } from '../types'
 
-interface ToolCallState {
-  args: string
-  id?: string
-  name?: string
-  partIndex: number
-}
-
-// Gateways repeat id/name as '' or null on continuation deltas; only a
-// non-empty string counts as identity.
-const acceptIdentity = (current: string | undefined, incoming: string | undefined): string | undefined =>
-  incoming != null && incoming !== '' ? incoming : current
+import { wireEventStream } from '@xsai/text-primitives'
 
 const mapFinishReason = (reason: null | string | undefined): FinishReason => {
   switch (reason) {
@@ -45,192 +35,61 @@ const normalizeUsage = (usage: ChatUsage): Usage => {
 }
 
 /** Converts Chat Completions API SSE data to text primitive events. */
-export class ChatEventStream extends TransformStream<string, Event> {
-  constructor() {
-    const toolCalls = new Map<number, ToolCallState>()
-    const parts: (AssistantMessageContent | undefined)[] = []
-    let nextIndex = 0
-    let reasoningIndex: number | undefined
-    let reasoningField: 'reasoning' | 'reasoning_content' | undefined
-    let reasoningText = ''
-    let textIndex: number | undefined
-    let text = ''
-    let messageId: string | undefined
-    let finishReason: null | string | undefined
-    let usage: ChatUsage | undefined
-    let partsClosed = false
-    let sawChunk = false
-    let sawError = false
+export const chatEventStream = () => {
+  // OpenAI emits `reasoning`, DeepSeek `reasoning_content`; remember which
+  // field this wire used so replays write the same one.
+  let reasoningField: 'reasoning' | 'reasoning_content' | undefined
 
-    const startPart = (events: Event[], contentType: 'reasoning' | 'text' | 'tool-call'): number => {
-      const index = nextIndex++
-      events.push({ contentType, index, type: 'content.start' })
-      return index
+  const onDelta = (asm: PartAssembler, delta: ChatDelta): void => {
+    const reasoning = delta.reasoning_content ?? delta.reasoning
+    if (reasoning !== undefined && reasoning !== '') {
+      reasoningField ??= delta.reasoning_content !== undefined ? 'reasoning_content' : 'reasoning'
+      asm.start('reasoning', 'reasoning')
+      asm.delta('reasoning', reasoning)
     }
 
-    const onToolCall = (events: Event[], call: ChatToolCallDelta): void => {
-      let state = toolCalls.get(call.index)
-
-      if (state === undefined) {
-        state = { args: '', partIndex: startPart(events, 'tool-call') }
-        toolCalls.set(call.index, state)
-      }
-
-      state.id = acceptIdentity(state.id, call.id)
-      state.name = acceptIdentity(state.name, call.function?.name)
-
-      const args = call.function?.arguments ?? ''
-      if (args === '')
-        return
-
-      state.args += args
-      events.push({
-        delta: args,
-        id: state.id ?? `call_${call.index}`,
-        index: state.partIndex,
-        name: state.name,
-        type: 'tool-call.delta',
-      })
+    // Refusal is a sibling field of content on this wire; a refusal turn
+    // streams content:null. Prefer non-empty content per delta so a
+    // simultaneous refusal is dropped rather than merged into the text.
+    const content = delta.content != null && delta.content !== ''
+      ? delta.content
+      : (delta.refusal ?? delta.content ?? '')
+    if (content !== '') {
+      asm.start('text', 'text')
+      asm.delta('text', content)
     }
 
-    const onDelta = (events: Event[], delta: ChatDelta): void => {
-      const reasoning = delta.reasoning_content ?? delta.reasoning
-      if (reasoning !== undefined && reasoning !== '') {
-        // Ollama emits `reasoning`, DeepSeek `reasoning_content`; remember
-        // which field this wire used so replays write the same one.
-        reasoningField ??= delta.reasoning_content !== undefined ? 'reasoning_content' : 'reasoning'
-        reasoningIndex ??= startPart(events, 'reasoning')
-        reasoningText += reasoning
-        events.push({ delta: reasoning, index: reasoningIndex, type: 'reasoning.delta' })
-      }
-
-      // Refusal is a sibling field of content on this wire; a refusal turn
-      // streams content:null. Prefer non-empty content per delta so a
-      // simultaneous refusal is dropped rather than merged into the text.
-      const content = delta.content != null && delta.content !== ''
-        ? delta.content
-        : (delta.refusal ?? delta.content ?? '')
-      if (content !== '') {
-        textIndex ??= startPart(events, 'text')
-        text += content
-        events.push({ delta: content, index: textIndex, type: 'text.delta' })
-      }
-
-      for (const call of delta.tool_calls ?? [])
-        onToolCall(events, call)
+    for (const call of delta.tool_calls ?? []) {
+      const key: `tool:${number}` = `tool:${call.index}`
+      asm.start(key, 'tool-call', { fallbackId: `call_${call.index}` })
+      asm.delta(key, call.function?.arguments ?? '', { callId: call.id, name: call.function?.name })
     }
-
-    const closeParts = (): Event[] => {
-      if (partsClosed)
-        return []
-
-      partsClosed = true
-
-      if (reasoningIndex !== undefined) {
-        parts[reasoningIndex] = {
-          content: [{ text: reasoningText, type: 'text' }],
-          ...(reasoningField === undefined ? {} : { metadata: { chat: { reasoning_field: reasoningField } } }),
-          type: 'reasoning',
-        }
-      }
-
-      if (textIndex !== undefined)
-        parts[textIndex] = { text, type: 'text' }
-
-      for (const [wireIndex, call] of toolCalls) {
-        // Some wires never send a tool call id.
-        const id = call.id ?? `call_${wireIndex}`
-        parts[call.partIndex] = {
-          arguments: call.args,
-          callId: id,
-          id,
-          name: call.name ?? '',
-          type: 'tool-call',
-        }
-      }
-
-      const events: Event[] = []
-      parts.forEach((content, index) => {
-        if (content === undefined)
-          return
-
-        events.push({ content, index, type: 'content.end' })
-      })
-      return events
-    }
-
-    const mapChunk = (chunk: ChatChunk): Event[] => {
-      const events: Event[] = []
-
-      if (chunk.error !== undefined) {
-        sawChunk = true
-        sawError = true
-        events.push({ cause: chunk.error, message: chunk.error.message, type: 'error' })
-        return events
-      }
-
-      if (chunk.id !== undefined)
-        messageId ??= chunk.id
-
-      if (chunk.usage !== undefined) {
-        usage = chunk.usage
-        sawChunk = true
-      }
-
-      for (const choice of chunk.choices ?? []) {
-        // Only the first choice is supported; `n > 1` is out of scope.
-        if (choice.index !== 0)
-          continue
-
-        sawChunk = true
-        if (choice.delta !== undefined)
-          onDelta(events, choice.delta)
-
-        if (choice.finish_reason != null) {
-          finishReason = choice.finish_reason
-          events.push(...closeParts())
-        }
-      }
-
-      return events
-    }
-
-    const finish = (): Event => {
-      const content = parts.filter((part): part is AssistantMessageContent => part !== undefined)
-      // An error chunk without a finish_reason still ends the turn.
-      const reason = sawError && finishReason == null ? 'error' : mapFinishReason(finishReason)
-      return {
-        message: {
-          content,
-          ...(messageId === undefined ? {} : { id: messageId }),
-          role: 'assistant',
-        },
-        reason,
-        type: 'finish',
-        ...(usage === undefined ? {} : { usage: normalizeUsage(usage) }),
-      }
-    }
-
-    super({
-      flush: (controller) => {
-        for (const event of closeParts())
-          controller.enqueue(event)
-
-        if (sawChunk)
-          controller.enqueue(finish())
-      },
-      transform: (data, controller) => {
-        let chunk: ChatChunk
-        try {
-          chunk = JSON.parse(data) as ChatChunk
-        }
-        catch (error) {
-          controller.enqueue({ cause: error, message: 'malformed event data', type: 'error' })
-          return
-        }
-        for (const event of mapChunk(chunk))
-          controller.enqueue(event)
-      },
-    })
   }
+
+  return wireEventStream<ChatChunk>((chunk, asm) => {
+    if (chunk.error !== undefined) {
+      asm.error({ cause: chunk.error, message: chunk.error.message })
+      return
+    }
+
+    if (chunk.id !== undefined)
+      asm.meta({ messageId: chunk.id })
+    if (chunk.usage !== undefined)
+      asm.meta({ usage: normalizeUsage(chunk.usage) })
+
+    for (const choice of chunk.choices ?? []) {
+      // Only the first choice is supported; `n > 1` is out of scope.
+      if (choice.index !== 0)
+        continue
+
+      if (choice.delta !== undefined)
+        onDelta(asm, choice.delta)
+
+      if (choice.finish_reason != null) {
+        if (reasoningField !== undefined)
+          asm.end('reasoning', { metadata: { chat: { reasoning_field: reasoningField } } })
+        asm.finish(mapFinishReason(choice.finish_reason))
+      }
+    }
+  })
 }
