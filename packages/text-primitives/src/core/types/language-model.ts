@@ -1,4 +1,16 @@
+import type { Tool } from '../tool'
 import type { Event } from './event'
-import type { ModelContext } from './model-context'
+import type { Message } from './message'
 
-export type LanguageModel = (options: ModelContext) => Promise<ReadableStream<Event>>
+export type LanguageModel = (context: LanguageModelContext, options: LanguageModelOptions) => Promise<ReadableStream<Event>>
+
+export interface LanguageModelContext {
+  input: Message[] | string
+  instructions?: string
+  tools?: Tool[]
+}
+
+export interface LanguageModelOptions {
+  extraBody?: Record<string, unknown>
+  signal?: AbortSignal
+}
