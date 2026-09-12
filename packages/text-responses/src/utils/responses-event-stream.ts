@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, Event, ReasoningPart, ReasoningPartContent, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, Event, FinishReason, ReasoningPart, ReasoningPartContent, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -94,13 +94,27 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
   }
 }
 
+const normalizeFinishReason = (response: Responses.ResponseResource): FinishReason => {
+  const rawReason = response.incomplete_details?.reason ?? response.error?.code
+
+  switch (rawReason) {
+    case 'content_filter':
+      return 'content-filter'
+    case 'max_output_tokens':
+      return 'max-output-tokens'
+    case undefined:
+      // Some wires report a plain stop on turns that emitted tool calls.
+      return response.output.some(item => item.type === 'function_call') ? 'tool-calls' : 'stop'
+    default:
+      return rawReason
+  }
+}
+
 const normalizeFinishEvent = (
   event: Responses.ResponseCompletedStreamingEvent | Responses.ResponseFailedStreamingEvent | Responses.ResponseIncompleteStreamingEvent,
 ): Event => ({
-  ...(event.response.error === null && event.response.incomplete_details === null
-    ? {}
-    : { reason: event.response.incomplete_details?.reason ?? event.response.error?.code }),
   message: normalizeAssistantMessage(event.response.output),
+  reason: normalizeFinishReason(event.response),
   ...(event.response.usage === null ? {} : { usage: normalizeUsage(event.response.usage) }),
   type: 'finish',
 })
@@ -137,7 +151,7 @@ const normalizeContentEndEvent = (item: Responses.ItemField, index: number): Eve
 const mapEvent = (event: ResponsesEvent, toolNames: Map<string, string>): Event | undefined => {
   switch (event.type) {
     case 'error':
-      throw new Error(event.error.message)
+      return { cause: event.error, message: event.error.message, type: 'error' }
     case 'response.completed':
       return normalizeFinishEvent(event)
     case 'response.content_part.added':
