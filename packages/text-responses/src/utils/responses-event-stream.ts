@@ -31,8 +31,10 @@ type ResponsesEvent
     | Responses.ResponseRefusalDoneStreamingEvent
 
 const normalizeUsage = (usage: Responses.Usage): Usage => ({
+  cacheReadInputTokens: usage.input_tokens_details?.cached_tokens,
   inputTokens: usage.input_tokens,
   outputTokens: usage.output_tokens,
+  reasoningTokens: usage.output_tokens_details?.reasoning_tokens,
   totalTokens: usage.total_tokens,
 })
 
