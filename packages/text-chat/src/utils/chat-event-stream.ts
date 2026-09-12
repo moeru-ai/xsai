@@ -183,7 +183,8 @@ export class ChatEventStream extends TransformStream<string, Event> {
           continue
 
         sawChunk = true
-        onDelta(events, choice.delta)
+        if (choice.delta !== undefined)
+          onDelta(events, choice.delta)
 
         if (choice.finish_reason != null) {
           finishReason = choice.finish_reason
@@ -219,7 +220,15 @@ export class ChatEventStream extends TransformStream<string, Event> {
           controller.enqueue(finish())
       },
       transform: (data, controller) => {
-        for (const event of mapChunk(JSON.parse(data) as ChatChunk))
+        let chunk: ChatChunk
+        try {
+          chunk = JSON.parse(data) as ChatChunk
+        }
+        catch (error) {
+          controller.enqueue({ cause: error, message: 'malformed event data', type: 'error' })
+          return
+        }
+        for (const event of mapChunk(chunk))
           controller.enqueue(event)
       },
     })
