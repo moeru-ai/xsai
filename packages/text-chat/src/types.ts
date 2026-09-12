@@ -73,6 +73,8 @@ export interface ChatUsage {
   completion_tokens_details?: {
     reasoning_tokens?: number
   }
+  /** DeepSeek reports cache hits here instead of prompt_tokens_details. */
+  prompt_cache_hit_tokens?: number
   prompt_tokens?: number
   prompt_tokens_details?: {
     cached_tokens?: number

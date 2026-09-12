@@ -4,10 +4,15 @@ import type { ChatChunk, ChatDelta, ChatToolCallDelta, ChatUsage } from '../type
 
 interface ToolCallState {
   args: string
-  id: string
-  name: string
+  id?: string
+  name?: string
   partIndex: number
 }
+
+// Gateways repeat id/name as '' or null on continuation deltas; only a
+// non-empty string counts as identity.
+const acceptIdentity = (current: string | undefined, incoming: string | undefined): string | undefined =>
+  incoming !== undefined && incoming !== '' ? incoming : current
 
 const mapFinishReason = (reason: null | string | undefined): FinishReason => {
   switch (reason) {
@@ -31,7 +36,7 @@ const normalizeUsage = (usage: ChatUsage): Usage => {
   const input = usage.prompt_tokens ?? 0
   const output = usage.completion_tokens ?? 0
   return {
-    cacheReadInputTokens: usage.prompt_tokens_details?.cached_tokens,
+    cacheReadInputTokens: usage.prompt_tokens_details?.cached_tokens ?? usage.prompt_cache_hit_tokens,
     inputTokens: input,
     outputTokens: output,
     reasoningTokens: usage.completion_tokens_details?.reasoning_tokens,
@@ -66,18 +71,12 @@ export class ChatEventStream extends TransformStream<string, Event> {
       let state = toolCalls.get(call.index)
 
       if (state === undefined) {
-        state = {
-          args: '',
-          // Some wires never send a tool call id.
-          id: call.id ?? `call_${call.index}`,
-          name: call.function?.name ?? '',
-          partIndex: startPart(events, 'tool-call'),
-        }
+        state = { args: '', partIndex: startPart(events, 'tool-call') }
         toolCalls.set(call.index, state)
       }
 
-      if (call.function?.name !== undefined)
-        state.name = call.function.name
+      state.id = acceptIdentity(state.id, call.id)
+      state.name = acceptIdentity(state.name, call.function?.name)
 
       const args = call.function?.arguments ?? ''
       if (args === '')
@@ -86,7 +85,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
       state.args += args
       events.push({
         delta: args,
-        id: state.id,
+        id: state.id ?? `call_${call.index}`,
         index: state.partIndex,
         name: state.name,
         type: 'tool-call.delta',
@@ -125,12 +124,14 @@ export class ChatEventStream extends TransformStream<string, Event> {
       if (textIndex !== undefined)
         parts[textIndex] = { text, type: 'text' }
 
-      for (const call of toolCalls.values()) {
+      for (const [wireIndex, call] of toolCalls) {
+        // Some wires never send a tool call id.
+        const id = call.id ?? `call_${wireIndex}`
         parts[call.partIndex] = {
           arguments: call.args,
-          callId: call.id,
-          id: call.id,
-          name: call.name,
+          callId: id,
+          id,
+          name: call.name ?? '',
           type: 'tool-call',
         }
       }
