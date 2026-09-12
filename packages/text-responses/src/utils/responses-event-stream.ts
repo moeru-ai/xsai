@@ -1,8 +1,8 @@
-import type { AssistantMessage, AssistantMessageContent, Event, FinishReason, ReasoningPart, ReasoningPartContent, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, FinishReason, PartAssembler, ReasoningPart, ReasoningPartContent, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
-import { DONE } from '@xsai/text-primitives'
+import { wireEventStream } from '@xsai/text-primitives'
 
 type ResponsesEvent
   = | Responses.ErrorStreamingEvent
@@ -111,121 +111,87 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
   }
 }
 
-const normalizeFinishEvent = (
-  event: Responses.ResponseCompletedStreamingEvent | Responses.ResponseFailedStreamingEvent | Responses.ResponseIncompleteStreamingEvent,
-): Event => ({
-  message: normalizeAssistantMessage(event.response.output),
-  reason: normalizeFinishReason(event.response),
-  ...(event.response.usage === null ? {} : { usage: normalizeUsage(event.response.usage) }),
-  type: 'finish',
-})
-
-const normalizeContentStartEvent = (item: Responses.ItemField, index: number, toolNames: Map<string, string>): Event | undefined => {
+const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
   switch (item.type) {
     case 'compaction':
     case 'function_call_output':
-      return undefined
+      break
     case 'function_call':
-      toolNames.set(item.id, item.name)
-      return { contentType: 'tool-call', index, type: 'content.start' }
+      asm.start(index, 'tool-call', { callId: item.call_id, id: item.id, name: item.name })
+      break
     case 'message':
-      return { contentType: 'text', index, type: 'content.start' }
+      asm.start(index, 'text')
+      asm.meta({ messageId: item.id })
+      break
     case 'reasoning':
-      return { contentType: 'reasoning', index, type: 'content.start' }
+      asm.start(index, 'reasoning')
+      break
   }
 }
 
-const normalizeContentEndEvent = (item: Responses.ItemField, index: number): Event | undefined => {
+const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
   switch (item.type) {
     case 'compaction':
     case 'function_call_output':
-      return undefined
+      break
+    // `output_item.done` carries the authoritative item; it overrides
+    // content accumulated from deltas.
     case 'function_call':
-      return { content: normalizeToolCall(item), index, type: 'content.end' }
+      asm.end(index, { content: normalizeToolCall(item) })
+      break
     case 'message':
-      return { content: normalizeTextPart(item), index, type: 'content.end' }
+      asm.end(index, { content: normalizeTextPart(item) })
+      break
     case 'reasoning':
-      return { content: normalizeReasoningPart(item), index, type: 'content.end' }
-  }
-}
-
-const mapEvent = (event: ResponsesEvent, toolNames: Map<string, string>): Event | undefined => {
-  switch (event.type) {
-    case 'error':
-      return { cause: event.error, message: event.error.message, type: 'error' }
-    case 'response.completed':
-      return normalizeFinishEvent(event)
-    case 'response.content_part.added':
-    case 'response.content_part.done':
-    case 'response.created':
-      return undefined
-    case 'response.failed':
-      return normalizeFinishEvent(event)
-    case 'response.function_call_arguments.delta':
-      return {
-        delta: event.delta,
-        id: event.item_id,
-        index: event.output_index,
-        name: toolNames.get(event.item_id)!,
-        type: 'tool-call.delta',
-      }
-    case 'response.function_call_arguments.done':
-    case 'response.in_progress':
-      return undefined
-    case 'response.incomplete':
-      return normalizeFinishEvent(event)
-    case 'response.output_item.added':
-      return normalizeContentStartEvent(event.item!, event.output_index, toolNames)
-    case 'response.output_item.done':
-      return normalizeContentEndEvent(event.item!, event.output_index)
-    case 'response.output_text.annotation.added':
-      return undefined
-    case 'response.output_text.delta':
-      return { delta: event.delta, index: event.output_index, type: 'text.delta' }
-    case 'response.output_text.done':
-    case 'response.queued':
-      return undefined
-    case 'response.reasoning.delta':
-      return { delta: event.delta, index: event.output_index, type: 'reasoning.delta' }
-    case 'response.reasoning.done':
-    case 'response.reasoning_summary_part.added':
-    case 'response.reasoning_summary_part.done':
-      return undefined
-    case 'response.reasoning_summary_text.delta':
-      return { delta: event.delta, index: event.output_index, type: 'reasoning.delta' }
-    case 'response.reasoning_summary_text.done':
-    case 'response.refusal.done':
-      return undefined
-    case 'response.refusal.delta':
-      return { delta: event.delta, index: event.output_index, type: 'text.delta' }
+      asm.end(index, { content: normalizeReasoningPart(item) })
+      break
   }
 }
 
 /** Converts Responses API SSE data to text primitive events. */
-export class ResponsesEventStream extends TransformStream<string, Event> {
-  constructor() {
-    const toolNames = new Map<string, string>()
-
-    super({
-      transform: (data, controller) => {
-        if (data === DONE) {
-          controller.terminate()
-          return
-        }
-
-        let wire: ResponsesEvent
-        try {
-          wire = JSON.parse(data) as ResponsesEvent
-        }
-        catch (error) {
-          controller.enqueue({ cause: error, message: 'malformed event data', type: 'error' })
-          return
-        }
-        const event = mapEvent(wire, toolNames)
-
-        if (event !== undefined)
-          controller.enqueue(event)
-      },
-    })
-  }
-}
+export const responsesEventStream = () =>
+  wireEventStream<ResponsesEvent>((event, asm) => {
+    switch (event.type) {
+      case 'error':
+        asm.error({ cause: event.error, message: event.error.message })
+        break
+      case 'response.completed':
+      case 'response.failed':
+      case 'response.incomplete':
+        if (event.response.usage !== null)
+          asm.meta({ usage: normalizeUsage(event.response.usage) })
+        // The terminal event carries the authoritative output record; a bare
+        // `response.completed` may arrive without any per-item events.
+        asm.finish(normalizeFinishReason(event.response), { message: normalizeAssistantMessage(event.response.output) })
+        break
+      case 'response.content_part.added':
+      case 'response.content_part.done':
+      case 'response.created':
+      case 'response.function_call_arguments.done':
+      case 'response.in_progress':
+      case 'response.output_text.annotation.added':
+      case 'response.output_text.done':
+      case 'response.queued':
+      case 'response.reasoning.done':
+      case 'response.reasoning_summary_part.added':
+      case 'response.reasoning_summary_part.done':
+      case 'response.reasoning_summary_text.done':
+      case 'response.refusal.done':
+        break
+      case 'response.function_call_arguments.delta':
+      case 'response.output_text.delta':
+      case 'response.reasoning.delta':
+      case 'response.reasoning_summary_text.delta':
+      case 'response.refusal.delta':
+        asm.delta(event.output_index, event.delta)
+        break
+      case 'response.output_item.added':
+        if (event.item != null)
+          onItemAdded(asm, event.item, event.output_index)
+        break
+      case 'response.output_item.done':
+        if (event.item != null)
+          onItemDone(asm, event.item, event.output_index)
+        break
+    }
+  })

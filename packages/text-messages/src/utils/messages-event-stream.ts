@@ -1,18 +1,12 @@
-import type { AssistantMessageContent, Event, FinishReason, Usage } from '@xsai/text-primitives'
+import type { FinishReason, PartAssembler, Usage } from '@xsai/text-primitives'
 
 import type {
-  ContentBlockDeltaEvent,
   ContentBlockStartEvent,
-  ContentBlockStopEvent,
   MessagesEvent,
   MessagesUsage,
 } from '../types'
 
-type BlockState
-  = | { data: string, type: 'redacted_thinking' }
-    | { inputJson: string, toolCallId: string, toolName: string, type: 'tool_use' }
-    | { signature?: string, thinking: string, type: 'thinking' }
-    | { text: string, type: 'text' }
+import { wireEventStream } from '@xsai/text-primitives'
 
 const mapStopReason = (stopReason: null | string | undefined): FinishReason => {
   switch (stopReason) {
@@ -56,187 +50,92 @@ const mergeUsage = (start: MessagesUsage | undefined, delta: MessagesUsage | und
   }
 }
 
-const openBlock = (event: ContentBlockStartEvent): undefined | { block?: BlockState, event: Event } => {
-  const block = event.content_block
-
-  switch (block.type) {
-    case 'document':
-    case 'image':
-    case 'tool_result':
-      return undefined
-    case 'redacted_thinking':
-      return {
-        block: { data: block.data, type: 'redacted_thinking' },
-        event: { contentType: 'reasoning', index: event.index, type: 'content.start' },
-      }
-    case 'text':
-      return {
-        block: { text: block.text, type: 'text' },
-        event: { contentType: 'text', index: event.index, type: 'content.start' },
-      }
-    case 'thinking':
-      return {
-        block: { signature: block.signature, thinking: block.thinking, type: 'thinking' },
-        event: { contentType: 'reasoning', index: event.index, type: 'content.start' },
-      }
-    case 'tool_use':
-      return {
-        block: { inputJson: '', toolCallId: block.id, toolName: block.name, type: 'tool_use' },
-        event: { contentType: 'tool-call', index: event.index, type: 'content.start' },
-      }
-    default:
-      return undefined
-  }
-}
-
-const closeBlock = (block: BlockState): AssistantMessageContent => {
-  switch (block.type) {
-    case 'redacted_thinking':
-      return { content: [{ data: block.data, type: 'redacted' }], type: 'reasoning' }
-    case 'text':
-      return { text: block.text, type: 'text' }
-    case 'thinking':
-      return {
-        content: [{ text: block.thinking, type: 'text' }],
-        ...(block.signature === undefined ? {} : { metadata: { messages: { signature: block.signature } } }),
-        type: 'reasoning',
-      }
-    case 'tool_use':
-      return {
-        arguments: block.inputJson,
-        callId: block.toolCallId,
-        id: block.toolCallId,
-        name: block.toolName,
-        type: 'tool-call',
-      }
-  }
-}
-
 /** Converts Messages API SSE data to text primitive events. */
-export class MessagesEventStream extends TransformStream<string, Event> {
-  constructor() {
-    const blocks = new Map<number, BlockState>()
-    const parts: (AssistantMessageContent | undefined)[] = []
-    let messageId: string | undefined
-    let startUsage: MessagesUsage | undefined
-    let stopReason: null | string | undefined
-    let deltaUsage: MessagesUsage | undefined
+export const messagesEventStream = () => {
+  const signatures = new Map<number, string>()
+  let startUsage: MessagesUsage | undefined
+  let deltaUsage: MessagesUsage | undefined
+  let stopReason: null | string | undefined
 
-    const onDelta = (event: ContentBlockDeltaEvent): Event | undefined => {
-      const block = blocks.get(event.index)
-      if (block === undefined)
-        return undefined
+  const onStart = (asm: PartAssembler, event: ContentBlockStartEvent): void => {
+    const block = event.content_block
 
-      switch (event.delta.type) {
-        case 'input_json_delta':
-          if (block.type === 'tool_use') {
-            block.inputJson += event.delta.partial_json
-            return {
-              delta: event.delta.partial_json,
-              id: block.toolCallId,
-              index: event.index,
-              name: block.toolName,
-              type: 'tool-call.delta',
-            }
-          }
-          return undefined
-        case 'signature_delta':
-          if (block.type === 'thinking')
-            block.signature = (block.signature ?? '') + event.delta.signature
-          return undefined
-        case 'text_delta':
-          if (block.type === 'text') {
-            block.text += event.delta.text
-            return { delta: event.delta.text, index: event.index, type: 'text.delta' }
-          }
-          return undefined
-        case 'thinking_delta':
-          if (block.type === 'thinking') {
-            block.thinking += event.delta.thinking
-            return { delta: event.delta.thinking, index: event.index, type: 'reasoning.delta' }
-          }
-          return undefined
-        default:
-          return undefined
-      }
+    switch (block.type) {
+      case 'document':
+      case 'image':
+      case 'tool_result':
+        break
+      case 'redacted_thinking':
+        asm.start(event.index, 'reasoning')
+        asm.end(event.index, {
+          content: { content: [{ data: block.data, type: 'redacted' }], type: 'reasoning' },
+        })
+        break
+      case 'text':
+        asm.start(event.index, 'text')
+        if (block.text !== '')
+          asm.delta(event.index, block.text)
+        break
+      case 'thinking':
+        asm.start(event.index, 'reasoning')
+        if (block.thinking !== '')
+          asm.delta(event.index, block.thinking)
+        if (block.signature !== undefined)
+          signatures.set(event.index, block.signature)
+        break
+      case 'tool_use':
+        asm.start(event.index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
+        break
     }
-
-    const onStart = (event: ContentBlockStartEvent): Event | undefined => {
-      const opened = openBlock(event)
-      if (opened?.block !== undefined)
-        blocks.set(event.index, opened.block)
-
-      return opened?.event
-    }
-
-    const onStop = (event: ContentBlockStopEvent): Event | undefined => {
-      const block = blocks.get(event.index)
-      if (block === undefined)
-        return undefined
-
-      blocks.delete(event.index)
-      const content = closeBlock(block)
-      parts[event.index] = content
-      return { content, index: event.index, type: 'content.end' }
-    }
-
-    const onFinish = (): Event => {
-      const content = parts.filter((part): part is AssistantMessageContent => part !== undefined)
-      const usage = mergeUsage(startUsage, deltaUsage)
-      const reason = mapStopReason(stopReason)
-      return {
-        message: {
-          content,
-          ...(messageId === undefined ? {} : { id: messageId }),
-          role: 'assistant',
-        },
-        reason,
-        type: 'finish',
-        ...(usage === undefined ? {} : { usage }),
-      }
-    }
-
-    const mapEvent = (event: MessagesEvent): Event | undefined => {
-      switch (event.type) {
-        case 'content_block_delta':
-          return onDelta(event)
-        case 'content_block_start':
-          return onStart(event)
-        case 'content_block_stop':
-          return onStop(event)
-        case 'error':
-          return { cause: event.error, message: event.error.message, type: 'error' }
-        case 'message_delta':
-          stopReason = event.delta.stop_reason
-          deltaUsage = event.usage
-          return undefined
-        case 'message_start':
-          messageId = event.message.id
-          startUsage = event.message.usage
-          return undefined
-        case 'message_stop':
-          return onFinish()
-        case 'ping':
-          return undefined
-        default:
-          return undefined
-      }
-    }
-
-    super({
-      transform: (data, controller) => {
-        let wire: MessagesEvent
-        try {
-          wire = JSON.parse(data) as MessagesEvent
-        }
-        catch (error) {
-          controller.enqueue({ cause: error, message: 'malformed event data', type: 'error' })
-          return
-        }
-        const event = mapEvent(wire)
-        if (event !== undefined)
-          controller.enqueue(event)
-      },
-    })
   }
+
+  return wireEventStream<MessagesEvent>((event, asm) => {
+    switch (event.type) {
+      case 'content_block_delta':
+        switch (event.delta.type) {
+          case 'input_json_delta':
+            asm.delta(event.index, event.delta.partial_json)
+            break
+          case 'signature_delta':
+            signatures.set(event.index, (signatures.get(event.index) ?? '') + event.delta.signature)
+            break
+          case 'text_delta':
+            asm.delta(event.index, event.delta.text)
+            break
+          case 'thinking_delta':
+            asm.delta(event.index, event.delta.thinking)
+            break
+        }
+        break
+      case 'content_block_start':
+        onStart(asm, event)
+        break
+      case 'content_block_stop': {
+        const signature = signatures.get(event.index)
+        signatures.delete(event.index)
+        asm.end(event.index, signature === undefined ? {} : { metadata: { messages: { signature } } })
+        break
+      }
+      case 'error':
+        asm.error({ cause: event.error, message: event.error.message })
+        break
+      case 'message_delta':
+        stopReason = event.delta.stop_reason
+        deltaUsage = event.usage
+        break
+      case 'message_start':
+        asm.meta({ messageId: event.message.id })
+        startUsage = event.message.usage
+        break
+      case 'message_stop': {
+        const usage = mergeUsage(startUsage, deltaUsage)
+        if (usage !== undefined)
+          asm.meta({ usage })
+        asm.finish(mapStopReason(stopReason))
+        break
+      }
+      case 'ping':
+        break
+    }
+  })
 }

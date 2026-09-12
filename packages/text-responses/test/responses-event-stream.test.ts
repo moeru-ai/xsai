@@ -3,7 +3,7 @@ import type { Event, EventSourceMessage } from '@xsai/text-primitives'
 import { EventSourceDataStream } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
-import { ResponsesEventStream } from '../src/utils/responses-event-stream'
+import { responsesEventStream } from '../src/utils/responses-event-stream'
 
 const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
   const source = new ReadableStream<EventSourceMessage>({
@@ -16,7 +16,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
   })
   const stream = source
     .pipeThrough(new EventSourceDataStream())
-    .pipeThrough(new ResponsesEventStream())
+    .pipeThrough(responsesEventStream())
   const reader = stream.getReader()
   const events: Event[] = []
 
@@ -127,7 +127,7 @@ describe('responses event stream', () => {
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
         delta: '{"location":',
-        id: 'fc_1',
+        id: 'call_1',
         index: 0,
         name: 'weather',
         type: 'tool-call.delta',
@@ -168,7 +168,7 @@ describe('responses event stream', () => {
     ])
   })
 
-  it('maps provider error events without ending the stream', async () => {
+  it('maps provider error events and ends with an error finish', async () => {
     await expect(readEvents([
       message({
         error: { code: 'server_error', message: 'something went wrong' },
@@ -180,6 +180,11 @@ describe('responses event stream', () => {
         cause: { code: 'server_error', message: 'something went wrong' },
         message: 'something went wrong',
         type: 'error',
+      },
+      {
+        message: { content: [], role: 'assistant' },
+        reason: 'error',
+        type: 'finish',
       },
     ])
   })

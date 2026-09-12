@@ -3,7 +3,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 
 import { EventSourceDataStream, EventSourceParserStream, requestURL, responseCatch } from '@xsai/text-primitives'
 
-import { MessagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
+import { messagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
 
@@ -52,5 +52,5 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
       .pipeThrough(new EventSourceDataStream())
-      .pipeThrough(new MessagesEventStream()))
+      .pipeThrough(messagesEventStream()))
 }

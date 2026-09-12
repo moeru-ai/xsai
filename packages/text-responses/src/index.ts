@@ -3,7 +3,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 
 import { EventSourceDataStream, EventSourceParserStream, requestHeaders, requestURL, responseCatch } from '@xsai/text-primitives'
 
-import { normalizeInput, normalizeToolChoice, normalizeTools, ResponsesEventStream } from './utils'
+import { normalizeInput, normalizeToolChoice, normalizeTools, responsesEventStream } from './utils'
 
 export const responses = (options: HttpOptions): LanguageModel => async (context, modelOptions) =>
   (options.fetch ?? fetch)(requestURL('responses', options.baseURL), {
@@ -45,4 +45,4 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
       .pipeThrough(new EventSourceDataStream())
-      .pipeThrough(new ResponsesEventStream()))
+      .pipeThrough(responsesEventStream()))
