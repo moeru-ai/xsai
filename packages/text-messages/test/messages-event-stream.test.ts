@@ -1,0 +1,212 @@
+import type { Event, EventSourceMessage } from '@xsai/text-primitives'
+
+import { EventSourceDataStream } from '@xsai/text-primitives'
+import { describe, expect, it } from 'vitest'
+
+import { MessagesEventStream } from '../src/utils/messages-event-stream'
+
+const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
+  const source = new ReadableStream<EventSourceMessage>({
+    start: (controller) => {
+      for (const message of messages)
+        controller.enqueue(message)
+
+      controller.close()
+    },
+  })
+  const stream = source
+    .pipeThrough(new EventSourceDataStream())
+    .pipeThrough(new MessagesEventStream())
+  const reader = stream.getReader()
+  const events: Event[] = []
+
+  while (true) {
+    const result = await reader.read()
+    if (result.done)
+      return events
+
+    events.push(result.value)
+  }
+}
+
+const message = (data: unknown): EventSourceMessage => ({ data: JSON.stringify(data) })
+
+describe('messages event stream', () => {
+  it('maps Messages output events to text primitive events', async () => {
+    await expect(readEvents([
+      message({
+        message: {
+          id: 'msg_1',
+          usage: { cache_read_input_tokens: 4, input_tokens: 10, output_tokens: 1 },
+        },
+        type: 'message_start',
+      }),
+      message({
+        content_block: { text: '', type: 'text' },
+        index: 0,
+        type: 'content_block_start',
+      }),
+      message({
+        delta: { text: 'Hello', type: 'text_delta' },
+        index: 0,
+        type: 'content_block_delta',
+      }),
+      message({ index: 0, type: 'content_block_stop' }),
+      message({
+        content_block: { id: 'toolu_1', input: {}, name: 'weather', type: 'tool_use' },
+        index: 1,
+        type: 'content_block_start',
+      }),
+      message({
+        delta: { partial_json: '{"city":', type: 'input_json_delta' },
+        index: 1,
+        type: 'content_block_delta',
+      }),
+      message({
+        delta: { partial_json: '"Taipei"}', type: 'input_json_delta' },
+        index: 1,
+        type: 'content_block_delta',
+      }),
+      message({ index: 1, type: 'content_block_stop' }),
+      message({
+        delta: { stop_reason: 'tool_use' },
+        type: 'message_delta',
+        usage: { output_tokens: 20 },
+      }),
+      message({ type: 'message_stop' }),
+    ])).resolves.toEqual([
+      { contentType: 'text', index: 0, type: 'content.start' },
+      { delta: 'Hello', index: 0, type: 'text.delta' },
+      { content: { text: 'Hello', type: 'text' }, index: 0, type: 'content.end' },
+      { contentType: 'tool-call', index: 1, type: 'content.start' },
+      {
+        delta: '{"city":',
+        id: 'toolu_1',
+        index: 1,
+        name: 'weather',
+        type: 'tool-call.delta',
+      },
+      {
+        delta: '"Taipei"}',
+        id: 'toolu_1',
+        index: 1,
+        name: 'weather',
+        type: 'tool-call.delta',
+      },
+      {
+        content: {
+          arguments: '{"city":"Taipei"}',
+          callId: 'toolu_1',
+          id: 'toolu_1',
+          name: 'weather',
+          type: 'tool-call',
+        },
+        index: 1,
+        type: 'content.end',
+      },
+      {
+        message: {
+          content: [
+            { text: 'Hello', type: 'text' },
+            {
+              arguments: '{"city":"Taipei"}',
+              callId: 'toolu_1',
+              id: 'toolu_1',
+              name: 'weather',
+              type: 'tool-call',
+            },
+          ],
+          id: 'msg_1',
+          role: 'assistant',
+        },
+        reason: 'tool-calls',
+        type: 'finish',
+        usage: {
+          cacheCreationInputTokens: undefined,
+          cacheReadInputTokens: 4,
+          inputTokens: 10,
+          outputTokens: 20,
+          reasoningTokens: undefined,
+          totalTokens: 34,
+        },
+      },
+    ])
+  })
+
+  it('assembles thinking blocks with streamed signatures', async () => {
+    await expect(readEvents([
+      message({
+        message: { id: 'msg_1', usage: { input_tokens: 5, output_tokens: 1 } },
+        type: 'message_start',
+      }),
+      message({
+        content_block: { thinking: '', type: 'thinking' },
+        index: 0,
+        type: 'content_block_start',
+      }),
+      message({
+        delta: { thinking: 'Think', type: 'thinking_delta' },
+        index: 0,
+        type: 'content_block_delta',
+      }),
+      message({
+        delta: { signature: 'sig_1', type: 'signature_delta' },
+        index: 0,
+        type: 'content_block_delta',
+      }),
+      message({ index: 0, type: 'content_block_stop' }),
+      message({
+        delta: { stop_reason: 'end_turn' },
+        type: 'message_delta',
+        usage: { output_tokens: 8, output_tokens_details: { thinking_tokens: 5 } },
+      }),
+      message({ type: 'message_stop' }),
+    ])).resolves.toEqual([
+      { contentType: 'reasoning', index: 0, type: 'content.start' },
+      { delta: 'Think', index: 0, type: 'reasoning.delta' },
+      {
+        content: {
+          content: [{ signature: 'sig_1', text: 'Think', type: 'text' }],
+          type: 'reasoning',
+        },
+        index: 0,
+        type: 'content.end',
+      },
+      {
+        message: {
+          content: [{
+            content: [{ signature: 'sig_1', text: 'Think', type: 'text' }],
+            type: 'reasoning',
+          }],
+          id: 'msg_1',
+          role: 'assistant',
+        },
+        reason: 'stop',
+        type: 'finish',
+        usage: {
+          cacheCreationInputTokens: undefined,
+          cacheReadInputTokens: undefined,
+          inputTokens: 5,
+          outputTokens: 8,
+          reasoningTokens: 5,
+          totalTokens: 13,
+        },
+      },
+    ])
+  })
+
+  it('maps provider error events without ending the stream', async () => {
+    await expect(readEvents([
+      message({
+        error: { message: 'Overloaded', type: 'overloaded_error' },
+        type: 'error',
+      }),
+    ])).resolves.toEqual([
+      {
+        cause: { message: 'Overloaded', type: 'overloaded_error' },
+        message: 'Overloaded',
+        type: 'error',
+      },
+    ])
+  })
+})

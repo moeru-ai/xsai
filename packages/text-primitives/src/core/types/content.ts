@@ -70,6 +70,7 @@ export interface ToolCallPart {
 
 export interface ToolResultPart {
   callId: string
+  isError?: boolean
   output: string | ToolResultPartContent[]
   type: 'tool-result'
 }

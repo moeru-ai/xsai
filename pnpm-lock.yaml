@@ -255,6 +255,16 @@ importers:
 
   packages/shared: {}
 
+  packages/text-messages:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+    devDependencies:
+      '@xsai/text-primitives':
+        specifier: 'workspace:'
+        version: link:../text-primitives
+
   packages/text-primitives:
     dependencies:
       '@xsai/shared':
