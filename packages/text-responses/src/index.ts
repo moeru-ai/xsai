@@ -1,7 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
-import { EventSourceDataStream, EventSourceParserStream, requestHeaders, requestURL } from '@xsai/text-primitives'
+import { EventSourceDataStream, EventSourceParserStream, requestHeaders, requestURL, responseCatch } from '@xsai/text-primitives'
 
 import { normalizeInput, normalizeTools, ResponsesEventStream } from './utils'
 
@@ -20,8 +20,8 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
     method: 'POST',
     signal: modelOptions?.signal,
   })
-  // TODO: catch
-    .then(res => res.body!
+    .then(responseCatch)
+    .then(res => res.body
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
       .pipeThrough(new EventSourceDataStream())

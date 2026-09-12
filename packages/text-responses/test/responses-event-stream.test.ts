@@ -161,8 +161,25 @@ describe('responses event stream', () => {
           id: 'message_1',
           role: 'assistant',
         },
+        reason: 'tool-calls',
         type: 'finish',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
+      },
+    ])
+  })
+
+  it('maps provider error events without ending the stream', async () => {
+    await expect(readEvents([
+      message({
+        error: { code: 'server_error', message: 'something went wrong' },
+        type: 'error',
+      }),
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      {
+        cause: { code: 'server_error', message: 'something went wrong' },
+        message: 'something went wrong',
+        type: 'error',
       },
     ])
   })
@@ -245,7 +262,7 @@ describe('responses event stream', () => {
           }],
           role: 'assistant',
         },
-        reason: 'max_output_tokens',
+        reason: 'max-output-tokens',
         type: 'finish',
       },
     ])

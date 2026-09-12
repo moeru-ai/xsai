@@ -1,3 +1,5 @@
 export * from './event-source-stream'
+export * from './http-error'
 export * from './request-headers'
 export * from './request-url'
+export * from './response-catch'

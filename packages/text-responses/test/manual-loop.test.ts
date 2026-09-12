@@ -1,5 +1,6 @@
 import type { Event, Message } from '@xsai/text-primitives'
 
+import { HttpError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { responses } from '../src'
@@ -123,5 +124,20 @@ describe('manual tool loop', () => {
         type: 'function_call_output',
       },
     ])
+  })
+
+  it('rejects with the response body on non-2xx', async () => {
+    const model = responses({
+      apiKey: 'test-key',
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => new Response('{"error":{"message":"bad key"}}', { status: 401 }),
+      model: 'test-model',
+    })
+
+    await expect(model({ input: 'hi' })).rejects.toThrow(HttpError)
+    await expect(model({ input: 'hi' })).rejects.toMatchObject({
+      body: '{"error":{"message":"bad key"}}',
+      status: 401,
+    })
   })
 })

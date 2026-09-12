@@ -1,4 +1,5 @@
 import type { Content, ContentType } from './content'
+import type { FinishReason } from './finish-reason'
 import type { AssistantMessage } from './message'
 import type { Usage } from './usage'
 
@@ -14,11 +15,18 @@ export interface ContentStartEvent {
   type: 'content.start'
 }
 
+export interface ErrorEvent {
+  cause?: unknown
+  message: string
+  type: 'error'
+}
+
 export type Event = EventMap[EventType]
 
 export interface EventMap {
   'content.end': ContentEndEvent
   'content.start': ContentStartEvent
+  'error': ErrorEvent
   'finish': FinishEvent
   'reasoning.delta': ReasoningDeltaEvent
   'text.delta': TextDeltaEvent
@@ -28,9 +36,8 @@ export interface EventMap {
 export type EventType = keyof EventMap
 
 export interface FinishEvent {
-  // finishReason or incompleteDetailsReason
   message: AssistantMessage
-  reason?: string
+  reason: FinishReason
   type: 'finish'
   usage?: Usage
 }
