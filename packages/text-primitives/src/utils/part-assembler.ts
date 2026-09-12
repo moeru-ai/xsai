@@ -7,6 +7,8 @@ import type {
   Usage,
 } from '../core'
 
+import { contentAccumulator } from '../core/content-accumulator'
+
 export interface FinishMeta {
   messageId?: string
   usage?: Usage
@@ -68,16 +70,12 @@ export interface PartStartInit {
 }
 
 interface PartState {
-  args: string
   callId?: string
   closed: boolean
-  content?: AssistantMessageContent
   fallbackId?: string
   id?: string
   index: number
-  metadata?: PartMetadata
   name?: string
-  text: string
   type: AssistantMessageContent['type']
 }
 
@@ -88,6 +86,7 @@ const acceptIdentity = (current: string | undefined, incoming: string | undefine
 
 /** @internal */
 export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
+  const accumulator = contentAccumulator()
   const parts = new Map<PartKey, PartState>()
   let messageId: string | undefined
   let messageOverride: AssistantMessage | undefined
@@ -95,50 +94,40 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
   let usage: undefined | Usage
   let finishEmitted = false
 
-  const buildContent = (state: PartState): AssistantMessageContent => {
-    if (state.content !== undefined)
-      return state.content
-
-    switch (state.type) {
-      case 'reasoning':
-        return {
-          content: [{ text: state.text, type: 'text' }],
-          ...(state.id === undefined ? {} : { id: state.id }),
-          type: 'reasoning',
-        }
-      case 'text':
-        return { text: state.text, type: 'text' }
-      case 'tool-call': {
-        const callId = state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
-        return {
-          arguments: state.args,
-          callId,
-          id: state.id ?? callId,
-          name: state.name ?? '',
-          type: 'tool-call',
-        }
-      }
-    }
-  }
-
   const end = (key: PartKey, extra?: PartEndExtra): void => {
     const state = parts.get(key)
     if (state === undefined || state.closed)
       return
 
     state.closed = true
-    if (extra?.content !== undefined)
-      state.content = extra.content
-    if (extra?.metadata !== undefined)
-      state.metadata = extra.metadata
+    const accumulated = accumulator.at(state.index)
+    if (accumulated === undefined)
+      return
 
-    const built = buildContent(state)
-    const content = state.metadata !== undefined && built.type === 'reasoning'
-      ? { ...built, metadata: state.metadata }
-      : built
-
-    state.content = content
-    emit({ content, index: state.index, type: 'content.end' })
+    const callId = state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
+    const built: AssistantMessageContent = accumulated.type === 'tool-call'
+      ? {
+          ...accumulated,
+          callId,
+          id: state.id ?? callId,
+          name: state.name ?? '',
+        }
+      : accumulated.type === 'reasoning'
+        ? {
+            ...accumulated,
+            ...(accumulated.content.length === 0
+              ? { content: [{ text: '', type: 'text' as const }] }
+              : {}),
+            ...(state.id === undefined ? {} : { id: state.id }),
+          }
+        : accumulated
+    const authoritative = extra?.content ?? built
+    const content = extra?.metadata !== undefined && authoritative.type === 'reasoning'
+      ? { ...authoritative, metadata: extra.metadata }
+      : authoritative
+    const event = { content, index: state.index, type: 'content.end' } as const
+    accumulator.apply(event)
+    emit(event)
   }
 
   return {
@@ -150,27 +139,29 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
       switch (state.type) {
         case 'reasoning':
         case 'text':
-          state.text += text
           if (text !== '') {
-            emit(state.type === 'reasoning'
-              ? { delta: text, index: state.index, type: 'reasoning.delta' }
-              : { delta: text, index: state.index, type: 'text.delta' })
+            const event = state.type === 'reasoning'
+              ? { delta: text, index: state.index, type: 'reasoning.delta' as const }
+              : { delta: text, index: state.index, type: 'text.delta' as const }
+            accumulator.apply(event)
+            emit(event)
           }
           break
-        case 'tool-call':
+        case 'tool-call': {
           state.callId = acceptIdentity(state.callId, extra?.callId)
           state.name = acceptIdentity(state.name, extra?.name)
-          state.args += text
-          if (text !== '') {
-            emit({
-              delta: text,
-              id: state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`,
-              index: state.index,
-              ...(state.name === undefined ? {} : { name: state.name }),
-              type: 'tool-call.delta',
-            })
+          const event = {
+            delta: text,
+            id: state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`,
+            index: state.index,
+            ...(state.name === undefined ? {} : { name: state.name }),
+            type: 'tool-call.delta' as const,
           }
+          accumulator.apply(event)
+          if (text !== '')
+            emit(event)
           break
+        }
       }
     },
     end,
@@ -203,9 +194,7 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
 
       emit({
         message: messageOverride ?? {
-          content: [...parts.values()]
-            .sort((a, b) => a.index - b.index)
-            .map(state => buildContent(state)),
+          content: accumulator.content(),
           ...(messageId === undefined ? {} : { id: messageId }),
           role: 'assistant',
         },
@@ -224,18 +213,19 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
       if (parts.has(key) || reason !== undefined)
         return
 
+      const index = parts.size
       parts.set(key, {
-        args: '',
         closed: false,
-        index: parts.size,
-        text: '',
+        index,
         type,
         ...(init?.callId === undefined ? {} : { callId: init.callId }),
         ...(init?.fallbackId === undefined ? {} : { fallbackId: init.fallbackId }),
         ...(init?.id === undefined ? {} : { id: init.id }),
         ...(init?.name === undefined ? {} : { name: init.name }),
       })
-      emit({ contentType: type, index: parts.size - 1, type: 'content.start' })
+      const event = { contentType: type, index, type: 'content.start' } as const
+      accumulator.apply(event)
+      emit(event)
     },
   }
 }
