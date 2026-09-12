@@ -161,7 +161,7 @@ describe('responses event stream', () => {
           id: 'message_1',
           role: 'assistant',
         },
-        reason: 'tool-calls',
+        reason: 'stop',
         type: 'finish',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
       },
