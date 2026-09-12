@@ -8,6 +8,8 @@ import type {
   MessagesUsage,
 } from '../types'
 
+import { reconcileFinishReason } from '@xsai/text-primitives'
+
 type BlockState
   = | { data: string, type: 'redacted_thinking' }
     | { inputJson: string, toolCallId: string, toolName: string, type: 'tool_use' }
@@ -183,7 +185,6 @@ export class MessagesEventStream extends TransformStream<string, Event> {
     const onFinish = (): Event => {
       const content = parts.filter((part): part is AssistantMessageContent => part !== undefined)
       const usage = mergeUsage(startUsage, deltaUsage)
-      // Some wires report a plain stop on turns that emitted tool calls.
       const reason = mapStopReason(stopReason)
       return {
         message: {
@@ -191,7 +192,7 @@ export class MessagesEventStream extends TransformStream<string, Event> {
           ...(messageId === undefined ? {} : { id: messageId }),
           role: 'assistant',
         },
-        reason: reason === 'stop' && content.some(part => part.type === 'tool-call') ? 'tool-calls' : reason,
+        reason: reconcileFinishReason(content, reason),
         type: 'finish',
         ...(usage === undefined ? {} : { usage }),
       }

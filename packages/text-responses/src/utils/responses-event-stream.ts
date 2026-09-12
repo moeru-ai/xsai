@@ -2,7 +2,7 @@ import type { AssistantMessage, AssistantMessageContent, Event, FinishReason, Re
 
 import type * as Responses from '../generated'
 
-import { DONE } from '@xsai/text-primitives'
+import { DONE, reconcileFinishReason } from '@xsai/text-primitives'
 
 type ResponsesEvent
   = | Responses.ErrorStreamingEvent
@@ -105,8 +105,7 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
     case 'max_output_tokens':
       return 'max-output-tokens'
     case undefined:
-      // Some wires report a plain stop on turns that emitted tool calls.
-      return response.output.some(item => item.type === 'function_call') ? 'tool-calls' : 'stop'
+      return 'stop'
     default:
       return rawReason
   }
@@ -114,12 +113,16 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
 
 const normalizeFinishEvent = (
   event: Responses.ResponseCompletedStreamingEvent | Responses.ResponseFailedStreamingEvent | Responses.ResponseIncompleteStreamingEvent,
-): Event => ({
-  message: normalizeAssistantMessage(event.response.output),
-  reason: normalizeFinishReason(event.response),
-  ...(event.response.usage === null ? {} : { usage: normalizeUsage(event.response.usage) }),
-  type: 'finish',
-})
+): Event => {
+  const message = normalizeAssistantMessage(event.response.output)
+  const reason = normalizeFinishReason(event.response)
+  return {
+    message,
+    reason: Array.isArray(message.content) ? reconcileFinishReason(message.content, reason) : reason,
+    ...(event.response.usage === null ? {} : { usage: normalizeUsage(event.response.usage) }),
+    type: 'finish',
+  }
+}
 
 const normalizeContentStartEvent = (item: Responses.ItemField, index: number, toolNames: Map<string, string>): Event | undefined => {
   switch (item.type) {

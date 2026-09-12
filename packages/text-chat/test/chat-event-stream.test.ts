@@ -225,7 +225,7 @@ describe('chat event stream', () => {
   })
 
   it('keeps the first non-empty tool call id and name', async () => {
-    const events = await readEvents([
+    await expect(readEvents([
       message({
         choices: [{
           delta: {
@@ -241,10 +241,19 @@ describe('chat event stream', () => {
         }],
         id: 'chatcmpl_1',
       }),
-      // Some gateways repeat id/name as empty strings on continuation deltas.
+      // Some gateways repeat id/name as empty strings or null on
+      // continuation deltas.
       message({
         choices: [{
           delta: { tool_calls: [{ function: { arguments: 'a', name: '' }, id: '', index: 0 }] },
+          finish_reason: null,
+          index: 0,
+        }],
+        id: 'chatcmpl_1',
+      }),
+      message({
+        choices: [{
+          delta: { tool_calls: [{ function: { arguments: 'b' }, id: null, index: 0 }] },
           finish_reason: null,
           index: 0,
         }],
@@ -255,28 +264,53 @@ describe('chat event stream', () => {
         id: 'chatcmpl_1',
       }),
       { data: '[DONE]' },
-    ])
-
-    expect(events.at(-1)).toEqual({
-      message: {
-        content: [{
-          arguments: 'a',
+    ])).resolves.toEqual([
+      { contentType: 'tool-call', index: 0, type: 'content.start' },
+      {
+        delta: 'a',
+        id: 'call_1',
+        index: 0,
+        name: 'get_weather',
+        type: 'tool-call.delta',
+      },
+      {
+        delta: 'b',
+        id: 'call_1',
+        index: 0,
+        name: 'get_weather',
+        type: 'tool-call.delta',
+      },
+      {
+        content: {
+          arguments: 'ab',
           callId: 'call_1',
           id: 'call_1',
           name: 'get_weather',
           type: 'tool-call',
-        }],
-        id: 'chatcmpl_1',
-        role: 'assistant',
+        },
+        index: 0,
+        type: 'content.end',
       },
-      reason: 'tool-calls',
-      type: 'finish',
-    })
-    expect(events[1]).toMatchObject({ id: 'call_1', name: 'get_weather', type: 'tool-call.delta' })
+      {
+        message: {
+          content: [{
+            arguments: 'ab',
+            callId: 'call_1',
+            id: 'call_1',
+            name: 'get_weather',
+            type: 'tool-call',
+          }],
+          id: 'chatcmpl_1',
+          role: 'assistant',
+        },
+        reason: 'tool-calls',
+        type: 'finish',
+      },
+    ])
   })
 
   it('mints an id when the wire never sends one', async () => {
-    const events = await readEvents([
+    await expect(readEvents([
       message({
         choices: [{
           delta: { tool_calls: [{ function: { arguments: 'a', name: 't' }, index: 0 }] },
@@ -290,19 +324,28 @@ describe('chat event stream', () => {
         id: 'chatcmpl_1',
       }),
       { data: '[DONE]' },
-    ])
-
-    expect(events.at(-1)).toMatchObject({
-      message: {
-        content: [{ arguments: 'a', callId: 'call_0', id: 'call_0', name: 't', type: 'tool-call' }],
+    ])).resolves.toEqual([
+      { contentType: 'tool-call', index: 0, type: 'content.start' },
+      { delta: 'a', id: 'call_0', index: 0, name: 't', type: 'tool-call.delta' },
+      {
+        content: { arguments: 'a', callId: 'call_0', id: 'call_0', name: 't', type: 'tool-call' },
+        index: 0,
+        type: 'content.end',
       },
-      reason: 'tool-calls',
-      type: 'finish',
-    })
+      {
+        message: {
+          content: [{ arguments: 'a', callId: 'call_0', id: 'call_0', name: 't', type: 'tool-call' }],
+          id: 'chatcmpl_1',
+          role: 'assistant',
+        },
+        reason: 'tool-calls',
+        type: 'finish',
+      },
+    ])
   })
 
   it('reports cached tokens alongside verbatim input tokens', async () => {
-    const events = await readEvents([
+    await expect(readEvents([
       message({
         choices: [{ delta: { content: 'hi' }, finish_reason: 'stop', index: 0 }],
         id: 'chatcmpl_1',
@@ -319,18 +362,28 @@ describe('chat event stream', () => {
         },
       }),
       { data: '[DONE]' },
-    ])
-
-    expect(events.at(-1)).toMatchObject({
-      type: 'finish',
-      usage: {
-        // The wire's prompt_tokens already includes cached tokens.
-        cacheReadInputTokens: 6,
-        inputTokens: 10,
-        outputTokens: 20,
-        totalTokens: 30,
+    ])).resolves.toEqual([
+      { contentType: 'text', index: 0, type: 'content.start' },
+      { delta: 'hi', index: 0, type: 'text.delta' },
+      { content: { text: 'hi', type: 'text' }, index: 0, type: 'content.end' },
+      {
+        message: {
+          content: [{ text: 'hi', type: 'text' }],
+          id: 'chatcmpl_1',
+          role: 'assistant',
+        },
+        reason: 'stop',
+        type: 'finish',
+        usage: {
+          // The wire's prompt_tokens already includes cached tokens.
+          cacheReadInputTokens: 6,
+          inputTokens: 10,
+          outputTokens: 20,
+          reasoningTokens: undefined,
+          totalTokens: 30,
+        },
       },
-    })
+    ])
   })
 
   it('maps refusal deltas to text and prefers simultaneous content', async () => {
@@ -370,7 +423,7 @@ describe('chat event stream', () => {
     ])
   })
 
-  it('maps provider error chunks to error events', async () => {
+  it('maps provider error chunks to error events and an error finish', async () => {
     await expect(readEvents([
       message({
         error: { message: 'Internal server error', type: 'server_error' },
@@ -381,6 +434,11 @@ describe('chat event stream', () => {
         cause: { message: 'Internal server error', type: 'server_error' },
         message: 'Internal server error',
         type: 'error',
+      },
+      {
+        message: { content: [], role: 'assistant' },
+        reason: 'error',
+        type: 'finish',
       },
     ])
   })
