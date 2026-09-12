@@ -12,5 +12,6 @@ export interface LanguageModelContext {
 
 export interface LanguageModelOptions {
   extraBody?: Record<string, unknown>
+  maxTokens?: number
   signal?: AbortSignal
 }
