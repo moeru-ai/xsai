@@ -100,8 +100,12 @@ export class ChatEventStream extends TransformStream<string, Event> {
         events.push({ delta: reasoning, index: reasoningIndex, type: 'reasoning.delta' })
       }
 
-      // Some wires split refusal into its own field; it is text to the reader.
-      const content = (delta.content ?? '') + (delta.refusal ?? '')
+      // Refusal is a sibling field of content on this wire; a refusal turn
+      // streams content:null. Prefer non-empty content per delta so a
+      // simultaneous refusal is dropped rather than merged into the text.
+      const content = delta.content != null && delta.content !== ''
+        ? delta.content
+        : (delta.refusal ?? delta.content ?? '')
       if (content !== '') {
         textIndex ??= startPart(events, 'text')
         text += content
