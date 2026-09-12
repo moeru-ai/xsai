@@ -37,18 +37,22 @@ const normalizeFilePart = (part: FilePart): ChatContentPart => {
   throw new Error('File part data must be a base64 data: URL')
 }
 
-const normalizeToolResultPart = (part: ToolResultPart): ChatMessage => ({
-  content: typeof part.output === 'string'
+const normalizeToolResultPart = (part: ToolResultPart): ChatMessage => {
+  const output = typeof part.output === 'string'
     ? part.output
     : part.output.map((content): ChatContentPart => {
         if (content.type !== 'text')
           throw new Error('Image tool results are not supported on the Chat Completions API')
 
         return normalizeInputTextPart(content)
-      }),
-  role: 'tool',
-  tool_call_id: part.callId,
-})
+      })
+  return {
+    // Some gateways reject empty tool content.
+    content: output === '' || (Array.isArray(output) && output.length === 0) ? '(no output)' : output,
+    role: 'tool',
+    tool_call_id: part.callId,
+  }
+}
 
 const reasoningText = (part: ReasoningPart): string =>
   part.content
@@ -88,7 +92,8 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
   }
 
   return {
-    content: content.length === 0 ? null : content,
+    // Some gateways reject `content: null` even when tool_calls is set.
+    content: content.length === 0 ? '' : content,
     role: 'assistant',
     ...(reasoning.length === 0 ? {} : { reasoning_content: reasoning.join('') }),
     ...(toolCalls.length === 0 ? {} : { tool_calls: toolCalls }),

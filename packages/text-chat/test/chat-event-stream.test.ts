@@ -216,6 +216,115 @@ describe('chat event stream', () => {
     ])
   })
 
+  it('keeps the first non-empty tool call id and name', async () => {
+    const events = await readEvents([
+      message({
+        choices: [{
+          delta: {
+            tool_calls: [{
+              function: { arguments: '', name: 'get_weather' },
+              id: 'call_1',
+              index: 0,
+              type: 'function',
+            }],
+          },
+          finish_reason: null,
+          index: 0,
+        }],
+        id: 'chatcmpl_1',
+      }),
+      // Some gateways repeat id/name as empty strings on continuation deltas.
+      message({
+        choices: [{
+          delta: { tool_calls: [{ function: { arguments: 'a', name: '' }, id: '', index: 0 }] },
+          finish_reason: null,
+          index: 0,
+        }],
+        id: 'chatcmpl_1',
+      }),
+      message({
+        choices: [{ delta: {}, finish_reason: 'tool_calls', index: 0 }],
+        id: 'chatcmpl_1',
+      }),
+      { data: '[DONE]' },
+    ])
+
+    expect(events.at(-1)).toEqual({
+      message: {
+        content: [{
+          arguments: 'a',
+          callId: 'call_1',
+          id: 'call_1',
+          name: 'get_weather',
+          type: 'tool-call',
+        }],
+        id: 'chatcmpl_1',
+        role: 'assistant',
+      },
+      reason: 'tool-calls',
+      type: 'finish',
+    })
+    expect(events[1]).toMatchObject({ id: 'call_1', name: 'get_weather', type: 'tool-call.delta' })
+  })
+
+  it('mints an id when the wire never sends one', async () => {
+    const events = await readEvents([
+      message({
+        choices: [{
+          delta: { tool_calls: [{ function: { arguments: 'a', name: 't' }, index: 0 }] },
+          finish_reason: null,
+          index: 0,
+        }],
+        id: 'chatcmpl_1',
+      }),
+      message({
+        choices: [{ delta: {}, finish_reason: 'tool_calls', index: 0 }],
+        id: 'chatcmpl_1',
+      }),
+      { data: '[DONE]' },
+    ])
+
+    expect(events.at(-1)).toMatchObject({
+      message: {
+        content: [{ arguments: 'a', callId: 'call_0', id: 'call_0', name: 't', type: 'tool-call' }],
+      },
+      reason: 'tool-calls',
+      type: 'finish',
+    })
+  })
+
+  it('reports cached tokens alongside verbatim input tokens', async () => {
+    const events = await readEvents([
+      message({
+        choices: [{ delta: { content: 'hi' }, finish_reason: 'stop', index: 0 }],
+        id: 'chatcmpl_1',
+      }),
+      message({
+        choices: [],
+        id: 'chatcmpl_1',
+        usage: {
+          completion_tokens: 20,
+          prompt_cache_hit_tokens: 4,
+          prompt_tokens: 10,
+          prompt_tokens_details: { cached_tokens: 6 },
+          total_tokens: 30,
+        },
+      }),
+      { data: '[DONE]' },
+    ])
+
+    expect(events.at(-1)).toMatchObject({
+      type: 'finish',
+      usage: {
+        // The wire's prompt_tokens already includes cached tokens.
+        cacheReadInputTokens: 6,
+        inputTokens: 10,
+        outputTokens: 20,
+        totalTokens: 30,
+      },
+    })
+  })
+
   it('maps provider error chunks to error events', async () => {
     await expect(readEvents([
       message({
