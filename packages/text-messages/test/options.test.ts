@@ -1,31 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
+import { captureRequests } from '../../text-primitives/test/test-utils'
 import { messages } from '../src'
-
-const sse = (lines: string[]): Response => {
-  const stream = new ReadableStream<string>({
-    start: (controller) => {
-      for (const line of lines) {
-        controller.enqueue(line)
-      }
-      controller.close()
-    },
-  })
-  return new Response(stream.pipeThrough(new TextEncoderStream()))
-}
-
-const capture = (): { bodies: Record<string, unknown>[], fetch: typeof fetch } => {
-  const bodies: Record<string, unknown>[] = []
-  const mockFetch: typeof fetch = async (_input, init) => {
-    bodies.push(JSON.parse(init?.body as string) as Record<string, unknown>)
-    return sse(['data: {"type":"message_stop"}\n\n'])
-  }
-  return { bodies, fetch: mockFetch }
-}
 
 describe('messages options', () => {
   it('maps model options to Messages fields', async () => {
-    const { bodies, fetch } = capture()
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
     const stream = await model({ input: 'hi' }, {
       extraBody: { tool_choice: { disable_parallel_tool_use: true } },
@@ -48,7 +28,7 @@ describe('messages options', () => {
   })
 
   it('maps required toolChoice to any and rejects missing maxOutputTokens', async () => {
-    const { bodies, fetch } = capture()
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
 
     await expect(model({ input: 'hi' })).rejects.toThrow('maxOutputTokens')

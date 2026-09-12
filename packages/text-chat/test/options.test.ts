@@ -1,31 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
+import { captureRequests } from '../../text-primitives/test/test-utils'
 import { chat } from '../src'
-
-const sse = (lines: string[]): Response => {
-  const stream = new ReadableStream<string>({
-    start: (controller) => {
-      for (const line of lines) {
-        controller.enqueue(line)
-      }
-      controller.close()
-    },
-  })
-  return new Response(stream.pipeThrough(new TextEncoderStream()))
-}
-
-const capture = (): { bodies: Record<string, unknown>[], fetch: typeof fetch } => {
-  const bodies: Record<string, unknown>[] = []
-  const mockFetch: typeof fetch = async (_input, init) => {
-    bodies.push(JSON.parse(init?.body as string) as Record<string, unknown>)
-    return sse(['data: [DONE]\n\n'])
-  }
-  return { bodies, fetch: mockFetch }
-}
 
 describe('chat options', () => {
   it('maps model options to Chat Completions fields', async () => {
-    const { bodies, fetch } = capture()
+    const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
     const stream = await model({ input: 'hi' }, {
       extraBody: { stream_options: { custom: true } },
