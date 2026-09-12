@@ -2,6 +2,8 @@ import type { AssistantMessageContent, Event, FinishReason, Usage } from '@xsai/
 
 import type { ChatChunk, ChatDelta, ChatToolCallDelta, ChatUsage } from '../types'
 
+import { reconcileFinishReason } from '@xsai/text-primitives'
+
 interface ToolCallState {
   args: string
   id?: string
@@ -12,7 +14,7 @@ interface ToolCallState {
 // Gateways repeat id/name as '' or null on continuation deltas; only a
 // non-empty string counts as identity.
 const acceptIdentity = (current: string | undefined, incoming: string | undefined): string | undefined =>
-  incoming !== undefined && incoming !== '' ? incoming : current
+  incoming != null && incoming !== '' ? incoming : current
 
 const mapFinishReason = (reason: null | string | undefined): FinishReason => {
   switch (reason) {
@@ -59,7 +61,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
     let finishReason: null | string | undefined
     let usage: ChatUsage | undefined
     let partsClosed = false
-    let sawContent = false
+    let sawChunk = false
     let sawError = false
 
     const startPart = (events: Event[], contentType: 'reasoning' | 'text' | 'tool-call'): number => {
@@ -163,6 +165,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
       const events: Event[] = []
 
       if (chunk.error !== undefined) {
+        sawChunk = true
         sawError = true
         events.push({ cause: chunk.error, message: chunk.error.message, type: 'error' })
         return events
@@ -173,7 +176,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
 
       if (chunk.usage !== undefined) {
         usage = chunk.usage
-        sawContent = true
+        sawChunk = true
       }
 
       for (const choice of chunk.choices ?? []) {
@@ -181,7 +184,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
         if (choice.index !== 0)
           continue
 
-        sawContent = true
+        sawChunk = true
         onDelta(events, choice.delta)
 
         if (choice.finish_reason != null) {
@@ -203,8 +206,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
           ...(messageId === undefined ? {} : { id: messageId }),
           role: 'assistant',
         },
-        // Some wires report a plain stop on turns that emitted tool calls.
-        reason: reason === 'stop' && content.some(part => part.type === 'tool-call') ? 'tool-calls' : reason,
+        reason: reconcileFinishReason(content, reason),
         type: 'finish',
         ...(usage === undefined ? {} : { usage: normalizeUsage(usage) }),
       }
@@ -215,7 +217,7 @@ export class ChatEventStream extends TransformStream<string, Event> {
         for (const event of closeParts())
           controller.enqueue(event)
 
-        if (sawContent)
+        if (sawChunk)
           controller.enqueue(finish())
       },
       transform: (data, controller) => {
