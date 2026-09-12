@@ -130,6 +130,12 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
   }
 }
 
+const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource, reason = normalizeFinishReason(response)): void => {
+  if (response.usage !== null)
+    asm.meta({ usage: normalizeUsage(response.usage) })
+  asm.finish(reason, { message: normalizeAssistantMessage(response.output) })
+}
+
 const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
   const normalized = normalizeOutputItem(item)
   if (normalized.part === undefined)
@@ -156,18 +162,26 @@ export const responsesEventStream = () =>
         asm.error({ cause: event.error, message: event.error.message })
         break
       case 'response.completed':
-      case 'response.failed':
-      case 'response.incomplete':
-        if (event.response.usage !== null)
-          asm.meta({ usage: normalizeUsage(event.response.usage) })
         // The terminal event carries the authoritative output record; a bare
         // `response.completed` may arrive without any per-item events.
-        asm.finish(normalizeFinishReason(event.response), { message: normalizeAssistantMessage(event.response.output) })
+        finishResponse(asm, event.response)
         break
       case 'response.content_part.added':
       case 'response.content_part.done':
       case 'response.created':
+        break
+      case 'response.failed':
+        finishResponse(asm, event.response, 'error')
+        break
+      case 'response.function_call_arguments.delta':
+      case 'response.output_text.delta':
+      case 'response.reasoning.delta':
+      case 'response.reasoning_summary_text.delta':
+      case 'response.refusal.delta':
+        asm.delta(event.output_index, event.delta)
+        break
       case 'response.function_call_arguments.done':
+        break
       case 'response.in_progress':
       case 'response.output_text.annotation.added':
       case 'response.output_text.done':
@@ -178,12 +192,8 @@ export const responsesEventStream = () =>
       case 'response.reasoning_summary_text.done':
       case 'response.refusal.done':
         break
-      case 'response.function_call_arguments.delta':
-      case 'response.output_text.delta':
-      case 'response.reasoning.delta':
-      case 'response.reasoning_summary_text.delta':
-      case 'response.refusal.delta':
-        asm.delta(event.output_index, event.delta)
+      case 'response.incomplete':
+        finishResponse(asm, event.response)
         break
       case 'response.output_item.added':
         if (event.item != null)
