@@ -86,25 +86,26 @@ export const eventCollectStream = (): TransformStream<Event, StreamResult> => {
 
 /**
  * Calls `model` and resolves with the finished result. Rejects when the
- * stream reports an error or ends without a `finish` event.
+ * stream reports an error or ends without a `finish` event. The terminal
+ * snapshot settles the call — the stream is cancelled without waiting for
+ * it to close.
  */
 export const collect = async (
   model: LanguageModel,
   context: LanguageModelContext,
   options?: LanguageModelOptions,
 ): Promise<CollectResult> => {
-  let last: StreamResult | undefined
-  for await (const result of (await model(context, options)).pipeThrough(eventCollectStream()))
-    last = result
-
-  if (last?.reason === undefined)
-    throw new XSAIError('truncated-stream', 'model stream ended without a finish event')
-  if (last.reason === 'error')
-    throw last.terminalError ?? new XSAIError('model-error', last.error?.message ?? 'model stream failed', { cause: last.error?.cause })
-
-  return {
-    message: last.message,
-    reason: last.reason,
-    ...(last.usage === undefined ? {} : { usage: last.usage }),
+  for await (const result of (await model(context, options)).pipeThrough(eventCollectStream())) {
+    if (result.reason === 'error')
+      throw result.terminalError ?? new XSAIError('model-error', result.error?.message ?? 'model stream failed', { cause: result.error?.cause })
+    if (result.reason !== undefined) {
+      return {
+        message: result.message,
+        reason: result.reason,
+        ...(result.usage === undefined ? {} : { usage: result.usage }),
+      }
+    }
   }
+
+  throw new XSAIError('truncated-stream', 'model stream ended without a finish event')
 }

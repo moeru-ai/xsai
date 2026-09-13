@@ -98,12 +98,12 @@ const acceptIdentity = (current: string | undefined, incoming: string | undefine
 export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIError) => void): PartAssembler => {
   const accumulator = contentAccumulator()
   const parts = new Map<PartKey, PartState>()
+  let finishEmitted = false
   let messageId: string | undefined
   let messageOverride: AssistantMessage | undefined
   let reason: FinishReason | undefined
   let terminalError: undefined | XSAIError
   let usage: undefined | Usage
-  let finishEmitted = false
 
   const end = (key: PartKey, extra?: PartEndExtra): void => {
     const state = parts.get(key)
