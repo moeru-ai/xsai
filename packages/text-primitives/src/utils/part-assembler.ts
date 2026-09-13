@@ -1,5 +1,3 @@
-import type { XSAIError } from '@xsai/shared'
-
 import type {
   AssistantMessage,
   AssistantMessageContent,
@@ -8,6 +6,8 @@ import type {
   PartMetadata,
   Usage,
 } from '../core'
+
+import { XSAIError } from '@xsai/shared'
 
 import { contentAccumulator } from '../core/content-accumulator'
 
@@ -20,8 +20,9 @@ export interface FinishMeta {
  * Internal seam between a wire adapter and the event protocol. The adapter
  * reports part-level facts (`start` / `delta` / `end` / `finish`); the
  * assembler owns index assignment, delta accumulation, tool-call identity
- * fallback, and the termination invariant: every stream ends with exactly
- * one `finish` event, emitted on `flush`.
+ * fallback, and the termination invariant: a wire that delivers a terminal
+ * signal ends with exactly one `finish` event, emitted on `flush`; a wire
+ * that ends without one fails the stream.
  */
 export interface PartAssembler {
   /** Appends text to a part. `text === ''` still absorbs tool-call identity extras without emitting. */
@@ -38,7 +39,7 @@ export interface PartAssembler {
    * `extra.error` is the terminating error attached to an `error` finish.
    */
   finish: (reason: FinishReason, extra?: PartFinishExtra) => void
-  /** Emits the `finish` event if not already emitted, defaulting to `reason: 'error'` for truncated or empty streams. */
+  /** Emits the `finish` event if not already emitted; fails the stream when the wire gave no terminal signal. */
   flush: () => void
   /** Records message-level metadata (`messageId`, `usage`); last call wins. */
   meta: (meta: FinishMeta) => void
@@ -51,12 +52,6 @@ export interface PartDeltaExtra {
   name?: string
 }
 
-export interface PartFinishExtra {
-  /** The terminating error carried on the `finish` event, for `reason: 'error'`. */
-  error?: XSAIError
-  message?: AssistantMessage
-}
-
 export interface PartEndExtra {
   /**
    * Authoritative part content, e.g. a Responses `output_item.done` item.
@@ -65,6 +60,12 @@ export interface PartEndExtra {
   content?: AssistantMessageContent
   /** Attached only to `reasoning` parts — the only part type with a metadata field. */
   metadata?: PartMetadata
+}
+
+export interface PartFinishExtra {
+  /** The terminating error carried on the `finish` event, for `reason: 'error'`. */
+  error?: XSAIError
+  message?: AssistantMessage
 }
 
 /** Stable identity an adapter assigns to a part for the life of the stream. */
@@ -94,13 +95,13 @@ const acceptIdentity = (current: string | undefined, incoming: string | undefine
   incoming != null && incoming !== '' ? incoming : current
 
 /** @internal */
-export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
+export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIError) => void): PartAssembler => {
   const accumulator = contentAccumulator()
   const parts = new Map<PartKey, PartState>()
   let messageId: string | undefined
   let messageOverride: AssistantMessage | undefined
   let reason: FinishReason | undefined
-  let terminalError: XSAIError | undefined
+  let terminalError: undefined | XSAIError
   let usage: undefined | Usage
   let finishEmitted = false
 
@@ -198,8 +199,11 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
 
       finishEmitted = true
       // A wire stream that ends without a terminal signal is truncated, not
-      // stopped cleanly.
-      reason ??= 'error'
+      // stopped cleanly — the stream fails instead of emitting a finish.
+      if (reason === undefined) {
+        fail(new XSAIError('truncated-stream', 'wire stream ended without a terminal signal'))
+        return
+      }
       for (const key of parts.keys())
         end(key)
 
@@ -245,25 +249,32 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
 /**
  * Parses SSE data frames into wire events, feeds them to `map`, and
  * guarantees the termination invariant through {@link partAssembler}.
+ * Malformed frames and wires that end without a terminal signal error
+ * the stream rather than producing a finish.
  * @internal
  */
 export const wireEventStream = <W>(map: (wire: W, asm: PartAssembler) => void): TransformStream<string, Event> => {
   let asm: PartAssembler | undefined
+  const createAssembler = (controller: TransformStreamDefaultController<Event>): PartAssembler =>
+    partAssembler(
+      event => controller.enqueue(event),
+      error => controller.error(error),
+    )
 
   return new TransformStream<string, Event>({
     flush: (controller) => {
-      asm ??= partAssembler(event => controller.enqueue(event))
+      asm ??= createAssembler(controller)
       asm.flush()
     },
     transform: (data, controller) => {
-      asm ??= partAssembler(event => controller.enqueue(event))
+      asm ??= createAssembler(controller)
 
       let wire: W
       try {
         wire = JSON.parse(data) as W
       }
       catch (cause) {
-        asm.error({ cause, message: 'malformed event data' })
+        controller.error(new XSAIError('invalid-response', 'malformed event data', { cause }))
         return
       }
 

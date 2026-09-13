@@ -24,6 +24,5 @@ export const chat = (options: HttpOptions): LanguageModel => async (context, mod
       tools: normalizeTools(context.tools),
       top_p: modelOptions?.topP,
     },
-    checkDone: true,
     path: 'chat/completions',
   }, chatEventStream())

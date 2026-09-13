@@ -24,11 +24,11 @@ _Avoid_: chunk, SSE event
 The internal module (`partAssembler` in `text-primitives`) that owns part bookkeeping — index assignment, delta accumulation, tool-call identity fallback — and the termination invariant. Adapters feed it part-level facts; wire semantics (finish-reason mapping, usage shape) stay in the adapter.
 
 **Terminal event**:
-Every event stream ends with exactly one `finish` event, emitted when the stream closes. A wire stream that ends without a terminal signal is truncated and finishes with `reason: 'error'`. An `error` finish carries the terminating error on its `error` field.
+A wire that delivers a terminal signal ends with exactly one `finish` event, emitted when the stream closes; an `error` finish carries the terminating error on its `error` field. A wire stream that ends without a terminal signal is truncated — the stream rejects instead of finishing.
 _Avoid_: end-of-stream sentinel
 
 **Collect**:
-The consumer-side fold of an event stream: `EventCollectStream` emits the accumulated result per event; `collect(model, context, options?)` resolves the finished result and rejects on `reason: 'error'`.
+The consumer-side fold of an event stream: `EventCollectStream` emits the accumulated result per event; `collect(model, context, options?)` resolves the finished result and rejects on `reason: 'error'` or a stream rejection.
 _Avoid_: complete, runSync
 
 ## Conventions

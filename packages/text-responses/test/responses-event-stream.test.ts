@@ -1,6 +1,7 @@
-import type { Event, EventSourceMessage } from '@xsai/text-primitives'
+import type { Event, EventSourceMessage, FinishEvent } from '@xsai/text-primitives'
 
 import { EventSourceDataStream } from '@xsai/text-primitives'
+import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
 import { responsesEventStream } from '../src/utils/responses-event-stream'
@@ -168,29 +169,32 @@ describe('responses event stream', () => {
     ])
   })
 
-  it('maps provider error events and ends with an error finish', async () => {
-    await expect(readEvents([
+  it('maps provider error events to an error finish', async () => {
+    const events = await readEvents([
       message({
         error: { code: 'server_error', message: 'something went wrong' },
         type: 'error',
       }),
       { data: '[DONE]' },
-    ])).resolves.toEqual([
+    ])
+
+    expect(events).toEqual([
       {
-        cause: { code: 'server_error', message: 'something went wrong' },
-        message: 'something went wrong',
-        type: 'error',
-      },
-      {
+        error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
         type: 'finish',
       },
     ])
+    expect((events[0] as FinishEvent).error).toMatchObject({
+      cause: { code: 'server_error', message: 'something went wrong' },
+      code: 'model-error',
+      message: 'something went wrong',
+    })
   })
 
   it('maps failed responses to an error finish', async () => {
-    await expect(readEvents([
+    const events = await readEvents([
       message({
         response: {
           error: { code: 'server_error', message: 'something went wrong' },
@@ -201,13 +205,21 @@ describe('responses event stream', () => {
         type: 'response.failed',
       }),
       { data: '[DONE]' },
-    ])).resolves.toEqual([
+    ])
+
+    expect(events).toEqual([
       {
+        error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
         type: 'finish',
       },
     ])
+    expect((events[0] as FinishEvent).error).toMatchObject({
+      cause: { code: 'server_error', message: 'something went wrong' },
+      code: 'model-error',
+      message: 'something went wrong',
+    })
   })
 
   it('maps reasoning output and incomplete reasons', async () => {

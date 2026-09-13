@@ -1,6 +1,7 @@
-import type { Event, EventSourceMessage } from '@xsai/text-primitives'
+import type { Event, EventSourceMessage, FinishEvent } from '@xsai/text-primitives'
 
 import { EventSourceDataStream } from '@xsai/text-primitives'
+import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
 import { messagesEventStream } from '../src/utils/messages-event-stream'
@@ -197,23 +198,26 @@ describe('messages event stream', () => {
     ])
   })
 
-  it('maps provider error events and ends with an error finish', async () => {
-    await expect(readEvents([
+  it('maps provider error events to an error finish', async () => {
+    const events = await readEvents([
       message({
         error: { message: 'Overloaded', type: 'overloaded_error' },
         type: 'error',
       }),
-    ])).resolves.toEqual([
+    ])
+
+    expect(events).toEqual([
       {
-        cause: { message: 'Overloaded', type: 'overloaded_error' },
-        message: 'Overloaded',
-        type: 'error',
-      },
-      {
+        error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
         type: 'finish',
       },
     ])
+    expect((events[0] as FinishEvent).error).toMatchObject({
+      cause: { message: 'Overloaded', type: 'overloaded_error' },
+      code: 'model-error',
+      message: 'Overloaded',
+    })
   })
 })

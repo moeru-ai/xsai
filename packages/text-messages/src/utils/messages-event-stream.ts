@@ -6,6 +6,7 @@ import type {
   MessagesUsage,
 } from '../types'
 
+import { XSAIError } from '@xsai/shared'
 import { wireEventStream } from '@xsai/text-primitives'
 
 const mapStopReason = (stopReason: null | string | undefined): FinishReason => {
@@ -117,7 +118,9 @@ export const messagesEventStream = () => {
         break
       }
       case 'error':
-        asm.error({ cause: event.error, message: event.error.message })
+        asm.finish('error', {
+          error: new XSAIError('model-error', event.error.message, { cause: event.error }),
+        })
         break
       case 'message_delta':
         stopReason = event.delta.stop_reason

@@ -10,8 +10,6 @@ import { responseCatch } from './response-catch'
 export interface WireRequestInit {
   /** Wire-shaped body fields; `undefined` fields are dropped before the model-call extraBody merge. */
   body: Record<string, unknown>
-  /** Require the SSE stream to end with a `[DONE]` frame. */
-  checkDone?: boolean
   /** Overrides the default `Authorization`/`Content-Type` headers; `undefined` values are dropped. */
   headers?: Record<string, string | undefined>
   path: string
@@ -45,5 +43,5 @@ export const wireRequest = async (
     .then(res => res.body
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
-      .pipeThrough(new EventSourceDataStream(init.checkDone))
+      .pipeThrough(new EventSourceDataStream())
       .pipeThrough(eventStream))

@@ -2,6 +2,7 @@ import type { FinishReason, PartAssembler, Usage } from '@xsai/text-primitives'
 
 import type { ChatChunk, ChatDelta, ChatUsage } from '../types'
 
+import { XSAIError } from '@xsai/shared'
 import { wireEventStream } from '@xsai/text-primitives'
 
 const mapFinishReason = (reason: null | string | undefined): FinishReason => {
@@ -68,7 +69,9 @@ export const chatEventStream = () => {
 
   return wireEventStream<ChatChunk>((chunk, asm) => {
     if (chunk.error !== undefined) {
-      asm.error({ cause: chunk.error, message: chunk.error.message })
+      asm.finish('error', {
+        error: new XSAIError('model-error', chunk.error.message, { cause: chunk.error }),
+      })
       return
     }
 

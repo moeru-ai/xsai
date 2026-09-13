@@ -4,7 +4,7 @@ export type XSAIErrorCause<T extends XSAIErrorCode>
 export interface XSAIErrorCauseMap {
   'http-error': undefined
   'invalid-input': undefined
-  'invalid-response': undefined
+  'invalid-response': unknown
 }
 
 export type XSAIErrorCode = keyof XSAIErrorCauseMap
