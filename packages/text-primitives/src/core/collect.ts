@@ -36,28 +36,14 @@ export interface StreamResult {
  * in-progress message without implementing the event protocol.
  */
 export class EventCollectStream extends TransformStream<Event, StreamResult> {
+  private readonly accumulator = contentAccumulator()
+  private error?: ErrorEvent
+  private messageId?: string
+  private reason?: FinishReason
+  private terminalError?: XSAIError
+  private usage?: Usage
+
   constructor() {
-    const accumulator = contentAccumulator()
-    let error: ErrorEvent | undefined
-    let messageId: string | undefined
-    let reason: FinishReason | undefined
-    let terminalError: undefined | XSAIError
-    let usage: undefined | Usage
-
-    const snapshot = (): StreamResult => {
-      return {
-        ...(error === undefined ? {} : { error }),
-        message: {
-          content: accumulator.content(),
-          ...(messageId === undefined ? {} : { id: messageId }),
-          role: 'assistant',
-        },
-        ...(reason === undefined ? {} : { reason }),
-        ...(terminalError === undefined ? {} : { terminalError }),
-        ...(usage === undefined ? {} : { usage }),
-      }
-    }
-
     super({
       transform: (event, controller) => {
         switch (event.type) {
@@ -66,23 +52,37 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
           case 'reasoning.delta':
           case 'text.delta':
           case 'tool-call.delta':
-            accumulator.apply(event)
+            this.accumulator.apply(event)
             break
           case 'error':
-            error = event
+            this.error = event
             break
           case 'finish':
-            accumulator.replace(event.message.content)
-            messageId = event.message.id
-            reason = event.reason
-            terminalError = event.error
-            usage = event.usage
+            this.accumulator.replace(event.message.content)
+            this.messageId = event.message.id
+            this.reason = event.reason
+            this.terminalError = event.error
+            this.usage = event.usage
             break
         }
 
-        controller.enqueue(snapshot())
+        controller.enqueue(this.snapshot())
       },
     })
+  }
+
+  private snapshot(): StreamResult {
+    return {
+      ...(this.error === undefined ? {} : { error: this.error }),
+      message: {
+        content: this.accumulator.content(),
+        ...(this.messageId === undefined ? {} : { id: this.messageId }),
+        role: 'assistant',
+      },
+      ...(this.reason === undefined ? {} : { reason: this.reason }),
+      ...(this.terminalError === undefined ? {} : { terminalError: this.terminalError }),
+      ...(this.usage === undefined ? {} : { usage: this.usage }),
+    }
   }
 }
 

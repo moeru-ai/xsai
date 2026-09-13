@@ -53,44 +53,12 @@ const mergeUsage = (start: MessagesUsage | undefined, delta: MessagesUsage | und
 
 /** Converts Messages API SSE data to text primitive events. */
 export class MessagesEventStream extends WireEventStream<MessagesEvent> {
+  private deltaUsage?: MessagesUsage
+  private readonly signatures = new Map<number, string>()
+  private startUsage?: MessagesUsage
+  private stopReason?: null | string
+
   constructor() {
-    const signatures = new Map<number, string>()
-    let startUsage: MessagesUsage | undefined
-    let deltaUsage: MessagesUsage | undefined
-    let stopReason: null | string | undefined
-
-    const onStart = (asm: PartAssembler, event: ContentBlockStartEvent): void => {
-      const block = event.content_block
-
-      switch (block.type) {
-        case 'document':
-        case 'image':
-        case 'tool_result':
-          break
-        case 'redacted_thinking':
-          asm.start(event.index, 'reasoning')
-          asm.end(event.index, {
-            content: { content: [{ data: block.data, type: 'redacted' }], type: 'reasoning' },
-          })
-          break
-        case 'text':
-          asm.start(event.index, 'text')
-          if (block.text !== '')
-            asm.delta(event.index, block.text)
-          break
-        case 'thinking':
-          asm.start(event.index, 'reasoning')
-          if (block.thinking !== '')
-            asm.delta(event.index, block.thinking)
-          if (block.signature !== undefined)
-            signatures.set(event.index, block.signature)
-          break
-        case 'tool_use':
-          asm.start(event.index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
-          break
-      }
-    }
-
     super((event, asm) => {
       switch (event.type) {
         case 'content_block_delta':
@@ -99,7 +67,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
               asm.delta(event.index, event.delta.partial_json)
               break
             case 'signature_delta':
-              signatures.set(event.index, (signatures.get(event.index) ?? '') + event.delta.signature)
+              this.signatures.set(event.index, (this.signatures.get(event.index) ?? '') + event.delta.signature)
               break
             case 'text_delta':
               asm.delta(event.index, event.delta.text)
@@ -110,11 +78,11 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           }
           break
         case 'content_block_start':
-          onStart(asm, event)
+          this.onStart(asm, event)
           break
         case 'content_block_stop': {
-          const signature = signatures.get(event.index)
-          signatures.delete(event.index)
+          const signature = this.signatures.get(event.index)
+          this.signatures.delete(event.index)
           asm.end(event.index, signature === undefined ? {} : { metadata: { messages: { signature } } })
           break
         }
@@ -124,23 +92,55 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           })
           break
         case 'message_delta':
-          stopReason = event.delta.stop_reason
-          deltaUsage = event.usage
+          this.stopReason = event.delta.stop_reason
+          this.deltaUsage = event.usage
           break
         case 'message_start':
           asm.meta({ messageId: event.message.id })
-          startUsage = event.message.usage
+          this.startUsage = event.message.usage
           break
         case 'message_stop': {
-          const usage = mergeUsage(startUsage, deltaUsage)
+          const usage = mergeUsage(this.startUsage, this.deltaUsage)
           if (usage !== undefined)
             asm.meta({ usage })
-          asm.finish(mapStopReason(stopReason))
+          asm.finish(mapStopReason(this.stopReason))
           break
         }
         case 'ping':
           break
       }
     })
+  }
+
+  private onStart(asm: PartAssembler, event: ContentBlockStartEvent): void {
+    const block = event.content_block
+
+    switch (block.type) {
+      case 'document':
+      case 'image':
+      case 'tool_result':
+        break
+      case 'redacted_thinking':
+        asm.start(event.index, 'reasoning')
+        asm.end(event.index, {
+          content: { content: [{ data: block.data, type: 'redacted' }], type: 'reasoning' },
+        })
+        break
+      case 'text':
+        asm.start(event.index, 'text')
+        if (block.text !== '')
+          asm.delta(event.index, block.text)
+        break
+      case 'thinking':
+        asm.start(event.index, 'reasoning')
+        if (block.thinking !== '')
+          asm.delta(event.index, block.thinking)
+        if (block.signature !== undefined)
+          this.signatures.set(event.index, block.signature)
+        break
+      case 'tool_use':
+        asm.start(event.index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
+        break
+    }
   }
 }
