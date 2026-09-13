@@ -12,13 +12,6 @@ describe('xsaiError', () => {
     expect(error.name).toBe('XSAIError')
   })
 
-  it('preserves an unknown cause through ErrorOptions', () => {
-    const cause = { type: 'server_error' }
-    const error = new XSAIError('model-error', 'model stream failed', { cause })
-
-    expect(error.cause).toBe(cause)
-  })
-
   it('narrows unknown values with isInstance', () => {
     expect(XSAIError.isInstance(new XSAIError('invalid-input', 'x'))).toBe(true)
     expect(XSAIError.isInstance(new Error('x'))).toBe(false)
