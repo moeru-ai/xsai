@@ -20,12 +20,13 @@ describe('messages options', () => {
 
     expect(bodies).toHaveLength(1)
     expect(bodies[0]).toMatchObject({
-      effort: 'max',
       max_tokens: 10,
+      output_config: { effort: 'max' },
       temperature: 0.5,
       tool_choice: { disable_parallel_tool_use: true, name: 'get_weather', type: 'tool' },
       top_p: 0.9,
     })
+    expect(bodies[0]).not.toHaveProperty('effort')
   })
 
   it('maps required toolChoice to any and rejects missing maxOutputTokens', async () => {
