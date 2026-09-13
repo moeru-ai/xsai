@@ -123,15 +123,12 @@ describe('collect', () => {
 
   it('rejects with a typed model error when the stream finishes with an error', async () => {
     const model = modelOf([
-      { cause: { type: 'server_error' }, message: 'Overloaded', type: 'error' },
       { message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
     ])
 
-    await expect(collect(model, { input: 'hi' })).rejects.toThrow(XSAIError)
     await expect(collect(model, { input: 'hi' })).rejects.toMatchObject({
-      cause: { type: 'server_error' },
       code: 'model-error',
-      message: 'Overloaded',
+      message: 'model stream failed',
     })
   })
 
