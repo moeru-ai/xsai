@@ -253,32 +253,34 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
  * the stream rather than producing a finish.
  * @internal
  */
-export const wireEventStream = <W>(map: (wire: W, asm: PartAssembler) => void): TransformStream<string, Event> => {
-  let asm: PartAssembler | undefined
-  const createAssembler = (controller: TransformStreamDefaultController<Event>): PartAssembler =>
-    partAssembler(
-      event => controller.enqueue(event),
-      error => controller.error(error),
-    )
+export class WireEventStream<W> extends TransformStream<string, Event> {
+  constructor(map: (wire: W, asm: PartAssembler) => void) {
+    let asm: PartAssembler | undefined
+    const createAssembler = (controller: TransformStreamDefaultController<Event>): PartAssembler =>
+      partAssembler(
+        event => controller.enqueue(event),
+        error => controller.error(error),
+      )
 
-  return new TransformStream<string, Event>({
-    flush: (controller) => {
-      asm ??= createAssembler(controller)
-      asm.flush()
-    },
-    transform: (data, controller) => {
-      asm ??= createAssembler(controller)
+    super({
+      flush: (controller) => {
+        asm ??= createAssembler(controller)
+        asm.flush()
+      },
+      transform: (data, controller) => {
+        asm ??= createAssembler(controller)
 
-      let wire: W
-      try {
-        wire = JSON.parse(data) as W
-      }
-      catch (cause) {
-        controller.error(new XSAIError('invalid-response', 'malformed event data', { cause }))
-        return
-      }
+        let wire: W
+        try {
+          wire = JSON.parse(data) as W
+        }
+        catch (cause) {
+          controller.error(new XSAIError('invalid-response', 'malformed event data', { cause }))
+          return
+        }
 
-      map(wire, asm)
-    },
-  })
+        map(wire, asm)
+      },
+    })
+  }
 }

@@ -4,7 +4,7 @@ import { EventSourceDataStream } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
-import { chatEventStream } from '../src/utils/chat-event-stream'
+import { ChatEventStream } from '../src/utils/chat-event-stream'
 
 const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
   const source = new ReadableStream<EventSourceMessage>({
@@ -17,7 +17,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
   })
   const stream = source
     .pipeThrough(new EventSourceDataStream())
-    .pipeThrough(chatEventStream())
+    .pipeThrough(new ChatEventStream())
   const reader = stream.getReader()
   const events: Event[] = []
 
