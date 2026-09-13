@@ -80,12 +80,12 @@ describe('normalizeInput', () => {
     ])
   })
 
-  it('sends parseable file data as a file URL', () => {
+  it('sends inline data URLs as file data', () => {
     expect(normalizeInput([{
       content: [{ data: 'data:application/pdf;base64,JVBERi0xLjQ=', type: 'file' }],
       role: 'user',
     }])).toEqual([{
-      content: [{ file_url: 'data:application/pdf;base64,JVBERi0xLjQ=', type: 'input_file' }],
+      content: [{ file_data: 'data:application/pdf;base64,JVBERi0xLjQ=', type: 'input_file' }],
       role: 'user',
       type: 'message',
     }])
