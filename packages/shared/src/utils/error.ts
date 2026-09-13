@@ -5,8 +5,6 @@ export interface XSAIErrorCauseMap {
   'http-error': undefined
   'invalid-input': undefined
   'invalid-response': undefined
-  'model-error': unknown
-  'truncated-stream': undefined
 }
 
 export type XSAIErrorCode = keyof XSAIErrorCauseMap
