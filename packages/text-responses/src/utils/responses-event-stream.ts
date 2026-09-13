@@ -2,6 +2,7 @@ import type { AssistantMessage, AssistantMessageContent, FinishReason, PartAssem
 
 import type * as Responses from '../generated'
 
+import { XSAIError } from '@xsai/shared'
 import { wireEventStream } from '@xsai/text-primitives'
 
 type ResponsesEvent
@@ -133,7 +134,13 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
 const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource, reason = normalizeFinishReason(response)): void => {
   if (response.usage !== null)
     asm.meta({ usage: normalizeUsage(response.usage) })
-  asm.finish(reason, { message: normalizeAssistantMessage(response.output) })
+  const error = reason === 'error'
+    ? new XSAIError('model-error', response.error?.message ?? 'response failed', { cause: response.error })
+    : undefined
+  asm.finish(reason, {
+    ...(error === undefined ? {} : { error }),
+    message: normalizeAssistantMessage(response.output),
+  })
 }
 
 const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
@@ -159,7 +166,9 @@ export const responsesEventStream = () =>
   wireEventStream<ResponsesEvent>((event, asm) => {
     switch (event.type) {
       case 'error':
-        asm.error({ cause: event.error, message: event.error.message })
+        asm.finish('error', {
+          error: new XSAIError('model-error', event.error.message, { cause: event.error }),
+        })
         break
       case 'response.completed':
         // The terminal event carries the authoritative output record; a bare
