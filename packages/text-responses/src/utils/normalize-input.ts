@@ -45,18 +45,11 @@ const normalizeImagePart = (part: ImagePart): InputImageContentParamAutoParam =>
   type: 'input_image',
 })
 
-const isRemoteUrl = (data: string): boolean => {
-  if (!URL.canParse(data))
-    return false
-
-  const protocol = new URL(data).protocol
-  return protocol === 'http:' || protocol === 'https:'
-}
-
 const normalizeFilePart = (part: FilePart): InputFileContentParam => {
   const data = part.data.toString()
+  const protocol = URL.canParse(data) ? new URL(data).protocol : undefined
 
-  return isRemoteUrl(data)
+  return protocol === 'http:' || protocol === 'https:'
     ? { file_url: data, type: 'input_file' }
     : { file_data: data, type: 'input_file' }
 }
