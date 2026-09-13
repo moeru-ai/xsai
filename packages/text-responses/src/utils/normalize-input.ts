@@ -45,7 +45,7 @@ const normalizeOutputTextPart = (part: TextPart): OutputTextContentParam => ({
 })
 
 const normalizeImagePart = (part: ImagePart): InputImageContentParamAutoParam => ({
-  ...(part.detail === undefined ? {} : { detail: part.detail }),
+  detail: part.detail,
   image_url: part.data.toString(),
   type: 'input_image',
 })
@@ -78,8 +78,8 @@ const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem => {
 
   return {
     ...(content.length === 0 ? {} : { content }),
-    ...(encryptedContent === undefined ? {} : { encrypted_content: encryptedContent }),
-    ...(part.id === undefined ? {} : { id: part.id }),
+    encrypted_content: encryptedContent,
+    id: part.id,
     summary,
     type: 'reasoning',
   }
@@ -111,7 +111,7 @@ const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemPa
 const normalizeAssistantMessage = (message: AssistantMessage): NormalizedItemParam[] => {
   const createMessageItem = (content: OutputTextContentParam[], includeId = true): AssistantMessageItemParam => ({
     content,
-    ...(includeId && message.id !== undefined ? { id: message.id } : {}),
+    id: includeId ? message.id : undefined,
     role: 'assistant',
     type: 'message',
   })
