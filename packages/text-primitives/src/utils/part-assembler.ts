@@ -254,21 +254,16 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
  * @internal
  */
 export class WireEventStream<W> extends TransformStream<string, Event> {
-  constructor(map: (wire: W, asm: PartAssembler) => void) {
-    let asm: PartAssembler | undefined
-    const createAssembler = (controller: TransformStreamDefaultController<Event>): PartAssembler =>
-      partAssembler(
-        event => controller.enqueue(event),
-        error => controller.error(error),
-      )
+  private asm?: PartAssembler
 
+  constructor(map: (wire: W, asm: PartAssembler) => void) {
     super({
       flush: (controller) => {
-        asm ??= createAssembler(controller)
-        asm.flush()
+        this.asm ??= this.createAssembler(controller)
+        this.asm.flush()
       },
       transform: (data, controller) => {
-        asm ??= createAssembler(controller)
+        this.asm ??= this.createAssembler(controller)
 
         let wire: W
         try {
@@ -279,8 +274,15 @@ export class WireEventStream<W> extends TransformStream<string, Event> {
           return
         }
 
-        map(wire, asm)
+        map(wire, this.asm)
       },
     })
+  }
+
+  private createAssembler(controller: TransformStreamDefaultController<Event>): PartAssembler {
+    return partAssembler(
+      event => controller.enqueue(event),
+      error => controller.error(error),
+    )
   }
 }
