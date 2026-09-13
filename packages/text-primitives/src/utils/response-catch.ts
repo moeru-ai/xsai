@@ -1,5 +1,13 @@
 import { HttpError, XSAIError } from '@xsai/shared'
 
+/** Rejection handler for the fetch call: caller aborts keep their reason, everything else becomes a `network-error`. */
+export const requestCatch = (url: URL, signal?: AbortSignal): ((cause: unknown) => never) =>
+  (cause) => {
+    if (signal?.aborted)
+      throw cause
+    throw new XSAIError('network-error', `request to ${url.toString()} failed`, { cause })
+  }
+
 export const responseCatch = async (res: Response): Promise<Response & { body: NonNullable<Response['body']> }> => {
   if (!res.ok)
     throw new HttpError(res.status, await res.text())
