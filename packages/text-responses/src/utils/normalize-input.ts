@@ -28,7 +28,6 @@ import type {
 } from '../generated'
 
 type InputMessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam
-type NormalizedItemParam = ItemParam
 
 const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
   text: part.text,
@@ -113,7 +112,7 @@ const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemPa
   type: 'function_call_output',
 })
 
-const normalizeAssistantMessage = (message: AssistantMessage): NormalizedItemParam[] => {
+const normalizeAssistantMessage = (message: AssistantMessage): ItemParam[] => {
   const createMessageItem = (content: OutputTextContentParam[], includeId = true): AssistantMessageItemParam => ({
     content,
     id: includeId ? message.id : undefined,
@@ -124,7 +123,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): NormalizedItemPar
   if (typeof message.content === 'string')
     return [createMessageItem([{ text: message.content, type: 'output_text' }])]
 
-  const items: NormalizedItemParam[] = []
+  const items: ItemParam[] = []
   let content: OutputTextContentParam[] = []
   let includeId = true
 
@@ -157,7 +156,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): NormalizedItemPar
   return items
 }
 
-const normalizeUserMessage = (message: UserMessage): NormalizedItemParam[] => {
+const normalizeUserMessage = (message: UserMessage): ItemParam[] => {
   const createMessageItem = (content: InputMessageContent[] | string): UserMessageItemParam => ({
     content,
     role: 'user',
@@ -167,7 +166,7 @@ const normalizeUserMessage = (message: UserMessage): NormalizedItemParam[] => {
   if (typeof message.content === 'string')
     return [createMessageItem(message.content)]
 
-  const items: NormalizedItemParam[] = []
+  const items: ItemParam[] = []
   let content: InputMessageContent[] = []
 
   const flushContent = (): void => {
@@ -200,7 +199,7 @@ const normalizeUserMessage = (message: UserMessage): NormalizedItemParam[] => {
   return items
 }
 
-const normalizeMessage = (message: Message): NormalizedItemParam[] => {
+const normalizeMessage = (message: Message): ItemParam[] => {
   switch (message.role) {
     case 'assistant':
       return normalizeAssistantMessage(message)
@@ -222,6 +221,6 @@ const normalizeMessage = (message: Message): NormalizedItemParam[] => {
 }
 
 /** @internal */
-export const normalizeInput = (input: readonly Message[] | string): NormalizedItemParam[] => typeof input === 'string'
+export const normalizeInput = (input: readonly Message[] | string): ItemParam[] => typeof input === 'string'
   ? [{ content: input, role: 'user', type: 'message' }]
   : input.flatMap(normalizeMessage)
