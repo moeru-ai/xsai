@@ -177,7 +177,6 @@ describe('normalizeInput', () => {
         type: 'message',
       },
       {
-        content: [{ text: 'private thought', type: 'reasoning_text' }],
         encrypted_content: 'redacted thought',
         id: 'reasoning_1',
         summary: [{ text: 'summary', type: 'summary_text' }],
@@ -202,7 +201,6 @@ describe('normalizeInput', () => {
       role: 'assistant',
     }])).toEqual([
       {
-        content: [{ text: 'unreplayable', type: 'reasoning_text' }],
         summary: [],
         type: 'reasoning',
       },
