@@ -84,7 +84,7 @@ describe('eventCollectStream', () => {
   it('exposes the terminating error on the finished snapshot', async () => {
     const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
     const results = await collectSnapshots([
-      { message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish', error },
+      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
     ])
 
     expect(results[0].terminalError).toBe(error)
@@ -133,6 +133,18 @@ describe('collect', () => {
       code: 'model-error',
       message: 'Overloaded',
     })
+  })
+
+  it('propagates stream rejections with their typed error', async () => {
+    const error = new XSAIError('truncated-stream', 'wire stream ended without a terminal signal')
+    const model: LanguageModel = async () => new ReadableStream<Event>({
+      start: (controller) => {
+        controller.enqueue({ contentType: 'text', index: 0, type: 'content.start' })
+        controller.error(error)
+      },
+    })
+
+    await expect(collect(model, { input: 'hi' })).rejects.toBe(error)
   })
 
   it('rejects with a truncated-stream error when the stream ends without a finish event', async () => {

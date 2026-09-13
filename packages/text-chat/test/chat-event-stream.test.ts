@@ -1,6 +1,7 @@
-import type { Event, EventSourceMessage } from '@xsai/text-primitives'
+import type { Event, EventSourceMessage, FinishEvent } from '@xsai/text-primitives'
 
 import { EventSourceDataStream } from '@xsai/text-primitives'
+import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
 import { chatEventStream } from '../src/utils/chat-event-stream'
@@ -15,7 +16,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
     },
   })
   const stream = source
-    .pipeThrough(new EventSourceDataStream(true))
+    .pipeThrough(new EventSourceDataStream())
     .pipeThrough(chatEventStream())
   const reader = stream.getReader()
   const events: Event[] = []
@@ -447,7 +448,7 @@ describe('chat event stream', () => {
     ])
   })
 
-  it('skips delta-less choice frames and reports malformed chunks as errors', async () => {
+  it('skips delta-less choice frames and rejects on malformed chunks', async () => {
     await expect(readEvents([
       // Azure prepends prompt_filter_results frames with a delta-less choice.
       { data: '{"choices":[{"index":0,"finish_reason":null}],"id":"chatcmpl_1"}' },
@@ -457,40 +458,33 @@ describe('chat event stream', () => {
       }),
       { data: 'not json' },
       { data: '[DONE]' },
-    ])).resolves.toEqual([
-      { contentType: 'text', index: 0, type: 'content.start' },
-      { delta: 'hi', index: 0, type: 'text.delta' },
-      { content: { text: 'hi', type: 'text' }, index: 0, type: 'content.end' },
-      { cause: expect.any(SyntaxError) as unknown, message: 'malformed event data', type: 'error' },
-      {
-        message: {
-          content: [{ text: 'hi', type: 'text' }],
-          id: 'chatcmpl_1',
-          role: 'assistant',
-        },
-        reason: 'stop',
-        type: 'finish',
-      },
-    ])
+    ])).rejects.toMatchObject({
+      cause: expect.any(SyntaxError) as unknown,
+      code: 'invalid-response',
+      message: 'malformed event data',
+    })
   })
 
-  it('maps provider error chunks to error events and an error finish', async () => {
-    await expect(readEvents([
+  it('maps provider error chunks to an error finish', async () => {
+    const events = await readEvents([
       message({
         error: { message: 'Internal server error', type: 'server_error' },
       }),
       { data: '[DONE]' },
-    ])).resolves.toEqual([
+    ])
+
+    expect(events).toEqual([
       {
-        cause: { message: 'Internal server error', type: 'server_error' },
-        message: 'Internal server error',
-        type: 'error',
-      },
-      {
+        error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
         type: 'finish',
       },
     ])
+    expect((events[0] as FinishEvent).error).toMatchObject({
+      cause: { message: 'Internal server error', type: 'server_error' },
+      code: 'model-error',
+      message: 'Internal server error',
+    })
   })
 })

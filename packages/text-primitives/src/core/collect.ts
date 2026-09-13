@@ -40,7 +40,7 @@ export const eventCollectStream = (): TransformStream<Event, StreamResult> => {
   let error: ErrorEvent | undefined
   let messageId: string | undefined
   let reason: FinishReason | undefined
-  let terminalError: XSAIError | undefined
+  let terminalError: undefined | XSAIError
   let usage: undefined | Usage
 
   const snapshot = (): StreamResult => {
