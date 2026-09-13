@@ -1,6 +1,6 @@
 import type { Event, Message } from '@xsai/text-primitives'
 
-import { HttpError, XSAIError } from '@xsai/text-primitives'
+import { HttpError, XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
 import { chat } from '../src'

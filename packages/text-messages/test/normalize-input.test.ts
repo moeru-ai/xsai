@@ -1,4 +1,4 @@
-import { XSAIError } from '@xsai/text-primitives'
+import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
 import { normalizeInput } from '../src/utils/normalize-input'
