@@ -1,6 +1,6 @@
 import type { Event, Message } from '@xsai/text-primitives'
 
-import { HttpError } from '@xsai/text-primitives'
+import { HttpError, XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { chat } from '../src'
@@ -112,7 +112,23 @@ describe('manual tool loop', () => {
     await expect(model({ input: 'hi' })).rejects.toThrow(HttpError)
     await expect(model({ input: 'hi' })).rejects.toMatchObject({
       body: '{"error":{"message":"bad key"}}',
+      code: 'http-error',
       status: 401,
+    })
+  })
+
+  it('rejects with an invalid-response error on an empty 2xx body', async () => {
+    const model = chat({
+      apiKey: 'test-key',
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => new Response(null, { status: 200 }),
+      model: 'test-model',
+    })
+
+    await expect(model({ input: 'hi' })).rejects.toThrow(XSAIError)
+    await expect(model({ input: 'hi' })).rejects.toMatchObject({
+      code: 'invalid-response',
+      message: 'Response body is empty',
     })
   })
 })

@@ -2,7 +2,7 @@ import type { Event, LanguageModel, StreamResult } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
-import { collect, eventCollectStream } from '../src'
+import { collect, eventCollectStream, XSAIError } from '../src'
 
 const eventStream = (events: Event[]): ReadableStream<Event> => new ReadableStream<Event>({
   start: (controller) => {
@@ -102,21 +102,29 @@ describe('collect', () => {
     })
   })
 
-  it('rejects when the stream finishes with an error', async () => {
+  it('rejects with a typed model error when the stream finishes with an error', async () => {
     const model = modelOf([
       { cause: { type: 'server_error' }, message: 'Overloaded', type: 'error' },
       { message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
     ])
 
-    await expect(collect(model, { input: 'hi' })).rejects.toThrow('Overloaded')
+    await expect(collect(model, { input: 'hi' })).rejects.toThrow(XSAIError)
+    await expect(collect(model, { input: 'hi' })).rejects.toMatchObject({
+      cause: { type: 'server_error' },
+      code: 'model-error',
+      message: 'Overloaded',
+    })
   })
 
-  it('rejects when the stream ends without a finish event', async () => {
+  it('rejects with a truncated-stream error when the stream ends without a finish event', async () => {
     const model = modelOf([
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'Hi', index: 0, type: 'text.delta' },
     ])
 
-    await expect(collect(model, { input: 'hi' })).rejects.toThrow('without a finish event')
+    await expect(collect(model, { input: 'hi' })).rejects.toMatchObject({
+      code: 'truncated-stream',
+      message: 'model stream ended without a finish event',
+    })
   })
 })

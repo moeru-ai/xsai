@@ -1,3 +1,4 @@
+import { XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { normalizeInput } from '../src/utils/normalize-input'
@@ -119,5 +120,17 @@ describe('normalize input', () => {
       ],
       role: 'user',
     }])
+  })
+
+  it('rejects non-URL image data with an invalid-input error', () => {
+    const call = () => normalizeInput({
+      input: [{ content: [{ data: 'not a url', type: 'image' }], role: 'user' }],
+    })
+
+    expect(call).toThrow(XSAIError)
+    expect(call).toThrow(expect.objectContaining({
+      code: 'invalid-input',
+      message: 'Image part data must be a URL or a base64 data: URL',
+    }))
   })
 })

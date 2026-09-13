@@ -137,6 +137,7 @@ describe('manual tool loop', () => {
     await expect(model({ input: 'hi' })).rejects.toThrow(HttpError)
     await expect(model({ input: 'hi' })).rejects.toMatchObject({
       body: '{"error":{"message":"bad key"}}',
+      code: 'http-error',
       status: 401,
     })
   })
