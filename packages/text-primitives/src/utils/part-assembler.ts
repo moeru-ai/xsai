@@ -29,8 +29,6 @@ export interface PartAssembler {
   delta: (key: PartKey, text: string, extra?: PartDeltaExtra) => void
   /** Closes a part and emits `content.end`. Unknown or closed keys are no-ops. */
   end: (key: PartKey, extra?: PartEndExtra) => void
-  /** Emits an `error` event. Non-terminal; the stream still ends with `finish`. */
-  error: (error: { cause?: unknown, message: string }) => void
   /**
    * Records the terminal reason and closes all open parts. The `finish`
    * event itself is emitted by `flush`, so late-arriving usage still lands.
@@ -176,13 +174,6 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
       }
     },
     end,
-    error: (error) => {
-      emit({
-        ...(error.cause === undefined ? {} : { cause: error.cause }),
-        message: error.message,
-        type: 'error',
-      })
-    },
     finish: (next, extra) => {
       if (reason !== undefined)
         return
