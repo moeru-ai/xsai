@@ -95,7 +95,9 @@ export const collect = async (
   context: LanguageModelContext,
   options?: LanguageModelOptions,
 ): Promise<CollectResult> => {
-  for await (const result of (await model(context, options)).pipeThrough(eventCollectStream())) {
+  const eventStream = await model(context, options)
+
+  for await (const result of eventStream.pipeThrough(eventCollectStream())) {
     if (result.reason === 'error')
       throw result.terminalError ?? new XSAIError('model-error', result.error?.message ?? 'model stream failed', { cause: result.error?.cause })
     if (result.reason !== undefined) {
