@@ -43,4 +43,23 @@ describe('messages options', () => {
     await stream.cancel()
     expect(bodies[0]).toMatchObject({ tool_choice: { type: 'any' } })
   })
+
+  it('preserves an x-api-key supplied through extraHeaders', async () => {
+    let requestHeaders: Headers | undefined
+    const requestFetch: typeof fetch = async (_input, init) => {
+      requestHeaders = new Headers(init?.headers)
+      return new Response('data: {"type":"message_stop"}\n\n')
+    }
+    const model = messages({
+      baseURL: 'https://x/',
+      extraHeaders: { 'x-api-key': 'custom-key' },
+      fetch: requestFetch,
+      model: 'm',
+    })
+
+    const stream = await model({ input: 'hi' }, { maxOutputTokens: 10 })
+    await stream.cancel()
+
+    expect(requestHeaders?.get('x-api-key')).toBe('custom-key')
+  })
 })

@@ -39,7 +39,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
       ...options.extraHeaders,
       'anthropic-version': ANTHROPIC_VERSION,
       'Content-Type': 'application/json',
-      'x-api-key': options.apiKey,
+      ...(options.apiKey === undefined ? {} : { 'x-api-key': options.apiKey }),
     },
     path: 'messages',
   }, new MessagesEventStream())
