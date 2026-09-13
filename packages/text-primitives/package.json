@@ -4,7 +4,10 @@
   "version": "0.5.0",
   "private": true,
   "sideEffects": false,
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./shared": "./src/shared.ts"
+  },
   "files": [
     "dist"
   ],
@@ -13,6 +16,10 @@
       ".": {
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
+      },
+      "./shared": {
+        "types": "./dist/shared.d.ts",
+        "default": "./dist/shared.js"
       },
       "./package.json": "./package.json"
     },

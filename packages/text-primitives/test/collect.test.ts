@@ -2,7 +2,8 @@ import type { Event, LanguageModel, StreamResult } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
-import { collect, eventCollectStream, XSAIError } from '../src'
+import { collect, eventCollectStream } from '../src'
+import { XSAIError } from '../src/shared'
 
 const eventStream = (events: Event[]): ReadableStream<Event> => new ReadableStream<Event>({
   start: (controller) => {
