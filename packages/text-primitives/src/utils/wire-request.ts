@@ -8,7 +8,7 @@ import { requestURL } from './request-url'
 import { responseCatch } from './response-catch'
 
 export interface WireRequestInit {
-  /** Wire-shaped body fields; `undefined` fields are dropped before the extraBody merge. */
+  /** Wire-shaped body fields; `undefined` fields are dropped before the model-call extraBody merge. */
   body: Record<string, unknown>
   /** Require the SSE stream to end with a `[DONE]` frame. */
   checkDone?: boolean
@@ -16,20 +16,6 @@ export interface WireRequestInit {
   headers?: Record<string, string | undefined>
   path: string
 }
-
-/**
- * One nested `extraBody` field merged across the two levels: model-call
- * options over request options.
- * @internal
- */
-export const mergedExtra = (
-  options: HttpOptions,
-  modelOptions: LanguageModelOptions | undefined,
-  key: string,
-): Record<string, unknown> => ({
-  ...options.extraBody?.[key] as Record<string, unknown>,
-  ...modelOptions?.extraBody?.[key] as Record<string, unknown>,
-})
 
 const definedOnly = <V>(fields: Record<string, undefined | V>): Record<string, V> =>
   Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined)) as Record<string, V>
@@ -48,7 +34,6 @@ export const wireRequest = async (
 ): Promise<ReadableStream<Event>> =>
   (options.fetch ?? fetch)(requestURL(init.path, options.baseURL), {
     body: JSON.stringify({
-      ...options.extraBody,
       ...modelOptions?.extraBody,
       ...definedOnly(init.body),
     }),
