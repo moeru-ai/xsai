@@ -135,6 +135,21 @@ describe('collect', () => {
     })
   })
 
+  it('resolves on the finish event without waiting for the stream to close', async () => {
+    const model: LanguageModel = async () => new ReadableStream<Event>({
+      start: (controller) => {
+        controller.enqueue({
+          message: { content: [], role: 'assistant' },
+          reason: 'stop',
+          type: 'finish',
+        })
+        // never closes
+      },
+    })
+
+    await expect(collect(model, { input: 'hi' })).resolves.toMatchObject({ reason: 'stop' })
+  })
+
   it('propagates stream rejections with their typed error', async () => {
     const error = new XSAIError('truncated-stream', 'wire stream ended without a terminal signal')
     const model: LanguageModel = async () => new ReadableStream<Event>({

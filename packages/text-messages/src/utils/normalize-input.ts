@@ -76,8 +76,8 @@ const normalizeToolResultContent = (content: ToolResultPartContent): ImageBlock 
 }
 
 const normalizeToolResultPart = (part: ToolResultPart): ToolResultBlock => ({
-  ...(part.isError === undefined ? {} : { is_error: part.isError }),
   content: typeof part.output === 'string' ? part.output : part.output.map(normalizeToolResultContent),
+  is_error: part.isError,
   tool_use_id: part.callId,
   type: 'tool_result',
 })
