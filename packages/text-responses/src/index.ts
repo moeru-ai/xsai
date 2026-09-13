@@ -1,7 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
-import { mergedExtra, wireRequest } from '@xsai/text-primitives'
+import { wireRequest } from '@xsai/text-primitives'
 
 import { normalizeInput, normalizeToolChoice, normalizeTools, responsesEventStream } from './utils'
 
@@ -15,12 +15,12 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
       reasoning: modelOptions?.reasoningEffort === undefined
         ? undefined
         : {
-            ...mergedExtra(options, modelOptions, 'reasoning'),
+            ...modelOptions?.extraBody?.reasoning as Record<string, unknown>,
             effort: modelOptions.reasoningEffort,
           },
       stream: true,
       temperature: modelOptions?.temperature,
-      tool_choice: normalizeToolChoice(modelOptions?.toolChoice, mergedExtra(options, modelOptions, 'tool_choice')),
+      tool_choice: normalizeToolChoice(modelOptions?.toolChoice, modelOptions?.extraBody?.tool_choice as Record<string, unknown>),
       tools: normalizeTools(context.tools),
       top_p: modelOptions?.topP,
     },

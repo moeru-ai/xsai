@@ -1,7 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
-import { mergedExtra, wireRequest } from '@xsai/text-primitives'
+import { wireRequest } from '@xsai/text-primitives'
 
 import { messagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
@@ -11,7 +11,7 @@ const ANTHROPIC_VERSION = '2023-06-01'
 
 export const messages = (options: HttpOptions): LanguageModel => async (context, modelOptions) => {
   const { messages: inputMessages, system } = normalizeInput(context)
-  const maxTokens = modelOptions?.maxOutputTokens ?? options.extraBody?.max_tokens
+  const maxTokens = modelOptions?.maxOutputTokens ?? modelOptions?.extraBody?.max_tokens
 
   if (typeof maxTokens !== 'number')
     throw new Error('maxOutputTokens is required for the Messages API')
@@ -25,7 +25,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
       stream: true,
       system,
       temperature: modelOptions?.temperature,
-      tool_choice: normalizeToolChoice(modelOptions?.toolChoice, mergedExtra(options, modelOptions, 'tool_choice')),
+      tool_choice: normalizeToolChoice(modelOptions?.toolChoice, modelOptions?.extraBody?.tool_choice as Record<string, unknown>),
       tools: normalizeTools(context.tools),
       top_p: modelOptions?.topP,
     },
