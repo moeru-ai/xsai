@@ -1,4 +1,4 @@
-import type { ErrorEvent, Event } from './types/event'
+import type { Event } from './types/event'
 import type { FinishReason } from './types/finish-reason'
 import type { LanguageModel, LanguageModelContext, LanguageModelOptions } from './types/language-model'
 import type { AssistantMessage } from './types/message'
@@ -21,8 +21,6 @@ export interface CollectResult {
  * partial content — plus terminal fields once the stream finishes.
  */
 export interface StreamResult {
-  /** The most recent `error` event, if any. */
-  error?: ErrorEvent
   message: AssistantMessage
   reason?: FinishReason
   /** The typed error carried by an `error` finish, if any. */
@@ -37,7 +35,6 @@ export interface StreamResult {
  */
 export class EventCollectStream extends TransformStream<Event, StreamResult> {
   private readonly accumulator = contentAccumulator()
-  private error?: ErrorEvent
   private messageId?: string
   private reason?: FinishReason
   private terminalError?: XSAIError
@@ -53,9 +50,6 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
           case 'text.delta':
           case 'tool-call.delta':
             this.accumulator.apply(event)
-            break
-          case 'error':
-            this.error = event
             break
           case 'finish':
             this.accumulator.replace(event.message.content)
@@ -73,7 +67,6 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
 
   private snapshot(): StreamResult {
     return {
-      ...(this.error === undefined ? {} : { error: this.error }),
       message: {
         content: this.accumulator.content(),
         ...(this.messageId === undefined ? {} : { id: this.messageId }),
@@ -101,7 +94,7 @@ export const collect = async (
 
   for await (const result of eventStream.pipeThrough(new EventCollectStream())) {
     if (result.reason === 'error')
-      throw result.terminalError ?? new XSAIError('model-error', result.error?.message ?? 'model stream failed', { cause: result.error?.cause })
+      throw result.terminalError ?? new XSAIError('model-error', 'model stream failed')
     if (result.reason !== undefined) {
       return {
         message: result.message,

@@ -17,7 +17,7 @@ One entry of an assistant message's `content` array (`text`, `reasoning`, `tool-
 _Avoid_: block, chunk, content item
 
 **Event**:
-The normalized stream vocabulary: `content.start`, `text.delta`, `reasoning.delta`, `tool-call.delta`, `content.end`, `error`, `finish`. Wire adapters translate their frames into it.
+The normalized stream vocabulary: `content.start`, `text.delta`, `reasoning.delta`, `tool-call.delta`, `content.end`, `finish`. Wire adapters translate their frames into it.
 _Avoid_: chunk, SSE event
 
 **Assembler**:
