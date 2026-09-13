@@ -23,16 +23,12 @@ import type {
   OutputTextContentParam,
   ReasoningItemParam,
   ReasoningSummaryContentParam,
-  ReasoningTextContent,
   SystemMessageItemParam,
   UserMessageItemParam,
 } from '../generated'
 
 type InputMessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam
-type NormalizedItemParam = ItemParam | ReasoningItem
-type ReasoningItem = Omit<ReasoningItemParam, 'content'> & {
-  content?: ReasoningTextContent[]
-}
+type NormalizedItemParam = ItemParam
 
 const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
   text: part.text,
@@ -58,9 +54,8 @@ const normalizeFilePart = (part: FilePart): InputFileContentParam => {
     : { file_url: data, type: 'input_file' }
 }
 
-const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem => {
+const normalizeReasoningPart = (part: ReasoningPart): ReasoningItemParam => {
   const summary: ReasoningSummaryContentParam[] = []
-  const content: ReasoningTextContent[] = []
   let encryptedContent: string | undefined
 
   for (const partContent of part.content) {
@@ -75,13 +70,11 @@ const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem => {
         summary.push({ text: partContent.text, type: 'summary_text' })
         break
       case 'text':
-        content.push({ text: partContent.text, type: 'reasoning_text' })
         break
     }
   }
 
   return {
-    ...(content.length === 0 ? {} : { content }),
     encrypted_content: encryptedContent,
     id: part.id,
     summary,
