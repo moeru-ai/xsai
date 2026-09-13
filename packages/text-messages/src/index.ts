@@ -19,10 +19,15 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
 
   return wireRequest(options, modelOptions, {
     body: {
-      effort: modelOptions?.reasoningEffort,
       max_tokens: maxTokens,
       messages: inputMessages,
       model: options.model,
+      output_config: modelOptions?.reasoningEffort === undefined
+        ? undefined
+        : {
+            ...modelOptions?.extraBody?.output_config as Record<string, unknown>,
+            effort: modelOptions.reasoningEffort,
+          },
       stream: true,
       system,
       temperature: modelOptions?.temperature,

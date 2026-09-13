@@ -14,9 +14,9 @@ export interface LanguageModelOptions {
   extraBody?: Record<string, unknown>
   maxOutputTokens?: number
   /**
-   * Qualitative reasoning effort. On Anthropic this maps to the top-level
-   * `effort` field; `thinking.budget_tokens` is an orthogonal knob and stays
-   * in `extraBody`.
+   * Qualitative reasoning effort. On Anthropic this maps to
+   * `output_config.effort`; `thinking.budget_tokens` is an orthogonal knob
+   * and stays in `extraBody`.
    */
   reasoningEffort?: 'high' | 'low' | 'max' | 'medium' | 'none' | 'xhigh' | (string & {})
   signal?: AbortSignal
