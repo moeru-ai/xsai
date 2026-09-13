@@ -25,6 +25,8 @@ export interface StreamResult {
   error?: ErrorEvent
   message: AssistantMessage
   reason?: FinishReason
+  /** The typed error carried by an `error` finish, if any. */
+  terminalError?: XSAIError
   usage?: Usage
 }
 
@@ -38,6 +40,7 @@ export const eventCollectStream = (): TransformStream<Event, StreamResult> => {
   let error: ErrorEvent | undefined
   let messageId: string | undefined
   let reason: FinishReason | undefined
+  let terminalError: XSAIError | undefined
   let usage: undefined | Usage
 
   const snapshot = (): StreamResult => {
@@ -49,6 +52,7 @@ export const eventCollectStream = (): TransformStream<Event, StreamResult> => {
         role: 'assistant',
       },
       ...(reason === undefined ? {} : { reason }),
+      ...(terminalError === undefined ? {} : { terminalError }),
       ...(usage === undefined ? {} : { usage }),
     }
   }
@@ -70,6 +74,7 @@ export const eventCollectStream = (): TransformStream<Event, StreamResult> => {
           accumulator.replace(event.message.content)
           messageId = event.message.id
           reason = event.reason
+          terminalError = event.error
           usage = event.usage
           break
       }
@@ -95,7 +100,7 @@ export const collect = async (
   if (last?.reason === undefined)
     throw new XSAIError('truncated-stream', 'model stream ended without a finish event')
   if (last.reason === 'error')
-    throw new XSAIError('model-error', last.error?.message ?? 'model stream failed', { cause: last.error?.cause })
+    throw last.terminalError ?? new XSAIError('model-error', last.error?.message ?? 'model stream failed', { cause: last.error?.cause })
 
   return {
     message: last.message,

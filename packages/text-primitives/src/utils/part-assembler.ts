@@ -1,3 +1,5 @@
+import type { XSAIError } from '@xsai/shared'
+
 import type {
   AssistantMessage,
   AssistantMessageContent,
@@ -32,9 +34,10 @@ export interface PartAssembler {
    * Records the terminal reason and closes all open parts. The `finish`
    * event itself is emitted by `flush`, so late-arriving usage still lands.
    * Idempotent. `extra.message` overrides the assembled message for wires
-   * whose terminal event carries an authoritative output record.
+   * whose terminal event carries an authoritative output record;
+   * `extra.error` is the terminating error attached to an `error` finish.
    */
-  finish: (reason: FinishReason, extra?: { message?: AssistantMessage }) => void
+  finish: (reason: FinishReason, extra?: PartFinishExtra) => void
   /** Emits the `finish` event if not already emitted, defaulting to `reason: 'error'` for truncated or empty streams. */
   flush: () => void
   /** Records message-level metadata (`messageId`, `usage`); last call wins. */
@@ -46,6 +49,12 @@ export interface PartAssembler {
 export interface PartDeltaExtra {
   callId?: string
   name?: string
+}
+
+export interface PartFinishExtra {
+  /** The terminating error carried on the `finish` event, for `reason: 'error'`. */
+  error?: XSAIError
+  message?: AssistantMessage
 }
 
 export interface PartEndExtra {
@@ -91,6 +100,7 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
   let messageId: string | undefined
   let messageOverride: AssistantMessage | undefined
   let reason: FinishReason | undefined
+  let terminalError: XSAIError | undefined
   let usage: undefined | Usage
   let finishEmitted = false
 
@@ -178,6 +188,7 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
 
       reason = next
       messageOverride = extra?.message
+      terminalError = extra?.error
       for (const key of parts.keys())
         end(key)
     },
@@ -193,6 +204,7 @@ export const partAssembler = (emit: (event: Event) => void): PartAssembler => {
         end(key)
 
       emit({
+        ...(terminalError === undefined ? {} : { error: terminalError }),
         message: messageOverride ?? {
           content: accumulator.content(),
           ...(messageId === undefined ? {} : { id: messageId }),

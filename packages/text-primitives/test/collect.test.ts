@@ -80,6 +80,15 @@ describe('eventCollectStream', () => {
     ])
     expect(results[4].reason).toBe('tool-calls')
   })
+
+  it('exposes the terminating error on the finished snapshot', async () => {
+    const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
+    const results = await collectSnapshots([
+      { message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish', error },
+    ])
+
+    expect(results[0].terminalError).toBe(error)
+  })
 })
 
 describe('collect', () => {
@@ -101,6 +110,15 @@ describe('collect', () => {
       reason: 'stop',
       usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
     })
+  })
+
+  it('rejects with the finish event\'s typed error when present', async () => {
+    const error = new XSAIError('model-error', 'Overloaded', { cause: { type: 'server_error' } })
+    const model = modelOf([
+      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
+    ])
+
+    await expect(collect(model, { input: 'hi' })).rejects.toBe(error)
   })
 
   it('rejects with a typed model error when the stream finishes with an error', async () => {

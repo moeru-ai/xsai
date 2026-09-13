@@ -1,3 +1,5 @@
+import type { XSAIError } from '@xsai/shared'
+
 import type { FinishReason } from './finish-reason'
 import type { AssistantMessage, AssistantMessageContent } from './message'
 import type { Usage } from './usage'
@@ -35,6 +37,8 @@ export interface EventMap {
 export type EventType = keyof EventMap
 
 export interface FinishEvent {
+  /** The terminating error. Present when `reason` is `'error'`. */
+  error?: XSAIError
   message: AssistantMessage
   reason: FinishReason
   type: 'finish'
