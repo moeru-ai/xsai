@@ -2,12 +2,10 @@ import type { HttpOptions } from '@xsai/shared'
 
 import type { Event, LanguageModelOptions } from '../core'
 
-import { XSAIError } from '@xsai/shared'
-
 import { EventSourceDataStream, EventSourceParserStream } from './event-source-stream'
 import { requestHeaders } from './request-headers'
 import { requestURL } from './request-url'
-import { responseCatch } from './response-catch'
+import { requestCatch, responseCatch } from './response-catch'
 
 export interface WireRequestInit {
   /** Wire-shaped body fields; `undefined` fields are dropped before the model-call extraBody merge. */
@@ -43,13 +41,7 @@ export const wireRequest = async (
     method: 'POST',
     signal: modelOptions?.signal,
   })
-    .catch((cause: unknown) => {
-      // An aborted request carries the caller's reason; it is not a network error.
-      if (modelOptions?.signal?.aborted)
-        throw cause
-      throw new XSAIError('network-error', `request to ${url.toString()} failed`, { cause })
-    })
-    .then(responseCatch)
+    .then(responseCatch, requestCatch(url, modelOptions?.signal))
     .then(res => res.body
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())
