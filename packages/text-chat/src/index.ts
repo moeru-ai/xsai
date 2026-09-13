@@ -3,7 +3,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 
 import { wireRequest } from '@xsai/text-primitives'
 
-import { chatEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
+import { ChatEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
 
@@ -25,4 +25,4 @@ export const chat = (options: HttpOptions): LanguageModel => async (context, mod
       top_p: modelOptions?.topP,
     },
     path: 'chat/completions',
-  }, chatEventStream())
+  }, new ChatEventStream())

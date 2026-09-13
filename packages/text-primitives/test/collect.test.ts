@@ -2,7 +2,7 @@ import type { Event, LanguageModel, StreamResult } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
-import { collect, eventCollectStream } from '../src'
+import { collect, EventCollectStream } from '../src'
 import { XSAIError } from '../src/shared'
 
 const eventStream = (events: Event[]): ReadableStream<Event> => new ReadableStream<Event>({
@@ -18,12 +18,12 @@ const modelOf = (events: Event[]): LanguageModel => async () => eventStream(even
 
 const collectSnapshots = async (events: Event[]): Promise<StreamResult[]> => {
   const results: StreamResult[] = []
-  for await (const result of eventStream(events).pipeThrough(eventCollectStream()))
+  for await (const result of eventStream(events).pipeThrough(new EventCollectStream()))
     results.push(result)
   return results
 }
 
-describe('eventCollectStream', () => {
+describe('event collect stream', () => {
   it('accumulates deltas into the in-progress message', async () => {
     const results = await collectSnapshots([
       { contentType: 'text', index: 0, type: 'content.start' },

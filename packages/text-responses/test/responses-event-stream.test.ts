@@ -4,7 +4,7 @@ import { EventSourceDataStream } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
-import { responsesEventStream } from '../src/utils/responses-event-stream'
+import { ResponsesEventStream } from '../src/utils/responses-event-stream'
 
 const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
   const source = new ReadableStream<EventSourceMessage>({
@@ -17,7 +17,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<Event[]> => {
   })
   const stream = source
     .pipeThrough(new EventSourceDataStream())
-    .pipeThrough(responsesEventStream())
+    .pipeThrough(new ResponsesEventStream())
   const reader = stream.getReader()
   const events: Event[] = []
 

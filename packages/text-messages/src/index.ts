@@ -4,7 +4,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/shared'
 import { wireRequest } from '@xsai/text-primitives'
 
-import { messagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
+import { MessagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
 
@@ -37,5 +37,5 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
       'x-api-key': options.apiKey,
     },
     path: 'messages',
-  }, messagesEventStream())
+  }, new MessagesEventStream())
 }

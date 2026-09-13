@@ -35,53 +35,55 @@ export interface StreamResult {
  * input event emits one snapshot, so downstream consumers can render the
  * in-progress message without implementing the event protocol.
  */
-export const eventCollectStream = (): TransformStream<Event, StreamResult> => {
-  const accumulator = contentAccumulator()
-  let error: ErrorEvent | undefined
-  let messageId: string | undefined
-  let reason: FinishReason | undefined
-  let terminalError: undefined | XSAIError
-  let usage: undefined | Usage
+export class EventCollectStream extends TransformStream<Event, StreamResult> {
+  constructor() {
+    const accumulator = contentAccumulator()
+    let error: ErrorEvent | undefined
+    let messageId: string | undefined
+    let reason: FinishReason | undefined
+    let terminalError: undefined | XSAIError
+    let usage: undefined | Usage
 
-  const snapshot = (): StreamResult => {
-    return {
-      ...(error === undefined ? {} : { error }),
-      message: {
-        content: accumulator.content(),
-        ...(messageId === undefined ? {} : { id: messageId }),
-        role: 'assistant',
-      },
-      ...(reason === undefined ? {} : { reason }),
-      ...(terminalError === undefined ? {} : { terminalError }),
-      ...(usage === undefined ? {} : { usage }),
-    }
-  }
-
-  return new TransformStream<Event, StreamResult>({
-    transform: (event, controller) => {
-      switch (event.type) {
-        case 'content.end':
-        case 'content.start':
-        case 'reasoning.delta':
-        case 'text.delta':
-        case 'tool-call.delta':
-          accumulator.apply(event)
-          break
-        case 'error':
-          error = event
-          break
-        case 'finish':
-          accumulator.replace(event.message.content)
-          messageId = event.message.id
-          reason = event.reason
-          terminalError = event.error
-          usage = event.usage
-          break
+    const snapshot = (): StreamResult => {
+      return {
+        ...(error === undefined ? {} : { error }),
+        message: {
+          content: accumulator.content(),
+          ...(messageId === undefined ? {} : { id: messageId }),
+          role: 'assistant',
+        },
+        ...(reason === undefined ? {} : { reason }),
+        ...(terminalError === undefined ? {} : { terminalError }),
+        ...(usage === undefined ? {} : { usage }),
       }
+    }
 
-      controller.enqueue(snapshot())
-    },
-  })
+    super({
+      transform: (event, controller) => {
+        switch (event.type) {
+          case 'content.end':
+          case 'content.start':
+          case 'reasoning.delta':
+          case 'text.delta':
+          case 'tool-call.delta':
+            accumulator.apply(event)
+            break
+          case 'error':
+            error = event
+            break
+          case 'finish':
+            accumulator.replace(event.message.content)
+            messageId = event.message.id
+            reason = event.reason
+            terminalError = event.error
+            usage = event.usage
+            break
+        }
+
+        controller.enqueue(snapshot())
+      },
+    })
+  }
 }
 
 /**
@@ -97,7 +99,7 @@ export const collect = async (
 ): Promise<CollectResult> => {
   const eventStream = await model(context, options)
 
-  for await (const result of eventStream.pipeThrough(eventCollectStream())) {
+  for await (const result of eventStream.pipeThrough(new EventCollectStream())) {
     if (result.reason === 'error')
       throw result.terminalError ?? new XSAIError('model-error', result.error?.message ?? 'model stream failed', { cause: result.error?.cause })
     if (result.reason !== undefined) {

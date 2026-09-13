@@ -3,7 +3,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 
 import { wireRequest } from '@xsai/text-primitives'
 
-import { normalizeInput, normalizeToolChoice, normalizeTools, responsesEventStream } from './utils'
+import { normalizeInput, normalizeToolChoice, normalizeTools, ResponsesEventStream } from './utils'
 
 export const responses = (options: HttpOptions): LanguageModel => async (context, modelOptions) =>
   wireRequest(options, modelOptions, {
@@ -25,4 +25,4 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
       top_p: modelOptions?.topP,
     },
     path: 'responses',
-  }, responsesEventStream())
+  }, new ResponsesEventStream())

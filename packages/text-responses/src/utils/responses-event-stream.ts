@@ -3,7 +3,7 @@ import type { AssistantMessage, AssistantMessageContent, FinishReason, PartAssem
 import type * as Responses from '../generated'
 
 import { XSAIError } from '@xsai/shared'
-import { wireEventStream } from '@xsai/text-primitives'
+import { WireEventStream } from '@xsai/text-primitives'
 
 type ResponsesEvent
   = | Responses.ErrorStreamingEvent
@@ -162,55 +162,58 @@ const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number
 }
 
 /** Converts Responses API SSE data to text primitive events. */
-export const responsesEventStream = () =>
-  wireEventStream<ResponsesEvent>((event, asm) => {
-    switch (event.type) {
-      case 'error':
-        asm.finish('error', {
-          error: new XSAIError('model-error', event.error.message, { cause: event.error }),
-        })
-        break
-      case 'response.completed':
-        // The terminal event carries the authoritative output record; a bare
-        // `response.completed` may arrive without any per-item events.
-        finishResponse(asm, event.response)
-        break
-      case 'response.content_part.added':
-      case 'response.content_part.done':
-      case 'response.created':
-        break
-      case 'response.failed':
-        finishResponse(asm, event.response, 'error')
-        break
-      case 'response.function_call_arguments.delta':
-      case 'response.output_text.delta':
-      case 'response.reasoning.delta':
-      case 'response.reasoning_summary_text.delta':
-      case 'response.refusal.delta':
-        asm.delta(event.output_index, event.delta)
-        break
-      case 'response.function_call_arguments.done':
-        break
-      case 'response.in_progress':
-      case 'response.output_text.annotation.added':
-      case 'response.output_text.done':
-      case 'response.queued':
-      case 'response.reasoning.done':
-      case 'response.reasoning_summary_part.added':
-      case 'response.reasoning_summary_part.done':
-      case 'response.reasoning_summary_text.done':
-      case 'response.refusal.done':
-        break
-      case 'response.incomplete':
-        finishResponse(asm, event.response)
-        break
-      case 'response.output_item.added':
-        if (event.item != null)
-          onItemAdded(asm, event.item, event.output_index)
-        break
-      case 'response.output_item.done':
-        if (event.item != null)
-          onItemDone(asm, event.item, event.output_index)
-        break
-    }
-  })
+export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
+  constructor() {
+    super((event, asm) => {
+      switch (event.type) {
+        case 'error':
+          asm.finish('error', {
+            error: new XSAIError('model-error', event.error.message, { cause: event.error }),
+          })
+          break
+        case 'response.completed':
+          // The terminal event carries the authoritative output record; a bare
+          // `response.completed` may arrive without any per-item events.
+          finishResponse(asm, event.response)
+          break
+        case 'response.content_part.added':
+        case 'response.content_part.done':
+        case 'response.created':
+          break
+        case 'response.failed':
+          finishResponse(asm, event.response, 'error')
+          break
+        case 'response.function_call_arguments.delta':
+        case 'response.output_text.delta':
+        case 'response.reasoning.delta':
+        case 'response.reasoning_summary_text.delta':
+        case 'response.refusal.delta':
+          asm.delta(event.output_index, event.delta)
+          break
+        case 'response.function_call_arguments.done':
+          break
+        case 'response.in_progress':
+        case 'response.output_text.annotation.added':
+        case 'response.output_text.done':
+        case 'response.queued':
+        case 'response.reasoning.done':
+        case 'response.reasoning_summary_part.added':
+        case 'response.reasoning_summary_part.done':
+        case 'response.reasoning_summary_text.done':
+        case 'response.refusal.done':
+          break
+        case 'response.incomplete':
+          finishResponse(asm, event.response)
+          break
+        case 'response.output_item.added':
+          if (event.item != null)
+            onItemAdded(asm, event.item, event.output_index)
+          break
+        case 'response.output_item.done':
+          if (event.item != null)
+            onItemDone(asm, event.item, event.output_index)
+          break
+      }
+    })
+  }
+}
