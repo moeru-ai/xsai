@@ -46,12 +46,20 @@ const normalizeImagePart = (part: ImagePart): InputImageContentParamAutoParam =>
   type: 'input_image',
 })
 
+const isRemoteUrl = (data: string): boolean => {
+  if (!URL.canParse(data))
+    return false
+
+  const protocol = new URL(data).protocol
+  return protocol === 'http:' || protocol === 'https:'
+}
+
 const normalizeFilePart = (part: FilePart): InputFileContentParam => {
   const data = part.data.toString()
 
-  return data.startsWith('data:') || !URL.canParse(data)
-    ? { file_data: data, type: 'input_file' }
-    : { file_url: data, type: 'input_file' }
+  return isRemoteUrl(data)
+    ? { file_url: data, type: 'input_file' }
+    : { file_data: data, type: 'input_file' }
 }
 
 const normalizeReasoningPart = (part: ReasoningPart): ReasoningItemParam => {

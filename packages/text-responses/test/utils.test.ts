@@ -91,6 +91,23 @@ describe('normalizeInput', () => {
     }])
   })
 
+  it('sends only remote URLs as file URLs', () => {
+    expect(normalizeInput([{
+      content: [
+        { data: 'DATA:application/pdf;base64,JVBERi0xLjQ=', type: 'file' },
+        { data: 'file:///tmp/document.pdf', type: 'file' },
+      ],
+      role: 'user',
+    }])).toEqual([{
+      content: [
+        { file_data: 'DATA:application/pdf;base64,JVBERi0xLjQ=', type: 'input_file' },
+        { file_data: 'file:///tmp/document.pdf', type: 'input_file' },
+      ],
+      role: 'user',
+      type: 'message',
+    }])
+  })
+
   it('normalizes rich tool result content', () => {
     expect(normalizeInput([{
       content: [{
