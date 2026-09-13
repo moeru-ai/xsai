@@ -4,6 +4,8 @@ import type { LanguageModel, LanguageModelContext, LanguageModelOptions } from '
 import type { AssistantMessage } from './types/message'
 import type { Usage } from './types/usage'
 
+import { XSAIError } from '@xsai/shared'
+
 import { contentAccumulator } from './content-accumulator'
 
 /** The resolved value of {@link collect}: a finished {@link StreamResult}. */
@@ -91,9 +93,9 @@ export const collect = async (
     last = result
 
   if (last?.reason === undefined)
-    throw new Error('model stream ended without a finish event')
+    throw new XSAIError('truncated-stream', 'model stream ended without a finish event')
   if (last.reason === 'error')
-    throw new Error(last.error?.message ?? 'model stream failed', { cause: last.error?.cause })
+    throw new XSAIError('model-error', last.error?.message ?? 'model stream failed', { cause: last.error?.cause })
 
   return {
     message: last.message,

@@ -1,3 +1,4 @@
+import { XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { normalizeInput } from '../src/utils/normalize-input'
@@ -110,5 +111,17 @@ describe('normalize input', () => {
         role: 'user',
       }],
     })
+  })
+
+  it('rejects non-PDF document data with an invalid-input error', () => {
+    const call = () => normalizeInput({
+      input: [{ content: [{ data: 'data:image/png;base64,aGVsbG8=', type: 'file' }], role: 'user' }],
+    })
+
+    expect(call).toThrow(XSAIError)
+    expect(call).toThrow(expect.objectContaining({
+      code: 'invalid-input',
+      message: 'Anthropic documents only support PDF or plain text, got: image/png',
+    }))
   })
 })

@@ -1,6 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
+import { XSAIError } from '@xsai/shared'
 import { wireRequest } from '@xsai/text-primitives'
 
 import { messagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
@@ -14,7 +15,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
   const maxTokens = modelOptions?.maxOutputTokens ?? modelOptions?.extraBody?.max_tokens
 
   if (typeof maxTokens !== 'number')
-    throw new Error('maxOutputTokens is required for the Messages API')
+    throw new XSAIError('invalid-input', 'maxOutputTokens is required for the Messages API')
 
   return wireRequest(options, modelOptions, {
     body: {
