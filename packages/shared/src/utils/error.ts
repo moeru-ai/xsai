@@ -5,6 +5,7 @@ export interface XSAIErrorCauseMap {
   'http-error': undefined
   'invalid-input': undefined
   'invalid-response': unknown
+  'network-error': unknown
 }
 
 export type XSAIErrorCode = keyof XSAIErrorCauseMap
