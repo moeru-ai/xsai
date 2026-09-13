@@ -13,6 +13,8 @@ import type {
 
 import type { ChatContentPart, ChatMessage } from '../types'
 
+import { XSAIError } from '@xsai/shared'
+
 const normalizeInputTextPart = (part: TextPart): ChatContentPart => ({
   text: part.text,
   type: 'text',
@@ -25,7 +27,7 @@ const normalizeImagePart = (part: ImagePart): ChatContentPart => {
   if (URL.canParse(data))
     return { image_url: { url: data }, type: 'image_url' }
 
-  throw new Error('Image part data must be a URL or a base64 data: URL')
+  throw new XSAIError('invalid-input', 'Image part data must be a URL or a base64 data: URL')
 }
 
 const normalizeFilePart = (part: FilePart): ChatContentPart => {
@@ -34,7 +36,7 @@ const normalizeFilePart = (part: FilePart): ChatContentPart => {
   if (data.startsWith('data:'))
     return { file: { file_data: data }, type: 'file' }
 
-  throw new Error('File part data must be a base64 data: URL')
+  throw new XSAIError('invalid-input', 'File part data must be a base64 data: URL')
 }
 
 const normalizeToolResultPart = (part: ToolResultPart): ChatMessage => {
@@ -42,7 +44,7 @@ const normalizeToolResultPart = (part: ToolResultPart): ChatMessage => {
     ? part.output
     : part.output.map((content): ChatContentPart => {
         if (content.type !== 'text')
-          throw new Error('Image tool results are not supported on the Chat Completions API')
+          throw new XSAIError('invalid-input', 'Image tool results are not supported on the Chat Completions API')
 
         return normalizeInputTextPart(content)
       })

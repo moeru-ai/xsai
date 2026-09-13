@@ -1,3 +1,4 @@
+import { XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { captureRequests } from '../../text-primitives/test/test-utils'
@@ -31,7 +32,11 @@ describe('messages options', () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
 
-    await expect(model({ input: 'hi' })).rejects.toThrow('maxOutputTokens')
+    await expect(model({ input: 'hi' })).rejects.toThrow(XSAIError)
+    await expect(model({ input: 'hi' })).rejects.toMatchObject({
+      code: 'invalid-input',
+      message: 'maxOutputTokens is required for the Messages API',
+    })
 
     const stream = await model({ input: 'hi' }, { maxOutputTokens: 10, toolChoice: 'required' })
     await stream.cancel()

@@ -17,6 +17,8 @@ import type {
 
 import type { ContentBlock, DocumentBlock, ImageBlock, InputMessage, TextBlock, ToolResultBlock, ToolUseBlock } from '../types'
 
+import { XSAIError } from '@xsai/shared'
+
 interface DataUrl {
   data: string
   mediaType: string
@@ -44,7 +46,7 @@ const normalizeImagePart = (part: ImagePart): ImageBlock => {
   if (URL.canParse(data))
     return { source: { type: 'url', url: data }, type: 'image' }
 
-  throw new Error('Image part data must be a URL or a base64 data: URL')
+  throw new XSAIError('invalid-input', 'Image part data must be a URL or a base64 data: URL')
 }
 
 const normalizeFilePart = (part: FilePart): DocumentBlock => {
@@ -53,7 +55,7 @@ const normalizeFilePart = (part: FilePart): DocumentBlock => {
 
   if (dataUrl !== undefined) {
     if (dataUrl.mediaType !== 'application/pdf')
-      throw new Error(`Anthropic documents only support PDF or plain text, got: ${dataUrl.mediaType}`)
+      throw new XSAIError('invalid-input', `Anthropic documents only support PDF or plain text, got: ${dataUrl.mediaType}`)
 
     return { source: { data: dataUrl.data, media_type: 'application/pdf', type: 'base64' }, type: 'document' }
   }
