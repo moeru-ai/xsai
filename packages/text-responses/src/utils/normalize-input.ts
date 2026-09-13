@@ -50,9 +50,13 @@ const normalizeImagePart = (part: ImagePart): InputImageContentParamAutoParam =>
   type: 'input_image',
 })
 
-const normalizeFilePart = (part: FilePart): InputFileContentParam => URL.canParse(part.data)
-  ? { file_url: part.data.toString(), type: 'input_file' }
-  : { file_data: part.data.toString(), type: 'input_file' }
+const normalizeFilePart = (part: FilePart): InputFileContentParam => {
+  const data = part.data.toString()
+
+  return data.startsWith('data:') || !URL.canParse(data)
+    ? { file_data: data, type: 'input_file' }
+    : { file_url: data, type: 'input_file' }
+}
 
 const normalizeReasoningPart = (part: ReasoningPart): ReasoningItem => {
   const summary: ReasoningSummaryContentParam[] = []
