@@ -87,10 +87,10 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
 }
 
 /**
- * Calls `model` and resolves with the finished result. Rejects when the
- * stream reports an error or ends without a `finish` event. The terminal
- * snapshot settles the call — the stream is cancelled without waiting for
- * it to close.
+ * Calls `model` and resolves with the `finish` event's payload. Rejects
+ * when the stream reports an error or ends without a `finish` event. The
+ * finish event settles the call — the stream is cancelled without waiting
+ * for it to close.
  */
 export const collect = async (
   model: LanguageModel,
@@ -99,17 +99,19 @@ export const collect = async (
 ): Promise<CollectResult> => {
   const eventStream = await model(context, options)
 
-  for await (const result of eventStream.pipeThrough(new EventCollectStream())) {
-    if (result.reason === 'error')
-      throw result.terminalError ?? new XSAIError('model-error', 'model stream failed')
-    if (result.reason !== undefined) {
-      return {
-        message: result.message,
-        reason: result.reason,
-        ...(result.responseId === undefined ? {} : { responseId: result.responseId }),
-        ...(result.responseStatus === undefined ? {} : { responseStatus: result.responseStatus }),
-        ...(result.usage === undefined ? {} : { usage: result.usage }),
-      }
+  for await (const event of eventStream) {
+    if (event.type !== 'finish')
+      continue
+
+    if (event.reason === 'error')
+      throw event.error ?? new XSAIError('model-error', 'model stream failed')
+
+    return {
+      message: event.message,
+      reason: event.reason,
+      ...(event.responseId === undefined ? {} : { responseId: event.responseId }),
+      ...(event.responseStatus === undefined ? {} : { responseStatus: event.responseStatus }),
+      ...(event.usage === undefined ? {} : { usage: event.usage }),
     }
   }
 
