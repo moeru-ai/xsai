@@ -36,7 +36,7 @@ describe('responses event stream', () => {
   it('maps Responses output events to text primitive events', async () => {
     await expect(readEvents([
       message({
-        response: { id: 'resp_1' },
+        response: { id: 'resp_1', status: 'in_progress' },
         type: 'response.created',
       }),
       message({
@@ -103,6 +103,7 @@ describe('responses event stream', () => {
           error: null,
           id: 'resp_1',
           incomplete_details: null,
+          status: 'completed',
           output: [
             {
               arguments: '{"location":"Taipei"}',
@@ -169,6 +170,7 @@ describe('responses event stream', () => {
         },
         reason: 'stop',
         responseId: 'resp_1',
+        responseStatus: 'completed',
         type: 'finish',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
       },
@@ -207,6 +209,7 @@ describe('responses event stream', () => {
           id: 'resp_1',
           incomplete_details: null,
           output: [],
+          status: 'failed',
           usage: null,
         },
         type: 'response.failed',
@@ -220,6 +223,7 @@ describe('responses event stream', () => {
         message: { content: [], role: 'assistant' },
         reason: 'error',
         responseId: 'resp_1',
+        responseStatus: 'failed',
         type: 'finish',
       },
     ])
@@ -266,6 +270,7 @@ describe('responses event stream', () => {
           error: null,
           id: 'resp_1',
           incomplete_details: { reason: 'max_output_tokens' },
+          status: 'incomplete',
           output: [{
             content: [{ text: 'Think', type: 'reasoning_text' }],
             encrypted_content: 'encrypted',
@@ -311,6 +316,57 @@ describe('responses event stream', () => {
         },
         reason: 'max-output-tokens',
         responseId: 'resp_1',
+        responseStatus: 'incomplete',
+        type: 'finish',
+      },
+    ])
+  })
+
+  it('finishes incomplete without a reason as incomplete, not stop', async () => {
+    await expect(readEvents([
+      message({
+        response: {
+          error: null,
+          id: 'resp_1',
+          incomplete_details: null,
+          output: [],
+          status: 'incomplete',
+          usage: null,
+        },
+        type: 'response.incomplete',
+      }),
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      {
+        message: { content: [], role: 'assistant' },
+        reason: 'incomplete',
+        responseId: 'resp_1',
+        responseStatus: 'incomplete',
+        type: 'finish',
+      },
+    ])
+  })
+
+  it('passes through unmodelled terminal statuses instead of mapping them to stop', async () => {
+    await expect(readEvents([
+      message({
+        response: {
+          error: null,
+          id: 'resp_1',
+          incomplete_details: null,
+          output: [],
+          status: 'cancelled',
+          usage: null,
+        },
+        type: 'response.incomplete',
+      }),
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      {
+        message: { content: [], role: 'assistant' },
+        reason: 'cancelled',
+        responseId: 'resp_1',
+        responseStatus: 'cancelled',
         type: 'finish',
       },
     ])
