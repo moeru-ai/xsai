@@ -64,17 +64,17 @@ const normalizeContentPart = (part: MessageContent): AssistantMessageContent | u
 const normalizeMessageContent = (item: Extract<Responses.ItemField, { type: 'message' }>, index: number): NormalizedPart[] =>
   item.content.flatMap((part, contentIndex): NormalizedPart[] => {
     const content = normalizeContentPart(part)
-    if (content === undefined)
-      return []
-    return [{ content: () => content, key: contentPartKey(index, contentIndex), type: content.type }]
+    return content === undefined ? [] : [{ content, key: contentPartKey(index, contentIndex) }]
   })
 
 const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reasoning' }>): ReasoningPart => {
-  const summary = item.summary as Responses.SummaryTextContent[]
-  const reasoning = item.content as Responses.ReasoningTextContent[] | undefined
+  // Added-time items may omit `summary`/`content`; only the summary_text
+  // and reasoning_text members carry normalized content.
   const reasoningContent: ReasoningPartContent[] = [
-    ...summary.map(part => ({ text: part.text, type: 'summary' as const })),
-    ...reasoning?.map(part => ({ text: part.text, type: 'text' as const })) ?? [],
+    ...(item.summary ?? []).flatMap((part): ReasoningPartContent[] =>
+      part.type === 'summary_text' ? [{ text: part.text, type: 'summary' }] : []),
+    ...(item.content ?? []).flatMap((part): ReasoningPartContent[] =>
+      part.type === 'reasoning_text' ? [{ text: part.text, type: 'text' }] : []),
   ]
 
   if (item.encrypted_content !== undefined)
@@ -89,11 +89,10 @@ interface NormalizedOutputItem {
 }
 
 interface NormalizedPart {
-  content: () => AssistantMessageContent
+  content: AssistantMessageContent
   init?: PartStartInit
   /** Part identity while streaming; defaults to the item's `output_index`. */
   key?: PartKey
-  type: AssistantMessageContent['type']
 }
 
 const normalizeOutputItem = (item: Responses.ItemField, index: number): NormalizedOutputItem => {
@@ -104,15 +103,14 @@ const normalizeOutputItem = (item: Responses.ItemField, index: number): Normaliz
     case 'function_call':
       return {
         parts: [{
-          content: () => normalizeToolCall(item),
+          content: normalizeToolCall(item),
           init: { callId: item.call_id, id: item.id, name: item.name },
-          type: 'tool-call',
         }],
       }
     case 'message':
       return { messageId: item.id, parts: normalizeMessageContent(item, index) }
     case 'reasoning':
-      return { parts: [{ content: () => normalizeReasoningPart(item), type: 'reasoning' }] }
+      return { parts: [{ content: normalizeReasoningPart(item) }] }
   }
 }
 
@@ -123,7 +121,7 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
   for (const [index, item] of output.entries()) {
     const normalized = normalizeOutputItem(item, index)
     for (const part of normalized.parts ?? [])
-      content.push(part.content())
+      content.push(part.content)
     if (normalized.messageId !== undefined)
       id = normalized.messageId
   }
@@ -179,7 +177,7 @@ const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource
 const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
   const normalized = normalizeOutputItem(item, index)
   for (const part of normalized.parts ?? [])
-    asm.start(part.key ?? index, part.type, part.init)
+    asm.start(part.key ?? index, part.content.type, part.init)
   if (normalized.messageId !== undefined)
     asm.meta({ messageId: normalized.messageId })
 }
@@ -190,8 +188,8 @@ const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number
   // streamed a delta.
   for (const part of normalizeOutputItem(item, index).parts ?? []) {
     const key = part.key ?? index
-    asm.start(key, part.type, part.init)
-    asm.end(key, { content: part.content() })
+    asm.start(key, part.content.type, part.init)
+    asm.end(key, { content: part.content })
   }
 }
 
