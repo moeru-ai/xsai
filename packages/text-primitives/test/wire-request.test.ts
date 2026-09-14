@@ -38,6 +38,31 @@ describe('wireRequest', () => {
     await expect(request).rejects.toBe(reason)
   })
 
+  it('rejects with an http error carrying the response headers on non-2xx', async () => {
+    const request = wireRequest(
+      {
+        ...options,
+        fetch: async () => new Response('{"error":{"message":"bad key"}}', {
+          headers: { 'retry-after': '30', 'x-request-id': 'req_abc' },
+          status: 401,
+        }),
+      },
+      undefined,
+      init,
+      new TransformStream<string, Event>(),
+    )
+
+    const error = await request.catch((error: unknown) => error)
+
+    expect(error).toMatchObject({
+      body: '{"error":{"message":"bad key"}}',
+      code: 'http-error',
+      status: 401,
+    })
+    expect((error as { headers?: Headers }).headers?.get('x-request-id')).toBe('req_abc')
+    expect((error as { headers?: Headers }).headers?.get('retry-after')).toBe('30')
+  })
+
   it('rejects with a typed error when the response has no body', async () => {
     const request = wireRequest(
       { ...options, fetch: async () => new Response(null) },

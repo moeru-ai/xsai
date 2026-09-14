@@ -10,7 +10,7 @@ export const requestCatch = (url: URL, signal?: AbortSignal): ((cause: unknown) 
 
 export const responseCatch = async (res: Response): Promise<Response & { body: NonNullable<Response['body']> }> => {
   if (!res.ok)
-    throw new HttpError(res.status, await res.text())
+    throw new HttpError(res.status, await res.text(), res.headers)
 
   if (res.body === null)
     throw new XSAIError('invalid-response', 'Response body is empty')
