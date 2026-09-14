@@ -23,6 +23,7 @@ import type {
   OutputTextContentParam,
   ReasoningItemParam,
   ReasoningSummaryContentParam,
+  RefusalContentParam,
   SystemMessageItemParam,
   UserMessageItemParam,
 } from '../generated'
@@ -106,7 +107,7 @@ const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemPa
 })
 
 const normalizeAssistantMessage = (message: AssistantMessage): ItemParam[] => {
-  const createMessageItem = (content: OutputTextContentParam[], includeId = true): AssistantMessageItemParam => ({
+  const createMessageItem = (content: (OutputTextContentParam | RefusalContentParam)[], includeId = true): AssistantMessageItemParam => ({
     content,
     id: includeId ? message.id : undefined,
     role: 'assistant',
@@ -117,7 +118,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): ItemParam[] => {
     return [createMessageItem([{ text: message.content, type: 'output_text' }])]
 
   const items: ItemParam[] = []
-  let content: OutputTextContentParam[] = []
+  let content: (OutputTextContentParam | RefusalContentParam)[] = []
   let includeId = true
 
   const flushContent = (): void => {
@@ -134,6 +135,9 @@ const normalizeAssistantMessage = (message: AssistantMessage): ItemParam[] => {
       case 'reasoning':
         flushContent()
         items.push(normalizeReasoningPart(part))
+        break
+      case 'refusal':
+        content.push({ refusal: part.refusal, type: 'refusal' })
         break
       case 'text':
         content.push(normalizeOutputTextPart(part))

@@ -6,6 +6,7 @@ export interface ContentMap {
   'file': FilePart
   'image': ImagePart
   'reasoning': ReasoningPart
+  'refusal': RefusalPart
   'text': TextPart
   'tool-call': ToolCallPart
   'tool-result': ToolResultPart
@@ -55,6 +56,11 @@ export interface ReasoningPartSummaryContent {
 export interface ReasoningPartTextContent {
   text: string
   type: 'text'
+}
+
+export interface RefusalPart {
+  refusal: string
+  type: 'refusal'
 }
 
 export interface TextPart {
