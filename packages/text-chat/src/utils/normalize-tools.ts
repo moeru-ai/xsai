@@ -16,9 +16,9 @@ export const normalizeTools = (tools?: readonly Tool[]): ChatTool[] | undefined 
 }))
 
 /** @internal */
-export const normalizeToolChoice = (toolChoice: ToolChoice | undefined, extras?: Record<string, unknown>): ChatToolChoice | undefined =>
+export const normalizeToolChoice = (toolChoice: ToolChoice | undefined): ChatToolChoice | undefined =>
   toolChoice === undefined
     ? undefined
     : typeof toolChoice === 'string'
       ? toolChoice
-      : { ...extras, function: { name: toolChoice.name }, type: 'function' }
+      : { function: { name: toolChoice.name }, type: 'function' }

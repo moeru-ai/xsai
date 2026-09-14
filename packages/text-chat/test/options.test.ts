@@ -8,7 +8,7 @@ describe('chat options', () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
     const stream = await model({ input: 'hi' }, {
-      extraBody: { stream_options: { custom: true } },
+      extraBody: { stream_options: { custom: true }, temperature: 0.7 },
       maxOutputTokens: 10,
       reasoningEffort: 'low',
       temperature: 0.5,
@@ -21,8 +21,9 @@ describe('chat options', () => {
     expect(bodies[0]).toMatchObject({
       max_tokens: 10,
       reasoning_effort: 'low',
-      stream_options: { custom: true, include_usage: true },
-      temperature: 0.5,
+      // extraBody replaces wire fields wholesale, even adapter-set ones.
+      stream_options: { custom: true },
+      temperature: 0.7,
       tool_choice: { function: { name: 'get_weather' }, type: 'function' },
       top_p: 0.9,
     })

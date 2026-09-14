@@ -11,6 +11,11 @@ export interface LanguageModelContext {
 }
 
 export interface LanguageModelOptions {
+  /**
+   * Wire-native fields merged last into the request body — the escape hatch
+   * for wire features the options don't model. Overrides fields the adapter
+   * normalizes, so it can also break them (`stream`, `messages`, `tools`…).
+   */
   extraBody?: Record<string, unknown>
   maxOutputTokens?: number
   /**
