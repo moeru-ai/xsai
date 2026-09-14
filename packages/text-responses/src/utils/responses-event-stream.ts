@@ -91,7 +91,6 @@ interface NormalizedOutputItem {
 interface NormalizedPart {
   content: AssistantMessageContent
   init?: PartStartInit
-  /** Part identity while streaming; defaults to the item's `output_index`. */
   key?: PartKey
 }
 
@@ -193,7 +192,6 @@ const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number
   }
 }
 
-/** Converts Responses API SSE data to text primitive events. */
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
   constructor() {
     super((event, asm) => {
