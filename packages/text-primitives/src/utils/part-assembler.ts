@@ -205,9 +205,8 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
         fail(new XSAIError('truncated-stream', 'wire stream ended without a terminal signal'))
         return
       }
-      for (const key of parts.keys())
-        end(key)
 
+      // finish() already closed every part; no new part can open after it.
       const message = messageOverride ?? {
         content: accumulator.content(),
         role: 'assistant' as const,
