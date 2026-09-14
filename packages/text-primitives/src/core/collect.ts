@@ -55,6 +55,7 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
           case 'content.end':
           case 'content.start':
           case 'reasoning.delta':
+          case 'refusal.delta':
           case 'text.delta':
           case 'tool-call.delta':
             this.accumulator.apply(event)

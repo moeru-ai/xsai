@@ -20,7 +20,7 @@ const mapStopReason = (stopReason: null | string | undefined): FinishReason => {
     case undefined:
       return 'stop'
     case 'refusal':
-      return 'content-filter'
+      return 'refusal'
     case 'tool_use':
       return 'tool-calls'
     default:

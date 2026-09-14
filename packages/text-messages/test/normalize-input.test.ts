@@ -113,6 +113,18 @@ describe('normalize input', () => {
     })
   })
 
+  it('rejects refusal parts with an invalid-input error', () => {
+    const call = () => normalizeInput({
+      input: [{ content: [{ refusal: 'I cannot help', type: 'refusal' }], role: 'assistant' }],
+    })
+
+    expect(call).toThrow(XSAIError)
+    expect(call).toThrow(expect.objectContaining({
+      code: 'invalid-input',
+      message: 'Refusal parts cannot be replayed on the Messages API',
+    }))
+  })
+
   it('rejects non-PDF document data with an invalid-input error', () => {
     const call = () => normalizeInput({
       input: [{ content: [{ data: 'data:image/png;base64,aGVsbG8=', type: 'file' }], role: 'user' }],

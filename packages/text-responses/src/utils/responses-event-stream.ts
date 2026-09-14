@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, FinishReason, PartAssembler, PartStartInit, ReasoningPart, ReasoningPartContent, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, FinishReason, PartAssembler, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -47,12 +47,27 @@ const normalizeToolCall = (item: Responses.FunctionCall): ToolCallPart => ({
   type: 'tool-call',
 })
 
-const normalizeTextPart = (item: Extract<Responses.ItemField, { type: 'message' }>): TextPart => ({
-  text: (item.content as Array<Responses.OutputTextContent | Responses.RefusalContent | Responses.TextContent>)
-    .map(part => part.type === 'refusal' ? part.refusal : part.text)
-    .join(''),
-  type: 'text',
-})
+type MessageContent = Extract<Responses.ItemField, { type: 'message' }>['content'][number]
+
+// A message item's content entries are separate parts, keyed by their
+// `content_index` — output text stays text, refusal stays refusal.
+const contentPartKey = (outputIndex: number, contentIndex: number): PartKey => `${outputIndex}:${contentIndex}`
+
+const normalizeContentPart = (part: MessageContent): AssistantMessageContent | undefined => {
+  if (part.type === 'refusal')
+    return { refusal: part.refusal, type: 'refusal' }
+  if ('text' in part && typeof part.text === 'string')
+    return { text: part.text, type: 'text' }
+  return undefined
+}
+
+const normalizeMessageContent = (item: Extract<Responses.ItemField, { type: 'message' }>, index: number): NormalizedPart[] =>
+  item.content.flatMap((part, contentIndex): NormalizedPart[] => {
+    const content = normalizeContentPart(part)
+    if (content === undefined)
+      return []
+    return [{ content: () => content, key: contentPartKey(index, contentIndex), type: content.type }]
+  })
 
 const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reasoning' }>): ReasoningPart => {
   const summary = item.summary as Responses.SummaryTextContent[]
@@ -70,30 +85,34 @@ const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reas
 
 interface NormalizedOutputItem {
   messageId?: string
-  part?: {
-    content: () => AssistantMessageContent
-    init?: PartStartInit
-    type: AssistantMessageContent['type']
-  }
+  parts?: NormalizedPart[]
 }
 
-const normalizeOutputItem = (item: Responses.ItemField): NormalizedOutputItem => {
+interface NormalizedPart {
+  content: () => AssistantMessageContent
+  init?: PartStartInit
+  /** Part identity while streaming; defaults to the item's `output_index`. */
+  key?: PartKey
+  type: AssistantMessageContent['type']
+}
+
+const normalizeOutputItem = (item: Responses.ItemField, index: number): NormalizedOutputItem => {
   switch (item.type) {
     case 'compaction':
     case 'function_call_output':
       return {}
     case 'function_call':
       return {
-        part: {
+        parts: [{
           content: () => normalizeToolCall(item),
           init: { callId: item.call_id, id: item.id, name: item.name },
           type: 'tool-call',
-        },
+        }],
       }
     case 'message':
-      return { messageId: item.id, part: { content: () => normalizeTextPart(item), type: 'text' } }
+      return { messageId: item.id, parts: normalizeMessageContent(item, index) }
     case 'reasoning':
-      return { part: { content: () => normalizeReasoningPart(item), type: 'reasoning' } }
+      return { parts: [{ content: () => normalizeReasoningPart(item), type: 'reasoning' }] }
   }
 }
 
@@ -101,10 +120,10 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
   const content: AssistantMessageContent[] = []
   let id: string | undefined
 
-  for (const item of output) {
-    const normalized = normalizeOutputItem(item)
-    if (normalized.part !== undefined)
-      content.push(normalized.part.content())
+  for (const [index, item] of output.entries()) {
+    const normalized = normalizeOutputItem(item, index)
+    for (const part of normalized.parts ?? [])
+      content.push(part.content())
     if (normalized.messageId !== undefined)
       id = normalized.messageId
   }
@@ -146,7 +165,7 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
 
 const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource): void => {
   const reason = normalizeFinishReason(response)
-  if (response.usage !== null)
+  if (response.usage != null)
     asm.meta({ usage: normalizeUsage(response.usage) })
   const error = reason === 'error'
     ? new XSAIError('model-error', response.error?.message ?? 'response failed', { cause: response.error })
@@ -158,21 +177,22 @@ const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource
 }
 
 const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
-  const normalized = normalizeOutputItem(item)
-  if (normalized.part === undefined)
-    return
-
-  asm.start(index, normalized.part.type, normalized.part.init)
+  const normalized = normalizeOutputItem(item, index)
+  for (const part of normalized.parts ?? [])
+    asm.start(part.key ?? index, part.type, part.init)
   if (normalized.messageId !== undefined)
     asm.meta({ messageId: normalized.messageId })
 }
 
 const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
-  const part = normalizeOutputItem(item).part
   // `output_item.done` carries the authoritative item; it overrides
-  // content accumulated from deltas.
-  if (part !== undefined)
-    asm.end(index, { content: part.content() })
+  // content accumulated from deltas, including content parts that never
+  // streamed a delta.
+  for (const part of normalizeOutputItem(item, index).parts ?? []) {
+    const key = part.key ?? index
+    asm.start(key, part.type, part.init)
+    asm.end(key, { content: part.content() })
+  }
 }
 
 /** Converts Responses API SSE data to text primitive events. */
@@ -196,15 +216,26 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           // response's own `status` decides the finish reason, not the tag.
           finishResponse(asm, event.response)
           break
-        case 'response.content_part.added':
-        case 'response.content_part.done':
+        case 'response.content_part.added': {
+          const content = normalizeContentPart(event.part)
+          if (content !== undefined)
+            asm.start(contentPartKey(event.output_index, event.content_index), content.type)
+          break
+        }
+        case 'response.content_part.done': {
+          const content = normalizeContentPart(event.part)
+          if (content !== undefined) {
+            const key = contentPartKey(event.output_index, event.content_index)
+            asm.start(key, content.type)
+            asm.end(key, { content })
+          }
+          break
+        }
         case 'response.created':
           break
         case 'response.function_call_arguments.delta':
-        case 'response.output_text.delta':
         case 'response.reasoning.delta':
         case 'response.reasoning_summary_text.delta':
-        case 'response.refusal.delta':
           asm.delta(event.output_index, event.delta)
           break
         case 'response.function_call_arguments.done':
@@ -227,6 +258,13 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           if (event.item != null)
             onItemDone(asm, event.item, event.output_index)
           break
+        case 'response.output_text.delta':
+        case 'response.refusal.delta': {
+          const key = contentPartKey(event.output_index, event.content_index)
+          asm.start(key, event.type === 'response.refusal.delta' ? 'refusal' : 'text')
+          asm.delta(key, event.delta)
+          break
+        }
       }
     })
   }

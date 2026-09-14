@@ -24,6 +24,27 @@ describe('partAssembler', () => {
     expect(failures).toEqual([])
   })
 
+  it('assembles refusal parts', () => {
+    const events: Event[] = []
+    const assembler = partAssembler(event => events.push(event), () => {})
+
+    assembler.start('refusal', 'refusal')
+    assembler.delta('refusal', 'I cannot')
+    assembler.delta('refusal', ' help')
+    assembler.end('refusal')
+    assembler.finish('stop')
+    assembler.flush()
+
+    const refusal = { refusal: 'I cannot help', type: 'refusal' }
+    expect(events).toEqual([
+      { contentType: 'refusal', index: 0, type: 'content.start' },
+      { delta: 'I cannot', index: 0, type: 'refusal.delta' },
+      { delta: ' help', index: 0, type: 'refusal.delta' },
+      { content: refusal, index: 0, type: 'content.end' },
+      { message: { content: [refusal], role: 'assistant' }, reason: 'stop', type: 'finish' },
+    ])
+  })
+
   it('carries response-level identity on the finish event', () => {
     const events: Event[] = []
     const assembler = partAssembler(event => events.push(event), () => {})

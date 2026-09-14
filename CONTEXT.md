@@ -13,11 +13,11 @@ The `LanguageModel` function every wire adapter satisfies: `(context, options?) 
 _Avoid_: model instance, provider object
 
 **Part**:
-One entry of an assistant message's `content` array (`text`, `reasoning`, `tool-call`). Events address parts by `index`, their position in the finished message.
+One entry of an assistant message's `content` array (`text`, `reasoning`, `refusal`, `tool-call`). Events address parts by `index`, their position in the finished message.
 _Avoid_: block, chunk, content item
 
 **Event**:
-The normalized stream vocabulary: `content.start`, `text.delta`, `reasoning.delta`, `tool-call.delta`, `content.end`, `finish`. Wire adapters translate their frames into it.
+The normalized stream vocabulary: `content.start`, `text.delta`, `reasoning.delta`, `refusal.delta`, `tool-call.delta`, `content.end`, `finish`. Wire adapters translate their frames into it.
 _Avoid_: chunk, SSE event
 
 **Assembler**:
@@ -37,3 +37,4 @@ _Avoid_: complete, runSync
 - `tool-call.delta` identifies its part by `index`; its `id` is always the tool **call id**, never a provider item id.
 - `finish` separates two identities: `message.id` is the replayable assistant message id; `responseId` is the response-scoped generation id (e.g. `chatcmpl-*`, `resp_*`). A wire may carry both, either, or neither.
 - `reason` is normalized; `responseStatus` is the wire's reported response status verbatim (e.g. Responses `completed`/`incomplete`/`failed`/`cancelled`) — never collapse an unmodelled status into `stop`.
+- A refusal is its own part (`refusal` + `refusal.delta`), never folded into `text`; a wire whose refusal is only a stop condition (Anthropic `stop_reason`) maps it to `reason: 'refusal'` instead.

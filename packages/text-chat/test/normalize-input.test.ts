@@ -20,6 +20,26 @@ describe('normalize input', () => {
     ])
   })
 
+  it('replays refusal parts to the refusal field', () => {
+    expect(normalizeInput({
+      input: [
+        {
+          content: [
+            { refusal: 'I cannot help', type: 'refusal' },
+            { text: 'hi', type: 'text' },
+          ],
+          role: 'assistant',
+        },
+      ],
+    })).toEqual([
+      {
+        content: [{ text: 'hi', type: 'text' }],
+        refusal: 'I cannot help',
+        role: 'assistant',
+      },
+    ])
+  })
+
   it('splits tool-result parts into tool role messages', () => {
     expect(normalizeInput({
       input: [

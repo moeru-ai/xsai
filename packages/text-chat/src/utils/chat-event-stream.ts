@@ -82,15 +82,18 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
       asm.delta('reasoning', reasoning)
     }
 
-    // Refusal is a sibling field of content on this wire; a refusal turn
-    // streams content:null. Prefer non-empty content per delta so a
-    // simultaneous refusal is dropped rather than merged into the text.
-    const content = delta.content != null && delta.content !== ''
-      ? delta.content
-      : (delta.refusal ?? delta.content ?? '')
+    const content = delta.content ?? ''
     if (content !== '') {
       asm.start('text', 'text')
       asm.delta('text', content)
+    }
+
+    // Refusal is a sibling field of content on this wire; a refusal turn
+    // streams content:null. It is its own part, never merged into text.
+    const refusal = delta.refusal ?? ''
+    if (refusal !== '') {
+      asm.start('refusal', 'refusal')
+      asm.delta('refusal', refusal)
     }
 
     for (const call of delta.tool_calls ?? []) {

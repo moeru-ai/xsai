@@ -411,7 +411,7 @@ describe('chat event stream', () => {
     ])
   })
 
-  it('maps refusal deltas to text and prefers simultaneous content', async () => {
+  it('maps refusal deltas to a refusal part', async () => {
     await expect(readEvents([
       message({
         choices: [{ delta: { content: null, refusal: '' }, finish_reason: null, index: 0 }],
@@ -421,7 +421,7 @@ describe('chat event stream', () => {
         choices: [{ delta: { content: null, refusal: 'I refuse' }, finish_reason: null, index: 0 }],
         id: 'chatcmpl_1',
       }),
-      // A delta carrying both keeps its own content.
+      // A delta carrying both produces both parts.
       message({
         choices: [{ delta: { content: 'more', refusal: 'x' }, finish_reason: null, index: 0 }],
         id: 'chatcmpl_1',
@@ -432,13 +432,19 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      { contentType: 'text', index: 0, type: 'content.start' },
-      { delta: 'I refuse', index: 0, type: 'text.delta' },
-      { delta: 'more', index: 0, type: 'text.delta' },
-      { content: { text: 'I refusemore', type: 'text' }, index: 0, type: 'content.end' },
+      { contentType: 'refusal', index: 0, type: 'content.start' },
+      { delta: 'I refuse', index: 0, type: 'refusal.delta' },
+      { contentType: 'text', index: 1, type: 'content.start' },
+      { delta: 'more', index: 1, type: 'text.delta' },
+      { delta: 'x', index: 0, type: 'refusal.delta' },
+      { content: { refusal: 'I refusex', type: 'refusal' }, index: 0, type: 'content.end' },
+      { content: { text: 'more', type: 'text' }, index: 1, type: 'content.end' },
       {
         message: {
-          content: [{ text: 'I refusemore', type: 'text' }],
+          content: [
+            { refusal: 'I refusex', type: 'refusal' },
+            { text: 'more', type: 'text' },
+          ],
           role: 'assistant',
         },
         reason: 'stop',

@@ -198,6 +198,28 @@ describe('messages event stream', () => {
     ])
   })
 
+  it('maps a refusal stop reason to a refusal finish', async () => {
+    await expect(readEvents([
+      message({
+        message: { id: 'msg_1', usage: { input_tokens: 10 } },
+        type: 'message_start',
+      }),
+      message({
+        delta: { stop_reason: 'refusal', stop_sequence: null },
+        type: 'message_delta',
+        usage: { output_tokens: 0 },
+      }),
+      message({ type: 'message_stop' }),
+    ])).resolves.toEqual([
+      {
+        message: { content: [], id: 'msg_1', role: 'assistant' },
+        reason: 'refusal',
+        type: 'finish',
+        usage: { inputTokens: 10, outputTokens: 0, totalTokens: 10 },
+      },
+    ])
+  })
+
   it('maps provider error events to an error finish', async () => {
     const events = await readEvents([
       message({

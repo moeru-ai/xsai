@@ -4,6 +4,7 @@ import { defineConfig } from '@moeru/eslint-config'
 export default defineConfig()
   .append({
     ignores: [
+      '.scratch/**',
       'packages/text-responses/src/generated/**/*.ts',
     ],
   })

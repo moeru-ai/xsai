@@ -103,7 +103,6 @@ describe('responses event stream', () => {
           error: null,
           id: 'resp_1',
           incomplete_details: null,
-          status: 'completed',
           output: [
             {
               arguments: '{"location":"Taipei"}',
@@ -121,6 +120,7 @@ describe('responses event stream', () => {
               type: 'message',
             },
           ],
+          status: 'completed',
           usage: {
             input_tokens: 3,
             output_tokens: 2,
@@ -173,6 +173,185 @@ describe('responses event stream', () => {
         responseStatus: 'completed',
         type: 'finish',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
+      },
+    ])
+  })
+
+  it('maps refusal content to a refusal part, not text', async () => {
+    await expect(readEvents([
+      message({
+        response: { id: 'resp_1', status: 'in_progress' },
+        type: 'response.created',
+      }),
+      message({
+        item: {
+          content: [],
+          id: 'message_1',
+          role: 'assistant',
+          status: 'in_progress',
+          type: 'message',
+        },
+        output_index: 0,
+        type: 'response.output_item.added',
+      }),
+      message({
+        content_index: 0,
+        delta: 'I cannot',
+        item_id: 'message_1',
+        output_index: 0,
+        type: 'response.refusal.delta',
+      }),
+      message({
+        item: {
+          content: [{ refusal: 'I cannot help', type: 'refusal' }],
+          id: 'message_1',
+          role: 'assistant',
+          status: 'completed',
+          type: 'message',
+        },
+        output_index: 0,
+        type: 'response.output_item.done',
+      }),
+      message({
+        response: {
+          id: 'resp_1',
+          output: [{
+            content: [{ refusal: 'I cannot help', type: 'refusal' }],
+            id: 'message_1',
+            role: 'assistant',
+            status: 'completed',
+            type: 'message',
+          }],
+          status: 'completed',
+        },
+        type: 'response.completed',
+      }),
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      { contentType: 'refusal', index: 0, type: 'content.start' },
+      { delta: 'I cannot', index: 0, type: 'refusal.delta' },
+      { content: { refusal: 'I cannot help', type: 'refusal' }, index: 0, type: 'content.end' },
+      {
+        message: {
+          content: [{ refusal: 'I cannot help', type: 'refusal' }],
+          id: 'message_1',
+          role: 'assistant',
+        },
+        reason: 'stop',
+        responseId: 'resp_1',
+        responseStatus: 'completed',
+        type: 'finish',
+      },
+    ])
+  })
+
+  it('keeps a message item\'s text and refusal as separate parts', async () => {
+    await expect(readEvents([
+      message({
+        item: {
+          content: [],
+          id: 'message_1',
+          role: 'assistant',
+          status: 'in_progress',
+          type: 'message',
+        },
+        output_index: 0,
+        type: 'response.output_item.added',
+      }),
+      message({
+        content_index: 0,
+        item_id: 'message_1',
+        output_index: 0,
+        part: { text: '', type: 'output_text' },
+        type: 'response.content_part.added',
+      }),
+      message({
+        content_index: 0,
+        delta: 'partial',
+        item_id: 'message_1',
+        output_index: 0,
+        type: 'response.output_text.delta',
+      }),
+      message({
+        content_index: 0,
+        item_id: 'message_1',
+        output_index: 0,
+        part: { text: 'partial', type: 'output_text' },
+        type: 'response.content_part.done',
+      }),
+      message({
+        content_index: 1,
+        item_id: 'message_1',
+        output_index: 0,
+        part: { refusal: '', type: 'refusal' },
+        type: 'response.content_part.added',
+      }),
+      message({
+        content_index: 1,
+        delta: 'I cannot',
+        item_id: 'message_1',
+        output_index: 0,
+        type: 'response.refusal.delta',
+      }),
+      message({
+        content_index: 1,
+        item_id: 'message_1',
+        output_index: 0,
+        part: { refusal: 'I cannot continue', type: 'refusal' },
+        type: 'response.content_part.done',
+      }),
+      message({
+        item: {
+          content: [
+            { annotations: [], text: 'partial', type: 'output_text' },
+            { refusal: 'I cannot continue', type: 'refusal' },
+          ],
+          id: 'message_1',
+          role: 'assistant',
+          status: 'completed',
+          type: 'message',
+        },
+        output_index: 0,
+        type: 'response.output_item.done',
+      }),
+      message({
+        response: {
+          id: 'resp_1',
+          output: [{
+            content: [
+              { annotations: [], text: 'partial', type: 'output_text' },
+              { refusal: 'I cannot continue', type: 'refusal' },
+            ],
+            id: 'message_1',
+            role: 'assistant',
+            status: 'completed',
+            type: 'message',
+          }],
+          status: 'completed',
+        },
+        type: 'response.completed',
+      }),
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      { contentType: 'text', index: 0, type: 'content.start' },
+      { delta: 'partial', index: 0, type: 'text.delta' },
+      { content: { text: 'partial', type: 'text' }, index: 0, type: 'content.end' },
+      { contentType: 'refusal', index: 1, type: 'content.start' },
+      { delta: 'I cannot', index: 1, type: 'refusal.delta' },
+      { content: { refusal: 'I cannot continue', type: 'refusal' }, index: 1, type: 'content.end' },
+      {
+        message: {
+          content: [
+            { text: 'partial', type: 'text' },
+            { refusal: 'I cannot continue', type: 'refusal' },
+          ],
+          id: 'message_1',
+          role: 'assistant',
+        },
+        reason: 'stop',
+        responseId: 'resp_1',
+        responseStatus: 'completed',
+        type: 'finish',
       },
     ])
   })
@@ -270,7 +449,6 @@ describe('responses event stream', () => {
           error: null,
           id: 'resp_1',
           incomplete_details: { reason: 'max_output_tokens' },
-          status: 'incomplete',
           output: [{
             content: [{ text: 'Think', type: 'reasoning_text' }],
             encrypted_content: 'encrypted',
@@ -279,6 +457,7 @@ describe('responses event stream', () => {
             summary: [{ text: 'Think more', type: 'summary_text' }],
             type: 'reasoning',
           }],
+          status: 'incomplete',
           usage: null,
         },
         type: 'response.incomplete',
