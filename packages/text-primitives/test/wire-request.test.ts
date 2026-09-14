@@ -59,8 +59,8 @@ describe('wireRequest', () => {
       code: 'http-error',
       status: 401,
     })
-    expect((error as { headers?: Headers }).headers?.get('x-request-id')).toBe('req_abc')
-    expect((error as { headers?: Headers }).headers?.get('retry-after')).toBe('30')
+    expect((error as { headers: Headers }).headers.get('x-request-id')).toBe('req_abc')
+    expect((error as { headers: Headers }).headers.get('retry-after')).toBe('30')
   })
 
   it('rejects with a typed error when the response has no body', async () => {

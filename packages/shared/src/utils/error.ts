@@ -31,10 +31,10 @@ export class XSAIError<T extends XSAIErrorCode = XSAIErrorCode> extends Error {
 export class HttpError extends XSAIError<'http-error'> {
   readonly body: string
   /** The raw response headers, for debugging (e.g. `x-request-id`, `retry-after`). */
-  readonly headers?: Headers
+  readonly headers: Headers
   readonly status: number
 
-  constructor(status: number, body: string, headers?: Headers, ...options: XSAIErrorOptions<'http-error'>) {
+  constructor({ body, headers, status }: { body: string, headers: Headers, status: number }, ...options: XSAIErrorOptions<'http-error'>) {
     super('http-error', `HTTP ${status}: ${body}`, ...options)
     this.body = body
     this.headers = headers
