@@ -1,5 +1,3 @@
-// Anthropic Messages API wire types — only the fields this implementation uses.
-
 export type ContentBlock
   = | DocumentBlock
     | ImageBlock

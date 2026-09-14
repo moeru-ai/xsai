@@ -1,5 +1,3 @@
-// Chat Completions API wire types — only the fields this implementation uses.
-
 export interface ChatChoice {
   // Some wires emit choices without a delta (Azure prompt_filter_results
   // frames); they are no-ops unless they carry a finish_reason.
