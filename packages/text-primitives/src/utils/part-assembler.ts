@@ -94,6 +94,9 @@ interface PartState {
 const acceptIdentity = (current: string | undefined, incoming: string | undefined): string | undefined =>
   incoming != null && incoming !== '' ? incoming : current
 
+const resolveCallId = (state: PartState): string =>
+  state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
+
 /** @internal */
 export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIError) => void): PartAssembler => {
   const accumulator = contentAccumulator()
@@ -117,7 +120,7 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
     if (accumulated === undefined)
       return
 
-    const callId = state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
+    const callId = resolveCallId(state)
     const built: AssistantMessageContent = accumulated.type === 'tool-call'
       ? {
           ...accumulated,
@@ -168,7 +171,7 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
           state.name = acceptIdentity(state.name, extra?.name)
           const event = {
             delta: text,
-            id: state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`,
+            id: resolveCallId(state),
             index: state.index,
             ...(state.name === undefined ? {} : { name: state.name }),
             type: 'tool-call.delta' as const,
