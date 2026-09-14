@@ -10,9 +10,9 @@ export const normalizeTools = (tools?: readonly Tool[]): MessagesTool[] | undefi
 }))
 
 /** @internal */
-export const normalizeToolChoice = (toolChoice: ToolChoice | undefined, extras?: Record<string, unknown>): MessagesToolChoice | undefined =>
+export const normalizeToolChoice = (toolChoice: ToolChoice | undefined): MessagesToolChoice | undefined =>
   toolChoice === undefined
     ? undefined
     : typeof toolChoice === 'string'
-      ? { ...extras, type: toolChoice === 'required' ? 'any' : toolChoice }
-      : { ...extras, name: toolChoice.name, type: 'tool' }
+      ? { type: toolChoice === 'required' ? 'any' : toolChoice }
+      : { name: toolChoice.name, type: 'tool' }

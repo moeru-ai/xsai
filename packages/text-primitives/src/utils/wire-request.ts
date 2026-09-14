@@ -33,9 +33,11 @@ export const wireRequest = async (
   const url = requestURL(init.path, options.baseURL)
 
   return (options.fetch ?? fetch)(url, {
+    // extraBody is the caller's wire-native override: it always wins over
+    // adapter-normalized fields.
     body: JSON.stringify({
-      ...modelOptions?.extraBody,
       ...definedOnly(init.body),
+      ...definedOnly(modelOptions?.extraBody ?? {}),
     }),
     headers: definedOnly(init.headers ?? requestHeaders(options.apiKey, options.extraHeaders)),
     method: 'POST',

@@ -23,7 +23,8 @@ describe('messages options', () => {
       max_tokens: 10,
       output_config: { effort: 'max' },
       temperature: 0.5,
-      tool_choice: { disable_parallel_tool_use: true, name: 'get_weather', type: 'tool' },
+      // extraBody replaces the normalized tool_choice wholesale.
+      tool_choice: { disable_parallel_tool_use: true },
       top_p: 0.9,
     })
     expect(bodies[0]).not.toHaveProperty('effort')
