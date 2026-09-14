@@ -4,7 +4,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/shared'
 import { wireRequest } from '@xsai/text-primitives'
 
-import { MessagesEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
+import { MessagesEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
 
@@ -13,6 +13,7 @@ const ANTHROPIC_VERSION = '2023-06-01'
 export const messages = (options: HttpOptions): LanguageModel => async (context, modelOptions) => {
   const { messages: inputMessages, system } = normalizeInput(context)
   const maxTokens = modelOptions?.maxOutputTokens ?? modelOptions?.extraBody?.max_tokens
+  const format = normalizeFormat(modelOptions?.format)
 
   if (typeof maxTokens !== 'number')
     throw new XSAIError('invalid-input', 'maxOutputTokens is required for the Messages API')
@@ -22,9 +23,9 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
       max_tokens: maxTokens,
       messages: inputMessages,
       model: options.model,
-      output_config: modelOptions?.reasoningEffort == null
+      output_config: modelOptions?.reasoningEffort == null && format == null
         ? undefined
-        : { effort: modelOptions.reasoningEffort },
+        : { effort: modelOptions?.reasoningEffort, format },
       stream: true,
       system,
       temperature: modelOptions?.temperature,

@@ -45,6 +45,34 @@ describe('messages options', () => {
     expect(bodies[0]).toMatchObject({ tool_choice: { type: 'any' } })
   })
 
+  it('maps format to output_config.format and merges with effort', async () => {
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({ input: 'hi' }, {
+      format: {
+        properties: { a: { type: 'string' } },
+        required: ['a'],
+        title: 'answer',
+        type: 'object',
+      },
+      maxOutputTokens: 10,
+      reasoningEffort: 'high',
+    })
+    await stream.cancel()
+
+    expect(bodies[0].output_config).toMatchObject({
+      effort: 'high',
+      // the Messages wire has no name/description fields
+      format: {
+        schema: {
+          additionalProperties: false,
+          properties: { a: { type: 'string' } },
+        },
+        type: 'json_schema',
+      },
+    })
+  })
+
   it('preserves an x-api-key supplied through extraHeaders', async () => {
     let requestHeaders: Headers | undefined
     const requestFetch: typeof fetch = async (_input, init) => {

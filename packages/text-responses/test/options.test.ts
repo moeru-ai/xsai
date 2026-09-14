@@ -27,4 +27,30 @@ describe('responses options', () => {
       top_p: 0.9,
     })
   })
+
+  it('maps format to text.format', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({ input: 'hi' }, {
+      format: {
+        properties: { a: { type: 'string' } },
+        required: ['a'],
+        title: 'answer',
+        type: 'object',
+      },
+    })
+    await stream.cancel()
+
+    expect(bodies[0].text).toMatchObject({
+      format: {
+        name: 'answer',
+        schema: {
+          additionalProperties: false,
+          properties: { a: { type: 'string' } },
+        },
+        strict: true,
+        type: 'json_schema',
+      },
+    })
+  })
 })

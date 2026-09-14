@@ -3,7 +3,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 
 import { wireRequest } from '@xsai/text-primitives'
 
-import { ChatEventStream, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
+import { ChatEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
 
@@ -14,6 +14,7 @@ export const chat = (options: HttpOptions): LanguageModel => async (context, mod
       messages: normalizeInput(context),
       model: options.model,
       reasoning_effort: modelOptions?.reasoningEffort,
+      response_format: normalizeFormat(modelOptions?.format),
       stream: true,
       stream_options: { include_usage: true },
       temperature: modelOptions?.temperature,

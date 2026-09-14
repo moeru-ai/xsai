@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@standard-schema/spec": "catalog:",
-    "eventsource-parser": "catalog:"
+    "eventsource-parser": "catalog:",
+    "xsschema": "workspace:"
   }
 }
