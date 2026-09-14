@@ -206,7 +206,6 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
         return
       }
 
-      // finish() already closed every part; no new part can open after it.
       const message = messageOverride ?? {
         content: accumulator.content(),
         role: 'assistant' as const,

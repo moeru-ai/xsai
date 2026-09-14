@@ -35,7 +35,6 @@ const normalizeUsage = (usage: ChatUsage): Usage => {
   }
 }
 
-/** Converts Chat Completions API SSE data to text primitive events. */
 export class ChatEventStream extends WireEventStream<ChatChunk> {
   // OpenAI emits `reasoning`, DeepSeek `reasoning_content`; remember which
   // field this wire used so replays write the same one.

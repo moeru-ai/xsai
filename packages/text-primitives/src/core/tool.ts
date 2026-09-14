@@ -12,7 +12,6 @@ export interface Tool {
   inputSchema: Record<string, unknown>
   name: string
   outputSchema?: Record<string, unknown>
-  // validate?: (input: unknown) => Promise<ToolValidateResult> | ToolValidateResult
 }
 
 export interface ToolOptions<TInput extends StandardJSONSchemaV1, TOutput extends StandardJSONSchemaV1 | undefined = undefined> {

@@ -51,7 +51,6 @@ const mergeUsage = (start: MessagesUsage | undefined, delta: MessagesUsage | und
   }
 }
 
-/** Converts Messages API SSE data to text primitive events. */
 export class MessagesEventStream extends WireEventStream<MessagesEvent> {
   private deltaUsage?: MessagesUsage
   private readonly signatures = new Map<number, string>()

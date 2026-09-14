@@ -23,7 +23,6 @@ const normalizeInputTextPart = (part: TextPart): ChatContentPart => ({
 const normalizeImagePart = (part: ImagePart): ChatContentPart => {
   const data = part.data.toString()
 
-  // image_url accepts both remote URLs and base64 data: URLs.
   if (URL.canParse(data))
     return { image_url: { url: data }, type: 'image_url' }
 
