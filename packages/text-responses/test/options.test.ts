@@ -20,7 +20,8 @@ describe('responses options', () => {
     expect(bodies).toHaveLength(1)
     expect(bodies[0]).toMatchObject({
       max_output_tokens: 10,
-      reasoning: { effort: 'high', summary: 'detailed' },
+      // extraBody replaces the normalized reasoning field wholesale.
+      reasoning: { summary: 'detailed' },
       temperature: 0.5,
       tool_choice: { name: 'get_weather', type: 'function' },
       top_p: 0.9,

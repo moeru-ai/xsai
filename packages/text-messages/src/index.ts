@@ -24,14 +24,11 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
       model: options.model,
       output_config: modelOptions?.reasoningEffort === undefined
         ? undefined
-        : {
-            ...modelOptions?.extraBody?.output_config as Record<string, unknown>,
-            effort: modelOptions.reasoningEffort,
-          },
+        : { effort: modelOptions.reasoningEffort },
       stream: true,
       system,
       temperature: modelOptions?.temperature,
-      tool_choice: normalizeToolChoice(modelOptions?.toolChoice, modelOptions?.extraBody?.tool_choice as Record<string, unknown>),
+      tool_choice: normalizeToolChoice(modelOptions?.toolChoice),
       tools: normalizeTools(context.tools),
       top_p: modelOptions?.topP,
     },

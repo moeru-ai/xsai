@@ -14,13 +14,10 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
       model: options.model,
       reasoning: modelOptions?.reasoningEffort === undefined
         ? undefined
-        : {
-            ...modelOptions?.extraBody?.reasoning as Record<string, unknown>,
-            effort: modelOptions.reasoningEffort,
-          },
+        : { effort: modelOptions.reasoningEffort },
       stream: true,
       temperature: modelOptions?.temperature,
-      tool_choice: normalizeToolChoice(modelOptions?.toolChoice, modelOptions?.extraBody?.tool_choice as Record<string, unknown>),
+      tool_choice: normalizeToolChoice(modelOptions?.toolChoice),
       tools: normalizeTools(context.tools),
       top_p: modelOptions?.topP,
     },
