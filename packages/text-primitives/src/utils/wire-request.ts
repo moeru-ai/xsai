@@ -8,7 +8,7 @@ import { requestURL } from './request-url'
 import { requestCatch, responseCatch } from './response-catch'
 
 export interface WireRequestInit {
-  /** Wire-shaped body fields; `undefined` fields are dropped before the model-call extraBody merge. */
+  /** Wire-shaped body fields; `undefined` values are dropped by `JSON.stringify`. */
   body: Record<string, unknown>
   /** Overrides the default `Authorization`/`Content-Type` headers; `undefined` values are dropped. */
   headers?: Record<string, string | undefined>
@@ -34,9 +34,11 @@ export const wireRequest = async (
 
   return (options.fetch ?? fetch)(url, {
     // extraBody is the caller's wire-native override: it always wins over
-    // adapter-normalized fields.
+    // adapter-normalized fields. `definedOnly` keeps `undefined` entries in
+    // extraBody from erasing adapter fields; init.body needs no such pass
+    // because `JSON.stringify` drops `undefined` on its own.
     body: JSON.stringify({
-      ...definedOnly(init.body),
+      ...init.body,
       ...definedOnly(modelOptions?.extraBody ?? {}),
     }),
     headers: definedOnly(init.headers ?? requestHeaders(options.apiKey, options.extraHeaders)),
