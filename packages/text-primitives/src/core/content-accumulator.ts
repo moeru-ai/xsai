@@ -2,6 +2,7 @@ import type {
   ContentEndEvent,
   ContentStartEvent,
   ReasoningDeltaEvent,
+  RefusalDeltaEvent,
   TextDeltaEvent,
   ToolCallDeltaEvent,
 } from './types/event'
@@ -11,6 +12,7 @@ type ContentEvent
   = | ContentEndEvent
     | ContentStartEvent
     | ReasoningDeltaEvent
+    | RefusalDeltaEvent
     | TextDeltaEvent
     | ToolCallDeltaEvent
 
@@ -28,6 +30,9 @@ export const contentAccumulator = () => {
         switch (event.contentType) {
           case 'reasoning':
             open.set(event.index, { content: [], type: 'reasoning' })
+            break
+          case 'refusal':
+            open.set(event.index, { refusal: '', type: 'refusal' })
             break
           case 'text':
             open.set(event.index, { text: '', type: 'text' })
@@ -49,6 +54,12 @@ export const contentAccumulator = () => {
               : [...content, { text: event.delta, type: 'text' }],
           })
         }
+        break
+      }
+      case 'refusal.delta': {
+        const part = open.get(event.index)
+        if (part?.type === 'refusal')
+          open.set(event.index, { ...part, refusal: part.refusal + event.delta })
         break
       }
       case 'text.delta': {

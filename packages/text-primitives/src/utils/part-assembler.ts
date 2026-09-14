@@ -151,11 +151,14 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
 
       switch (state.type) {
         case 'reasoning':
+        case 'refusal':
         case 'text':
           if (text !== '') {
             const event = state.type === 'reasoning'
               ? { delta: text, index: state.index, type: 'reasoning.delta' as const }
-              : { delta: text, index: state.index, type: 'text.delta' as const }
+              : state.type === 'refusal'
+                ? { delta: text, index: state.index, type: 'refusal.delta' as const }
+                : { delta: text, index: state.index, type: 'text.delta' as const }
             accumulator.apply(event)
             emit(event)
           }

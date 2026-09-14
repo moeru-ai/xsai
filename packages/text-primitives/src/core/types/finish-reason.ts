@@ -3,6 +3,7 @@ export type FinishReason
     | 'error'
     | 'max-output-tokens'
     | 'other'
+    | 'refusal'
     | 'stop'
     | 'tool-calls'
     | (string & {})

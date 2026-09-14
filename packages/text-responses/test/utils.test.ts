@@ -80,6 +80,27 @@ describe('normalizeInput', () => {
     ])
   })
 
+  it('replays refusal parts as refusal content', () => {
+    expect(normalizeInput([{
+      content: [
+        { refusal: 'I cannot help', type: 'refusal' },
+        { text: 'partial', type: 'text' },
+      ],
+      id: 'msg_1',
+      role: 'assistant',
+    }])).toEqual([
+      {
+        content: [
+          { refusal: 'I cannot help', type: 'refusal' },
+          { text: 'partial', type: 'output_text' },
+        ],
+        id: 'msg_1',
+        role: 'assistant',
+        type: 'message',
+      },
+    ])
+  })
+
   it('sends inline data URLs as file data', () => {
     expect(normalizeInput([{
       content: [{ data: 'data:application/pdf;base64,JVBERi0xLjQ=', type: 'file' }],

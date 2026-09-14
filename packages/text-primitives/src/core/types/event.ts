@@ -23,6 +23,7 @@ export interface EventMap {
   'content.start': ContentStartEvent
   'finish': FinishEvent
   'reasoning.delta': ReasoningDeltaEvent
+  'refusal.delta': RefusalDeltaEvent
   'text.delta': TextDeltaEvent
   'tool-call.delta': ToolCallDeltaEvent
 }
@@ -51,6 +52,12 @@ export interface ReasoningDeltaEvent {
   delta: string
   index: number
   type: 'reasoning.delta'
+}
+
+export interface RefusalDeltaEvent {
+  delta: string
+  index: number
+  type: 'refusal.delta'
 }
 
 export interface TextDeltaEvent {
