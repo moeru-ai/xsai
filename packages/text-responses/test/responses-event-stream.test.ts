@@ -36,6 +36,10 @@ describe('responses event stream', () => {
   it('maps Responses output events to text primitive events', async () => {
     await expect(readEvents([
       message({
+        response: { id: 'resp_1' },
+        type: 'response.created',
+      }),
+      message({
         item: {
           arguments: '',
           call_id: 'call_1',
@@ -97,6 +101,7 @@ describe('responses event stream', () => {
       message({
         response: {
           error: null,
+          id: 'resp_1',
           incomplete_details: null,
           output: [
             {
@@ -163,6 +168,7 @@ describe('responses event stream', () => {
           role: 'assistant',
         },
         reason: 'stop',
+        responseId: 'resp_1',
         type: 'finish',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
       },
@@ -198,6 +204,7 @@ describe('responses event stream', () => {
       message({
         response: {
           error: { code: 'server_error', message: 'something went wrong' },
+          id: 'resp_1',
           incomplete_details: null,
           output: [],
           usage: null,
@@ -212,6 +219,7 @@ describe('responses event stream', () => {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
+        responseId: 'resp_1',
         type: 'finish',
       },
     ])
@@ -256,6 +264,7 @@ describe('responses event stream', () => {
       message({
         response: {
           error: null,
+          id: 'resp_1',
           incomplete_details: { reason: 'max_output_tokens' },
           output: [{
             content: [{ text: 'Think', type: 'reasoning_text' }],
@@ -301,6 +310,7 @@ describe('responses event stream', () => {
           role: 'assistant',
         },
         reason: 'max-output-tokens',
+        responseId: 'resp_1',
         type: 'finish',
       },
     ])
