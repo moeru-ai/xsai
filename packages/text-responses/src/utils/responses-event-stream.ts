@@ -117,21 +117,35 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
 }
 
 const normalizeFinishReason = (response: Responses.ResponseResource): FinishReason => {
-  const rawReason = response.incomplete_details?.reason ?? response.error?.code
-
-  switch (rawReason) {
-    case 'content_filter':
-      return 'content-filter'
-    case 'max_output_tokens':
-      return 'max-output-tokens'
-    case undefined:
+  // The terminal `status` is authoritative; `incomplete_details` only
+  // refines it. Unmodelled statuses pass through rather than collapsing
+  // to `stop`.
+  switch (response.status) {
+    case 'completed':
       return 'stop'
+    case 'failed':
+      return 'error'
+    case 'incomplete': {
+      const reason = response.incomplete_details?.reason
+      switch (reason) {
+        case 'content_filter':
+          return 'content-filter'
+        case 'max_output_tokens':
+          return 'max-output-tokens'
+        case null:
+        case undefined:
+          return 'incomplete'
+        default:
+          return reason
+      }
+    }
     default:
-      return rawReason
+      return response.status ?? 'other'
   }
 }
 
-const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource, reason = normalizeFinishReason(response)): void => {
+const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource): void => {
+  const reason = normalizeFinishReason(response)
   if (response.usage !== null)
     asm.meta({ usage: normalizeUsage(response.usage) })
   const error = reason === 'error'
@@ -165,9 +179,9 @@ const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
   constructor() {
     super((event, asm) => {
-      // Response-scoped id (`resp_*`); distinct from the output message id.
+      // Response-scoped id and status; distinct from the output message id.
       if ('response' in event && event.response != null)
-        asm.meta({ responseId: event.response.id })
+        asm.meta({ responseId: event.response.id, responseStatus: event.response.status })
       switch (event.type) {
         case 'error':
           asm.finish('error', {
@@ -175,16 +189,16 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           })
           break
         case 'response.completed':
+        case 'response.failed':
+        case 'response.incomplete':
           // The terminal event carries the authoritative output record; a bare
-          // `response.completed` may arrive without any per-item events.
+          // terminal event may arrive without any per-item events. The
+          // response's own `status` decides the finish reason, not the tag.
           finishResponse(asm, event.response)
           break
         case 'response.content_part.added':
         case 'response.content_part.done':
         case 'response.created':
-          break
-        case 'response.failed':
-          finishResponse(asm, event.response, 'error')
           break
         case 'response.function_call_arguments.delta':
         case 'response.output_text.delta':
@@ -204,9 +218,6 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
         case 'response.reasoning_summary_part.done':
         case 'response.reasoning_summary_text.done':
         case 'response.refusal.done':
-          break
-        case 'response.incomplete':
-          finishResponse(asm, event.response)
           break
         case 'response.output_item.added':
           if (event.item != null)

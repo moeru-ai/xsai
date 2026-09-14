@@ -13,6 +13,7 @@ export interface CollectResult {
   message: AssistantMessage
   reason: FinishReason
   responseId?: string
+  responseStatus?: string
   usage?: Usage
 }
 
@@ -26,6 +27,8 @@ export interface StreamResult {
   reason?: FinishReason
   /** The response-scoped id carried by the `finish` event, if any. */
   responseId?: string
+  /** The wire-native response status carried by the `finish` event, if any. */
+  responseStatus?: string
   /** The typed error carried by an `error` finish, if any. */
   terminalError?: XSAIError
   usage?: Usage
@@ -41,6 +44,7 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
   private messageId?: string
   private reason?: FinishReason
   private responseId?: string
+  private responseStatus?: string
   private terminalError?: XSAIError
   private usage?: Usage
 
@@ -60,6 +64,7 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
             this.messageId = event.message.id
             this.reason = event.reason
             this.responseId = event.responseId
+            this.responseStatus = event.responseStatus
             this.terminalError = event.error
             this.usage = event.usage
             break
@@ -79,6 +84,7 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
       },
       ...(this.reason === undefined ? {} : { reason: this.reason }),
       ...(this.responseId === undefined ? {} : { responseId: this.responseId }),
+      ...(this.responseStatus === undefined ? {} : { responseStatus: this.responseStatus }),
       ...(this.terminalError === undefined ? {} : { terminalError: this.terminalError }),
       ...(this.usage === undefined ? {} : { usage: this.usage }),
     }
@@ -106,6 +112,7 @@ export const collect = async (
         message: result.message,
         reason: result.reason,
         ...(result.responseId === undefined ? {} : { responseId: result.responseId }),
+        ...(result.responseStatus === undefined ? {} : { responseStatus: result.responseStatus }),
         ...(result.usage === undefined ? {} : { usage: result.usage }),
       }
     }

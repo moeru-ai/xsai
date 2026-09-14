@@ -41,6 +41,8 @@ export interface FinishEvent {
    * neither.
    */
   responseId?: string
+  /** The wire's own response status (e.g. Responses `response.status`), kept verbatim — the last value the wire reported. */
+  responseStatus?: string
   type: 'finish'
   usage?: Usage
 }

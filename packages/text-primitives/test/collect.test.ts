@@ -81,12 +81,13 @@ describe('event collect stream', () => {
     expect(results[4].reason).toBe('tool-calls')
   })
 
-  it('exposes the response id on the finished snapshot', async () => {
+  it('exposes the response identity on the finished snapshot', async () => {
     const results = await collectSnapshots([
       {
         message: { content: [], id: 'msg_1', role: 'assistant' },
         reason: 'stop',
         responseId: 'resp_1',
+        responseStatus: 'completed',
         type: 'finish',
       },
     ])
@@ -94,6 +95,7 @@ describe('event collect stream', () => {
     expect(results[0]).toMatchObject({
       message: { id: 'msg_1' },
       responseId: 'resp_1',
+      responseStatus: 'completed',
     })
   })
 
@@ -128,18 +130,20 @@ describe('collect', () => {
     })
   })
 
-  it('resolves with the finish event\'s response id', async () => {
+  it('resolves with the finish event\'s response identity', async () => {
     const model = modelOf([
       {
         message: { content: [], role: 'assistant' },
         reason: 'stop',
         responseId: 'resp_1',
+        responseStatus: 'completed',
         type: 'finish',
       },
     ])
 
     await expect(collect(model, { input: 'hi' })).resolves.toMatchObject({
       responseId: 'resp_1',
+      responseStatus: 'completed',
     })
   })
 

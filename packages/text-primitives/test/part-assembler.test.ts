@@ -28,7 +28,7 @@ describe('partAssembler', () => {
     const events: Event[] = []
     const assembler = partAssembler(event => events.push(event), () => {})
 
-    assembler.meta({ messageId: 'msg_1', responseId: 'resp_1' })
+    assembler.meta({ messageId: 'msg_1', responseId: 'resp_1', responseStatus: 'completed' })
     assembler.finish('stop')
     assembler.flush()
 
@@ -37,6 +37,7 @@ describe('partAssembler', () => {
         message: { content: [], id: 'msg_1', role: 'assistant' },
         reason: 'stop',
         responseId: 'resp_1',
+        responseStatus: 'completed',
         type: 'finish',
       },
     ])

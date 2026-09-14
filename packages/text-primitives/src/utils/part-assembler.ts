@@ -14,6 +14,7 @@ import { contentAccumulator } from '../core/content-accumulator'
 export interface FinishMeta {
   messageId?: string
   responseId?: string
+  responseStatus?: string
   usage?: Usage
 }
 
@@ -40,7 +41,7 @@ export interface PartAssembler {
   finish: (reason: FinishReason, extra?: PartFinishExtra) => void
   /** Emits the `finish` event if not already emitted; fails the stream when the wire gave no terminal signal. */
   flush: () => void
-  /** Records message- and response-level metadata (`messageId`, `responseId`, `usage`); last call wins. */
+  /** Records message- and response-level metadata (`messageId`, `responseId`, `responseStatus`, `usage`); last call wins. */
   meta: (meta: FinishMeta) => void
   /** Opens a part and emits `content.start`. Idempotent per key. */
   start: (key: PartKey, type: AssistantMessageContent['type'], init?: PartStartInit) => void
@@ -102,6 +103,7 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
   let messageOverride: AssistantMessage | undefined
   let reason: FinishReason | undefined
   let responseId: string | undefined
+  let responseStatus: string | undefined
   let terminalError: undefined | XSAIError
   let usage: undefined | Usage
 
@@ -213,6 +215,7 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
           : message,
         reason,
         ...(responseId === undefined ? {} : { responseId }),
+        ...(responseStatus === undefined ? {} : { responseStatus }),
         type: 'finish',
         ...(usage === undefined ? {} : { usage }),
       })
@@ -222,6 +225,8 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
         messageId = meta.messageId
       if (meta.responseId !== undefined)
         responseId = meta.responseId
+      if (meta.responseStatus !== undefined)
+        responseStatus = meta.responseStatus
       if (meta.usage !== undefined)
         usage = meta.usage
     },
