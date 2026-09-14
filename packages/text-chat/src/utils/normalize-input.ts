@@ -155,7 +155,7 @@ const joinText = (content: readonly { text: string }[] | string): string => type
 export const normalizeInput = (context: LanguageModelContext): ChatMessage[] => {
   const messages: ChatMessage[] = []
 
-  if (context.instructions !== undefined)
+  if (context.instructions != null)
     messages.push({ content: context.instructions, role: 'system' })
 
   for (const message of typeof context.input === 'string'

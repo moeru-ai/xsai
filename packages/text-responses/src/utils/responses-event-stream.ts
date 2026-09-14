@@ -64,7 +64,7 @@ const normalizeContentPart = (part: MessageContent): AssistantMessageContent | u
 const normalizeMessageContent = (item: Extract<Responses.ItemField, { type: 'message' }>, index: number): NormalizedPart[] =>
   item.content.flatMap((part, contentIndex): NormalizedPart[] => {
     const content = normalizeContentPart(part)
-    return content === undefined ? [] : [{ content, key: contentPartKey(index, contentIndex) }]
+    return content == null ? [] : [{ content, key: contentPartKey(index, contentIndex) }]
   })
 
 const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reasoning' }>): ReasoningPart => {
@@ -77,7 +77,7 @@ const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reas
       part.type === 'reasoning_text' ? [{ text: part.text, type: 'text' }] : []),
   ]
 
-  if (item.encrypted_content !== undefined)
+  if (item.encrypted_content != null)
     reasoningContent.push({ text: item.encrypted_content, type: 'encrypted' })
 
   return { content: reasoningContent, id: item.id, type: 'reasoning' }
@@ -121,13 +121,13 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
     const normalized = normalizeOutputItem(item, index)
     for (const part of normalized.parts ?? [])
       content.push(part.content)
-    if (normalized.messageId !== undefined)
+    if (normalized.messageId != null)
       id = normalized.messageId
   }
 
   return {
     content,
-    ...(id === undefined ? {} : { id }),
+    ...(id == null ? {} : { id }),
     role: 'assistant',
   }
 }
@@ -168,7 +168,7 @@ const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource
     ? new XSAIError('model-error', response.error?.message ?? 'response failed', { cause: response.error })
     : undefined
   asm.finish(reason, {
-    ...(error === undefined ? {} : { error }),
+    ...(error == null ? {} : { error }),
     message: normalizeAssistantMessage(response.output),
   })
 }
@@ -177,7 +177,7 @@ const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: numbe
   const normalized = normalizeOutputItem(item, index)
   for (const part of normalized.parts ?? [])
     asm.start(part.key ?? index, part.content.type, part.init)
-  if (normalized.messageId !== undefined)
+  if (normalized.messageId != null)
     asm.meta({ messageId: normalized.messageId })
 }
 
@@ -214,13 +214,13 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           break
         case 'response.content_part.added': {
           const content = normalizeContentPart(event.part)
-          if (content !== undefined)
+          if (content != null)
             asm.start(contentPartKey(event.output_index, event.content_index), content.type)
           break
         }
         case 'response.content_part.done': {
           const content = normalizeContentPart(event.part)
-          if (content !== undefined) {
+          if (content != null) {
             const key = contentPartKey(event.output_index, event.content_index)
             asm.start(key, content.type)
             asm.end(key, { content })

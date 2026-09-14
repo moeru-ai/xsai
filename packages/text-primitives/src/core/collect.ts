@@ -74,14 +74,14 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
     return {
       message: {
         content: this.accumulator.content(),
-        ...(this.messageId === undefined ? {} : { id: this.messageId }),
+        ...(this.messageId == null ? {} : { id: this.messageId }),
         role: 'assistant',
       },
-      ...(this.reason === undefined ? {} : { reason: this.reason }),
-      ...(this.responseId === undefined ? {} : { responseId: this.responseId }),
-      ...(this.responseStatus === undefined ? {} : { responseStatus: this.responseStatus }),
-      ...(this.terminalError === undefined ? {} : { terminalError: this.terminalError }),
-      ...(this.usage === undefined ? {} : { usage: this.usage }),
+      ...(this.reason == null ? {} : { reason: this.reason }),
+      ...(this.responseId == null ? {} : { responseId: this.responseId }),
+      ...(this.responseStatus == null ? {} : { responseStatus: this.responseStatus }),
+      ...(this.terminalError == null ? {} : { terminalError: this.terminalError }),
+      ...(this.usage == null ? {} : { usage: this.usage }),
     }
   }
 }
@@ -109,9 +109,9 @@ export const collect = async (
     return {
       message: event.message,
       reason: event.reason,
-      ...(event.responseId === undefined ? {} : { responseId: event.responseId }),
-      ...(event.responseStatus === undefined ? {} : { responseStatus: event.responseStatus }),
-      ...(event.usage === undefined ? {} : { usage: event.usage }),
+      ...(event.responseId == null ? {} : { responseId: event.responseId }),
+      ...(event.responseStatus == null ? {} : { responseStatus: event.responseStatus }),
+      ...(event.usage == null ? {} : { usage: event.usage }),
     }
   }
 
