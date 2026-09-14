@@ -39,6 +39,16 @@ export interface ChatMessage {
   tool_calls?: ChatToolCall[]
 }
 
+export interface ChatResponseFormat {
+  json_schema: {
+    description?: string
+    name: string
+    schema: Record<string, unknown>
+    strict: boolean
+  }
+  type: 'json_schema'
+}
+
 export interface ChatTool {
   function: {
     description?: string

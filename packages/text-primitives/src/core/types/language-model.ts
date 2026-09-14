@@ -1,6 +1,11 @@
+import type { StandardJSONSchemaV1 } from '@standard-schema/spec'
+
 import type { Tool } from '../tool'
 import type { Event } from './event'
 import type { Message } from './message'
+
+/** Raw JSON Schema or a `StandardJSONSchemaV1`. */
+export type Format = Record<string, unknown> | StandardJSONSchemaV1
 
 export type LanguageModel = (context: LanguageModelContext, options?: LanguageModelOptions) => Promise<ReadableStream<Event>>
 
@@ -17,6 +22,8 @@ export interface LanguageModelOptions {
    * normalizes, so it can also break them (`stream`, `messages`, `tools`…).
    */
   extraBody?: Record<string, unknown>
+  /** Structured output schema; `title`/`description` keywords supply the wire format name/description. Always strict. */
+  format?: Format
   maxOutputTokens?: number
   /**
    * Qualitative reasoning effort. On Anthropic this maps to

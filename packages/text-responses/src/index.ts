@@ -3,7 +3,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 
 import { wireRequest } from '@xsai/text-primitives'
 
-import { normalizeInput, normalizeToolChoice, normalizeTools, ResponsesEventStream } from './utils'
+import { normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools, ResponsesEventStream } from './utils'
 
 export const responses = (options: HttpOptions): LanguageModel => async (context, modelOptions) =>
   wireRequest(options, modelOptions, {
@@ -17,6 +17,7 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
         : { effort: modelOptions.reasoningEffort },
       stream: true,
       temperature: modelOptions?.temperature,
+      text: normalizeFormat(modelOptions?.format),
       tool_choice: normalizeToolChoice(modelOptions?.toolChoice),
       tools: normalizeTools(context.tools),
       top_p: modelOptions?.topP,
