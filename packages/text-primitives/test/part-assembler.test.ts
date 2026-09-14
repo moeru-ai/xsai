@@ -24,6 +24,60 @@ describe('partAssembler', () => {
     expect(failures).toEqual([])
   })
 
+  it('carries response-level identity on the finish event', () => {
+    const events: Event[] = []
+    const assembler = partAssembler(event => events.push(event), () => {})
+
+    assembler.meta({ messageId: 'msg_1', responseId: 'resp_1' })
+    assembler.finish('stop')
+    assembler.flush()
+
+    expect(events).toEqual([
+      {
+        message: { content: [], id: 'msg_1', role: 'assistant' },
+        reason: 'stop',
+        responseId: 'resp_1',
+        type: 'finish',
+      },
+    ])
+  })
+
+  it('backfills a streamed message id onto an override message without one', () => {
+    const events: Event[] = []
+    const assembler = partAssembler(event => events.push(event), () => {})
+
+    assembler.meta({ messageId: 'msg_1' })
+    assembler.finish('stop', { message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' } })
+    assembler.flush()
+
+    expect(events).toEqual([
+      {
+        message: { content: [{ text: 'Hi', type: 'text' }], id: 'msg_1', role: 'assistant' },
+        reason: 'stop',
+        type: 'finish',
+      },
+    ])
+  })
+
+  it('prefers the override message id over a streamed one', () => {
+    const events: Event[] = []
+    const assembler = partAssembler(event => events.push(event), () => {})
+
+    assembler.meta({ messageId: 'msg_streamed' })
+    assembler.finish('stop', {
+      message: { content: [], id: 'msg_terminal', role: 'assistant' },
+    })
+    assembler.flush()
+
+    expect(events).toEqual([
+      {
+        message: { content: [], id: 'msg_terminal', role: 'assistant' },
+        reason: 'stop',
+        type: 'finish',
+      },
+    ])
+  })
+
   it('carries the terminating error on the finish event', () => {
     const events: Event[] = []
     const assembler = partAssembler(event => events.push(event), () => {})

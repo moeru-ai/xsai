@@ -50,8 +50,10 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
         return
       }
 
+      // A chunk's id is the response-scoped completion id (`chatcmpl-*`),
+      // not a replayable assistant message id — Chat has no equivalent.
       if (chunk.id !== undefined)
-        asm.meta({ messageId: chunk.id })
+        asm.meta({ responseId: chunk.id })
       if (chunk.usage != null)
         asm.meta({ usage: normalizeUsage(chunk.usage) })
 

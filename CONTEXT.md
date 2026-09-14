@@ -35,3 +35,4 @@ _Avoid_: complete, runSync
 
 - Mechanics are shared, semantics are wire-native: index bookkeeping and termination live in the assembler; finish reasons, usage fields, and error payloads keep their wire's shape.
 - `tool-call.delta` identifies its part by `index`; its `id` is always the tool **call id**, never a provider item id.
+- `finish` separates two identities: `message.id` is the replayable assistant message id; `responseId` is the response-scoped generation id (e.g. `chatcmpl-*`, `resp_*`). A wire may carry both, either, or neither.

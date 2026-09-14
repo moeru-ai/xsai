@@ -12,6 +12,7 @@ import { contentAccumulator } from './content-accumulator'
 export interface CollectResult {
   message: AssistantMessage
   reason: FinishReason
+  responseId?: string
   usage?: Usage
 }
 
@@ -23,6 +24,8 @@ export interface CollectResult {
 export interface StreamResult {
   message: AssistantMessage
   reason?: FinishReason
+  /** The response-scoped id carried by the `finish` event, if any. */
+  responseId?: string
   /** The typed error carried by an `error` finish, if any. */
   terminalError?: XSAIError
   usage?: Usage
@@ -37,6 +40,7 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
   private readonly accumulator = contentAccumulator()
   private messageId?: string
   private reason?: FinishReason
+  private responseId?: string
   private terminalError?: XSAIError
   private usage?: Usage
 
@@ -55,6 +59,7 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
             this.accumulator.replace(event.message.content)
             this.messageId = event.message.id
             this.reason = event.reason
+            this.responseId = event.responseId
             this.terminalError = event.error
             this.usage = event.usage
             break
@@ -73,6 +78,7 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
         role: 'assistant',
       },
       ...(this.reason === undefined ? {} : { reason: this.reason }),
+      ...(this.responseId === undefined ? {} : { responseId: this.responseId }),
       ...(this.terminalError === undefined ? {} : { terminalError: this.terminalError }),
       ...(this.usage === undefined ? {} : { usage: this.usage }),
     }
@@ -99,6 +105,7 @@ export const collect = async (
       return {
         message: result.message,
         reason: result.reason,
+        ...(result.responseId === undefined ? {} : { responseId: result.responseId }),
         ...(result.usage === undefined ? {} : { usage: result.usage }),
       }
     }

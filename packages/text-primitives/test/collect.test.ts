@@ -81,6 +81,22 @@ describe('event collect stream', () => {
     expect(results[4].reason).toBe('tool-calls')
   })
 
+  it('exposes the response id on the finished snapshot', async () => {
+    const results = await collectSnapshots([
+      {
+        message: { content: [], id: 'msg_1', role: 'assistant' },
+        reason: 'stop',
+        responseId: 'resp_1',
+        type: 'finish',
+      },
+    ])
+
+    expect(results[0]).toMatchObject({
+      message: { id: 'msg_1' },
+      responseId: 'resp_1',
+    })
+  })
+
   it('exposes the terminating error on the finished snapshot', async () => {
     const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
     const results = await collectSnapshots([
@@ -109,6 +125,21 @@ describe('collect', () => {
       message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' },
       reason: 'stop',
       usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
+    })
+  })
+
+  it('resolves with the finish event\'s response id', async () => {
+    const model = modelOf([
+      {
+        message: { content: [], role: 'assistant' },
+        reason: 'stop',
+        responseId: 'resp_1',
+        type: 'finish',
+      },
+    ])
+
+    await expect(collect(model, { input: 'hi' })).resolves.toMatchObject({
+      responseId: 'resp_1',
     })
   })
 
