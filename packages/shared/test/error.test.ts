@@ -21,7 +21,7 @@ describe('xsaiError', () => {
 
 describe('httpError', () => {
   it('carries status and body under the http-error code', () => {
-    const error = new HttpError(429, '{"error":"slow down"}')
+    const error = new HttpError({ body: '{"error":"slow down"}', headers: new Headers(), status: 429 })
 
     expect(error).toBeInstanceOf(XSAIError)
     expect(error.code).toBe('http-error')
@@ -32,7 +32,7 @@ describe('httpError', () => {
   })
 
   it('narrows to HttpError with isInstance', () => {
-    const error: unknown = new HttpError(401, 'unauthorized')
+    const error: unknown = new HttpError({ body: 'unauthorized', headers: new Headers(), status: 401 })
 
     expect(HttpError.isInstance(error)).toBe(true)
     expect(XSAIError.isInstance(error)).toBe(true)
