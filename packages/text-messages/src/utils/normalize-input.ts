@@ -40,7 +40,7 @@ const normalizeImagePart = (part: ImagePart): ImageBlock => {
   const data = part.data.toString()
   const dataUrl = parseDataUrl(data)
 
-  if (dataUrl !== undefined)
+  if (dataUrl != null)
     return { source: { data: dataUrl.data, media_type: dataUrl.mediaType, type: 'base64' }, type: 'image' }
 
   if (URL.canParse(data))
@@ -53,7 +53,7 @@ const normalizeFilePart = (part: FilePart): DocumentBlock => {
   const data = part.data.toString()
   const dataUrl = parseDataUrl(data)
 
-  if (dataUrl !== undefined) {
+  if (dataUrl != null) {
     if (dataUrl.mediaType !== 'application/pdf')
       throw new XSAIError('invalid-input', `Anthropic documents only support PDF or plain text, got: ${dataUrl.mediaType}`)
 
@@ -98,7 +98,7 @@ const normalizeReasoningPartContent = (content: ReasoningPartContent): ContentBl
 const normalizeReasoningPart = (part: ReasoningPart): ContentBlock[] => {
   const blocks = part.content.flatMap(normalizeReasoningPartContent)
   const signature = part.metadata?.messages?.signature
-  if (signature === undefined)
+  if (signature == null)
     return blocks
 
   // A signature belongs to the thinking block it closed.
@@ -174,7 +174,7 @@ export const normalizeInput = (context: LanguageModelContext): NormalizedInput =
   const system: TextBlock[] = []
   const messages: InputMessage[] = []
 
-  if (context.instructions !== undefined)
+  if (context.instructions != null)
     system.push({ text: context.instructions, type: 'text' })
 
   for (const message of typeof context.input === 'string'

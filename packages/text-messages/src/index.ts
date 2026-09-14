@@ -22,7 +22,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
       max_tokens: maxTokens,
       messages: inputMessages,
       model: options.model,
-      output_config: modelOptions?.reasoningEffort === undefined
+      output_config: modelOptions?.reasoningEffort == null
         ? undefined
         : { effort: modelOptions.reasoningEffort },
       stream: true,
@@ -36,7 +36,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (context,
       ...options.extraHeaders,
       'anthropic-version': ANTHROPIC_VERSION,
       'Content-Type': 'application/json',
-      ...(options.apiKey === undefined ? {} : { 'x-api-key': options.apiKey }),
+      ...(options.apiKey == null ? {} : { 'x-api-key': options.apiKey }),
     },
     path: 'messages',
   }, new MessagesEventStream())

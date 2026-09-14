@@ -17,7 +17,7 @@ export const normalizeTools = (tools?: readonly Tool[]): ChatTool[] | undefined 
 
 /** @internal */
 export const normalizeToolChoice = (toolChoice: ToolChoice | undefined): ChatToolChoice | undefined =>
-  toolChoice === undefined
+  toolChoice == null
     ? undefined
     : typeof toolChoice === 'string'
       ? toolChoice

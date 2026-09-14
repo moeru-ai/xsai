@@ -134,11 +134,11 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
             ...(accumulated.content.length === 0
               ? { content: [{ text: '', type: 'text' as const }] }
               : {}),
-            ...(state.id === undefined ? {} : { id: state.id }),
+            ...(state.id == null ? {} : { id: state.id }),
           }
         : accumulated
     const authoritative = extra?.content ?? built
-    const content = extra?.metadata !== undefined && authoritative.type === 'reasoning'
+    const content = extra?.metadata != null && authoritative.type === 'reasoning'
       ? { ...authoritative, metadata: extra.metadata }
       : authoritative
     const event = { content, index: state.index, type: 'content.end' } as const
@@ -173,7 +173,7 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
             delta: text,
             id: resolveCallId(state),
             index: state.index,
-            ...(state.name === undefined ? {} : { name: state.name }),
+            ...(state.name == null ? {} : { name: state.name }),
             type: 'tool-call.delta' as const,
           }
           accumulator.apply(event)
@@ -211,27 +211,27 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
         role: 'assistant' as const,
       }
       emit({
-        ...(terminalError === undefined ? {} : { error: terminalError }),
+        ...(terminalError == null ? {} : { error: terminalError }),
         // An authoritative override that drops the message id still keeps the
         // id observed during streaming (e.g. Responses `output_item.added`).
-        message: message.id === undefined && messageId !== undefined
+        message: message.id == null && messageId != null
           ? { ...message, id: messageId }
           : message,
         reason,
-        ...(responseId === undefined ? {} : { responseId }),
-        ...(responseStatus === undefined ? {} : { responseStatus }),
+        ...(responseId == null ? {} : { responseId }),
+        ...(responseStatus == null ? {} : { responseStatus }),
         type: 'finish',
-        ...(usage === undefined ? {} : { usage }),
+        ...(usage == null ? {} : { usage }),
       })
     },
     meta: (meta) => {
-      if (meta.messageId !== undefined)
+      if (meta.messageId != null)
         messageId = meta.messageId
-      if (meta.responseId !== undefined)
+      if (meta.responseId != null)
         responseId = meta.responseId
-      if (meta.responseStatus !== undefined)
+      if (meta.responseStatus != null)
         responseStatus = meta.responseStatus
-      if (meta.usage !== undefined)
+      if (meta.usage != null)
         usage = meta.usage
     },
     start: (key, type, init) => {
@@ -243,10 +243,10 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
         closed: false,
         index,
         type,
-        ...(init?.callId === undefined ? {} : { callId: init.callId }),
-        ...(init?.fallbackId === undefined ? {} : { fallbackId: init.fallbackId }),
-        ...(init?.id === undefined ? {} : { id: init.id }),
-        ...(init?.name === undefined ? {} : { name: init.name }),
+        ...(init?.callId == null ? {} : { callId: init.callId }),
+        ...(init?.fallbackId == null ? {} : { fallbackId: init.fallbackId }),
+        ...(init?.id == null ? {} : { id: init.id }),
+        ...(init?.name == null ? {} : { name: init.name }),
       })
       const event = { contentType: type, index, type: 'content.start' } as const
       accumulator.apply(event)

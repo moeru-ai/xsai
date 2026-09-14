@@ -42,7 +42,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
 
   constructor() {
     super((chunk, asm) => {
-      if (chunk.error !== undefined) {
+      if (chunk.error != null) {
         asm.finish('error', {
           error: new XSAIError('model-error', chunk.error.message, { cause: chunk.error }),
         })
@@ -51,7 +51,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
 
       // A chunk's id is the response-scoped completion id (`chatcmpl-*`),
       // not a replayable assistant message id — Chat has no equivalent.
-      if (chunk.id !== undefined)
+      if (chunk.id != null)
         asm.meta({ responseId: chunk.id })
       if (chunk.usage != null)
         asm.meta({ usage: normalizeUsage(chunk.usage) })
@@ -61,11 +61,11 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
         if (choice.index !== 0)
           continue
 
-        if (choice.delta !== undefined)
+        if (choice.delta != null)
           this.onDelta(asm, choice.delta)
 
         if (choice.finish_reason != null) {
-          if (this.reasoningField !== undefined)
+          if (this.reasoningField != null)
             asm.end('reasoning', { metadata: { chat: { reasoning_field: this.reasoningField } } })
           asm.finish(mapFinishReason(choice.finish_reason))
         }
@@ -75,8 +75,8 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
 
   private onDelta(asm: PartAssembler, delta: ChatDelta): void {
     const reasoning = delta.reasoning_content ?? delta.reasoning
-    if (reasoning !== undefined && reasoning !== '') {
-      this.reasoningField ??= delta.reasoning_content !== undefined ? 'reasoning_content' : 'reasoning'
+    if (reasoning != null && reasoning !== '') {
+      this.reasoningField ??= delta.reasoning_content != null ? 'reasoning_content' : 'reasoning'
       asm.start('reasoning', 'reasoning')
       asm.delta('reasoning', reasoning)
     }
