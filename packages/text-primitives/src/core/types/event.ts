@@ -34,6 +34,13 @@ export interface FinishEvent {
   error?: XSAIError
   message: AssistantMessage
   reason: FinishReason
+  /**
+   * Response-scoped generation id (e.g. Chat `chatcmpl-*`, Responses
+   * `resp_*`), when the wire has one. Distinct from `message.id`, the
+   * replayable assistant message id — a wire may carry both, either, or
+   * neither.
+   */
+  responseId?: string
   type: 'finish'
   usage?: Usage
 }

@@ -65,10 +65,10 @@ describe('chat event stream', () => {
       {
         message: {
           content: [{ text: 'Hello world', type: 'text' }],
-          id: 'chatcmpl_1',
           role: 'assistant',
         },
         reason: 'stop',
+        responseId: 'chatcmpl_1',
         type: 'finish',
         usage: {
           cacheReadInputTokens: undefined,
@@ -160,10 +160,10 @@ describe('chat event stream', () => {
             name: 'get_weather',
             type: 'tool-call',
           }],
-          id: 'chatcmpl_1',
           role: 'assistant',
         },
         reason: 'tool-calls',
+        responseId: 'chatcmpl_1',
         type: 'finish',
         usage: {
           cacheReadInputTokens: undefined,
@@ -216,10 +216,10 @@ describe('chat event stream', () => {
             },
             { text: 'Done', type: 'text' },
           ],
-          id: 'chatcmpl_1',
           role: 'assistant',
         },
         reason: 'stop',
+        responseId: 'chatcmpl_1',
         type: 'finish',
       },
     ])
@@ -301,10 +301,10 @@ describe('chat event stream', () => {
             name: 'get_weather',
             type: 'tool-call',
           }],
-          id: 'chatcmpl_1',
           role: 'assistant',
         },
         reason: 'tool-calls',
+        responseId: 'chatcmpl_1',
         type: 'finish',
       },
     ])
@@ -336,10 +336,10 @@ describe('chat event stream', () => {
       {
         message: {
           content: [{ arguments: 'a', callId: 'call_0', id: 'call_0', name: 't', type: 'tool-call' }],
-          id: 'chatcmpl_1',
           role: 'assistant',
         },
         reason: 'tool-calls',
+        responseId: 'chatcmpl_1',
         type: 'finish',
       },
     ])
@@ -370,10 +370,10 @@ describe('chat event stream', () => {
       {
         message: {
           content: [{ text: 'hi', type: 'text' }],
-          id: 'chatcmpl_1',
           role: 'assistant',
         },
         reason: 'stop',
+        responseId: 'chatcmpl_1',
         type: 'finish',
         usage: {
           // The wire's prompt_tokens already includes cached tokens.
@@ -402,10 +402,10 @@ describe('chat event stream', () => {
       {
         message: {
           content: [{ text: 'hi', type: 'text' }],
-          id: 'chatcmpl_1',
           role: 'assistant',
         },
         reason: 'stop',
+        responseId: 'chatcmpl_1',
         type: 'finish',
       },
     ])
@@ -439,10 +439,10 @@ describe('chat event stream', () => {
       {
         message: {
           content: [{ text: 'I refusemore', type: 'text' }],
-          id: 'chatcmpl_1',
           role: 'assistant',
         },
         reason: 'stop',
+        responseId: 'chatcmpl_1',
         type: 'finish',
       },
     ])

@@ -165,6 +165,9 @@ const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
   constructor() {
     super((event, asm) => {
+      // Response-scoped id (`resp_*`); distinct from the output message id.
+      if ('response' in event && event.response != null)
+        asm.meta({ responseId: event.response.id })
       switch (event.type) {
         case 'error':
           asm.finish('error', {

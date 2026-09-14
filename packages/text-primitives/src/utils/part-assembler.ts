@@ -13,6 +13,7 @@ import { contentAccumulator } from '../core/content-accumulator'
 
 export interface FinishMeta {
   messageId?: string
+  responseId?: string
   usage?: Usage
 }
 
@@ -39,7 +40,7 @@ export interface PartAssembler {
   finish: (reason: FinishReason, extra?: PartFinishExtra) => void
   /** Emits the `finish` event if not already emitted; fails the stream when the wire gave no terminal signal. */
   flush: () => void
-  /** Records message-level metadata (`messageId`, `usage`); last call wins. */
+  /** Records message- and response-level metadata (`messageId`, `responseId`, `usage`); last call wins. */
   meta: (meta: FinishMeta) => void
   /** Opens a part and emits `content.start`. Idempotent per key. */
   start: (key: PartKey, type: AssistantMessageContent['type'], init?: PartStartInit) => void
@@ -100,6 +101,7 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
   let messageId: string | undefined
   let messageOverride: AssistantMessage | undefined
   let reason: FinishReason | undefined
+  let responseId: string | undefined
   let terminalError: undefined | XSAIError
   let usage: undefined | Usage
 
@@ -198,14 +200,19 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
       for (const key of parts.keys())
         end(key)
 
+      const message = messageOverride ?? {
+        content: accumulator.content(),
+        role: 'assistant' as const,
+      }
       emit({
         ...(terminalError === undefined ? {} : { error: terminalError }),
-        message: messageOverride ?? {
-          content: accumulator.content(),
-          ...(messageId === undefined ? {} : { id: messageId }),
-          role: 'assistant',
-        },
+        // An authoritative override that drops the message id still keeps the
+        // id observed during streaming (e.g. Responses `output_item.added`).
+        message: message.id === undefined && messageId !== undefined
+          ? { ...message, id: messageId }
+          : message,
         reason,
+        ...(responseId === undefined ? {} : { responseId }),
         type: 'finish',
         ...(usage === undefined ? {} : { usage }),
       })
@@ -213,6 +220,8 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
     meta: (meta) => {
       if (meta.messageId !== undefined)
         messageId = meta.messageId
+      if (meta.responseId !== undefined)
+        responseId = meta.responseId
       if (meta.usage !== undefined)
         usage = meta.usage
     },
