@@ -12,7 +12,7 @@ export const responses = (options: HttpOptions): LanguageModel => async (context
       instructions: context.instructions,
       max_output_tokens: modelOptions?.maxOutputTokens,
       model: options.model,
-      reasoning: modelOptions?.reasoningEffort === undefined
+      reasoning: modelOptions?.reasoningEffort == null
         ? undefined
         : { effort: modelOptions.reasoningEffort },
       stream: true,

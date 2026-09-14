@@ -67,7 +67,7 @@ export const wireRequest = async (
     headers: definedOnly(init.headers ?? {
       ...options.extraHeaders,
       'Content-Type': 'application/json',
-      ...(options.apiKey === undefined ? {} : { Authorization: `Bearer ${options.apiKey}` }),
+      ...(options.apiKey == null ? {} : { Authorization: `Bearer ${options.apiKey}` }),
     }),
     method: 'POST',
     signal: modelOptions?.signal,

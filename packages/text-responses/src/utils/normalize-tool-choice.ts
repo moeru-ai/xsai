@@ -4,7 +4,7 @@ import type { ToolChoiceParam } from '../generated'
 
 /** @internal */
 export const normalizeToolChoice = (toolChoice: ToolChoice | undefined): ToolChoiceParam | undefined =>
-  toolChoice === undefined
+  toolChoice == null
     ? undefined
     : typeof toolChoice === 'string'
       ? toolChoice

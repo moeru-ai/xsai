@@ -32,7 +32,7 @@ const mergeUsage = (start: MessagesUsage | undefined, delta: MessagesUsage | und
   const inputTokens = delta?.input_tokens ?? start?.input_tokens
   const outputTokens = delta?.output_tokens ?? start?.output_tokens
 
-  if (inputTokens === undefined && outputTokens === undefined)
+  if (inputTokens == null && outputTokens == null)
     return undefined
 
   const input = inputTokens ?? 0
@@ -82,7 +82,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
         case 'content_block_stop': {
           const signature = this.signatures.get(event.index)
           this.signatures.delete(event.index)
-          asm.end(event.index, signature === undefined ? {} : { metadata: { messages: { signature } } })
+          asm.end(event.index, signature == null ? {} : { metadata: { messages: { signature } } })
           break
         }
         case 'error':
@@ -100,7 +100,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           break
         case 'message_stop': {
           const usage = mergeUsage(this.startUsage, this.deltaUsage)
-          if (usage !== undefined)
+          if (usage != null)
             asm.meta({ usage })
           asm.finish(mapStopReason(this.stopReason))
           break
@@ -134,7 +134,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
         asm.start(event.index, 'reasoning')
         if (block.thinking !== '')
           asm.delta(event.index, block.thinking)
-        if (block.signature !== undefined)
+        if (block.signature != null)
           this.signatures.set(event.index, block.signature)
         break
       case 'tool_use':
