@@ -1,4 +1,4 @@
-import type { Event } from './types/event'
+import type { Event, FinishEvent } from './types/event'
 import type { FinishReason } from './types/finish-reason'
 import type { LanguageModel, LanguageModelContext, LanguageModelOptions } from './types/language-model'
 import type { AssistantMessage } from './types/message'
@@ -8,14 +8,8 @@ import { XSAIError } from '@xsai/shared'
 
 import { contentAccumulator } from './content-accumulator'
 
-/** The resolved value of {@link collect}: a finished {@link StreamResult}. */
-export interface CollectResult {
-  message: AssistantMessage
-  reason: FinishReason
-  responseId?: string
-  responseStatus?: string
-  usage?: Usage
-}
+/** The resolved value of {@link collect}: the `finish` event's payload — the terminal error is thrown instead of carried. */
+export type CollectResult = Omit<FinishEvent, 'error' | 'type'>
 
 /**
  * The accumulated result emitted for every incoming {@link Event}: the
