@@ -17,6 +17,20 @@ describe('xsaiError', () => {
     expect(XSAIError.isInstance(new Error('x'))).toBe(false)
     expect(XSAIError.isInstance('x')).toBe(false)
   })
+
+  it('requires a cause for codes that always wrap an underlying failure', () => {
+    const cause = new TypeError('fetch failed')
+    const error = new XSAIError('network-error', 'request failed', { cause })
+
+    expect(error.cause).toBe(cause)
+    // @ts-expect-error network-error requires a cause
+    expect(() => new XSAIError('network-error', 'request failed')).not.toThrow()
+  })
+
+  it('forbids a cause for codes that are their own evidence', () => {
+    // @ts-expect-error http-error carries the response itself, not a cause
+    expect(() => new HttpError({ body: '', headers: new Headers(), status: 500 }, { cause: new Error('x') })).not.toThrow()
+  })
 })
 
 describe('httpError', () => {

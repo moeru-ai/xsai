@@ -5,7 +5,9 @@ export const requestCatch = (url: URL, signal?: AbortSignal): ((cause: unknown) 
   (cause) => {
     if (signal?.aborted)
       throw cause
-    throw new XSAIError('network-error', `request to ${url.toString()} failed`, { cause })
+    throw new XSAIError('network-error', `request to ${url.toString()} failed`, {
+      cause: cause ?? new Error('fetch rejected without a reason'),
+    })
   }
 
 export const responseCatch = async (res: Response): Promise<Response & { body: NonNullable<Response['body']> }> => {

@@ -1,11 +1,16 @@
 export type XSAIErrorCause<T extends XSAIErrorCode>
   = Exclude<XSAIErrorCauseMap[T], undefined>
 
+/**
+ * Per-code `cause` contract: `undefined` forbids a cause, `unknown` makes it
+ * optional, `NonNullable<unknown>` requires one. Packages augment this
+ * interface to register their own codes.
+ */
 export interface XSAIErrorCauseMap {
   'http-error': undefined
   'invalid-input': undefined
   'invalid-response': unknown
-  'network-error': unknown
+  'network-error': NonNullable<unknown>
 }
 
 export type XSAIErrorCode = keyof XSAIErrorCauseMap
