@@ -81,6 +81,11 @@ export type MessagesEvent
     | MessageStopEvent
     | PingEvent
 
+export interface MessagesOutputFormat {
+  schema: Record<string, unknown>
+  type: 'json_schema'
+}
+
 export interface MessageStartEvent {
   message: {
     id: string

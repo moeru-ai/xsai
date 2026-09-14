@@ -293,6 +293,9 @@ importers:
       eventsource-parser:
         specifier: 'catalog:'
         version: 4.1.0
+      xsschema:
+        specifier: 'workspace:'
+        version: link:../xsschema
 
   packages/text-responses:
     dependencies:

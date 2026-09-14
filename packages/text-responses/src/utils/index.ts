@@ -1,3 +1,4 @@
+export * from './normalize-format'
 export * from './normalize-input'
 export * from './normalize-tool-choice'
 export * from './normalize-tools'
