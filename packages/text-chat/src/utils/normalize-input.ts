@@ -2,7 +2,7 @@ import type {
   AssistantMessage,
   FilePart,
   ImagePart,
-  LanguageModelContext,
+  LanguageModelOptions,
   ReasoningPart,
   TextPart,
   ToolCallPart,
@@ -152,15 +152,15 @@ const joinText = (content: readonly { text: string }[] | string): string => type
   : content.map(part => part.text).join('')
 
 /** @internal */
-export const normalizeInput = (context: LanguageModelContext): ChatMessage[] => {
+export const normalizeInput = (options: LanguageModelOptions): ChatMessage[] => {
   const messages: ChatMessage[] = []
 
-  if (context.instructions != null)
-    messages.push({ content: context.instructions, role: 'system' })
+  if (options.instructions != null)
+    messages.push({ content: options.instructions, role: 'system' })
 
-  for (const message of typeof context.input === 'string'
-    ? [{ content: context.input, role: 'user' as const }]
-    : context.input) {
+  for (const message of typeof options.input === 'string'
+    ? [{ content: options.input, role: 'user' as const }]
+    : options.input) {
     switch (message.role) {
       case 'assistant':
         messages.push(normalizeAssistantMessage(message))

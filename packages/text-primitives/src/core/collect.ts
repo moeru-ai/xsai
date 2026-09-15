@@ -1,6 +1,6 @@
 import type { Event, FinishEvent } from './types/event'
 import type { FinishReason } from './types/finish-reason'
-import type { LanguageModel, LanguageModelContext, LanguageModelOptions } from './types/language-model'
+import type { LanguageModel, LanguageModelOptions } from './types/language-model'
 import type { AssistantMessage } from './types/message'
 import type { Usage } from './types/usage'
 
@@ -94,10 +94,9 @@ export class EventCollectStream extends TransformStream<Event, StreamResult> {
  */
 export const collect = async (
   model: LanguageModel,
-  context: LanguageModelContext,
-  options?: LanguageModelOptions,
+  options: LanguageModelOptions,
 ): Promise<CollectResult> => {
-  const eventStream = await model(context, options)
+  const eventStream = await model(options)
 
   for await (const event of eventStream) {
     if (event.type !== 'finish')

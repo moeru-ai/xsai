@@ -6,13 +6,7 @@ import type { Message } from './message'
 /** Raw JSON Schema or a `StandardJSONSchemaV1`, optionally carrying a `StandardSchemaV1` validator. */
 export type Format = UnresolvedSchema
 
-export type LanguageModel = (context: LanguageModelContext, options?: LanguageModelOptions) => Promise<ReadableStream<Event>>
-
-export interface LanguageModelContext {
-  input: Message[] | string
-  instructions?: string
-  tools?: Tool[]
-}
+export type LanguageModel = (options: LanguageModelOptions) => Promise<ReadableStream<Event>>
 
 export interface LanguageModelOptions {
   /**
@@ -23,6 +17,8 @@ export interface LanguageModelOptions {
   extraBody?: Record<string, unknown>
   /** Structured output schema; `title`/`description` keywords supply the wire format name/description. Always strict. */
   format?: Format
+  input: Message[] | string
+  instructions?: string
   maxOutputTokens?: number
   /**
    * Qualitative reasoning effort. On Anthropic this maps to
@@ -33,6 +29,7 @@ export interface LanguageModelOptions {
   signal?: AbortSignal
   temperature?: number
   toolChoice?: ToolChoice
+  tools?: Tool[]
   topP?: number
 }
 

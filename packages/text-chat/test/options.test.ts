@@ -8,8 +8,9 @@ describe('chat options', () => {
   it('maps model options to Chat Completions fields', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
-    const stream = await model({ input: 'hi' }, {
+    const stream = await model({
       extraBody: { stream_options: { custom: true }, temperature: 0.7 },
+      input: 'hi',
       maxOutputTokens: 10,
       reasoningEffort: 'low',
       temperature: 0.5,
@@ -33,7 +34,7 @@ describe('chat options', () => {
   it('maps format to response_format.json_schema', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
-    const stream = await model({ input: 'hi' }, {
+    const stream = await model({
       format: {
         description: 'The answer',
         properties: { a: { type: 'string' } },
@@ -41,6 +42,7 @@ describe('chat options', () => {
         title: 'answer',
         type: 'object',
       },
+      input: 'hi',
     })
     await stream.cancel()
 
@@ -61,8 +63,9 @@ describe('chat options', () => {
   it('accepts a StandardJSONSchemaV1 as format', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
-    const stream = await model({ input: 'hi' }, {
+    const stream = await model({
       format: z.object({ name: z.string() }).meta({ title: 'user' }),
+      input: 'hi',
     })
     await stream.cancel()
 
@@ -82,9 +85,10 @@ describe('chat options', () => {
   it('lets extraBody override response_format', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
-    const stream = await model({ input: 'hi' }, {
+    const stream = await model({
       extraBody: { response_format: { type: 'json_object' } },
       format: { title: 'answer', type: 'object' },
+      input: 'hi',
     })
     await stream.cancel()
 
