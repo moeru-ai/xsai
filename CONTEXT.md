@@ -21,14 +21,14 @@ The normalized stream vocabulary: `content.start`, `text.delta`, `reasoning.delt
 _Avoid_: chunk, SSE event
 
 **Assembler**:
-The internal module (`partAssembler` in `text-primitives`) that owns part bookkeeping — index assignment, delta accumulation, tool-call identity fallback — and the termination invariant. Adapters feed it part-level facts; wire semantics (finish-reason mapping, usage shape) stay in the adapter.
+The internal `eventBuilder` in `text-primitives` that owns part bookkeeping — index assignment, delta accumulation, tool-call identity fallback — and the termination invariant. Adapters feed it part-level facts; wire semantics (finish-reason mapping, usage shape) stay in the adapter.
 
 **Terminal event**:
 A wire that delivers a terminal signal ends with exactly one `finish` event, emitted when the stream closes; an `error` finish carries the terminating error on its `error` field. A wire stream that ends without a terminal signal is truncated — the stream rejects instead of finishing.
 _Avoid_: end-of-stream sentinel
 
 **Collect**:
-The consumer-side fold of an event stream: `EventCollectStream` emits the accumulated result per event; `collect(model, options)` resolves the finished result and rejects on `reason: 'error'` or a stream rejection.
+The consumer-side helper `collect(model, options)` that resolves the `finish` payload and rejects on `reason: 'error'` or a stream rejection. In-progress rendering consumes the `Event` stream directly.
 _Avoid_: complete, runSync
 
 ## Conventions
