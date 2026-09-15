@@ -37,3 +37,6 @@ build
 .env*.local
 .vercel
 next-env.d.ts
+
+# private issue tracker docs
+.scratch
