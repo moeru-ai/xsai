@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, FinishReason, PartAssembler, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, EventBuilder, FinishReason, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -160,7 +160,7 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
   }
 }
 
-const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource): void => {
+const finishResponse = (asm: EventBuilder, response: Responses.ResponseResource): void => {
   const reason = normalizeFinishReason(response)
   if (response.usage != null)
     asm.meta({ usage: normalizeUsage(response.usage) })
@@ -173,7 +173,7 @@ const finishResponse = (asm: PartAssembler, response: Responses.ResponseResource
   })
 }
 
-const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
+const onItemAdded = (asm: EventBuilder, item: Responses.ItemField, index: number): void => {
   const normalized = normalizeOutputItem(item, index)
   for (const part of normalized.parts ?? [])
     asm.start(part.key ?? index, part.content.type, part.init)
@@ -181,7 +181,7 @@ const onItemAdded = (asm: PartAssembler, item: Responses.ItemField, index: numbe
     asm.meta({ messageId: normalized.messageId })
 }
 
-const onItemDone = (asm: PartAssembler, item: Responses.ItemField, index: number): void => {
+const onItemDone = (asm: EventBuilder, item: Responses.ItemField, index: number): void => {
   // `output_item.done` carries the authoritative item; it overrides
   // content accumulated from deltas, including content parts that never
   // streamed a delta.

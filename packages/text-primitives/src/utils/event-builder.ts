@@ -9,24 +9,13 @@ import type {
 
 import { XSAIError } from '@xsai/shared'
 
-import { contentAccumulator } from '../core/content-accumulator'
-
-export interface FinishMeta {
-  messageId?: string
-  responseId?: string
-  responseStatus?: string
-  usage?: Usage
-}
-
 /**
  * Internal seam between a wire adapter and the event protocol. The adapter
- * reports part-level facts (`start` / `delta` / `end` / `finish`); the
- * assembler owns index assignment, delta accumulation, tool-call identity
- * fallback, and the termination invariant: a wire that delivers a terminal
- * signal ends with exactly one `finish` event, emitted on `flush`; a wire
- * that ends without one fails the stream.
+ * reports part-level facts (`start` / `delta` / `end` / `finish`); the builder
+ * owns the one copy of part state, index assignment, tool-call identity
+ * fallback, and the termination invariant.
  */
-export interface PartAssembler {
+export interface EventBuilder {
   /** Appends text to a part. `text === ''` still absorbs tool-call identity extras without emitting. */
   delta: (key: PartKey, text: string, extra?: PartDeltaExtra) => void
   /** Closes a part and emits `content.end`. Unknown or closed keys are no-ops. */
@@ -35,16 +24,22 @@ export interface PartAssembler {
    * Records the terminal reason and closes all open parts. The `finish`
    * event itself is emitted by `flush`, so late-arriving usage still lands.
    * Idempotent. `extra.message` overrides the assembled message for wires
-   * whose terminal event carries an authoritative output record;
-   * `extra.error` is the terminating error attached to an `error` finish.
+   * whose terminal event carries an authoritative output record.
    */
   finish: (reason: FinishReason, extra?: PartFinishExtra) => void
   /** Emits the `finish` event if not already emitted; fails the stream when the wire gave no terminal signal. */
   flush: () => void
-  /** Records message- and response-level metadata (`messageId`, `responseId`, `responseStatus`, `usage`); last call wins. */
+  /** Records message- and response-level metadata; last call wins. */
   meta: (meta: FinishMeta) => void
   /** Opens a part and emits `content.start`. Idempotent per key. */
   start: (key: PartKey, type: AssistantMessageContent['type'], init?: PartStartInit) => void
+}
+
+export interface FinishMeta {
+  messageId?: string
+  responseId?: string
+  responseStatus?: string
+  usage?: Usage
 }
 
 export interface PartDeltaExtra {
@@ -53,10 +48,7 @@ export interface PartDeltaExtra {
 }
 
 export interface PartEndExtra {
-  /**
-   * Authoritative part content, e.g. a Responses `output_item.done` item.
-   * Overrides the content accumulated from deltas.
-   */
+  /** Authoritative part content, e.g. a Responses `output_item.done` item. */
   content?: AssistantMessageContent
   /** Attached only to `reasoning` parts — the only part type with a metadata field. */
   metadata?: PartMetadata
@@ -87,6 +79,16 @@ interface PartState {
   index: number
   name?: string
   type: AssistantMessageContent['type']
+  value: AssistantMessageContent
+}
+
+const emptyContent = (type: AssistantMessageContent['type']): AssistantMessageContent => {
+  switch (type) {
+    case 'reasoning': return { content: [], type }
+    case 'refusal': return { refusal: '', type }
+    case 'text': return { text: '', type }
+    case 'tool-call': return { arguments: '', callId: '', id: '', name: '', type }
+  }
 }
 
 // Gateways repeat id/name as '' or null on continuation deltas; only a
@@ -98,9 +100,9 @@ const resolveCallId = (state: PartState): string =>
   state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
 
 /** @internal */
-export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIError) => void): PartAssembler => {
-  const accumulator = contentAccumulator()
-  const parts = new Map<PartKey, PartState>()
+export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIError) => void): EventBuilder => {
+  const parts: AssistantMessageContent[] = []
+  const states = new Map<PartKey, PartState>()
   let finishEmitted = false
   let messageId: string | undefined
   let messageOverride: AssistantMessage | undefined
@@ -110,16 +112,107 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
   let terminalError: undefined | XSAIError
   let usage: undefined | Usage
 
+  const save = (state: PartState): void => {
+    parts[state.index] = state.value
+  }
+
+  const updateReasoning = (state: PartState, text: string): void => {
+    if (text === '')
+      return
+
+    const part = state.value
+    if (part.type !== 'reasoning')
+      return
+    const content = part.content
+    const last = content[content.length - 1]
+    state.value = {
+      ...part,
+      content: last?.type === 'text'
+        ? [...content.slice(0, -1), { text: last.text + text, type: 'text' }]
+        : [...content, { text, type: 'text' }],
+    }
+    save(state)
+    emit({ delta: text, index: state.index, type: 'reasoning.delta' })
+  }
+
+  const updateRefusal = (state: PartState, text: string): void => {
+    if (text === '')
+      return
+
+    const part = state.value
+    if (part.type !== 'refusal')
+      return
+    state.value = { ...part, refusal: part.refusal + text }
+    save(state)
+    emit({ delta: text, index: state.index, type: 'refusal.delta' })
+  }
+
+  const updateText = (state: PartState, text: string): void => {
+    if (text === '')
+      return
+
+    const part = state.value
+    if (part.type !== 'text')
+      return
+    state.value = { ...part, text: part.text + text }
+    save(state)
+    emit({ delta: text, index: state.index, type: 'text.delta' })
+  }
+
+  const updateToolCall = (state: PartState, text: string, extra?: PartDeltaExtra): void => {
+    state.callId = acceptIdentity(state.callId, extra?.callId)
+    state.name = acceptIdentity(state.name, extra?.name)
+    const id = resolveCallId(state)
+    const part = state.value
+    if (part.type !== 'tool-call')
+      return
+    state.value = {
+      ...part,
+      arguments: part.arguments + text,
+      callId: id,
+      id,
+      name: state.name ?? part.name,
+    }
+    save(state)
+    const event = {
+      delta: text,
+      id,
+      index: state.index,
+      ...(state.name == null ? {} : { name: state.name }),
+      type: 'tool-call.delta' as const,
+    }
+    if (text !== '')
+      emit(event)
+  }
+
+  const delta = (key: PartKey, text: string, extra?: PartDeltaExtra): void => {
+    const state = states.get(key)
+    if (state === undefined || state.closed || reason !== undefined)
+      return
+
+    switch (state.type) {
+      case 'reasoning':
+        updateReasoning(state, text)
+        break
+      case 'refusal':
+        updateRefusal(state, text)
+        break
+      case 'text':
+        updateText(state, text)
+        break
+      case 'tool-call':
+        updateToolCall(state, text, extra)
+        break
+    }
+  }
+
   const end = (key: PartKey, extra?: PartEndExtra): void => {
-    const state = parts.get(key)
+    const state = states.get(key)
     if (state === undefined || state.closed)
       return
 
     state.closed = true
-    const accumulated = accumulator.at(state.index)
-    if (accumulated === undefined)
-      return
-
+    const accumulated = state.value
     const callId = resolveCallId(state)
     const built: AssistantMessageContent = accumulated.type === 'tool-call'
       ? {
@@ -141,48 +234,13 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
     const content = extra?.metadata != null && authoritative.type === 'reasoning'
       ? { ...authoritative, metadata: extra.metadata }
       : authoritative
-    const event = { content, index: state.index, type: 'content.end' } as const
-    accumulator.apply(event)
-    emit(event)
+    state.value = content
+    save(state)
+    emit({ content, index: state.index, type: 'content.end' })
   }
 
   return {
-    delta: (key, text, extra) => {
-      const state = parts.get(key)
-      if (state === undefined || state.closed || reason !== undefined)
-        return
-
-      switch (state.type) {
-        case 'reasoning':
-        case 'refusal':
-        case 'text':
-          if (text !== '') {
-            const event = state.type === 'reasoning'
-              ? { delta: text, index: state.index, type: 'reasoning.delta' as const }
-              : state.type === 'refusal'
-                ? { delta: text, index: state.index, type: 'refusal.delta' as const }
-                : { delta: text, index: state.index, type: 'text.delta' as const }
-            accumulator.apply(event)
-            emit(event)
-          }
-          break
-        case 'tool-call': {
-          state.callId = acceptIdentity(state.callId, extra?.callId)
-          state.name = acceptIdentity(state.name, extra?.name)
-          const event = {
-            delta: text,
-            id: resolveCallId(state),
-            index: state.index,
-            ...(state.name == null ? {} : { name: state.name }),
-            type: 'tool-call.delta' as const,
-          }
-          accumulator.apply(event)
-          if (text !== '')
-            emit(event)
-          break
-        }
-      }
-    },
+    delta,
     end,
     finish: (next, extra) => {
       if (reason !== undefined)
@@ -191,7 +249,7 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
       reason = next
       messageOverride = extra?.message
       terminalError = extra?.error
-      for (const key of parts.keys())
+      for (const key of states.keys())
         end(key)
     },
     flush: () => {
@@ -207,13 +265,13 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
       }
 
       const message = messageOverride ?? {
-        content: accumulator.content(),
+        content: parts,
         role: 'assistant' as const,
       }
       emit({
         ...(terminalError == null ? {} : { error: terminalError }),
-        // An authoritative override that drops the message id still keeps the
-        // id observed during streaming (e.g. Responses `output_item.added`).
+        // An authoritative override that drops the message id still keeps
+        // the id observed during streaming.
         message: message.id == null && messageId != null
           ? { ...message, id: messageId }
           : message,
@@ -235,42 +293,43 @@ export const partAssembler = (emit: (event: Event) => void, fail: (error: XSAIEr
         usage = meta.usage
     },
     start: (key, type, init) => {
-      if (parts.has(key) || reason !== undefined)
+      if (states.has(key) || reason !== undefined)
         return
 
-      const index = parts.size
-      parts.set(key, {
+      const index = states.size
+      const state: PartState = {
         closed: false,
         index,
         type,
+        value: emptyContent(type),
         ...(init?.callId == null ? {} : { callId: init.callId }),
         ...(init?.fallbackId == null ? {} : { fallbackId: init.fallbackId }),
         ...(init?.id == null ? {} : { id: init.id }),
         ...(init?.name == null ? {} : { name: init.name }),
-      })
-      const event = { contentType: type, index, type: 'content.start' } as const
-      accumulator.apply(event)
-      emit(event)
+      }
+      states.set(key, state)
+      parts.push(state.value)
+      emit({ contentType: type, index, type: 'content.start' })
     },
   }
 }
 
 /**
  * Parses SSE data frames into wire events, feeds them to `map`, and
- * guarantees the termination invariant through {@link partAssembler}.
+ * guarantees the termination invariant through {@link eventBuilder}.
  * Malformed frames and wires that end without a terminal signal error
  * the stream rather than producing a finish.
  * @internal
  */
 export class WireEventStream<W> extends TransformStream<string, Event> {
-  constructor(map: (wire: W, asm: PartAssembler) => void) {
-    let asm!: PartAssembler
+  constructor(map: (wire: W, builder: EventBuilder) => void) {
+    let builder!: EventBuilder
     super({
       flush: () => {
-        asm.flush()
+        builder.flush()
       },
       start: (controller) => {
-        asm = partAssembler(
+        builder = eventBuilder(
           event => controller.enqueue(event),
           error => controller.error(error),
         )
@@ -285,7 +344,7 @@ export class WireEventStream<W> extends TransformStream<string, Event> {
           return
         }
 
-        map(wire, asm)
+        map(wire, builder)
       },
     })
   }

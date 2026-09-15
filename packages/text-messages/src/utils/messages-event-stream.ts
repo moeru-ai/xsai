@@ -1,4 +1,4 @@
-import type { FinishReason, PartAssembler, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, FinishReason, Usage } from '@xsai/text-primitives'
 
 import type {
   ContentBlockStartEvent,
@@ -111,7 +111,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
     })
   }
 
-  private onStart(asm: PartAssembler, event: ContentBlockStartEvent): void {
+  private onStart(asm: EventBuilder, event: ContentBlockStartEvent): void {
     const block = event.content_block
 
     switch (block.type) {
