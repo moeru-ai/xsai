@@ -1,5 +1,5 @@
 import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
-import type { JSONSchema7 } from 'json-schema'
+import type { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 
 /** A `StandardJSONSchemaV1` that may also carry a `StandardSchemaV1` validator on the same object. */
 export interface CombinedStandardSchema<Input = unknown, Output = Input> {
@@ -23,55 +23,40 @@ export interface ResolvedSchema<Input = unknown, Output = Input> {
 export type UnresolvedSchema<Input = unknown, Output = Input>
   = CombinedStandardSchema<Input, Output> | Record<string, unknown>
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  value != null && typeof value === 'object' && !Array.isArray(value)
-
-const NUMERIC_CONSTRAINTS = ['exclusiveMaximum', 'exclusiveMinimum', 'maximum', 'minimum', 'multipleOf']
+const NUMERIC_CONSTRAINTS = ['exclusiveMaximum', 'exclusiveMinimum', 'maximum', 'minimum', 'multipleOf'] as const
 
 // `additionalProperties: false` and all-`required` on object schemas, with
 // `properties` injected even when empty.
-const strictObjectKeywords = (obj: Record<string, unknown>): void => {
-  if (obj.type === 'object' || 'properties' in obj) {
-    if (!('properties' in obj))
-      obj.properties = {}
-    if (!('additionalProperties' in obj))
-      obj.additionalProperties = false
+const strictObjectKeywords = (schema: JSONSchema7): void => {
+  if (schema.type === 'object' || schema.properties != null) {
+    schema.properties ??= {}
+    schema.additionalProperties ??= false
   }
-  if (isRecord(obj.properties))
-    obj.required = Object.keys(obj.properties)
+  if (schema.properties != null)
+    schema.required = Object.keys(schema.properties)
   // Anthropic does not support numerical constraints on integer/number schemas.
-  if (obj.type === 'integer' || obj.type === 'number') {
+  if (schema.type === 'integer' || schema.type === 'number') {
     for (const key of NUMERIC_CONSTRAINTS)
-      delete obj[key]
+      delete schema[key]
   }
 }
 
 // Neither provider supports oneOf; convert to anyOf, merging into an existing anyOf array if present.
-const mergeOneOf = (obj: Record<string, unknown>): void => {
-  if (!('oneOf' in obj))
+const mergeOneOf = (schema: JSONSchema7): void => {
+  if (schema.oneOf == null)
     return
-  const oneOf = obj.oneOf
-  delete obj.oneOf
-  const anyOf = obj.anyOf
-  obj.anyOf = Array.isArray(anyOf) && Array.isArray(oneOf)
-    ? (anyOf as unknown[]).concat(oneOf as unknown[])
-    : oneOf
+  const oneOf = schema.oneOf
+  delete schema.oneOf
+  schema.anyOf = schema.anyOf == null ? oneOf : schema.anyOf.concat(oneOf)
 }
 
-const subschemas = (obj: Record<string, unknown>): unknown[] => {
-  const subs: unknown[] = []
-  if (isRecord(obj.$defs))
-    subs.push(...Object.values(obj.$defs))
-  if (isRecord(obj.properties))
-    subs.push(...Object.values(obj.properties))
-  if (obj.items != null)
-    subs.push(obj.items)
-  for (const key of ['anyOf', 'allOf'] as const) {
-    if (Array.isArray(obj[key]))
-      subs.push(...obj[key] as unknown[])
-  }
-  return subs
-}
+const subschemas = (schema: JSONSchema7): JSONSchema7Definition[] => [
+  ...Object.values(schema.$defs ?? {}),
+  ...Object.values(schema.properties ?? {}),
+  ...(schema.items == null ? [] : Array.isArray(schema.items) ? schema.items : [schema.items]),
+  ...(schema.anyOf ?? []),
+  ...(schema.allOf ?? []),
+]
 
 /**
  * Strict `schema` in place to the subset every wire accepts, and return it.
@@ -79,23 +64,22 @@ const subschemas = (obj: Record<string, unknown>): unknown[] => {
  *
  * @internal
  */
-export const strictSchema = <T>(schema: T): T => {
-  if (!isRecord(schema))
-    return schema
-
+export const strictSchema = (schema: JSONSchema7): JSONSchema7 => {
   // OpenAI does not allow sibling keywords next to `$ref`.
-  if ('$ref' in schema) {
+  if (schema.$ref != null) {
     for (const key of Object.keys(schema)) {
       if (key !== '$ref')
-        delete schema[key]
+        delete schema[key as keyof JSONSchema7]
     }
     return schema
   }
 
   strictObjectKeywords(schema)
   mergeOneOf(schema)
-  for (const sub of subschemas(schema))
-    strictSchema(sub)
+  for (const sub of subschemas(schema)) {
+    if (typeof sub !== 'boolean')
+      strictSchema(sub)
+  }
 
   return schema
 }

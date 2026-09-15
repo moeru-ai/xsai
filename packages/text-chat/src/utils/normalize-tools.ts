@@ -9,7 +9,7 @@ export const normalizeTools = (tools?: readonly Tool[]): ChatTool[] | undefined 
   function: {
     ...(tool.description == null ? {} : { description: tool.description }),
     name: tool.name,
-    parameters: strictSchema(tool.inputSchema),
+    parameters: strictSchema(tool.inputSchema) as Record<string, unknown>,
     strict: true,
   },
   type: 'function',

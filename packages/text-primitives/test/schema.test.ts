@@ -1,4 +1,5 @@
 import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
+import type { JSONSchema7 } from 'json-schema'
 
 import { describe, expect, it, vi } from 'vitest'
 
@@ -65,7 +66,7 @@ describe('resolveSchema', () => {
 
 describe('strictSchema', () => {
   it('forces additionalProperties:false and all-required on every object schema, deeply', () => {
-    const schema = {
+    const schema: JSONSchema7 = {
       properties: {
         list: { items: { properties: { c: { type: 'string' } }, type: 'object' }, type: 'array' },
         nested: { properties: { b: { type: 'number' } }, type: 'object' },
@@ -102,7 +103,7 @@ describe('strictSchema', () => {
   })
 
   it('recurses into $defs, anyOf and allOf', () => {
-    const schema = {
+    const schema: JSONSchema7 = {
       $defs: { inner: { properties: { x: { type: 'string' } }, type: 'object' } },
       allOf: [{ properties: { y: { type: 'string' } }, type: 'object' }],
       anyOf: [{ properties: { z: { type: 'string' } }, type: 'object' }],
