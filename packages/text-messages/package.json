@@ -31,7 +31,6 @@
     "@xsai/shared": "workspace:"
   },
   "devDependencies": {
-    "@xsai/text-primitives": "workspace:",
-    "xsschema": "workspace:"
+    "@xsai/text-primitives": "workspace:"
   }
 }

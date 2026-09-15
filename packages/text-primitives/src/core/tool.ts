@@ -40,7 +40,7 @@ export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | Unresol
     description: options.description,
     inputSchema: resolveSchema(options.inputSchema).schema as Record<string, unknown>,
     name: options.name,
-    outputSchema: options.outputSchema == null ? undefined : resolveSchema(options.outputSchema, { direction: 'output' }).schema as Record<string, unknown>,
+    outputSchema: options.outputSchema == null ? undefined : resolveSchema(options.outputSchema).schema as Record<string, unknown>,
   }
 
   if (options.execute == null) {

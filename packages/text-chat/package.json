@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@xsai/text-primitives": "workspace:",
-    "xsschema": "workspace:",
     "zod": "catalog:schema-dev"
   }
 }
