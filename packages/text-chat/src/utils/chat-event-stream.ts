@@ -41,9 +41,9 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
   private reasoningField?: 'reasoning' | 'reasoning_content'
 
   constructor() {
-    super((chunk, asm) => {
+    super((chunk, builder) => {
       if (chunk.error != null) {
-        asm.finish('error', {
+        builder.finish('error', {
           error: new XSAIError('model-error', chunk.error.message, { cause: chunk.error }),
         })
         return
@@ -52,9 +52,9 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
       // A chunk's id is the response-scoped completion id (`chatcmpl-*`),
       // not a replayable assistant message id — Chat has no equivalent.
       if (chunk.id != null)
-        asm.meta({ responseId: chunk.id })
+        builder.meta({ responseId: chunk.id })
       if (chunk.usage != null)
-        asm.meta({ usage: normalizeUsage(chunk.usage) })
+        builder.meta({ usage: normalizeUsage(chunk.usage) })
 
       for (const choice of chunk.choices ?? []) {
         // Only the first choice is supported; `n > 1` is out of scope.
@@ -62,43 +62,43 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
           continue
 
         if (choice.delta != null)
-          this.onDelta(asm, choice.delta)
+          this.onDelta(builder, choice.delta)
 
         if (choice.finish_reason != null) {
           if (this.reasoningField != null)
-            asm.end('reasoning', { metadata: { chat: { reasoning_field: this.reasoningField } } })
-          asm.finish(mapFinishReason(choice.finish_reason))
+            builder.end('reasoning', { metadata: { chat: { reasoning_field: this.reasoningField } } })
+          builder.finish(mapFinishReason(choice.finish_reason))
         }
       }
     })
   }
 
-  private onDelta(asm: EventBuilder, delta: ChatDelta): void {
+  private onDelta(builder: EventBuilder, delta: ChatDelta): void {
     const reasoning = delta.reasoning_content ?? delta.reasoning
     if (reasoning != null && reasoning !== '') {
       this.reasoningField ??= delta.reasoning_content != null ? 'reasoning_content' : 'reasoning'
-      asm.start('reasoning', 'reasoning')
-      asm.delta('reasoning', reasoning)
+      builder.start('reasoning', 'reasoning')
+      builder.delta('reasoning', reasoning)
     }
 
     const content = delta.content ?? ''
     if (content !== '') {
-      asm.start('text', 'text')
-      asm.delta('text', content)
+      builder.start('text', 'text')
+      builder.delta('text', content)
     }
 
     // Refusal is a sibling field of content on this wire; a refusal turn
     // streams content:null. It is its own part, never merged into text.
     const refusal = delta.refusal ?? ''
     if (refusal !== '') {
-      asm.start('refusal', 'refusal')
-      asm.delta('refusal', refusal)
+      builder.start('refusal', 'refusal')
+      builder.delta('refusal', refusal)
     }
 
     for (const call of delta.tool_calls ?? []) {
       const key: `tool:${number}` = `tool:${call.index}`
-      asm.start(key, 'tool-call', { fallbackId: `call_${call.index}` })
-      asm.delta(key, call.function?.arguments ?? '', { callId: call.id, name: call.function?.name })
+      builder.start(key, 'tool-call', { fallbackId: `call_${call.index}` })
+      builder.delta(key, call.function?.arguments ?? '', { callId: call.id, name: call.function?.name })
     }
   }
 }

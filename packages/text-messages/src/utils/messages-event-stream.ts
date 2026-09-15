@@ -58,35 +58,35 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
   private stopReason?: null | string
 
   constructor() {
-    super((event, asm) => {
+    super((event, builder) => {
       switch (event.type) {
         case 'content_block_delta':
           switch (event.delta.type) {
             case 'input_json_delta':
-              asm.delta(event.index, event.delta.partial_json)
+              builder.delta(event.index, event.delta.partial_json)
               break
             case 'signature_delta':
               this.signatures.set(event.index, (this.signatures.get(event.index) ?? '') + event.delta.signature)
               break
             case 'text_delta':
-              asm.delta(event.index, event.delta.text)
+              builder.delta(event.index, event.delta.text)
               break
             case 'thinking_delta':
-              asm.delta(event.index, event.delta.thinking)
+              builder.delta(event.index, event.delta.thinking)
               break
           }
           break
         case 'content_block_start':
-          this.onStart(asm, event)
+          this.onStart(builder, event)
           break
         case 'content_block_stop': {
           const signature = this.signatures.get(event.index)
           this.signatures.delete(event.index)
-          asm.end(event.index, signature == null ? {} : { metadata: { messages: { signature } } })
+          builder.end(event.index, signature == null ? {} : { metadata: { messages: { signature } } })
           break
         }
         case 'error':
-          asm.finish('error', {
+          builder.finish('error', {
             error: new XSAIError('model-error', event.error.message, { cause: event.error }),
           })
           break
@@ -95,14 +95,14 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           this.deltaUsage = event.usage
           break
         case 'message_start':
-          asm.meta({ messageId: event.message.id })
+          builder.meta({ messageId: event.message.id })
           this.startUsage = event.message.usage
           break
         case 'message_stop': {
           const usage = mergeUsage(this.startUsage, this.deltaUsage)
           if (usage != null)
-            asm.meta({ usage })
-          asm.finish(mapStopReason(this.stopReason))
+            builder.meta({ usage })
+          builder.finish(mapStopReason(this.stopReason))
           break
         }
         case 'ping':
@@ -111,7 +111,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
     })
   }
 
-  private onStart(asm: EventBuilder, event: ContentBlockStartEvent): void {
+  private onStart(builder: EventBuilder, event: ContentBlockStartEvent): void {
     const block = event.content_block
 
     switch (block.type) {
@@ -120,25 +120,25 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
       case 'tool_result':
         break
       case 'redacted_thinking':
-        asm.start(event.index, 'reasoning')
-        asm.end(event.index, {
+        builder.start(event.index, 'reasoning')
+        builder.end(event.index, {
           content: { content: [{ data: block.data, type: 'redacted' }], type: 'reasoning' },
         })
         break
       case 'text':
-        asm.start(event.index, 'text')
+        builder.start(event.index, 'text')
         if (block.text !== '')
-          asm.delta(event.index, block.text)
+          builder.delta(event.index, block.text)
         break
       case 'thinking':
-        asm.start(event.index, 'reasoning')
+        builder.start(event.index, 'reasoning')
         if (block.thinking !== '')
-          asm.delta(event.index, block.thinking)
+          builder.delta(event.index, block.thinking)
         if (block.signature != null)
           this.signatures.set(event.index, block.signature)
         break
       case 'tool_use':
-        asm.start(event.index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
+        builder.start(event.index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
         break
     }
   }
