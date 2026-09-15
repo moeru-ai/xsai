@@ -78,8 +78,6 @@ interface PartState {
   id?: string
   index: number
   name?: string
-  type: AssistantMessageContent['type']
-  value: AssistantMessageContent
 }
 
 const emptyContent = (type: AssistantMessageContent['type']): AssistantMessageContent => {
@@ -112,26 +110,21 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
   let terminalError: undefined | XSAIError
   let usage: undefined | Usage
 
-  const save = (state: PartState): void => {
-    parts[state.index] = state.value
-  }
-
   const updateReasoning = (state: PartState, text: string): void => {
     if (text === '')
       return
 
-    const part = state.value
+    const part = parts[state.index]
     if (part.type !== 'reasoning')
       return
     const content = part.content
     const last = content[content.length - 1]
-    state.value = {
+    parts[state.index] = {
       ...part,
       content: last?.type === 'text'
         ? [...content.slice(0, -1), { text: last.text + text, type: 'text' }]
         : [...content, { text, type: 'text' }],
     }
-    save(state)
     emit({ delta: text, index: state.index, type: 'reasoning.delta' })
   }
 
@@ -139,11 +132,10 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
     if (text === '')
       return
 
-    const part = state.value
+    const part = parts[state.index]
     if (part.type !== 'refusal')
       return
-    state.value = { ...part, refusal: part.refusal + text }
-    save(state)
+    parts[state.index] = { ...part, refusal: part.refusal + text }
     emit({ delta: text, index: state.index, type: 'refusal.delta' })
   }
 
@@ -151,11 +143,10 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
     if (text === '')
       return
 
-    const part = state.value
+    const part = parts[state.index]
     if (part.type !== 'text')
       return
-    state.value = { ...part, text: part.text + text }
-    save(state)
+    parts[state.index] = { ...part, text: part.text + text }
     emit({ delta: text, index: state.index, type: 'text.delta' })
   }
 
@@ -163,17 +154,16 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
     state.callId = acceptIdentity(state.callId, extra?.callId)
     state.name = acceptIdentity(state.name, extra?.name)
     const id = resolveCallId(state)
-    const part = state.value
+    const part = parts[state.index]
     if (part.type !== 'tool-call')
       return
-    state.value = {
+    parts[state.index] = {
       ...part,
       arguments: part.arguments + text,
       callId: id,
       id,
       name: state.name ?? part.name,
     }
-    save(state)
     const event = {
       delta: text,
       id,
@@ -190,7 +180,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
     if (state === undefined || state.closed || reason !== undefined)
       return
 
-    switch (state.type) {
+    switch (parts[state.index].type) {
       case 'reasoning':
         updateReasoning(state, text)
         break
@@ -212,7 +202,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
       return
 
     state.closed = true
-    const accumulated = state.value
+    const accumulated = parts[state.index]
     const callId = resolveCallId(state)
     const built: AssistantMessageContent = accumulated.type === 'tool-call'
       ? {
@@ -234,8 +224,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
     const content = extra?.metadata != null && authoritative.type === 'reasoning'
       ? { ...authoritative, metadata: extra.metadata }
       : authoritative
-    state.value = content
-    save(state)
+    parts[state.index] = content
     emit({ content, index: state.index, type: 'content.end' })
   }
 
@@ -300,15 +289,13 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
       const state: PartState = {
         closed: false,
         index,
-        type,
-        value: emptyContent(type),
         ...(init?.callId == null ? {} : { callId: init.callId }),
         ...(init?.fallbackId == null ? {} : { fallbackId: init.fallbackId }),
         ...(init?.id == null ? {} : { id: init.id }),
         ...(init?.name == null ? {} : { name: init.name }),
       }
       states.set(key, state)
-      parts.push(state.value)
+      parts.push(emptyContent(type))
       emit({ contentType: type, index, type: 'content.start' })
     },
   }
