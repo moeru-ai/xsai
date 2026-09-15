@@ -1,11 +1,10 @@
-import type { StandardJSONSchemaV1 } from '@standard-schema/spec'
-
+import type { UnresolvedSchema } from '../../utils/schema'
 import type { Tool } from '../tool'
 import type { Event } from './event'
 import type { Message } from './message'
 
-/** Raw JSON Schema or a `StandardJSONSchemaV1`. */
-export type Format = Record<string, unknown> | StandardJSONSchemaV1
+/** Raw JSON Schema or a `StandardJSONSchemaV1`, optionally carrying a `StandardSchemaV1` validator. */
+export type Format = UnresolvedSchema
 
 export type LanguageModel = (context: LanguageModelContext, options?: LanguageModelOptions) => Promise<ReadableStream<Event>>
 

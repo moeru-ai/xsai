@@ -2,20 +2,22 @@ import type { Format } from '@xsai/text-primitives'
 
 import type { ChatResponseFormat } from '../types'
 
-import { resolveFormat } from '@xsai/text-primitives'
+import { resolveSchema, toFormatName } from '@xsai/text-primitives'
+import { strictJsonSchema } from 'xsschema'
 
 /** @internal */
 export const normalizeFormat = (format: Format | undefined): ChatResponseFormat | undefined => {
-  const resolved = resolveFormat(format)
-  return resolved == null
-    ? undefined
-    : {
-        json_schema: {
-          description: resolved.description,
-          name: resolved.name,
-          schema: resolved.schema,
-          strict: true,
-        },
-        type: 'json_schema',
-      }
+  if (format == null)
+    return undefined
+
+  const schema = strictJsonSchema(resolveSchema(format).schema)
+  return {
+    json_schema: {
+      description: schema.description,
+      name: toFormatName(schema.title),
+      schema: schema as Record<string, unknown>,
+      strict: true,
+    },
+    type: 'json_schema',
+  }
 }

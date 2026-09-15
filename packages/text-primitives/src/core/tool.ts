@@ -1,7 +1,9 @@
-import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
 import type { Promisable } from '@xsai/shared'
 
+import type { InferSchemaInput, UnresolvedSchema } from '../utils/schema'
 import type { ToolResultPartContent } from './types/content'
+
+import { resolveSchema } from '../utils/schema'
 
 export interface ExecutableTool extends Tool {
   execute: (input: unknown) => Promisable<string | ToolResultPartContent[]>
@@ -14,10 +16,10 @@ export interface Tool {
   outputSchema?: Record<string, unknown>
 }
 
-export interface ToolOptions<TInput extends StandardJSONSchemaV1, TOutput extends StandardJSONSchemaV1 | undefined = undefined> {
+export interface ToolOptions<TInput extends UnresolvedSchema, TOutput extends undefined | UnresolvedSchema = undefined> {
   description?: string
-  execute?: (input: StandardSchemaV1.InferInput<TInput>) => TOutput extends StandardJSONSchemaV1
-    ? Promisable<StandardSchemaV1.InferInput<TOutput>>
+  execute?: (input: InferSchemaInput<TInput>) => TOutput extends UnresolvedSchema
+    ? Promisable<InferSchemaInput<TOutput>>
     : Promisable<string | ToolResultPartContent[]>
   inputSchema: TInput
   name: string
@@ -25,20 +27,20 @@ export interface ToolOptions<TInput extends StandardJSONSchemaV1, TOutput extend
 }
 
 interface ToolFactory {
-  <TInput extends StandardJSONSchemaV1, TOutput extends StandardJSONSchemaV1 | undefined = undefined>(
+  <TInput extends UnresolvedSchema, TOutput extends undefined | UnresolvedSchema = undefined>(
     options: Required<Pick<ToolOptions<TInput, TOutput>, 'execute'>> & ToolOptions<TInput, TOutput>,
   ): ExecutableTool
-  <TInput extends StandardJSONSchemaV1, TOutput extends StandardJSONSchemaV1 | undefined = undefined>(
+  <TInput extends UnresolvedSchema, TOutput extends undefined | UnresolvedSchema = undefined>(
     options: ToolOptions<TInput, TOutput>,
   ): Tool
 }
 
-export const tool = ((options: ToolOptions<StandardJSONSchemaV1, StandardJSONSchemaV1 | undefined>): ExecutableTool | Tool => {
+export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | UnresolvedSchema>): ExecutableTool | Tool => {
   const tool: Tool = {
     description: options.description,
-    inputSchema: options.inputSchema['~standard'].jsonSchema.input({ target: 'draft-07' }),
+    inputSchema: resolveSchema(options.inputSchema).schema as Record<string, unknown>,
     name: options.name,
-    outputSchema: options.outputSchema?.['~standard'].jsonSchema.input({ target: 'draft-07' }),
+    outputSchema: options.outputSchema == null ? undefined : resolveSchema(options.outputSchema, { direction: 'output' }).schema as Record<string, unknown>,
   }
 
   if (options.execute == null) {
