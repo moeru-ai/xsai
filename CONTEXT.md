@@ -9,7 +9,7 @@ A package that adapts one provider *wire protocol* — `text-chat` (Chat Complet
 _Avoid_: provider, API client
 
 **Language model**:
-The `LanguageModel` function every wire adapter satisfies: `(context, options?) => Promise<ReadableStream<Event>>`. The universal seam callers program against.
+The `LanguageModel` function every wire adapter satisfies: `(options) => Promise<ReadableStream<Event>>`. Its required `LanguageModelOptions` object carries input, instructions, tools, and wire options. The universal seam callers program against.
 _Avoid_: model instance, provider object
 
 **Part**:
@@ -28,7 +28,7 @@ A wire that delivers a terminal signal ends with exactly one `finish` event, emi
 _Avoid_: end-of-stream sentinel
 
 **Collect**:
-The consumer-side fold of an event stream: `EventCollectStream` emits the accumulated result per event; `collect(model, context, options?)` resolves the finished result and rejects on `reason: 'error'` or a stream rejection.
+The consumer-side fold of an event stream: `EventCollectStream` emits the accumulated result per event; `collect(model, options)` resolves the finished result and rejects on `reason: 'error'` or a stream rejection.
 _Avoid_: complete, runSync
 
 ## Conventions
