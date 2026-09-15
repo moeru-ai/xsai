@@ -1,21 +1,17 @@
 import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
 import type { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 
-/** A `StandardJSONSchemaV1` that may also carry a `StandardSchemaV1` validator on the same object. */
 export interface CombinedStandardSchema<Input = unknown, Output = Input> {
   readonly '~standard':
     & Partial<StandardSchemaV1.Props<Input, Output>>
     & StandardJSONSchemaV1.Props<Input, Output>
 }
 
-/** The handler-facing input type of an {@link UnresolvedSchema}; `unknown` for a raw JSON Schema. */
 export type InferSchemaInput<Schema extends UnresolvedSchema>
   = Schema extends CombinedStandardSchema<infer Input, infer _Output> ? Input : unknown
 
 export interface ResolvedSchema<Input = unknown, Output = Input> {
-  /** The strict JSON Schema produced by the source (converter output, or the raw object sanitized in place). */
   schema: JSONSchema7
-  /** Present only when the source carried a `StandardSchemaV1` validator. */
   validate?: StandardSchemaV1.Props<Input, Output>['validate']
 }
 
@@ -58,12 +54,7 @@ const subschemas = (schema: JSONSchema7): JSONSchema7Definition[] => [
   ...(schema.allOf ?? []),
 ]
 
-/**
- * Strict `schema` in place to the subset every wire accepts, and return it.
- * The input is assumed to have no other use.
- *
- * @internal
- */
+/** @internal */
 export const strictSchema = (schema: JSONSchema7): JSONSchema7 => {
   // OpenAI does not allow sibling keywords next to `$ref`.
   if (schema.$ref != null) {
@@ -84,10 +75,8 @@ export const strictSchema = (schema: JSONSchema7): JSONSchema7 => {
   return schema
 }
 
-// `in` alone is not enough: a raw schema may carry a meaningless `~standard` field.
 const isStandardJsonSchema = <Input, Output>(schema: UnresolvedSchema<Input, Output>): schema is CombinedStandardSchema<Input, Output> =>
-  '~standard' in schema
-  && typeof (schema['~standard'] as { jsonSchema?: { input?: unknown } })?.jsonSchema?.input === 'function'
+  '~standard' in schema && 'jsonSchema' in (schema as StandardJSONSchemaV1)['~standard']
 
 export const resolveSchema = <Input = unknown, Output = Input>(schema: UnresolvedSchema<Input, Output>): ResolvedSchema<Input, Output> =>
   isStandardJsonSchema(schema)
