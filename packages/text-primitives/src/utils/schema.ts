@@ -15,7 +15,6 @@ export interface ResolvedSchema<Input = unknown, Output = Input> {
   validate?: StandardSchemaV1.Props<Input, Output>['validate']
 }
 
-/** Schema as callers supply it: raw JSON Schema or a {@link CombinedStandardSchema}. */
 export type UnresolvedSchema<Input = unknown, Output = Input>
   = CombinedStandardSchema<Input, Output> | Record<string, unknown>
 
