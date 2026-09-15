@@ -1,3 +1,5 @@
+import type { Promisable } from '@xsai/shared'
+
 import type { UnresolvedSchema } from '../../utils/schema'
 import type { Tool } from '../tool'
 import type { Event } from './event'
@@ -6,7 +8,7 @@ import type { Message } from './message'
 /** Raw JSON Schema or a `StandardJSONSchemaV1`, optionally carrying a `StandardSchemaV1` validator. */
 export type Format = UnresolvedSchema
 
-export type LanguageModel = (options: LanguageModelOptions) => Promise<ReadableStream<Event>>
+export type LanguageModel = (options: LanguageModelOptions) => Promisable<ReadableStream<Event>>
 
 export interface LanguageModelOptions {
   /**
