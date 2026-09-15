@@ -38,7 +38,7 @@ const responseCatch = async (res: Response): Promise<Response & { body: NonNulla
  */
 export const wireRequest = async (
   options: HttpOptions,
-  modelOptions: LanguageModelOptions | undefined,
+  modelOptions: LanguageModelOptions,
   init: WireRequestInit,
   eventStream: TransformStream<string, Event>,
 ): Promise<ReadableStream<Event>> => {
@@ -48,7 +48,7 @@ export const wireRequest = async (
   // Rejection handler for the fetch call: caller aborts keep their reason,
   // everything else becomes a `network-error`.
   const requestCatch = (cause: unknown): never => {
-    if (modelOptions?.signal?.aborted)
+    if (modelOptions.signal?.aborted)
       throw cause
     throw new XSAIError('network-error', `request to ${url.toString()} failed`, {
       cause: cause ?? new Error('fetch rejected without a reason'),
@@ -62,7 +62,7 @@ export const wireRequest = async (
     // because `JSON.stringify` drops `undefined` on its own.
     body: JSON.stringify({
       ...init.body,
-      ...definedOnly(modelOptions?.extraBody ?? {}),
+      ...definedOnly(modelOptions.extraBody ?? {}),
     }),
     headers: definedOnly(init.headers ?? {
       ...options.extraHeaders,
@@ -70,7 +70,7 @@ export const wireRequest = async (
       ...(options.apiKey == null ? {} : { Authorization: `Bearer ${options.apiKey}` }),
     }),
     method: 'POST',
-    signal: modelOptions?.signal,
+    signal: modelOptions.signal,
   })
     .then(responseCatch, requestCatch)
     .then(res => res.body

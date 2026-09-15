@@ -8,8 +8,9 @@ describe('messages options', () => {
   it('maps model options to Messages fields', async () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
-    const stream = await model({ input: 'hi' }, {
+    const stream = await model({
       extraBody: { tool_choice: { disable_parallel_tool_use: true } },
+      input: 'hi',
       maxOutputTokens: 10,
       reasoningEffort: 'max',
       temperature: 0.5,
@@ -40,7 +41,7 @@ describe('messages options', () => {
       message: 'maxOutputTokens is required for the Messages API',
     })
 
-    const stream = await model({ input: 'hi' }, { maxOutputTokens: 10, toolChoice: 'required' })
+    const stream = await model({ input: 'hi', maxOutputTokens: 10, toolChoice: 'required' })
     await stream.cancel()
     expect(bodies[0]).toMatchObject({ tool_choice: { type: 'any' } })
   })
@@ -48,13 +49,14 @@ describe('messages options', () => {
   it('maps format to output_config.format and merges with effort', async () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
-    const stream = await model({ input: 'hi' }, {
+    const stream = await model({
       format: {
         properties: { a: { type: 'string' } },
         required: ['a'],
         title: 'answer',
         type: 'object',
       },
+      input: 'hi',
       maxOutputTokens: 10,
       reasoningEffort: 'high',
     })
@@ -86,7 +88,7 @@ describe('messages options', () => {
       model: 'm',
     })
 
-    const stream = await model({ input: 'hi' }, { maxOutputTokens: 10 })
+    const stream = await model({ input: 'hi', maxOutputTokens: 10 })
     await stream.cancel()
 
     expect(requestHeaders?.get('x-api-key')).toBe('custom-key')

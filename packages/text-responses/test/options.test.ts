@@ -7,8 +7,9 @@ describe('responses options', () => {
   it('maps model options to Responses fields', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
-    const stream = await model({ input: 'hi' }, {
+    const stream = await model({
       extraBody: { reasoning: { summary: 'detailed' } },
+      input: 'hi',
       maxOutputTokens: 10,
       reasoningEffort: 'high',
       temperature: 0.5,
@@ -31,13 +32,14 @@ describe('responses options', () => {
   it('maps format to text.format', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
-    const stream = await model({ input: 'hi' }, {
+    const stream = await model({
       format: {
         properties: { a: { type: 'string' } },
         required: ['a'],
         title: 'answer',
         type: 'object',
       },
+      input: 'hi',
     })
     await stream.cancel()
 

@@ -12,7 +12,7 @@ describe('wireRequest', () => {
     const cause = new TypeError('fetch failed')
     const request = wireRequest(
       { ...options, fetch: async () => { throw cause } },
-      undefined,
+      { input: 'hi' },
       init,
       new TransformStream<string, Event>(),
     )
@@ -30,7 +30,7 @@ describe('wireRequest', () => {
           throw requestInit?.signal?.reason
         },
       },
-      { signal },
+      { input: 'hi', signal },
       init,
       new TransformStream<string, Event>(),
     )
@@ -47,7 +47,7 @@ describe('wireRequest', () => {
           status: 401,
         }),
       },
-      undefined,
+      { input: 'hi' },
       init,
       new TransformStream<string, Event>(),
     )
@@ -66,7 +66,7 @@ describe('wireRequest', () => {
   it('rejects with a typed error when the response has no body', async () => {
     const request = wireRequest(
       { ...options, fetch: async () => new Response(null) },
-      undefined,
+      { input: 'hi' },
       init,
       new TransformStream<string, Event>(),
     )

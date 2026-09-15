@@ -3,7 +3,7 @@ import type {
   AssistantMessageContent,
   FilePart,
   ImagePart,
-  LanguageModelContext,
+  LanguageModelOptions,
   ReasoningPart,
   ReasoningPartContent,
   SystemMessageContent,
@@ -170,16 +170,16 @@ const systemText = (content: readonly SystemMessageContent[] | string): TextBloc
   : content.map(normalizeInputTextPart)
 
 /** @internal */
-export const normalizeInput = (context: LanguageModelContext): NormalizedInput => {
+export const normalizeInput = (options: LanguageModelOptions): NormalizedInput => {
   const system: TextBlock[] = []
   const messages: InputMessage[] = []
 
-  if (context.instructions != null)
-    system.push({ text: context.instructions, type: 'text' })
+  if (options.instructions != null)
+    system.push({ text: options.instructions, type: 'text' })
 
-  for (const message of typeof context.input === 'string'
-    ? [{ content: context.input, role: 'user' as const }]
-    : context.input) {
+  for (const message of typeof options.input === 'string'
+    ? [{ content: options.input, role: 'user' as const }]
+    : options.input) {
     switch (message.role) {
       case 'assistant':
         messages.push(normalizeAssistantMessage(message))
