@@ -2,14 +2,14 @@ import type { Tool, ToolChoice } from '@xsai/text-primitives'
 
 import type { ChatTool, ChatToolChoice } from '../types'
 
-import { strictJsonSchema } from 'xsschema'
+import { strictSchema } from '@xsai/text-primitives'
 
 /** @internal */
 export const normalizeTools = (tools?: readonly Tool[]): ChatTool[] | undefined => tools?.map(tool => ({
   function: {
     ...(tool.description == null ? {} : { description: tool.description }),
     name: tool.name,
-    parameters: strictJsonSchema(tool.inputSchema) as Record<string, unknown>,
+    parameters: strictSchema(tool.inputSchema),
     strict: true,
   },
   type: 'function',

@@ -3,14 +3,13 @@ import type { Format } from '@xsai/text-primitives'
 import type { TextParam } from '../generated'
 
 import { resolveSchema, toFormatName } from '@xsai/text-primitives'
-import { strictJsonSchema } from 'xsschema'
 
 /** @internal */
 export const normalizeFormat = (format: Format | undefined): TextParam | undefined => {
   if (format == null)
     return undefined
 
-  const schema = strictJsonSchema(resolveSchema(format).schema)
+  const { schema } = resolveSchema(format)
   return {
     format: {
       description: schema.description,
