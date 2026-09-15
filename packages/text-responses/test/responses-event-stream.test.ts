@@ -413,7 +413,7 @@ describe('responses event stream', () => {
     })
   })
 
-  it('maps reasoning output and incomplete reasons', async () => {
+  it('maps reasoning text output and incomplete reasons', async () => {
     await expect(readEvents([
       message({
         item: {
@@ -424,9 +424,18 @@ describe('responses event stream', () => {
         type: 'response.output_item.added',
       }),
       message({
+        content_index: 0,
         delta: 'Think',
+        item_id: 'reasoning_1',
         output_index: 0,
-        type: 'response.reasoning.delta',
+        type: 'response.reasoning_text.delta',
+      }),
+      message({
+        content_index: 0,
+        item_id: 'reasoning_1',
+        output_index: 0,
+        text: 'Think',
+        type: 'response.reasoning_text.done',
       }),
       message({
         delta: ' more',

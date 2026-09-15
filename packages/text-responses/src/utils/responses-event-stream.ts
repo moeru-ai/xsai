@@ -5,8 +5,20 @@ import type * as Responses from '../generated'
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives'
 
+// The generated OpenResponses schema does not yet include these official
+// Responses streaming events, so keep their wire types local to this adapter.
+type ReasoningTextDeltaEvent = Omit<Responses.ResponseReasoningDeltaStreamingEvent, 'type'> & {
+  type: 'response.reasoning_text.delta'
+}
+
+type ReasoningTextDoneEvent = Omit<Responses.ResponseReasoningDoneStreamingEvent, 'type'> & {
+  type: 'response.reasoning_text.done'
+}
+
 type ResponsesEvent
-  = | Responses.ErrorStreamingEvent
+  = | ReasoningTextDeltaEvent
+    | ReasoningTextDoneEvent
+    | Responses.ErrorStreamingEvent
     | Responses.ResponseCompletedStreamingEvent
     | Responses.ResponseContentPartAddedStreamingEvent
     | Responses.ResponseContentPartDoneStreamingEvent
@@ -244,7 +256,6 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
         case 'response.reasoning_summary_part.added':
         case 'response.reasoning_summary_part.done':
         case 'response.reasoning_summary_text.done':
-        case 'response.refusal.done':
           break
         case 'response.output_item.added':
           if (event.item != null)
@@ -261,6 +272,13 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           builder.delta(key, event.delta)
           break
         }
+        case 'response.reasoning_text.delta':
+          builder.start(event.output_index, 'reasoning')
+          builder.delta(event.output_index, event.delta)
+          break
+        case 'response.reasoning_text.done':
+        case 'response.refusal.done':
+          break
       }
     })
   }
