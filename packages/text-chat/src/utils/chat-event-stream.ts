@@ -9,7 +9,6 @@ const mapFinishReason = (reason: null | string | undefined): FinishReason => {
   switch (reason) {
     case 'content_filter':
       return 'content-filter'
-    case 'function_call':
     case 'tool_calls':
       return 'tool-calls'
     case 'length':
