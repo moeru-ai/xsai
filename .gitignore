@@ -40,3 +40,4 @@ next-env.d.ts
 
 # private issue tracker docs
 .scratch
+docs/research
