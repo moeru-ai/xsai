@@ -1,8 +1,8 @@
-import type { Event, LanguageModel, StreamResult } from '../src'
+import type { Event, LanguageModel } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
-import { collect, EventCollectStream } from '../src'
+import { collect } from '../src'
 import { XSAIError } from '../src/shared'
 
 const eventStream = (events: Event[]): ReadableStream<Event> => new ReadableStream<Event>({
@@ -15,99 +15,6 @@ const eventStream = (events: Event[]): ReadableStream<Event> => new ReadableStre
 })
 
 const modelOf = (events: Event[]): LanguageModel => async () => eventStream(events)
-
-const collectSnapshots = async (events: Event[]): Promise<StreamResult[]> => {
-  const results: StreamResult[] = []
-  for await (const result of eventStream(events).pipeThrough(new EventCollectStream()))
-    results.push(result)
-  return results
-}
-
-describe('event collect stream', () => {
-  it('accumulates deltas into the in-progress message', async () => {
-    const results = await collectSnapshots([
-      { contentType: 'text', index: 0, type: 'content.start' },
-      { delta: 'Hel', index: 0, type: 'text.delta' },
-      { delta: 'lo', index: 0, type: 'text.delta' },
-      { content: { text: 'Hello', type: 'text' }, index: 0, type: 'content.end' },
-      {
-        message: { content: [{ text: 'Hello', type: 'text' }], id: 'msg_1', role: 'assistant' },
-        reason: 'stop',
-        type: 'finish',
-        usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
-      },
-    ])
-
-    expect(results.map(result => result.message.content)).toEqual([
-      [{ text: '', type: 'text' }],
-      [{ text: 'Hel', type: 'text' }],
-      [{ text: 'Hello', type: 'text' }],
-      [{ text: 'Hello', type: 'text' }],
-      [{ text: 'Hello', type: 'text' }],
-    ])
-    expect(results[4]).toMatchObject({
-      message: { content: [{ text: 'Hello', type: 'text' }], id: 'msg_1', role: 'assistant' },
-      reason: 'stop',
-      usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
-    })
-  })
-
-  it('accumulates tool-call arguments and identity across deltas', async () => {
-    const results = await collectSnapshots([
-      { contentType: 'tool-call', index: 0, type: 'content.start' },
-      { delta: '{"a":', id: 'call_1', index: 0, name: 'f', type: 'tool-call.delta' },
-      { delta: '1}', id: 'call_1', index: 0, type: 'tool-call.delta' },
-      {
-        content: { arguments: '{"a":1}', callId: 'call_1', id: 'call_1', name: 'f', type: 'tool-call' },
-        index: 0,
-        type: 'content.end',
-      },
-      {
-        message: {
-          content: [{ arguments: '{"a":1}', callId: 'call_1', id: 'call_1', name: 'f', type: 'tool-call' }],
-          role: 'assistant',
-        },
-        reason: 'tool-calls',
-        type: 'finish',
-      },
-    ])
-
-    expect(results[1].message.content).toEqual([
-      { arguments: '{"a":', callId: 'call_1', id: 'call_1', name: 'f', type: 'tool-call' },
-    ])
-    expect(results[2].message.content).toEqual([
-      { arguments: '{"a":1}', callId: 'call_1', id: 'call_1', name: 'f', type: 'tool-call' },
-    ])
-    expect(results[4].reason).toBe('tool-calls')
-  })
-
-  it('exposes the response identity on the finished snapshot', async () => {
-    const results = await collectSnapshots([
-      {
-        message: { content: [], id: 'msg_1', role: 'assistant' },
-        reason: 'stop',
-        responseId: 'resp_1',
-        responseStatus: 'completed',
-        type: 'finish',
-      },
-    ])
-
-    expect(results[0]).toMatchObject({
-      message: { id: 'msg_1' },
-      responseId: 'resp_1',
-      responseStatus: 'completed',
-    })
-  })
-
-  it('exposes the terminating error on the finished snapshot', async () => {
-    const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
-    const results = await collectSnapshots([
-      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
-    ])
-
-    expect(results[0].terminalError).toBe(error)
-  })
-})
 
 describe('collect', () => {
   it('resolves with the finished message, reason, and usage', async () => {

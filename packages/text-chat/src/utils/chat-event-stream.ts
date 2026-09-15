@@ -1,4 +1,4 @@
-import type { FinishReason, PartAssembler, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, FinishReason, Usage } from '@xsai/text-primitives'
 
 import type { ChatChunk, ChatDelta, ChatUsage } from '../types'
 
@@ -73,7 +73,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
     })
   }
 
-  private onDelta(asm: PartAssembler, delta: ChatDelta): void {
+  private onDelta(asm: EventBuilder, delta: ChatDelta): void {
     const reasoning = delta.reasoning_content ?? delta.reasoning
     if (reasoning != null && reasoning !== '') {
       this.reasoningField ??= delta.reasoning_content != null ? 'reasoning_content' : 'reasoning'

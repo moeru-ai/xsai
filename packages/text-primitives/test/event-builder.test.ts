@@ -2,18 +2,18 @@ import type { Event } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
-import { partAssembler } from '../src'
+import { eventBuilder } from '../src'
 import { XSAIError } from '../src/shared'
 
-describe('partAssembler', () => {
+describe('eventBuilder', () => {
   it('preserves an empty reasoning part when no delta arrives', () => {
     const events: Event[] = []
     const failures: XSAIError[] = []
-    const assembler = partAssembler(event => events.push(event), error => failures.push(error))
+    const builder = eventBuilder(event => events.push(event), error => failures.push(error))
 
-    assembler.start('reasoning', 'reasoning')
-    assembler.finish('stop')
-    assembler.flush()
+    builder.start('reasoning', 'reasoning')
+    builder.finish('stop')
+    builder.flush()
 
     const reasoning = { content: [{ text: '', type: 'text' }], type: 'reasoning' }
     expect(events).toEqual([
@@ -26,14 +26,14 @@ describe('partAssembler', () => {
 
   it('assembles refusal parts', () => {
     const events: Event[] = []
-    const assembler = partAssembler(event => events.push(event), () => {})
+    const builder = eventBuilder(event => events.push(event), () => {})
 
-    assembler.start('refusal', 'refusal')
-    assembler.delta('refusal', 'I cannot')
-    assembler.delta('refusal', ' help')
-    assembler.end('refusal')
-    assembler.finish('stop')
-    assembler.flush()
+    builder.start('refusal', 'refusal')
+    builder.delta('refusal', 'I cannot')
+    builder.delta('refusal', ' help')
+    builder.end('refusal')
+    builder.finish('stop')
+    builder.flush()
 
     const refusal = { refusal: 'I cannot help', type: 'refusal' }
     expect(events).toEqual([
@@ -47,11 +47,11 @@ describe('partAssembler', () => {
 
   it('carries response-level identity on the finish event', () => {
     const events: Event[] = []
-    const assembler = partAssembler(event => events.push(event), () => {})
+    const builder = eventBuilder(event => events.push(event), () => {})
 
-    assembler.meta({ messageId: 'msg_1', responseId: 'resp_1', responseStatus: 'completed' })
-    assembler.finish('stop')
-    assembler.flush()
+    builder.meta({ messageId: 'msg_1', responseId: 'resp_1', responseStatus: 'completed' })
+    builder.finish('stop')
+    builder.flush()
 
     expect(events).toEqual([
       {
@@ -66,11 +66,11 @@ describe('partAssembler', () => {
 
   it('backfills a streamed message id onto an override message without one', () => {
     const events: Event[] = []
-    const assembler = partAssembler(event => events.push(event), () => {})
+    const builder = eventBuilder(event => events.push(event), () => {})
 
-    assembler.meta({ messageId: 'msg_1' })
-    assembler.finish('stop', { message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' } })
-    assembler.flush()
+    builder.meta({ messageId: 'msg_1' })
+    builder.finish('stop', { message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' } })
+    builder.flush()
 
     expect(events).toEqual([
       {
@@ -83,13 +83,13 @@ describe('partAssembler', () => {
 
   it('prefers the override message id over a streamed one', () => {
     const events: Event[] = []
-    const assembler = partAssembler(event => events.push(event), () => {})
+    const builder = eventBuilder(event => events.push(event), () => {})
 
-    assembler.meta({ messageId: 'msg_streamed' })
-    assembler.finish('stop', {
+    builder.meta({ messageId: 'msg_streamed' })
+    builder.finish('stop', {
       message: { content: [], id: 'msg_terminal', role: 'assistant' },
     })
-    assembler.flush()
+    builder.flush()
 
     expect(events).toEqual([
       {
@@ -102,11 +102,11 @@ describe('partAssembler', () => {
 
   it('carries the terminating error on the finish event', () => {
     const events: Event[] = []
-    const assembler = partAssembler(event => events.push(event), () => {})
+    const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
 
-    assembler.finish('error', { error })
-    assembler.flush()
+    builder.finish('error', { error })
+    builder.flush()
 
     expect(events).toEqual([
       { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
@@ -115,12 +115,12 @@ describe('partAssembler', () => {
 
   it('keeps the first finish: a later finish cannot replace the recorded error', () => {
     const events: Event[] = []
-    const assembler = partAssembler(event => events.push(event), () => {})
+    const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded')
 
-    assembler.finish('error', { error })
-    assembler.finish('stop')
-    assembler.flush()
+    builder.finish('error', { error })
+    builder.finish('stop')
+    builder.flush()
 
     expect(events).toEqual([
       { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
@@ -130,11 +130,11 @@ describe('partAssembler', () => {
   it('fails the stream when the wire ends without a terminal signal', () => {
     const events: Event[] = []
     const failures: XSAIError[] = []
-    const assembler = partAssembler(event => events.push(event), error => failures.push(error))
+    const builder = eventBuilder(event => events.push(event), error => failures.push(error))
 
-    assembler.start('text', 'text')
-    assembler.delta('text', 'Hi')
-    assembler.flush()
+    builder.start('text', 'text')
+    builder.delta('text', 'Hi')
+    builder.flush()
 
     expect(failures).toHaveLength(1)
     expect(failures[0]).toMatchObject({ code: 'truncated-stream' })
