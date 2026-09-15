@@ -20,7 +20,7 @@ _Avoid_: block, chunk, content item
 The normalized stream vocabulary: `content.start`, `text.delta`, `reasoning.delta`, `refusal.delta`, `tool-call.delta`, `content.end`, `finish`. Wire adapters translate their frames into it.
 _Avoid_: chunk, SSE event
 
-**Assembler**:
+**Event builder**:
 The internal `eventBuilder` in `text-primitives` that owns part bookkeeping — index assignment, delta accumulation, tool-call identity fallback — and the termination invariant. Adapters feed it part-level facts; wire semantics (finish-reason mapping, usage shape) stay in the adapter.
 
 **Terminal event**:
@@ -33,7 +33,7 @@ _Avoid_: complete, runSync
 
 ## Conventions
 
-- Mechanics are shared, semantics are wire-native: index bookkeeping and termination live in the assembler; finish reasons, usage fields, and error payloads keep their wire's shape.
+- Mechanics are shared, semantics are wire-native: index bookkeeping and termination live in the event builder; finish reasons, usage fields, and error payloads keep their wire's shape.
 - `tool-call.delta` identifies its part by `index`; its `id` is always the tool **call id**, never a provider item id.
 - `finish` separates two identities: `message.id` is the replayable assistant message id; `responseId` is the response-scoped generation id (e.g. `chatcmpl-*`, `resp_*`). A wire may carry both, either, or neither.
 - `reason` is normalized; `responseStatus` is the wire's reported response status verbatim (e.g. Responses `completed`/`incomplete`/`failed`/`cancelled`) — never collapse an unmodelled status into `stop`.

@@ -160,47 +160,47 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
   }
 }
 
-const finishResponse = (asm: EventBuilder, response: Responses.ResponseResource): void => {
+const finishResponse = (builder: EventBuilder, response: Responses.ResponseResource): void => {
   const reason = normalizeFinishReason(response)
   if (response.usage != null)
-    asm.meta({ usage: normalizeUsage(response.usage) })
+    builder.meta({ usage: normalizeUsage(response.usage) })
   const error = reason === 'error'
     ? new XSAIError('model-error', response.error?.message ?? 'response failed', { cause: response.error })
     : undefined
-  asm.finish(reason, {
+  builder.finish(reason, {
     ...(error == null ? {} : { error }),
     message: normalizeAssistantMessage(response.output),
   })
 }
 
-const onItemAdded = (asm: EventBuilder, item: Responses.ItemField, index: number): void => {
+const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
   const normalized = normalizeOutputItem(item, index)
   for (const part of normalized.parts ?? [])
-    asm.start(part.key ?? index, part.content.type, part.init)
+    builder.start(part.key ?? index, part.content.type, part.init)
   if (normalized.messageId != null)
-    asm.meta({ messageId: normalized.messageId })
+    builder.meta({ messageId: normalized.messageId })
 }
 
-const onItemDone = (asm: EventBuilder, item: Responses.ItemField, index: number): void => {
+const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
   // `output_item.done` carries the authoritative item; it overrides
   // content accumulated from deltas, including content parts that never
   // streamed a delta.
   for (const part of normalizeOutputItem(item, index).parts ?? []) {
     const key = part.key ?? index
-    asm.start(key, part.content.type, part.init)
-    asm.end(key, { content: part.content })
+    builder.start(key, part.content.type, part.init)
+    builder.end(key, { content: part.content })
   }
 }
 
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
   constructor() {
-    super((event, asm) => {
+    super((event, builder) => {
       // Response-scoped id and status; distinct from the output message id.
       if ('response' in event && event.response != null)
-        asm.meta({ responseId: event.response.id, responseStatus: event.response.status })
+        builder.meta({ responseId: event.response.id, responseStatus: event.response.status })
       switch (event.type) {
         case 'error':
-          asm.finish('error', {
+          builder.finish('error', {
             error: new XSAIError('model-error', event.error.message, { cause: event.error }),
           })
           break
@@ -210,20 +210,20 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           // The terminal event carries the authoritative output record; a bare
           // terminal event may arrive without any per-item events. The
           // response's own `status` decides the finish reason, not the tag.
-          finishResponse(asm, event.response)
+          finishResponse(builder, event.response)
           break
         case 'response.content_part.added': {
           const content = normalizeContentPart(event.part)
           if (content != null)
-            asm.start(contentPartKey(event.output_index, event.content_index), content.type)
+            builder.start(contentPartKey(event.output_index, event.content_index), content.type)
           break
         }
         case 'response.content_part.done': {
           const content = normalizeContentPart(event.part)
           if (content != null) {
             const key = contentPartKey(event.output_index, event.content_index)
-            asm.start(key, content.type)
-            asm.end(key, { content })
+            builder.start(key, content.type)
+            builder.end(key, { content })
           }
           break
         }
@@ -232,7 +232,7 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
         case 'response.function_call_arguments.delta':
         case 'response.reasoning.delta':
         case 'response.reasoning_summary_text.delta':
-          asm.delta(event.output_index, event.delta)
+          builder.delta(event.output_index, event.delta)
           break
         case 'response.function_call_arguments.done':
           break
@@ -248,17 +248,17 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           break
         case 'response.output_item.added':
           if (event.item != null)
-            onItemAdded(asm, event.item, event.output_index)
+            onItemAdded(builder, event.item, event.output_index)
           break
         case 'response.output_item.done':
           if (event.item != null)
-            onItemDone(asm, event.item, event.output_index)
+            onItemDone(builder, event.item, event.output_index)
           break
         case 'response.output_text.delta':
         case 'response.refusal.delta': {
           const key = contentPartKey(event.output_index, event.content_index)
-          asm.start(key, event.type === 'response.refusal.delta' ? 'refusal' : 'text')
-          asm.delta(key, event.delta)
+          builder.start(key, event.type === 'response.refusal.delta' ? 'refusal' : 'text')
+          builder.delta(key, event.delta)
           break
         }
       }
