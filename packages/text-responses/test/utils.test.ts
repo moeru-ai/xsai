@@ -305,7 +305,8 @@ describe('normalizeTools', () => {
         name: 'noop',
         parameters: {
           additionalProperties: false,
-          properties: undefined,
+          properties: {},
+          required: [],
           type: 'object',
         },
         strict: true,

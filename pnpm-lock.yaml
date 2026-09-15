@@ -264,9 +264,6 @@ importers:
       '@xsai/text-primitives':
         specifier: 'workspace:'
         version: link:../text-primitives
-      xsschema:
-        specifier: 'workspace:'
-        version: link:../xsschema
       zod:
         specifier: catalog:schema-dev
         version: 4.3.6
@@ -280,9 +277,6 @@ importers:
       '@xsai/text-primitives':
         specifier: 'workspace:'
         version: link:../text-primitives
-      xsschema:
-        specifier: 'workspace:'
-        version: link:../xsschema
 
   packages/text-primitives:
     dependencies:
@@ -299,9 +293,6 @@ importers:
       eventsource-parser:
         specifier: 'catalog:'
         version: 4.1.0
-      xsschema:
-        specifier: 'workspace:'
-        version: link:../xsschema
 
   packages/text-responses:
     dependencies:
@@ -312,9 +303,6 @@ importers:
       '@xsai/text-primitives':
         specifier: 'workspace:'
         version: link:../text-primitives
-      xsschema:
-        specifier: 'workspace:'
-        version: link:../xsschema
       zod:
         specifier: catalog:schema-dev
         version: 4.3.6

@@ -30,6 +30,7 @@ describe('tool', () => {
       name: 'get_weather',
     })
     expect(weather.inputSchema).toBe(inputSchema)
+    expect(weather.inputSchema).toMatchObject({ additionalProperties: false, required: ['city'] })
     expect(weather.outputSchema).toBeUndefined()
     expect('execute' in weather).toBe(false)
   })
@@ -50,25 +51,17 @@ describe('tool', () => {
     expect(input).toHaveBeenCalledOnce()
     expect(input).toHaveBeenCalledWith({ target: 'draft-07' })
     expect(weather.inputSchema).toBe(wire)
+    expect(weather.inputSchema).toMatchObject({ additionalProperties: false, required: ['city'] })
   })
 
-  it('resolves the output schema through the output side and keeps handler inference', async () => {
-    const output = vi.fn(() => ({ type: 'string' }))
+  it('resolves the output schema and keeps handler inference', async () => {
     const weather = tool({
       execute: input => `sunny in ${input.city}`,
       inputSchema: standardSchema<{ city: string }>({ type: 'object' }),
       name: 'get_weather',
-      outputSchema: {
-        '~standard': {
-          jsonSchema: { input: () => ({ type: 'number' }), output },
-          vendor: 'test',
-          version: 1,
-        },
-      },
+      outputSchema: { type: 'string' },
     })
 
-    // the execution-result side is advertised, not the input side
-    expect(output).toHaveBeenCalledWith({ target: 'draft-07' })
     expect(weather.outputSchema).toEqual({ type: 'string' })
     await expect(weather.execute({ city: 'Taipei' })).resolves.toBe(JSON.stringify('sunny in Taipei'))
   })
