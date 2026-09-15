@@ -280,6 +280,9 @@ importers:
       '@xsai/text-primitives':
         specifier: 'workspace:'
         version: link:../text-primitives
+      xsschema:
+        specifier: 'workspace:'
+        version: link:../xsschema
 
   packages/text-primitives:
     dependencies:
@@ -290,6 +293,9 @@ importers:
       '@standard-schema/spec':
         specifier: 'catalog:'
         version: 1.1.0
+      '@types/json-schema':
+        specifier: 'catalog:'
+        version: 7.0.15
       eventsource-parser:
         specifier: 'catalog:'
         version: 4.1.0
