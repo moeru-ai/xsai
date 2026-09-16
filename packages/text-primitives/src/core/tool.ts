@@ -6,7 +6,7 @@ import type { ToolResultPartContent } from './types/content'
 import { resolveSchema } from '../utils/schema'
 
 export interface ExecutableTool extends Tool {
-  execute: (input: unknown) => Promisable<string | ToolResultPartContent[]>
+  execute: (input: unknown, options?: ToolExecuteOptions) => Promisable<string | ToolResultPartContent[]>
 }
 
 export interface Tool {
@@ -14,6 +14,10 @@ export interface Tool {
   inputSchema: Record<string, unknown>
   name: string
   outputSchema?: Record<string, unknown>
+}
+
+export interface ToolExecuteOptions {
+  signal?: AbortSignal
 }
 
 export interface ToolOptions<TInput extends UnresolvedSchema, TOutput extends undefined | UnresolvedSchema = undefined> {
