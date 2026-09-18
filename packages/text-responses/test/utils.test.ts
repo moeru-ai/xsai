@@ -192,7 +192,7 @@ describe('normalizeInput', () => {
           content: [
             { text: 'summary', type: 'summary' },
             { text: 'private thought', type: 'text' },
-            { data: 'redacted thought', type: 'redacted' },
+            { text: 'redacted thought', type: 'redacted' },
           ],
           id: 'reasoning_1',
           type: 'reasoning',

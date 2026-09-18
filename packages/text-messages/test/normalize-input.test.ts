@@ -72,7 +72,7 @@ describe('normalize input', () => {
         content: [{
           content: [
             { text: 'Think', type: 'text' },
-            { data: 'redacted-data', type: 'redacted' },
+            { text: 'redacted-data', type: 'redacted' },
             { text: 'summary text', type: 'summary' },
             { text: 'encrypted-data', type: 'encrypted' },
           ],
