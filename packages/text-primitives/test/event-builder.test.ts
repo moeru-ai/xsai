@@ -68,7 +68,7 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.meta({ messageId: 'msg_1' })
-    builder.finish('completed', 'stop', { message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' } })
+    builder.finish('completed', 'stop', { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' })
     builder.flush()
 
     expect(events).toEqual([
@@ -86,9 +86,7 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.meta({ messageId: 'msg_streamed' })
-    builder.finish('completed', 'stop', {
-      message: { content: [], id: 'msg_terminal', role: 'assistant' },
-    })
+    builder.finish('completed', 'stop', { content: [], id: 'msg_terminal', role: 'assistant' })
     builder.flush()
 
     expect(events).toEqual([
@@ -138,10 +136,8 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.finish('completed', 'stop', {
-      message: {
-        content: [{ arguments: '{}', callId: 'call_1', id: 'call_1', name: 'weather', type: 'tool-call' }],
-        role: 'assistant',
-      },
+      content: [{ arguments: '{}', callId: 'call_1', id: 'call_1', name: 'weather', type: 'tool-call' }],
+      role: 'assistant',
     })
     builder.flush()
 
@@ -187,7 +183,7 @@ describe('eventBuilder', () => {
     const error = new XSAIError('model-error', 'server exploded')
     const message = { content: [{ text: 'partial', type: 'text' as const }], role: 'assistant' as const }
 
-    builder.finishFailure(error, { message })
+    builder.finishFailure(error, message)
     builder.flush()
 
     expect(events).toEqual([{ error, message, status: 'failed', type: 'stream.end' }])
