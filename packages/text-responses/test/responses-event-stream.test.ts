@@ -534,6 +534,40 @@ describe('responses event stream', () => {
     ])
   })
 
+  it('does not infer refusal for cancelled responses', async () => {
+    await expect(readEvents([
+      message({
+        response: {
+          error: null,
+          id: 'resp_1',
+          incomplete_details: null,
+          output: [{
+            content: [{ refusal: 'I cannot help', type: 'refusal' }],
+            id: 'message_1',
+            role: 'assistant',
+            status: 'completed',
+            type: 'message',
+          }],
+          status: 'cancelled',
+          usage: null,
+        },
+        type: 'response.incomplete',
+      }),
+      { data: '[DONE]' },
+    ])).resolves.toEqual([
+      { type: 'stream.start' },
+      {
+        message: {
+          content: [{ refusal: 'I cannot help', type: 'refusal' }],
+          id: 'message_1',
+          role: 'assistant',
+        },
+        status: 'cancelled',
+        type: 'stream.end',
+      },
+    ])
+  })
+
   it('passes through unmodelled terminal statuses instead of mapping them to stop', async () => {
     await expect(readEvents([
       message({

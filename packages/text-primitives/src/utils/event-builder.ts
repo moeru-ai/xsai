@@ -256,9 +256,8 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
       if (terminal !== undefined)
         return
 
-      const messageContent = message?.content
-      const hasToolCall = parts.some(part => part.type === 'tool-call')
-        || (messageContent != null && typeof messageContent !== 'string' && messageContent.some(part => part.type === 'tool-call'))
+      const messageContent = message?.content ?? parts
+      const hasToolCall = typeof messageContent !== 'string' && messageContent.some(part => part.type === 'tool-call')
       const reconciledReason = status === 'completed' && (reason == null || reason === 'stop') && hasToolCall
         ? 'tool-calls'
         : reason
