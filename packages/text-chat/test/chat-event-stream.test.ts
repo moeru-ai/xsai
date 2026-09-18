@@ -69,7 +69,7 @@ describe('chat event stream', () => {
           role: 'assistant',
         },
         reason: 'stop',
-        responseId: 'chatcmpl_1',
+        status: 'completed',
         type: 'stream.end',
         usage: {
           cacheReadInputTokens: undefined,
@@ -165,7 +165,7 @@ describe('chat event stream', () => {
           role: 'assistant',
         },
         reason: 'tool-calls',
-        responseId: 'chatcmpl_1',
+        status: 'completed',
         type: 'stream.end',
         usage: {
           cacheReadInputTokens: undefined,
@@ -222,7 +222,7 @@ describe('chat event stream', () => {
           role: 'assistant',
         },
         reason: 'stop',
-        responseId: 'chatcmpl_1',
+        status: 'completed',
         type: 'stream.end',
       },
     ])
@@ -306,7 +306,7 @@ describe('chat event stream', () => {
           role: 'assistant',
         },
         reason: 'tool-calls',
-        responseId: 'chatcmpl_1',
+        status: 'completed',
         type: 'stream.end',
       },
     ])
@@ -342,7 +342,7 @@ describe('chat event stream', () => {
           role: 'assistant',
         },
         reason: 'tool-calls',
-        responseId: 'chatcmpl_1',
+        status: 'completed',
         type: 'stream.end',
       },
     ])
@@ -377,7 +377,7 @@ describe('chat event stream', () => {
           role: 'assistant',
         },
         reason: 'stop',
-        responseId: 'chatcmpl_1',
+        status: 'completed',
         type: 'stream.end',
         usage: {
           cacheReadInputTokens: 6,
@@ -409,7 +409,7 @@ describe('chat event stream', () => {
           role: 'assistant',
         },
         reason: 'stop',
-        responseId: 'chatcmpl_1',
+        status: 'completed',
         type: 'stream.end',
       },
     ])
@@ -451,8 +451,8 @@ describe('chat event stream', () => {
           ],
           role: 'assistant',
         },
-        reason: 'stop',
-        responseId: 'chatcmpl_1',
+        reason: 'refusal',
+        status: 'completed',
         type: 'stream.end',
       },
     ])
@@ -487,7 +487,7 @@ describe('chat event stream', () => {
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
-        reason: 'error',
+        status: 'failed',
         type: 'stream.end',
       },
     ])

@@ -1,24 +1,27 @@
-import type { EventBuilder, FinishReason, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, StopReason, StreamStatus, Usage } from '@xsai/text-primitives'
 
 import type { ChatChunk, ChatDelta, ChatUsage } from '../types'
 
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives'
 
-const mapFinishReason = (reason: null | string | undefined): FinishReason => {
+const mapFinish = (reason: null | string | undefined, refusal: boolean): { reason?: StopReason, status: Exclude<StreamStatus, 'failed'> } => {
   switch (reason) {
     case 'content_filter':
-      return 'content-filter'
-    case 'tool_calls':
-      return 'tool-calls'
+      return { reason: 'content-filter', status: 'incomplete' }
     case 'length':
-      return 'max-output-tokens'
+    case 'max_output_tokens':
+    case 'max_tokens':
+      return { reason: 'length', status: 'incomplete' }
     case null:
-    case 'stop':
     case undefined:
-      return 'stop'
+      return { status: 'completed' }
+    case 'stop':
+      return { reason: refusal ? 'refusal' : 'stop', status: 'completed' }
+    case 'tool_calls':
+      return { reason: 'tool-calls', status: 'completed' }
     default:
-      return reason
+      return { reason, status: 'completed' }
   }
 }
 
@@ -36,19 +39,18 @@ const normalizeUsage = (usage: ChatUsage): Usage => {
 
 export class ChatEventStream extends WireEventStream<ChatChunk> {
   // Preserve the wire field for assistant-message replay.
+  private hasRefusal = false
   private reasoningField?: 'reasoning' | 'reasoning_content'
 
   constructor() {
     super((chunk, builder) => {
       if (chunk.error != null) {
-        builder.finish('error', {
-          error: new XSAIError('model-error', chunk.error.message, { cause: chunk.error }),
-        })
+        builder.finishFailure(new XSAIError('model-error', chunk.error.message, {
+          cause: chunk.error,
+        }))
         return
       }
 
-      if (chunk.id != null)
-        builder.meta({ responseId: chunk.id })
       if (chunk.usage != null)
         builder.meta({ usage: normalizeUsage(chunk.usage) })
 
@@ -63,7 +65,8 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
         if (choice.finish_reason != null) {
           if (this.reasoningField != null)
             builder.end('reasoning', { metadata: { chat: { reasoning_field: this.reasoningField } } })
-          builder.finish(mapFinishReason(choice.finish_reason))
+          const finish = mapFinish(choice.finish_reason, this.hasRefusal)
+          builder.finish(finish.status, finish.reason)
         }
       }
     })
@@ -86,6 +89,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
     // Refusal is a separate part from content.
     const refusal = delta.refusal ?? ''
     if (refusal !== '') {
+      this.hasRefusal = true
       builder.start('refusal', 'refusal')
       builder.delta('refusal', refusal)
     }

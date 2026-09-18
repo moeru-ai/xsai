@@ -4,7 +4,7 @@ import type { LanguageModel, LanguageModelOptions } from './types/language-model
 import { XSAIError } from '@xsai/shared'
 
 /** The resolved value of {@link collect}. */
-export type CollectResult = Omit<StreamEndEvent, 'error' | 'type'>
+export type CollectResult = Omit<Exclude<StreamEndEvent, { status: 'failed' }>, 'error' | 'type'>
 
 /**
  * Resolves with `stream.end`; rejects on errors or truncated streams. The
@@ -20,14 +20,13 @@ export const collect = async (
     if (event.type !== 'stream.end')
       continue
 
-    if (event.reason === 'error')
-      throw event.error ?? new XSAIError('model-error', 'model stream failed')
+    if (event.status === 'failed')
+      throw event.error
 
     return {
       message: event.message,
-      reason: event.reason,
-      ...(event.responseId == null ? {} : { responseId: event.responseId }),
-      ...(event.responseStatus == null ? {} : { responseStatus: event.responseStatus }),
+      ...(event.reason == null ? {} : { reason: event.reason }),
+      status: event.status,
       ...(event.usage == null ? {} : { usage: event.usage }),
     }
   }

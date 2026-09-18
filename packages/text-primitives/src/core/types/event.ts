@@ -1,6 +1,6 @@
 import type { XSAIError } from '@xsai/shared'
 
-import type { FinishReason } from './finish-reason'
+import type { StopReason } from './finish-reason'
 import type { AssistantMessage, AssistantMessageContent } from './message'
 import type { Usage } from './usage'
 
@@ -43,22 +43,29 @@ export interface RefusalDeltaEvent {
   type: 'refusal.delta'
 }
 
-export interface StreamEndEvent {
-  /** The terminating error. Present when `reason` is `'error'`. */
-  error?: XSAIError
-  message: AssistantMessage
-  reason: FinishReason
-  /** Wire response id, distinct from the replayable assistant message id. */
-  responseId?: string
-  /** Last response status reported by the wire. */
-  responseStatus?: string
-  type: 'stream.end'
-  usage?: Usage
-}
+export type StreamEndEvent
+  = | {
+    error: XSAIError
+    message: AssistantMessage
+    reason?: never
+    status: 'failed'
+    type: 'stream.end'
+    usage?: Usage
+  }
+  | {
+    error?: never
+    message: AssistantMessage
+    reason?: StopReason
+    status: Exclude<StreamStatus, 'failed'>
+    type: 'stream.end'
+    usage?: Usage
+  }
 
 export interface StreamStartEvent {
   type: 'stream.start'
 }
+
+export type StreamStatus = 'cancelled' | 'completed' | 'failed' | 'incomplete'
 
 export interface TextDeltaEvent {
   delta: string

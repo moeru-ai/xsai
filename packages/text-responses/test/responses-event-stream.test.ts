@@ -169,9 +169,8 @@ describe('responses event stream', () => {
           id: 'message_1',
           role: 'assistant',
         },
-        reason: 'stop',
-        responseId: 'resp_1',
-        responseStatus: 'completed',
+        reason: 'tool-calls',
+        status: 'completed',
         type: 'stream.end',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
       },
@@ -239,9 +238,8 @@ describe('responses event stream', () => {
           id: 'message_1',
           role: 'assistant',
         },
-        reason: 'stop',
-        responseId: 'resp_1',
-        responseStatus: 'completed',
+        reason: 'refusal',
+        status: 'completed',
         type: 'stream.end',
       },
     ])
@@ -351,9 +349,8 @@ describe('responses event stream', () => {
           id: 'message_1',
           role: 'assistant',
         },
-        reason: 'stop',
-        responseId: 'resp_1',
-        responseStatus: 'completed',
+        reason: 'refusal',
+        status: 'completed',
         type: 'stream.end',
       },
     ])
@@ -373,7 +370,7 @@ describe('responses event stream', () => {
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
-        reason: 'error',
+        status: 'failed',
         type: 'stream.end',
       },
     ])
@@ -405,9 +402,7 @@ describe('responses event stream', () => {
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
-        reason: 'error',
-        responseId: 'resp_1',
-        responseStatus: 'failed',
+        status: 'failed',
         type: 'stream.end',
       },
     ])
@@ -508,9 +503,8 @@ describe('responses event stream', () => {
           }],
           role: 'assistant',
         },
-        reason: 'max-output-tokens',
-        responseId: 'resp_1',
-        responseStatus: 'incomplete',
+        reason: 'length',
+        status: 'incomplete',
         type: 'stream.end',
       },
     ])
@@ -534,9 +528,7 @@ describe('responses event stream', () => {
       { type: 'stream.start' },
       {
         message: { content: [], role: 'assistant' },
-        reason: 'incomplete',
-        responseId: 'resp_1',
-        responseStatus: 'incomplete',
+        status: 'incomplete',
         type: 'stream.end',
       },
     ])
@@ -560,11 +552,30 @@ describe('responses event stream', () => {
       { type: 'stream.start' },
       {
         message: { content: [], role: 'assistant' },
-        reason: 'cancelled',
-        responseId: 'resp_1',
-        responseStatus: 'cancelled',
+        status: 'cancelled',
         type: 'stream.end',
       },
     ])
+  })
+
+  it('rejects unknown response statuses as protocol errors', async () => {
+    await expect(readEvents([
+      message({
+        response: {
+          error: null,
+          id: 'resp_1',
+          incomplete_details: null,
+          output: [],
+          status: 'future_status',
+          usage: null,
+        },
+        type: 'response.completed',
+      }),
+      { data: '[DONE]' },
+    ])).rejects.toMatchObject({
+      cause: { code: 'protocol-error', message: 'unknown response status: future_status' },
+      code: 'protocol-error',
+      message: 'failed to normalize wire event',
+    })
   })
 })
