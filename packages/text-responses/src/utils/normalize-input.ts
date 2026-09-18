@@ -62,10 +62,8 @@ const normalizeReasoningPart = (part: ReasoningPart): ReasoningItemParam => {
   for (const partContent of part.content) {
     switch (partContent.type) {
       case 'encrypted':
-        encryptedContent = partContent.text
-        break
       case 'redacted':
-        encryptedContent = partContent.data
+        encryptedContent = partContent.text
         break
       case 'summary':
         summary.push({ text: partContent.text, type: 'summary_text' })
