@@ -32,30 +32,9 @@ export interface ReasoningPart {
   type: 'reasoning'
 }
 
-export type ReasoningPartContent
-  = | ReasoningPartEncryptedContent
-    | ReasoningPartRedactedContent
-    | ReasoningPartSummaryContent
-    | ReasoningPartTextContent
-
-export interface ReasoningPartEncryptedContent {
+export interface ReasoningPartContent {
   text: string
-  type: 'encrypted'
-}
-
-export interface ReasoningPartRedactedContent {
-  data: string
-  type: 'redacted'
-}
-
-export interface ReasoningPartSummaryContent {
-  text: string
-  type: 'summary'
-}
-
-export interface ReasoningPartTextContent {
-  text: string
-  type: 'text'
+  type: 'encrypted' | 'redacted' | 'summary' | 'text'
 }
 
 export interface RefusalPart {
