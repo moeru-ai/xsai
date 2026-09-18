@@ -17,9 +17,9 @@ export interface EventBuilder {
   /** Closes a part and emits `content.end`. */
   end: (key: PartKey, extra?: PartEndExtra) => void
   /** Records a non-failed terminal status and closes open parts. */
-  finish: (status: Exclude<StreamStatus, 'failed'>, reason?: StopReason, extra?: PartFinishExtra) => void
+  finish: (status: Exclude<StreamStatus, 'failed'>, reason?: StopReason, message?: AssistantMessage) => void
   /** Records a provider-declared failure and closes open parts. */
-  finishFailure: (error: XSAIError, extra?: PartFinishExtra) => void
+  finishFailure: (error: XSAIError, message?: AssistantMessage) => void
   /** Emits `stream.end` or fails for an incomplete wire stream. */
   flush: () => void
   /** Records message identity and usage metadata. */
@@ -43,10 +43,6 @@ export interface PartEndExtra {
   content?: AssistantMessageContent
   /** Attached only to `reasoning` parts — the only part type with a metadata field. */
   metadata?: PartMetadata
-}
-
-export interface PartFinishExtra {
-  message?: AssistantMessage
 }
 
 /** Adapter-assigned identity for a part. */
@@ -98,7 +94,7 @@ const resolveCallId = (state: PartState): string =>
   state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
 
 /** @internal */
-export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIError) => void, close?: () => void): EventBuilder => {
+export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIError) => void): EventBuilder => {
   const parts: AssistantMessageContent[] = []
   const states = new Map<PartKey, PartState>()
   let terminalEmitted = false
@@ -256,29 +252,28 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
   return {
     delta,
     end,
-    finish: (status, reason, extra) => {
+    finish: (status, reason, message) => {
       if (terminal !== undefined)
         return
 
-      const messageContent = extra?.message?.content
+      const messageContent = message?.content
       const hasToolCall = parts.some(part => part.type === 'tool-call')
         || (messageContent != null && typeof messageContent !== 'string' && messageContent.some(part => part.type === 'tool-call'))
       const reconciledReason = status === 'completed' && (reason == null || reason === 'stop') && hasToolCall
         ? 'tool-calls'
         : reason
-      terminal = { message: extra?.message, reason: reconciledReason, status }
+      terminal = { message, reason: reconciledReason, status }
       for (const key of states.keys())
         end(key)
     },
-    finishFailure: (error, extra) => {
+    finishFailure: (error, message) => {
       if (terminal !== undefined)
         return
 
-      terminal = { error, message: extra?.message, status: 'failed' }
+      terminal = { error, message, status: 'failed' }
       for (const key of states.keys())
         end(key)
       emitTerminal()
-      close?.()
     },
     flush: () => {
       if (terminalEmitted)
@@ -329,9 +324,12 @@ export class WireEventStream<W> extends TransformStream<string, Event> {
       },
       start: (controller) => {
         builder = eventBuilder(
-          event => controller.enqueue(event),
+          (event) => {
+            controller.enqueue(event)
+            if (event.type === 'stream.end' && event.status === 'failed')
+              controller.terminate()
+          },
           error => controller.error(error),
-          () => controller.terminate(),
         )
         controller.enqueue({ type: 'stream.start' })
       },

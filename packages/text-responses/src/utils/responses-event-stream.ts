@@ -183,13 +183,13 @@ const finishResponse = (builder: EventBuilder, response: Responses.ResponseResou
     const error = new XSAIError('model-error', response.error?.message ?? 'response failed', {
       cause: response.error ?? response,
     })
-    builder.finishFailure(error, { message })
+    builder.finishFailure(error, message)
     return
   }
 
   const reason = normalizeFinishReason(response)
     ?? (typeof message.content !== 'string' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
-  builder.finish(status, reason, { message })
+  builder.finish(status, reason, message)
 }
 
 const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
