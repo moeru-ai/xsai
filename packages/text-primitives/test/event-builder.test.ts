@@ -163,6 +163,23 @@ describe('eventBuilder', () => {
     })
   })
 
+  it('does not use streamed tool calls when an override message omits them', () => {
+    const events: Event[] = []
+    const builder = eventBuilder(event => events.push(event), () => {})
+
+    builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
+    builder.delta('tool', '{}')
+    builder.finish('completed', 'stop', { content: [{ text: 'done', type: 'text' }], role: 'assistant' })
+    builder.flush()
+
+    expect(events.at(-1)).toEqual({
+      message: { content: [{ text: 'done', type: 'text' }], role: 'assistant' },
+      reason: 'stop',
+      status: 'completed',
+      type: 'stream.end',
+    })
+  })
+
   it('carries the terminating error on the stream.end event', () => {
     const events: Event[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
