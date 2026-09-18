@@ -170,7 +170,7 @@ const normalizeStatus = (response: Responses.ResponseResource): StreamStatus => 
     case 'incomplete':
       return 'incomplete'
     default:
-      throw new XSAIError('protocol-error', `unknown response status: ${response.status}`)
+      throw new Error(`unknown response status: ${response.status}`)
   }
 }
 
@@ -181,7 +181,7 @@ const finishResponse = (builder: EventBuilder, response: Responses.ResponseResou
   const message = normalizeAssistantMessage(response.output)
   if (status === 'failed') {
     const error = new XSAIError('model-error', response.error?.message ?? 'response failed', {
-      cause: response.error ?? response,
+      cause: response.error ?? undefined,
     })
     builder.finishFailure(error, message)
     return

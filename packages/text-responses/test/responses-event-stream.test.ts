@@ -413,6 +413,31 @@ describe('responses event stream', () => {
     })
   })
 
+  it('does not use a failed response envelope as the error cause', async () => {
+    const events = await readEvents([
+      message({
+        response: {
+          error: null,
+          id: 'resp_1',
+          incomplete_details: null,
+          output: [],
+          status: 'failed',
+          usage: null,
+        },
+        type: 'response.failed',
+      }),
+      { data: '[DONE]' },
+    ])
+
+    expect((events[1] as StreamEndEvent).error).toMatchObject({
+      code: 'model-error',
+      message: 'response failed',
+    })
+    expect((events[1] as StreamEndEvent).error).not.toMatchObject({
+      cause: { id: 'resp_1', status: 'failed' },
+    })
+  })
+
   it('maps reasoning text output and incomplete reasons', async () => {
     await expect(readEvents([
       message({
@@ -593,7 +618,7 @@ describe('responses event stream', () => {
   })
 
   it('rejects unknown response statuses as protocol errors', async () => {
-    await expect(readEvents([
+    const messages = [
       message({
         response: {
           error: null,
@@ -606,10 +631,20 @@ describe('responses event stream', () => {
         type: 'response.completed',
       }),
       { data: '[DONE]' },
-    ])).rejects.toMatchObject({
-      cause: { code: 'protocol-error', message: 'unknown response status: future_status' },
+    ]
+    let error: unknown
+    try {
+      await readEvents(messages)
+    }
+    catch (cause) {
+      error = cause
+    }
+
+    expect(error).toMatchObject({
+      cause: { message: 'unknown response status: future_status' },
       code: 'protocol-error',
       message: 'failed to normalize wire event',
     })
+    expect((error as { cause?: unknown }).cause).not.toBeInstanceOf(XSAIError)
   })
 })
