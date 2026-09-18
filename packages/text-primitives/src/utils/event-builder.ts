@@ -9,29 +9,19 @@ import type {
 
 import { XSAIError } from '@xsai/shared'
 
-/**
- * Internal seam between a wire adapter and the event protocol. The adapter
- * reports part-level facts (`start` / `delta` / `end` / `finish`); the builder
- * owns the one copy of part state, index assignment, tool-call identity
- * fallback, and the termination invariant.
- */
+/** Internal adapter/event protocol boundary. */
 export interface EventBuilder {
-  /** Appends text to a part. `text === ''` still absorbs tool-call identity extras without emitting. */
+  /** Appends text or tool-call identity to a part. */
   delta: (key: PartKey, text: string, extra?: PartDeltaExtra) => void
-  /** Closes a part and emits `content.end`. Unknown or closed keys are no-ops. */
+  /** Closes a part and emits `content.end`. */
   end: (key: PartKey, extra?: PartEndExtra) => void
-  /**
-   * Records the terminal reason and closes all open parts. The `stream.end`
-   * event itself is emitted by `flush`, so late-arriving usage still lands.
-   * Idempotent. `extra.message` overrides the assembled message for wires
-   * whose terminal event carries an authoritative output record.
-   */
+  /** Records the terminal reason and closes open parts. */
   finish: (reason: FinishReason, extra?: PartFinishExtra) => void
-  /** Emits the `stream.end` event if not already emitted; fails the stream when the wire gave no terminal signal. */
+  /** Emits `stream.end` or fails for an incomplete wire stream. */
   flush: () => void
-  /** Records message- and response-level metadata; last call wins. */
+  /** Records message and response metadata. */
   meta: (meta: FinishMeta) => void
-  /** Opens a part and emits `content.start`. Idempotent per key. */
+  /** Opens a part and emits `content.start`. */
   start: (key: PartKey, type: AssistantMessageContent['type'], init?: PartStartInit) => void
 }
 
@@ -60,7 +50,7 @@ export interface PartFinishExtra {
   message?: AssistantMessage
 }
 
-/** Stable identity an adapter assigns to a part for the life of the stream. */
+/** Adapter-assigned identity for a part. */
 export type PartKey = number | string
 
 export interface PartStartInit {
@@ -89,8 +79,7 @@ const emptyContent = (type: AssistantMessageContent['type']): AssistantMessageCo
   }
 }
 
-// Gateways repeat id/name as '' or null on continuation deltas; only a
-// non-empty string counts as identity.
+// Ignore empty identity values from continuation deltas.
 const acceptIdentity = (current: string | undefined, incoming: string | undefined): string | undefined =>
   incoming != null && incoming !== '' ? incoming : current
 
@@ -246,8 +235,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
         return
 
       finishEmitted = true
-      // A wire stream that ends without a terminal signal is truncated, not
-      // stopped cleanly — the stream fails instead of emitting a stream.end event.
+      // Fail if the wire ended without a terminal signal.
       if (reason === undefined) {
         fail(new XSAIError('truncated-stream', 'wire stream ended without a terminal signal'))
         return
@@ -259,8 +247,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
       }
       emit({
         ...(terminalError == null ? {} : { error: terminalError }),
-        // An authoritative override that drops the message id still keeps
-        // the id observed during streaming.
+        // Keep the streamed id when the override omits it.
         message: message.id == null && messageId != null
           ? { ...message, id: messageId }
           : message,
@@ -301,13 +288,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
   }
 }
 
-/**
- * Parses SSE data frames into wire events, feeds them to `map`, and
- * guarantees the termination invariant through {@link eventBuilder}.
- * Malformed frames and wires that end without a terminal signal error
- * the stream rather than producing a stream.end event.
- * @internal
- */
+/** Parses wire events and enforces stream termination. @internal */
 export class WireEventStream<W> extends TransformStream<string, Event> {
   constructor(map: (wire: W, builder: EventBuilder) => void) {
     let builder!: EventBuilder

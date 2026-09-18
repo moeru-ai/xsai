@@ -1,6 +1,5 @@
 export interface ChatChoice {
-  // Some wires emit choices without a delta (Azure prompt_filter_results
-  // frames); they are no-ops unless they carry a finish_reason.
+  // Azure prompt_filter_results frames omit delta.
   delta?: ChatDelta
   finish_reason: null | string
   index: number

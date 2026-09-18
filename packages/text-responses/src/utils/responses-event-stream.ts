@@ -5,8 +5,7 @@ import type * as Responses from '../generated'
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives'
 
-// The generated OpenResponses schema does not yet include these official
-// Responses streaming events, so keep their wire types local to this adapter.
+// The generated schema misses these official reasoning_text events.
 type ReasoningTextDeltaEvent = Omit<Responses.ResponseReasoningDeltaStreamingEvent, 'type'> & {
   type: 'response.reasoning_text.delta'
 }
@@ -61,8 +60,7 @@ const normalizeToolCall = (item: Responses.FunctionCall): ToolCallPart => ({
 
 type MessageContent = Extract<Responses.ItemField, { type: 'message' }>['content'][number]
 
-// A message item's content entries are separate parts, keyed by their
-// `content_index` — output text stays text, refusal stays refusal.
+// Keep message content parts distinct by content_index.
 const contentPartKey = (outputIndex: number, contentIndex: number): PartKey => `${outputIndex}:${contentIndex}`
 
 const normalizeContentPart = (part: MessageContent): AssistantMessageContent | undefined => {
@@ -80,8 +78,7 @@ const normalizeMessageContent = (item: Extract<Responses.ItemField, { type: 'mes
   })
 
 const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reasoning' }>): ReasoningPart => {
-  // Added-time items may omit `summary`/`content`; only the summary_text
-  // and reasoning_text members carry normalized content.
+  // Added reasoning items may omit summary/content.
   const reasoningContent: ReasoningPartContent[] = [
     ...(item.summary ?? []).flatMap((part): ReasoningPartContent[] =>
       part.type === 'summary_text' ? [{ text: part.text, type: 'summary' }] : []),
@@ -145,9 +142,7 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
 }
 
 const normalizeFinishReason = (response: Responses.ResponseResource): FinishReason => {
-  // The terminal `status` is authoritative; `incomplete_details` only
-  // refines it. Unmodelled statuses pass through rather than collapsing
-  // to `stop`.
+  // Use response.status as the source of the finish reason.
   switch (response.status) {
     case 'completed':
       return 'stop'
@@ -194,9 +189,7 @@ const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: nu
 }
 
 const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
-  // `output_item.done` carries the authoritative item; it overrides
-  // content accumulated from deltas, including content parts that never
-  // streamed a delta.
+  // The done item is authoritative, including parts without deltas.
   for (const part of normalizeOutputItem(item, index).parts ?? []) {
     const key = part.key ?? index
     builder.start(key, part.content.type, part.init)
@@ -207,7 +200,6 @@ const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: num
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
   constructor() {
     super((event, builder) => {
-      // Response-scoped id and status; distinct from the output message id.
       if ('response' in event && event.response != null)
         builder.meta({ responseId: event.response.id, responseStatus: event.response.status })
       switch (event.type) {
@@ -219,9 +211,7 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
         case 'response.completed':
         case 'response.failed':
         case 'response.incomplete':
-          // The terminal event carries the authoritative output record; a bare
-          // terminal event may arrive without any per-item events. The
-          // response's own `status` decides the finish reason, not the tag.
+          // The terminal response is authoritative and may arrive without item events.
           finishResponse(builder, event.response)
           break
         case 'response.content_part.added': {

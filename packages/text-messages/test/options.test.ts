@@ -24,7 +24,6 @@ describe('messages options', () => {
       max_tokens: 10,
       output_config: { effort: 'max' },
       temperature: 0.5,
-      // extraBody replaces the normalized tool_choice wholesale.
       tool_choice: { disable_parallel_tool_use: true },
       top_p: 0.9,
     })
@@ -64,7 +63,6 @@ describe('messages options', () => {
 
     expect(bodies[0].output_config).toMatchObject({
       effort: 'high',
-      // the Messages wire has no name/description fields
       format: {
         schema: {
           additionalProperties: false,

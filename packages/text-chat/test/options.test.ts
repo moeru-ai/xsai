@@ -23,7 +23,6 @@ describe('chat options', () => {
     expect(bodies[0]).toMatchObject({
       max_tokens: 10,
       reasoning_effort: 'low',
-      // extraBody replaces wire fields wholesale, even adapter-set ones.
       stream_options: { custom: true },
       temperature: 0.7,
       tool_choice: { function: { name: 'get_weather' }, type: 'function' },

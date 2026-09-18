@@ -83,7 +83,6 @@ describe('collect', () => {
           reason: 'stop',
           type: 'stream.end',
         })
-        // never closes
       },
     })
 

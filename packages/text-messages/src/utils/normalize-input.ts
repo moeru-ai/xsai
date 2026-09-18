@@ -137,7 +137,6 @@ const normalizeAssistantPart = (part: AssistantMessageContent): ContentBlock[] =
     case 'reasoning':
       return normalizeReasoningPart(part)
     case 'refusal':
-      // Anthropic refusal is a stop condition with no replayable block.
       throw new XSAIError('invalid-input', 'Refusal parts cannot be replayed on the Messages API')
     case 'text':
       return [{ text: part.text, type: 'text' }]
