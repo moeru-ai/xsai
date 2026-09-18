@@ -20,8 +20,7 @@ export type UnresolvedSchema<Input = unknown, Output = Input>
 
 const NUMERIC_CONSTRAINTS = ['exclusiveMaximum', 'exclusiveMinimum', 'maximum', 'minimum', 'multipleOf'] as const
 
-// `additionalProperties: false` and all-`required` on object schemas, with
-// `properties` injected even when empty.
+// Enforce strict object schemas and remove unsupported numeric constraints.
 const strictObjectKeywords = (schema: JSONSchema7): void => {
   if (schema.type === 'object' || schema.properties != null) {
     schema.properties ??= {}
@@ -36,7 +35,7 @@ const strictObjectKeywords = (schema: JSONSchema7): void => {
   }
 }
 
-// Neither provider supports oneOf; convert to anyOf, merging into an existing anyOf array if present.
+// Providers use anyOf instead of oneOf.
 const mergeOneOf = (schema: JSONSchema7): void => {
   if (schema.oneOf == null)
     return
@@ -55,7 +54,7 @@ const subschemas = (schema: JSONSchema7): JSONSchema7Definition[] => [
 
 /** @internal */
 export const strictSchema = (schema: JSONSchema7): JSONSchema7 => {
-  // OpenAI does not allow sibling keywords next to `$ref`.
+  // OpenAI does not allow keywords next to `$ref`.
   if (schema.$ref != null) {
     for (const key of Object.keys(schema)) {
       if (key !== '$ref')

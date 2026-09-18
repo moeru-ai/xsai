@@ -7,9 +7,7 @@ import { HttpError, XSAIError } from '@xsai/shared'
 import { EventSourceDataStream, EventSourceParserStream } from './event-source-stream'
 
 export interface WireRequestInit {
-  /** Wire-shaped body fields; `undefined` values are dropped by `JSON.stringify`. */
   body: Record<string, unknown>
-  /** Overrides the default `Authorization`/`Content-Type` headers; `undefined` values are dropped. */
   headers?: Record<string, string | undefined>
   path: string
 }
@@ -30,12 +28,7 @@ const responseCatch = async (res: Response): Promise<Response & { body: NonNulla
   return res as Response & { body: NonNullable<Response['body']> }
 }
 
-/**
- * The shared wire-request mechanic: POST JSON to `init.path`, decode the SSE
- * stream, and translate frames through `eventStream`. Wire adapters supply
- * only their body fields and event stream.
- * @internal
- */
+/** Sends a request and transforms its SSE body. @internal */
 export const wireRequest = async (
   options: HttpOptions,
   modelOptions: LanguageModelOptions,
@@ -45,8 +38,6 @@ export const wireRequest = async (
   const base = options.baseURL.toString()
   const url = new URL(init.path, base.endsWith('/') ? base : `${base}/`)
 
-  // Rejection handler for the fetch call: caller aborts keep their reason,
-  // everything else becomes a `network-error`.
   const requestCatch = (cause: unknown): never => {
     if (modelOptions.signal?.aborted)
       throw cause
@@ -56,10 +47,7 @@ export const wireRequest = async (
   }
 
   return (options.fetch ?? fetch)(url, {
-    // extraBody is the caller's wire-native override: it always wins over
-    // adapter-normalized fields. `definedOnly` keeps `undefined` entries in
-    // extraBody from erasing adapter fields; init.body needs no such pass
-    // because `JSON.stringify` drops `undefined` on its own.
+    // Ignore undefined overrides so they cannot erase normalized fields.
     body: JSON.stringify({
       ...init.body,
       ...definedOnly(modelOptions.extraBody ?? {}),
