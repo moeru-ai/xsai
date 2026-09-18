@@ -1,6 +1,6 @@
 import type { HttpOptions } from '@xsai/shared'
 
-import type { AssistantMessageContent, Event, ExecutableTool, FinishEvent, LanguageModel, Message, TextDeltaEvent, ToolCallPart } from '../src'
+import type { AssistantMessageContent, Event, ExecutableTool, LanguageModel, Message, StreamEndEvent, TextDeltaEvent, ToolCallPart } from '../src'
 
 import { env } from 'node:process'
 
@@ -55,7 +55,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
       .join('')
 
     expect(text.length).toBeGreaterThan(0)
-    expect(events.some(event => event.type === 'finish')).toBe(true)
+    expect(events.some(event => event.type === 'stream.end')).toBe(true)
   }
 
   const continuesManualToolLoop = async (): Promise<void> => {
@@ -77,14 +77,14 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
     }]
 
     const firstEvents = await readEvents(await model({ input, tools: [weather] }))
-    const firstFinish = firstEvents.find((event): event is FinishEvent => event.type === 'finish')!
-    const toolCall = (firstFinish.message.content as readonly AssistantMessageContent[])
+    const firstStreamEnd = firstEvents.find((event): event is StreamEndEvent => event.type === 'stream.end')!
+    const toolCall = (firstStreamEnd.message.content as readonly AssistantMessageContent[])
       .find((part): part is ToolCallPart => part.type === 'tool-call')!
     const result = await weather.execute(parseWeatherInput(JSON.parse(toolCall.arguments)))
 
     expect(toolCall.name).toBe(weather.name)
 
-    input.push(firstFinish.message, {
+    input.push(firstStreamEnd.message, {
       content: [{ callId: toolCall.callId, output: result, type: 'tool-result' }],
       role: 'user',
     })
@@ -96,7 +96,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
       .join('')
 
     expect(text).toContain(toolResult)
-    expect(secondEvents.some(event => event.type === 'finish')).toBe(true)
+    expect(secondEvents.some(event => event.type === 'stream.end')).toBe(true)
   }
 
   return { continuesManualToolLoop, streamsResponse }

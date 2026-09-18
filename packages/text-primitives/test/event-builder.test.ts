@@ -19,7 +19,7 @@ describe('eventBuilder', () => {
     expect(events).toEqual([
       { contentType: 'reasoning', index: 0, type: 'content.start' },
       { content: reasoning, index: 0, type: 'content.end' },
-      { message: { content: [reasoning], role: 'assistant' }, reason: 'stop', type: 'finish' },
+      { message: { content: [reasoning], role: 'assistant' }, reason: 'stop', type: 'stream.end' },
     ])
     expect(failures).toEqual([])
   })
@@ -41,11 +41,11 @@ describe('eventBuilder', () => {
       { delta: 'I cannot', index: 0, type: 'refusal.delta' },
       { delta: ' help', index: 0, type: 'refusal.delta' },
       { content: refusal, index: 0, type: 'content.end' },
-      { message: { content: [refusal], role: 'assistant' }, reason: 'stop', type: 'finish' },
+      { message: { content: [refusal], role: 'assistant' }, reason: 'stop', type: 'stream.end' },
     ])
   })
 
-  it('carries response-level identity on the finish event', () => {
+  it('carries response-level identity on the stream.end event', () => {
     const events: Event[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
@@ -59,7 +59,7 @@ describe('eventBuilder', () => {
         reason: 'stop',
         responseId: 'resp_1',
         responseStatus: 'completed',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -76,7 +76,7 @@ describe('eventBuilder', () => {
       {
         message: { content: [{ text: 'Hi', type: 'text' }], id: 'msg_1', role: 'assistant' },
         reason: 'stop',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -95,12 +95,12 @@ describe('eventBuilder', () => {
       {
         message: { content: [], id: 'msg_terminal', role: 'assistant' },
         reason: 'stop',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
 
-  it('carries the terminating error on the finish event', () => {
+  it('carries the terminating error on the stream.end event', () => {
     const events: Event[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
@@ -109,11 +109,11 @@ describe('eventBuilder', () => {
     builder.flush()
 
     expect(events).toEqual([
-      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
+      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'stream.end' },
     ])
   })
 
-  it('keeps the first finish: a later finish cannot replace the recorded error', () => {
+  it('keeps the first terminal reason: a later finish cannot replace the recorded error', () => {
     const events: Event[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded')
@@ -123,7 +123,7 @@ describe('eventBuilder', () => {
     builder.flush()
 
     expect(events).toEqual([
-      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
+      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'stream.end' },
     ])
   })
 

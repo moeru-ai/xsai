@@ -19,13 +19,14 @@ const modelOf = (events: Event[]): LanguageModel => async () => eventStream(even
 describe('collect', () => {
   it('resolves with the finished message, reason, and usage', async () => {
     const model = modelOf([
+      { type: 'stream.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'Hi', index: 0, type: 'text.delta' },
       { content: { text: 'Hi', type: 'text' }, index: 0, type: 'content.end' },
       {
         message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' },
         reason: 'stop',
-        type: 'finish',
+        type: 'stream.end',
         usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
       },
     ])
@@ -37,14 +38,14 @@ describe('collect', () => {
     })
   })
 
-  it('resolves with the finish event\'s response identity', async () => {
+  it('resolves with the stream.end event\'s response identity', async () => {
     const model = modelOf([
       {
         message: { content: [], role: 'assistant' },
         reason: 'stop',
         responseId: 'resp_1',
         responseStatus: 'completed',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
 
@@ -54,10 +55,10 @@ describe('collect', () => {
     })
   })
 
-  it('rejects with the finish event\'s typed error when present', async () => {
+  it('rejects with the stream.end event\'s typed error when present', async () => {
     const error = new XSAIError('model-error', 'Overloaded', { cause: { type: 'server_error' } })
     const model = modelOf([
-      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
+      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'stream.end' },
     ])
 
     await expect(collect(model, { input: 'hi' })).rejects.toBe(error)
@@ -65,7 +66,7 @@ describe('collect', () => {
 
   it('rejects with a typed model error when the stream finishes with an error', async () => {
     const model = modelOf([
-      { message: { content: [], role: 'assistant' }, reason: 'error', type: 'finish' },
+      { message: { content: [], role: 'assistant' }, reason: 'error', type: 'stream.end' },
     ])
 
     await expect(collect(model, { input: 'hi' })).rejects.toMatchObject({
@@ -74,13 +75,13 @@ describe('collect', () => {
     })
   })
 
-  it('resolves on the finish event without waiting for the stream to close', async () => {
+  it('resolves on the stream.end event without waiting for the stream to close', async () => {
     const model: LanguageModel = async () => new ReadableStream<Event>({
       start: (controller) => {
         controller.enqueue({
           message: { content: [], role: 'assistant' },
           reason: 'stop',
-          type: 'finish',
+          type: 'stream.end',
         })
         // never closes
       },
@@ -101,7 +102,7 @@ describe('collect', () => {
     await expect(collect(model, { input: 'hi' })).rejects.toBe(error)
   })
 
-  it('rejects with a truncated-stream error when the stream ends without a finish event', async () => {
+  it('rejects with a truncated-stream error when the stream ends without a stream.end event', async () => {
     const model = modelOf([
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'Hi', index: 0, type: 'text.delta' },
@@ -109,7 +110,7 @@ describe('collect', () => {
 
     await expect(collect(model, { input: 'hi' })).rejects.toMatchObject({
       code: 'truncated-stream',
-      message: 'model stream ended without a finish event',
+      message: 'model stream ended without a stream.end event',
     })
   })
 })

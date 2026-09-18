@@ -21,16 +21,29 @@ export type Event = EventMap[EventType]
 export interface EventMap {
   'content.end': ContentEndEvent
   'content.start': ContentStartEvent
-  'finish': FinishEvent
   'reasoning.delta': ReasoningDeltaEvent
   'refusal.delta': RefusalDeltaEvent
+  'stream.end': StreamEndEvent
+  'stream.start': StreamStartEvent
   'text.delta': TextDeltaEvent
   'tool-call.delta': ToolCallDeltaEvent
 }
 
 export type EventType = keyof EventMap
 
-export interface FinishEvent {
+export interface ReasoningDeltaEvent {
+  delta: string
+  index: number
+  type: 'reasoning.delta'
+}
+
+export interface RefusalDeltaEvent {
+  delta: string
+  index: number
+  type: 'refusal.delta'
+}
+
+export interface StreamEndEvent {
   /** The terminating error. Present when `reason` is `'error'`. */
   error?: XSAIError
   message: AssistantMessage
@@ -44,20 +57,12 @@ export interface FinishEvent {
   responseId?: string
   /** The wire's own response status (e.g. Responses `response.status`), kept verbatim — the last value the wire reported. */
   responseStatus?: string
-  type: 'finish'
+  type: 'stream.end'
   usage?: Usage
 }
 
-export interface ReasoningDeltaEvent {
-  delta: string
-  index: number
-  type: 'reasoning.delta'
-}
-
-export interface RefusalDeltaEvent {
-  delta: string
-  index: number
-  type: 'refusal.delta'
+export interface StreamStartEvent {
+  type: 'stream.start'
 }
 
 export interface TextDeltaEvent {

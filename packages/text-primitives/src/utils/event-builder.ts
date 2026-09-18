@@ -21,13 +21,13 @@ export interface EventBuilder {
   /** Closes a part and emits `content.end`. Unknown or closed keys are no-ops. */
   end: (key: PartKey, extra?: PartEndExtra) => void
   /**
-   * Records the terminal reason and closes all open parts. The `finish`
+   * Records the terminal reason and closes all open parts. The `stream.end`
    * event itself is emitted by `flush`, so late-arriving usage still lands.
    * Idempotent. `extra.message` overrides the assembled message for wires
    * whose terminal event carries an authoritative output record.
    */
   finish: (reason: FinishReason, extra?: PartFinishExtra) => void
-  /** Emits the `finish` event if not already emitted; fails the stream when the wire gave no terminal signal. */
+  /** Emits the `stream.end` event if not already emitted; fails the stream when the wire gave no terminal signal. */
   flush: () => void
   /** Records message- and response-level metadata; last call wins. */
   meta: (meta: FinishMeta) => void
@@ -55,7 +55,7 @@ export interface PartEndExtra {
 }
 
 export interface PartFinishExtra {
-  /** The terminating error carried on the `finish` event, for `reason: 'error'`. */
+  /** The terminating error carried on the `stream.end` event, for `reason: 'error'`. */
   error?: XSAIError
   message?: AssistantMessage
 }
@@ -247,7 +247,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
 
       finishEmitted = true
       // A wire stream that ends without a terminal signal is truncated, not
-      // stopped cleanly — the stream fails instead of emitting a finish.
+      // stopped cleanly — the stream fails instead of emitting a stream.end event.
       if (reason === undefined) {
         fail(new XSAIError('truncated-stream', 'wire stream ended without a terminal signal'))
         return
@@ -267,7 +267,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
         reason,
         ...(responseId == null ? {} : { responseId }),
         ...(responseStatus == null ? {} : { responseStatus }),
-        type: 'finish',
+        type: 'stream.end',
         ...(usage == null ? {} : { usage }),
       })
     },
@@ -305,7 +305,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
  * Parses SSE data frames into wire events, feeds them to `map`, and
  * guarantees the termination invariant through {@link eventBuilder}.
  * Malformed frames and wires that end without a terminal signal error
- * the stream rather than producing a finish.
+ * the stream rather than producing a stream.end event.
  * @internal
  */
 export class WireEventStream<W> extends TransformStream<string, Event> {
@@ -320,6 +320,7 @@ export class WireEventStream<W> extends TransformStream<string, Event> {
           event => controller.enqueue(event),
           error => controller.error(error),
         )
+        controller.enqueue({ type: 'stream.start' })
       },
       transform: (data, controller) => {
         let wire: W

@@ -1,4 +1,4 @@
-import type { Event, EventSourceMessage, FinishEvent } from '@xsai/text-primitives'
+import type { Event, EventSourceMessage, StreamEndEvent } from '@xsai/text-primitives'
 
 import { EventSourceDataStream } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
@@ -131,6 +131,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
         delta: '{"location":',
@@ -171,7 +172,7 @@ describe('responses event stream', () => {
         reason: 'stop',
         responseId: 'resp_1',
         responseStatus: 'completed',
-        type: 'finish',
+        type: 'stream.end',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
       },
     ])
@@ -228,6 +229,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'refusal', index: 0, type: 'content.start' },
       { delta: 'I cannot', index: 0, type: 'refusal.delta' },
       { content: { refusal: 'I cannot help', type: 'refusal' }, index: 0, type: 'content.end' },
@@ -240,7 +242,7 @@ describe('responses event stream', () => {
         reason: 'stop',
         responseId: 'resp_1',
         responseStatus: 'completed',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -333,6 +335,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'partial', index: 0, type: 'text.delta' },
       { content: { text: 'partial', type: 'text' }, index: 0, type: 'content.end' },
@@ -351,12 +354,12 @@ describe('responses event stream', () => {
         reason: 'stop',
         responseId: 'resp_1',
         responseStatus: 'completed',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
 
-  it('maps provider error events to an error finish', async () => {
+  it('maps provider error events to a stream.end error', async () => {
     const events = await readEvents([
       message({
         error: { code: 'server_error', message: 'something went wrong' },
@@ -366,21 +369,22 @@ describe('responses event stream', () => {
     ])
 
     expect(events).toEqual([
+      { type: 'stream.start' },
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
-    expect((events[0] as FinishEvent).error).toMatchObject({
+    expect((events[1] as StreamEndEvent).error).toMatchObject({
       cause: { code: 'server_error', message: 'something went wrong' },
       code: 'model-error',
       message: 'something went wrong',
     })
   })
 
-  it('maps failed responses to an error finish', async () => {
+  it('maps failed responses to a stream.end error', async () => {
     const events = await readEvents([
       message({
         response: {
@@ -397,16 +401,17 @@ describe('responses event stream', () => {
     ])
 
     expect(events).toEqual([
+      { type: 'stream.start' },
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
         responseId: 'resp_1',
         responseStatus: 'failed',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
-    expect((events[0] as FinishEvent).error).toMatchObject({
+    expect((events[1] as StreamEndEvent).error).toMatchObject({
       cause: { code: 'server_error', message: 'something went wrong' },
       code: 'model-error',
       message: 'something went wrong',
@@ -473,6 +478,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'reasoning', index: 0, type: 'content.start' },
       { delta: 'Think', index: 0, type: 'reasoning.delta' },
       { delta: ' more', index: 0, type: 'reasoning.delta' },
@@ -505,7 +511,7 @@ describe('responses event stream', () => {
         reason: 'max-output-tokens',
         responseId: 'resp_1',
         responseStatus: 'incomplete',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -525,12 +531,13 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       {
         message: { content: [], role: 'assistant' },
         reason: 'incomplete',
         responseId: 'resp_1',
         responseStatus: 'incomplete',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -550,12 +557,13 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       {
         message: { content: [], role: 'assistant' },
         reason: 'cancelled',
         responseId: 'resp_1',
         responseStatus: 'cancelled',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
