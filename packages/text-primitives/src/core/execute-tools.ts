@@ -1,11 +1,11 @@
 import type { ExecutableTool } from './tool'
 import type { ToolCallPart, ToolResultPart } from './types/content'
-import type { FinishReason } from './types/finish-reason'
+import type { StopReason } from './types/finish-reason'
 import type { LanguageModelOptions } from './types/language-model'
 
 export interface ExecuteToolsOptions extends Pick<LanguageModelOptions, 'signal' | 'tools'> {
   /** Finish reason of the step that produced the tool calls. */
-  reason: FinishReason
+  reason?: StopReason
   toolCalls: ToolCallPart[]
 }
 
@@ -53,6 +53,6 @@ export const executeTool = async (
 }
 
 export const executeTools = async ({ reason, toolCalls, ...options }: ExecuteToolsOptions): Promise<ToolResultPart[]> =>
-  reason === 'max-output-tokens'
+  reason === 'length'
     ? toolCalls.map(call => toolError(call, 'The response reached the output token limit before the tool call was complete.'))
     : Promise.all(toolCalls.map(async call => executeTool(call, options)))

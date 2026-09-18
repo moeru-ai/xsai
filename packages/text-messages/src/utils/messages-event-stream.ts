@@ -1,4 +1,4 @@
-import type { EventBuilder, FinishReason, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, StopReason, StreamStatus, Usage } from '@xsai/text-primitives'
 
 import type {
   ContentBlockStartEvent,
@@ -9,22 +9,25 @@ import type {
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives'
 
-const mapStopReason = (stopReason: null | string | undefined): FinishReason => {
+const mapStop = (stopReason: null | string | undefined): { reason?: StopReason, status: Exclude<StreamStatus, 'failed'> } => {
   switch (stopReason) {
+    case 'content_filter':
+      return { reason: 'content-filter', status: 'incomplete' }
     case 'end_turn':
     case 'stop_sequence':
-      return 'stop'
+      return { reason: 'stop', status: 'completed' }
+    case 'max_output_tokens':
     case 'max_tokens':
-      return 'max-output-tokens'
+      return { reason: 'length', status: 'incomplete' }
     case null:
     case undefined:
-      return 'stop'
+      return { status: 'completed' }
     case 'refusal':
-      return 'refusal'
+      return { reason: 'refusal', status: 'completed' }
     case 'tool_use':
-      return 'tool-calls'
+      return { reason: 'tool-calls', status: 'completed' }
     default:
-      return stopReason
+      return { reason: stopReason, status: 'completed' }
   }
 }
 
@@ -86,9 +89,9 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           break
         }
         case 'error':
-          builder.finish('error', {
-            error: new XSAIError('model-error', event.error.message, { cause: event.error }),
-          })
+          builder.finishFailure(new XSAIError('model-error', event.error.message, {
+            cause: event.error,
+          }))
           break
         case 'message_delta':
           this.stopReason = event.delta.stop_reason
@@ -102,7 +105,8 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           const usage = mergeUsage(this.startUsage, this.deltaUsage)
           if (usage != null)
             builder.meta({ usage })
-          builder.finish(mapStopReason(this.stopReason))
+          const finish = mapStop(this.stopReason)
+          builder.finish(finish.status, finish.reason)
           break
         }
         case 'ping':

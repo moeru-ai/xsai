@@ -2,8 +2,9 @@ import type {
   AssistantMessage,
   AssistantMessageContent,
   Event,
-  FinishReason,
   PartMetadata,
+  StopReason,
+  StreamStatus,
   Usage,
 } from '../core'
 
@@ -15,11 +16,13 @@ export interface EventBuilder {
   delta: (key: PartKey, text: string, extra?: PartDeltaExtra) => void
   /** Closes a part and emits `content.end`. */
   end: (key: PartKey, extra?: PartEndExtra) => void
-  /** Records the terminal reason and closes open parts. */
-  finish: (reason: FinishReason, extra?: PartFinishExtra) => void
+  /** Records a non-failed terminal status and closes open parts. */
+  finish: (status: Exclude<StreamStatus, 'failed'>, reason?: StopReason, extra?: PartFinishExtra) => void
+  /** Records a provider-declared failure and closes open parts. */
+  finishFailure: (error: XSAIError, extra?: PartFinishExtra) => void
   /** Emits `stream.end` or fails for an incomplete wire stream. */
   flush: () => void
-  /** Records message and response metadata. */
+  /** Records message identity and usage metadata. */
   meta: (meta: FinishMeta) => void
   /** Opens a part and emits `content.start`. */
   start: (key: PartKey, type: AssistantMessageContent['type'], init?: PartStartInit) => void
@@ -27,8 +30,6 @@ export interface EventBuilder {
 
 export interface FinishMeta {
   messageId?: string
-  responseId?: string
-  responseStatus?: string
   usage?: Usage
 }
 
@@ -45,8 +46,6 @@ export interface PartEndExtra {
 }
 
 export interface PartFinishExtra {
-  /** The terminating error carried on the `stream.end` event, for `reason: 'error'`. */
-  error?: XSAIError
   message?: AssistantMessage
 }
 
@@ -70,6 +69,18 @@ interface PartState {
   name?: string
 }
 
+type TerminalState
+  = | {
+    error: XSAIError
+    message?: AssistantMessage
+    status: 'failed'
+  }
+  | {
+    message?: AssistantMessage
+    reason?: StopReason
+    status: Exclude<StreamStatus, 'failed'>
+  }
+
 const emptyContent = (type: AssistantMessageContent['type']): AssistantMessageContent => {
   switch (type) {
     case 'reasoning': return { content: [], type }
@@ -87,16 +98,12 @@ const resolveCallId = (state: PartState): string =>
   state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
 
 /** @internal */
-export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIError) => void): EventBuilder => {
+export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIError) => void, close?: () => void): EventBuilder => {
   const parts: AssistantMessageContent[] = []
   const states = new Map<PartKey, PartState>()
-  let finishEmitted = false
+  let terminalEmitted = false
   let messageId: string | undefined
-  let messageOverride: AssistantMessage | undefined
-  let reason: FinishReason | undefined
-  let responseId: string | undefined
-  let responseStatus: string | undefined
-  let terminalError: undefined | XSAIError
+  let terminal: TerminalState | undefined
   let usage: undefined | Usage
 
   const updateReasoning = (state: PartState, text: string): void => {
@@ -166,7 +173,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
 
   const delta = (key: PartKey, text: string, extra?: PartDeltaExtra): void => {
     const state = states.get(key)
-    if (state === undefined || state.closed || reason !== undefined)
+    if (state === undefined || state.closed || terminal !== undefined)
       return
 
     switch (parts[state.index].type) {
@@ -217,59 +224,83 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
     emit({ content, index: state.index, type: 'content.end' })
   }
 
+  const emitTerminal = (): void => {
+    if (terminalEmitted || terminal === undefined)
+      return
+
+    terminalEmitted = true
+    const message = terminal.message ?? {
+      content: parts,
+      role: 'assistant' as const,
+    }
+    const common = {
+      // Keep the streamed id when the override omits it.
+      message: message.id == null && messageId != null
+        ? { ...message, id: messageId }
+        : message,
+      type: 'stream.end' as const,
+      ...(usage == null ? {} : { usage }),
+    }
+    if (terminal.status === 'failed') {
+      emit({ ...common, error: terminal.error, status: terminal.status })
+      return
+    }
+
+    emit({
+      ...common,
+      ...(terminal.reason == null ? {} : { reason: terminal.reason }),
+      status: terminal.status,
+    })
+  }
+
   return {
     delta,
     end,
-    finish: (next, extra) => {
-      if (reason !== undefined)
+    finish: (status, reason, extra) => {
+      if (terminal !== undefined)
         return
 
-      reason = next
-      messageOverride = extra?.message
-      terminalError = extra?.error
+      const messageContent = extra?.message?.content
+      const hasToolCall = parts.some(part => part.type === 'tool-call')
+        || (messageContent != null && typeof messageContent !== 'string' && messageContent.some(part => part.type === 'tool-call'))
+      const reconciledReason = status === 'completed' && (reason == null || reason === 'stop') && hasToolCall
+        ? 'tool-calls'
+        : reason
+      terminal = { message: extra?.message, reason: reconciledReason, status }
       for (const key of states.keys())
         end(key)
     },
-    flush: () => {
-      if (finishEmitted)
+    finishFailure: (error, extra) => {
+      if (terminal !== undefined)
         return
 
-      finishEmitted = true
+      terminal = { error, message: extra?.message, status: 'failed' }
+      for (const key of states.keys())
+        end(key)
+      emitTerminal()
+      close?.()
+    },
+    flush: () => {
+      if (terminalEmitted)
+        return
+
       // Fail if the wire ended without a terminal signal.
-      if (reason === undefined) {
+      if (terminal === undefined) {
+        terminalEmitted = true
         fail(new XSAIError('truncated-stream', 'wire stream ended without a terminal signal'))
         return
       }
 
-      const message = messageOverride ?? {
-        content: parts,
-        role: 'assistant' as const,
-      }
-      emit({
-        ...(terminalError == null ? {} : { error: terminalError }),
-        // Keep the streamed id when the override omits it.
-        message: message.id == null && messageId != null
-          ? { ...message, id: messageId }
-          : message,
-        reason,
-        ...(responseId == null ? {} : { responseId }),
-        ...(responseStatus == null ? {} : { responseStatus }),
-        type: 'stream.end',
-        ...(usage == null ? {} : { usage }),
-      })
+      emitTerminal()
     },
     meta: (meta) => {
       if (meta.messageId != null)
         messageId = meta.messageId
-      if (meta.responseId != null)
-        responseId = meta.responseId
-      if (meta.responseStatus != null)
-        responseStatus = meta.responseStatus
       if (meta.usage != null)
         usage = meta.usage
     },
     start: (key, type, init) => {
-      if (states.has(key) || reason !== undefined)
+      if (states.has(key) || terminal !== undefined)
         return
 
       const index = states.size
@@ -300,6 +331,7 @@ export class WireEventStream<W> extends TransformStream<string, Event> {
         builder = eventBuilder(
           event => controller.enqueue(event),
           error => controller.error(error),
+          () => controller.terminate(),
         )
         controller.enqueue({ type: 'stream.start' })
       },
@@ -313,7 +345,12 @@ export class WireEventStream<W> extends TransformStream<string, Event> {
           return
         }
 
-        map(wire, builder)
+        try {
+          map(wire, builder)
+        }
+        catch (cause) {
+          controller.error(new XSAIError('protocol-error', 'failed to normalize wire event', { cause }))
+        }
       },
     })
   }

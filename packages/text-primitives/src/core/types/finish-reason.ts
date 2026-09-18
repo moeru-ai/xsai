@@ -1,8 +1,7 @@
-export type FinishReason
+/** Why the model stopped generating, when the wire reports a reason. */
+export type StopReason
   = | 'content-filter'
-    | 'error'
-    | 'max-output-tokens'
-    | 'other'
+    | 'length'
     | 'refusal'
     | 'stop'
     | 'tool-calls'

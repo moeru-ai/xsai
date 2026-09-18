@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, EventBuilder, FinishReason, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, EventBuilder, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, StopReason, StreamStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -141,43 +141,55 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
   }
 }
 
-const normalizeFinishReason = (response: Responses.ResponseResource): FinishReason => {
-  // Use response.status as the source of the finish reason.
-  switch (response.status) {
-    case 'completed':
-      return 'stop'
-    case 'failed':
-      return 'error'
-    case 'incomplete': {
-      const reason = response.incomplete_details?.reason
-      switch (reason) {
-        case 'content_filter':
-          return 'content-filter'
-        case 'max_output_tokens':
-          return 'max-output-tokens'
-        case null:
-        case undefined:
-          return 'incomplete'
-        default:
-          return reason
-      }
-    }
+const normalizeFinishReason = (response: Responses.ResponseResource): StopReason | undefined => {
+  if (response.status !== 'incomplete')
+    return undefined
+
+  const reason = response.incomplete_details?.reason
+  switch (reason) {
+    case 'content_filter':
+      return 'content-filter'
+    case 'max_output_tokens':
+      return 'length'
+    case null:
+    case undefined:
+      return undefined
     default:
-      return response.status ?? 'other'
+      return reason
+  }
+}
+
+const normalizeStatus = (response: Responses.ResponseResource): StreamStatus => {
+  switch (response.status) {
+    case 'cancelled':
+      return 'cancelled'
+    case 'completed':
+      return 'completed'
+    case 'failed':
+      return 'failed'
+    case 'incomplete':
+      return 'incomplete'
+    default:
+      throw new XSAIError('protocol-error', `unknown response status: ${response.status}`)
   }
 }
 
 const finishResponse = (builder: EventBuilder, response: Responses.ResponseResource): void => {
-  const reason = normalizeFinishReason(response)
+  const status = normalizeStatus(response)
   if (response.usage != null)
     builder.meta({ usage: normalizeUsage(response.usage) })
-  const error = reason === 'error'
-    ? new XSAIError('model-error', response.error?.message ?? 'response failed', { cause: response.error })
-    : undefined
-  builder.finish(reason, {
-    ...(error == null ? {} : { error }),
-    message: normalizeAssistantMessage(response.output),
-  })
+  const message = normalizeAssistantMessage(response.output)
+  if (status === 'failed') {
+    const error = new XSAIError('model-error', response.error?.message ?? 'response failed', {
+      cause: response.error ?? response,
+    })
+    builder.finishFailure(error, { message })
+    return
+  }
+
+  const reason = normalizeFinishReason(response)
+    ?? (typeof message.content !== 'string' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
+  builder.finish(status, reason, { message })
 }
 
 const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
@@ -200,13 +212,11 @@ const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: num
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
   constructor() {
     super((event, builder) => {
-      if ('response' in event && event.response != null)
-        builder.meta({ responseId: event.response.id, responseStatus: event.response.status })
       switch (event.type) {
         case 'error':
-          builder.finish('error', {
-            error: new XSAIError('model-error', event.error.message, { cause: event.error }),
-          })
+          builder.finishFailure(new XSAIError('model-error', event.error.message, {
+            cause: event.error,
+          }))
           break
         case 'response.completed':
         case 'response.failed':
