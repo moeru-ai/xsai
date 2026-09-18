@@ -188,7 +188,7 @@ const finishResponse = (builder: EventBuilder, response: Responses.ResponseResou
   }
 
   const reason = normalizeFinishReason(response)
-    ?? (typeof message.content !== 'string' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
+    ?? (status === 'completed' && typeof message.content !== 'string' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
   builder.finish(status, reason, message)
 }
 
