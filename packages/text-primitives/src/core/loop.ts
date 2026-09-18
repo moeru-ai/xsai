@@ -24,7 +24,7 @@ export interface PrepareStepOptions {
   steps: LoopStep[]
 }
 
-/** Per-step overrides for the model call. The loop owns `signal`; it cannot be overridden per step. */
+/** Per-step model overrides; `signal` remains owned by the loop. */
 export type PrepareStepResult = Partial<Omit<LanguageModelOptions, 'signal'>>
 
 export type StopCondition = (context: StopContext) => boolean | Promise<boolean>

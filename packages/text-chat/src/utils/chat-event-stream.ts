@@ -35,8 +35,7 @@ const normalizeUsage = (usage: ChatUsage): Usage => {
 }
 
 export class ChatEventStream extends WireEventStream<ChatChunk> {
-  // OpenAI emits `reasoning`, DeepSeek `reasoning_content`; remember which
-  // field this wire used so replays write the same one.
+  // Preserve the wire field for assistant-message replay.
   private reasoningField?: 'reasoning' | 'reasoning_content'
 
   constructor() {
@@ -48,15 +47,13 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
         return
       }
 
-      // A chunk's id is the response-scoped completion id (`chatcmpl-*`),
-      // not a replayable assistant message id — Chat has no equivalent.
       if (chunk.id != null)
         builder.meta({ responseId: chunk.id })
       if (chunk.usage != null)
         builder.meta({ usage: normalizeUsage(chunk.usage) })
 
       for (const choice of chunk.choices ?? []) {
-        // Only the first choice is supported; `n > 1` is out of scope.
+        // Only the first choice is supported.
         if (choice.index !== 0)
           continue
 
@@ -86,8 +83,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
       builder.delta('text', content)
     }
 
-    // Refusal is a sibling field of content on this wire; a refusal turn
-    // streams content:null. It is its own part, never merged into text.
+    // Refusal is a separate part from content.
     const refusal = delta.refusal ?? ''
     if (refusal !== '') {
       builder.start('refusal', 'refusal')

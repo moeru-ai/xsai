@@ -111,7 +111,6 @@ describe('normalize input', () => {
       role: 'assistant',
     }])
 
-    // The default field is reasoning_content.
     expect(normalizeInput({
       input: [{
         content: [{ content: [{ text: 'Think', type: 'text' }], type: 'reasoning' }],

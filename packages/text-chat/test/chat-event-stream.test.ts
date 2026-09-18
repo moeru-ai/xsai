@@ -245,8 +245,6 @@ describe('chat event stream', () => {
         }],
         id: 'chatcmpl_1',
       }),
-      // Some gateways repeat id/name as empty strings or null on
-      // continuation deltas.
       message({
         choices: [{
           delta: { tool_calls: [{ function: { arguments: 'a', name: '' }, id: '', index: 0 }] },
@@ -382,7 +380,6 @@ describe('chat event stream', () => {
         responseId: 'chatcmpl_1',
         type: 'stream.end',
         usage: {
-          // The wire's prompt_tokens already includes cached tokens.
           cacheReadInputTokens: 6,
           inputTokens: 10,
           outputTokens: 20,
@@ -428,7 +425,6 @@ describe('chat event stream', () => {
         choices: [{ delta: { content: null, refusal: 'I refuse' }, finish_reason: null, index: 0 }],
         id: 'chatcmpl_1',
       }),
-      // A delta carrying both produces both parts.
       message({
         choices: [{ delta: { content: 'more', refusal: 'x' }, finish_reason: null, index: 0 }],
         id: 'chatcmpl_1',
@@ -464,7 +460,6 @@ describe('chat event stream', () => {
 
   it('skips delta-less choice frames and rejects on malformed chunks', async () => {
     await expect(readEvents([
-      // Azure prepends prompt_filter_results frames with a delta-less choice.
       { data: '{"choices":[{"index":0,"finish_reason":null}],"id":"chatcmpl_1"}' },
       message({
         choices: [{ delta: { content: 'hi' }, finish_reason: 'stop', index: 0 }],

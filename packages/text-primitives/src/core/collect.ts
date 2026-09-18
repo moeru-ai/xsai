@@ -3,14 +3,12 @@ import type { LanguageModel, LanguageModelOptions } from './types/language-model
 
 import { XSAIError } from '@xsai/shared'
 
-/** The resolved value of {@link collect}: the `stream.end` event's payload — the terminal error is thrown instead of carried. */
+/** The resolved value of {@link collect}. */
 export type CollectResult = Omit<StreamEndEvent, 'error' | 'type'>
 
 /**
- * Calls `model` and resolves with the `stream.end` event's payload. Rejects
- * when the stream reports an error or ends without a `stream.end` event. The
- * stream.end event settles the call — the stream is cancelled without waiting
- * for it to close.
+ * Resolves with `stream.end`; rejects on errors or truncated streams. The
+ * stream is cancelled once `stream.end` arrives.
  */
 export const collect = async (
   model: LanguageModel,

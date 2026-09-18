@@ -48,14 +48,9 @@ export interface StreamEndEvent {
   error?: XSAIError
   message: AssistantMessage
   reason: FinishReason
-  /**
-   * Response-scoped generation id (e.g. Chat `chatcmpl-*`, Responses
-   * `resp_*`), when the wire has one. Distinct from `message.id`, the
-   * replayable assistant message id — a wire may carry both, either, or
-   * neither.
-   */
+  /** Wire response id, distinct from the replayable assistant message id. */
   responseId?: string
-  /** The wire's own response status (e.g. Responses `response.status`), kept verbatim — the last value the wire reported. */
+  /** Last response status reported by the wire. */
   responseStatus?: string
   type: 'stream.end'
   usage?: Usage
