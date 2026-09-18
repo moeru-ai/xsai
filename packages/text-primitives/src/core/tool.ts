@@ -22,7 +22,7 @@ export interface ToolExecuteOptions {
 
 export interface ToolOptions<TInput extends UnresolvedSchema, TOutput extends undefined | UnresolvedSchema = undefined> {
   description?: string
-  execute?: (input: InferSchemaInput<TInput>) => TOutput extends UnresolvedSchema
+  execute?: (input: InferSchemaInput<TInput>, options?: ToolExecuteOptions) => TOutput extends UnresolvedSchema
     ? Promisable<InferSchemaInput<TOutput>>
     : Promisable<string | ToolResultPartContent[]>
   inputSchema: TInput
@@ -53,9 +53,9 @@ export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | Unresol
   else {
     return {
       ...tool,
-      execute: async (input: unknown) => {
+      execute: async (input: unknown, executeOptions?: ToolExecuteOptions) => {
         // TODO: validate
-        const result = await options.execute!(input)
+        const result = await options.execute!(input, executeOptions)
         if (options.outputSchema) // TODO: validate
           return JSON.stringify(result)
         else
