@@ -1,4 +1,4 @@
-import type { Event, EventSourceMessage, FinishEvent } from '@xsai/text-primitives'
+import type { Event, EventSourceMessage, StreamEndEvent } from '@xsai/text-primitives'
 
 import { EventSourceDataStream } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
@@ -58,6 +58,7 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'Hello', index: 0, type: 'text.delta' },
       { delta: ' world', index: 0, type: 'text.delta' },
@@ -69,7 +70,7 @@ describe('chat event stream', () => {
         },
         reason: 'stop',
         responseId: 'chatcmpl_1',
-        type: 'finish',
+        type: 'stream.end',
         usage: {
           cacheReadInputTokens: undefined,
           inputTokens: 10,
@@ -125,6 +126,7 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
         delta: '{"city":',
@@ -164,7 +166,7 @@ describe('chat event stream', () => {
         },
         reason: 'tool-calls',
         responseId: 'chatcmpl_1',
-        type: 'finish',
+        type: 'stream.end',
         usage: {
           cacheReadInputTokens: undefined,
           inputTokens: 10,
@@ -192,6 +194,7 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'reasoning', index: 0, type: 'content.start' },
       { delta: 'Think', index: 0, type: 'reasoning.delta' },
       { contentType: 'text', index: 1, type: 'content.start' },
@@ -220,7 +223,7 @@ describe('chat event stream', () => {
         },
         reason: 'stop',
         responseId: 'chatcmpl_1',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -266,6 +269,7 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
         delta: 'a',
@@ -305,7 +309,7 @@ describe('chat event stream', () => {
         },
         reason: 'tool-calls',
         responseId: 'chatcmpl_1',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -326,6 +330,7 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       { delta: 'a', id: 'call_0', index: 0, name: 't', type: 'tool-call.delta' },
       {
@@ -340,7 +345,7 @@ describe('chat event stream', () => {
         },
         reason: 'tool-calls',
         responseId: 'chatcmpl_1',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -364,6 +369,7 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'hi', index: 0, type: 'text.delta' },
       { content: { text: 'hi', type: 'text' }, index: 0, type: 'content.end' },
@@ -374,7 +380,7 @@ describe('chat event stream', () => {
         },
         reason: 'stop',
         responseId: 'chatcmpl_1',
-        type: 'finish',
+        type: 'stream.end',
         usage: {
           // The wire's prompt_tokens already includes cached tokens.
           cacheReadInputTokens: 6,
@@ -396,6 +402,7 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'hi', index: 0, type: 'text.delta' },
       { content: { text: 'hi', type: 'text' }, index: 0, type: 'content.end' },
@@ -406,7 +413,7 @@ describe('chat event stream', () => {
         },
         reason: 'stop',
         responseId: 'chatcmpl_1',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -432,6 +439,7 @@ describe('chat event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'refusal', index: 0, type: 'content.start' },
       { delta: 'I refuse', index: 0, type: 'refusal.delta' },
       { contentType: 'text', index: 1, type: 'content.start' },
@@ -449,7 +457,7 @@ describe('chat event stream', () => {
         },
         reason: 'stop',
         responseId: 'chatcmpl_1',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
   })
@@ -471,7 +479,7 @@ describe('chat event stream', () => {
     })
   })
 
-  it('maps provider error chunks to an error finish', async () => {
+  it('maps provider error chunks to a stream.end error', async () => {
     const events = await readEvents([
       message({
         error: { message: 'Internal server error', type: 'server_error' },
@@ -480,14 +488,15 @@ describe('chat event stream', () => {
     ])
 
     expect(events).toEqual([
+      { type: 'stream.start' },
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
-    expect((events[0] as FinishEvent).error).toMatchObject({
+    expect((events[1] as StreamEndEvent).error).toMatchObject({
       cause: { message: 'Internal server error', type: 'server_error' },
       code: 'model-error',
       message: 'Internal server error',

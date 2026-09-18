@@ -1,15 +1,15 @@
-import type { FinishEvent } from './types/event'
+import type { StreamEndEvent } from './types/event'
 import type { LanguageModel, LanguageModelOptions } from './types/language-model'
 
 import { XSAIError } from '@xsai/shared'
 
-/** The resolved value of {@link collect}: the `finish` event's payload — the terminal error is thrown instead of carried. */
-export type CollectResult = Omit<FinishEvent, 'error' | 'type'>
+/** The resolved value of {@link collect}: the `stream.end` event's payload — the terminal error is thrown instead of carried. */
+export type CollectResult = Omit<StreamEndEvent, 'error' | 'type'>
 
 /**
- * Calls `model` and resolves with the `finish` event's payload. Rejects
- * when the stream reports an error or ends without a `finish` event. The
- * finish event settles the call — the stream is cancelled without waiting
+ * Calls `model` and resolves with the `stream.end` event's payload. Rejects
+ * when the stream reports an error or ends without a `stream.end` event. The
+ * stream.end event settles the call — the stream is cancelled without waiting
  * for it to close.
  */
 export const collect = async (
@@ -19,7 +19,7 @@ export const collect = async (
   const eventStream = await model(options)
 
   for await (const event of eventStream) {
-    if (event.type !== 'finish')
+    if (event.type !== 'stream.end')
       continue
 
     if (event.reason === 'error')
@@ -34,5 +34,5 @@ export const collect = async (
     }
   }
 
-  throw new XSAIError('truncated-stream', 'model stream ended without a finish event')
+  throw new XSAIError('truncated-stream', 'model stream ended without a stream.end event')
 }

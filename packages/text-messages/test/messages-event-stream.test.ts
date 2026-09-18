@@ -1,4 +1,4 @@
-import type { Event, EventSourceMessage, FinishEvent } from '@xsai/text-primitives'
+import type { Event, EventSourceMessage, StreamEndEvent } from '@xsai/text-primitives'
 
 import { EventSourceDataStream } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
@@ -76,6 +76,7 @@ describe('messages event stream', () => {
       }),
       message({ type: 'message_stop' }),
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'Hello', index: 0, type: 'text.delta' },
       { content: { text: 'Hello', type: 'text' }, index: 0, type: 'content.end' },
@@ -121,7 +122,7 @@ describe('messages event stream', () => {
           role: 'assistant',
         },
         reason: 'tool-calls',
-        type: 'finish',
+        type: 'stream.end',
         usage: {
           cacheCreationInputTokens: undefined,
           cacheReadInputTokens: 4,
@@ -163,6 +164,7 @@ describe('messages event stream', () => {
       }),
       message({ type: 'message_stop' }),
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       { contentType: 'reasoning', index: 0, type: 'content.start' },
       { delta: 'Think', index: 0, type: 'reasoning.delta' },
       {
@@ -185,7 +187,7 @@ describe('messages event stream', () => {
           role: 'assistant',
         },
         reason: 'stop',
-        type: 'finish',
+        type: 'stream.end',
         usage: {
           cacheCreationInputTokens: undefined,
           cacheReadInputTokens: undefined,
@@ -198,7 +200,7 @@ describe('messages event stream', () => {
     ])
   })
 
-  it('maps a refusal stop reason to a refusal finish', async () => {
+  it('maps a refusal stop reason to a stream.end refusal', async () => {
     await expect(readEvents([
       message({
         message: { id: 'msg_1', usage: { input_tokens: 10 } },
@@ -211,16 +213,17 @@ describe('messages event stream', () => {
       }),
       message({ type: 'message_stop' }),
     ])).resolves.toEqual([
+      { type: 'stream.start' },
       {
         message: { content: [], id: 'msg_1', role: 'assistant' },
         reason: 'refusal',
-        type: 'finish',
+        type: 'stream.end',
         usage: { inputTokens: 10, outputTokens: 0, totalTokens: 10 },
       },
     ])
   })
 
-  it('maps provider error events to an error finish', async () => {
+  it('maps provider error events to a stream.end error', async () => {
     const events = await readEvents([
       message({
         error: { message: 'Overloaded', type: 'overloaded_error' },
@@ -229,14 +232,15 @@ describe('messages event stream', () => {
     ])
 
     expect(events).toEqual([
+      { type: 'stream.start' },
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         reason: 'error',
-        type: 'finish',
+        type: 'stream.end',
       },
     ])
-    expect((events[0] as FinishEvent).error).toMatchObject({
+    expect((events[1] as StreamEndEvent).error).toMatchObject({
       cause: { message: 'Overloaded', type: 'overloaded_error' },
       code: 'model-error',
       message: 'Overloaded',
