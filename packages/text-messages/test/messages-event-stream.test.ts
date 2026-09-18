@@ -122,6 +122,7 @@ describe('messages event stream', () => {
           role: 'assistant',
         },
         reason: 'tool-calls',
+        status: 'completed',
         type: 'stream.end',
         usage: {
           cacheCreationInputTokens: undefined,
@@ -187,6 +188,7 @@ describe('messages event stream', () => {
           role: 'assistant',
         },
         reason: 'stop',
+        status: 'completed',
         type: 'stream.end',
         usage: {
           cacheCreationInputTokens: undefined,
@@ -217,8 +219,16 @@ describe('messages event stream', () => {
       {
         message: { content: [], id: 'msg_1', role: 'assistant' },
         reason: 'refusal',
+        status: 'completed',
         type: 'stream.end',
-        usage: { inputTokens: 10, outputTokens: 0, totalTokens: 10 },
+        usage: {
+          cacheCreationInputTokens: undefined,
+          cacheReadInputTokens: undefined,
+          inputTokens: 10,
+          outputTokens: 0,
+          reasoningTokens: undefined,
+          totalTokens: 10,
+        },
       },
     ])
   })
@@ -236,7 +246,7 @@ describe('messages event stream', () => {
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
-        reason: 'error',
+        status: 'failed',
         type: 'stream.end',
       },
     ])

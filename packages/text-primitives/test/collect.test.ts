@@ -26,6 +26,7 @@ describe('collect', () => {
       {
         message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' },
         reason: 'stop',
+        status: 'completed',
         type: 'stream.end',
         usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
       },
@@ -34,45 +35,33 @@ describe('collect', () => {
     await expect(collect(model, { input: 'hi' })).resolves.toEqual({
       message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' },
       reason: 'stop',
+      status: 'completed',
       usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
     })
   })
 
-  it('resolves with the stream.end event\'s response identity', async () => {
+  it('resolves with the stream.end event\'s normalized status', async () => {
     const model = modelOf([
       {
         message: { content: [], role: 'assistant' },
         reason: 'stop',
-        responseId: 'resp_1',
-        responseStatus: 'completed',
+        status: 'completed',
         type: 'stream.end',
       },
     ])
 
     await expect(collect(model, { input: 'hi' })).resolves.toMatchObject({
-      responseId: 'resp_1',
-      responseStatus: 'completed',
+      status: 'completed',
     })
   })
 
   it('rejects with the stream.end event\'s typed error when present', async () => {
     const error = new XSAIError('model-error', 'Overloaded', { cause: { type: 'server_error' } })
     const model = modelOf([
-      { error, message: { content: [], role: 'assistant' }, reason: 'error', type: 'stream.end' },
+      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
     ])
 
     await expect(collect(model, { input: 'hi' })).rejects.toBe(error)
-  })
-
-  it('rejects with a typed model error when the stream finishes with an error', async () => {
-    const model = modelOf([
-      { message: { content: [], role: 'assistant' }, reason: 'error', type: 'stream.end' },
-    ])
-
-    await expect(collect(model, { input: 'hi' })).rejects.toMatchObject({
-      code: 'model-error',
-      message: 'model stream failed',
-    })
   })
 
   it('resolves on the stream.end event without waiting for the stream to close', async () => {
@@ -81,12 +70,13 @@ describe('collect', () => {
         controller.enqueue({
           message: { content: [], role: 'assistant' },
           reason: 'stop',
+          status: 'completed',
           type: 'stream.end',
         })
       },
     })
 
-    await expect(collect(model, { input: 'hi' })).resolves.toMatchObject({ reason: 'stop' })
+    await expect(collect(model, { input: 'hi' })).resolves.toMatchObject({ reason: 'stop', status: 'completed' })
   })
 
   it('propagates stream rejections with their typed error', async () => {

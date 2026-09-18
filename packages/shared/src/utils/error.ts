@@ -11,6 +11,7 @@ export interface XSAIErrorCauseMap {
   'invalid-input': undefined
   'invalid-response': unknown
   'network-error': NonNullable<unknown>
+  'protocol-error': unknown
 }
 
 export type XSAIErrorCode = keyof XSAIErrorCauseMap
