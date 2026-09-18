@@ -126,7 +126,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
       case 'redacted_thinking':
         builder.start(event.index, 'reasoning')
         builder.end(event.index, {
-          content: { content: [{ data: block.data, type: 'redacted' }], type: 'reasoning' },
+          content: { content: [{ text: block.data, type: 'redacted' }], type: 'reasoning' },
         })
         break
       case 'text':

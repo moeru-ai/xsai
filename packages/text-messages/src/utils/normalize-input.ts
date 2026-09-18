@@ -85,9 +85,8 @@ const normalizeToolResultPart = (part: ToolResultPart): ToolResultBlock => ({
 const normalizeReasoningPartContent = (content: ReasoningPartContent): ContentBlock[] => {
   switch (content.type) {
     case 'encrypted':
-      return [{ data: content.text, type: 'redacted_thinking' }]
     case 'redacted':
-      return [{ data: content.data, type: 'redacted_thinking' }]
+      return [{ data: content.text, type: 'redacted_thinking' }]
     case 'summary':
       return []
     case 'text':

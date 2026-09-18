@@ -96,7 +96,7 @@ describe('normalize input', () => {
           {
             content: [
               { text: 'Think', type: 'text' },
-              { data: 'redacted-data', type: 'redacted' },
+              { text: 'redacted-data', type: 'redacted' },
             ],
             metadata: { chat: { reasoning_field: 'reasoning' } },
             type: 'reasoning',
