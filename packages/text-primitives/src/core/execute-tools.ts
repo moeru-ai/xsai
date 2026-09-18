@@ -41,7 +41,7 @@ export const executeTool = async (
   try {
     return {
       callId: call.callId,
-      output: await execute(toolInput),
+      output: await execute(toolInput, { signal }),
       type: 'tool-result',
     }
   }
