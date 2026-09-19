@@ -101,10 +101,10 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
   return {
     // Some gateways reject `content: null` even when tool_calls is set.
     content: content.length === 0 ? '' : content,
-    ...(reasoning.length === 0 ? {} : { [reasoningField]: reasoning.join('') }),
-    ...(refusal.length === 0 ? {} : { refusal: refusal.join('') }),
+    [reasoningField]: reasoning.length === 0 ? undefined : reasoning.join(''),
+    refusal: refusal.length === 0 ? undefined : refusal.join(''),
     role: 'assistant',
-    ...(toolCalls.length === 0 ? {} : { tool_calls: toolCalls }),
+    tool_calls: toolCalls.length === 0 ? undefined : toolCalls,
   }
 }
 

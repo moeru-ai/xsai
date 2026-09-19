@@ -160,7 +160,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
       delta: text,
       id,
       index: state.index,
-      ...(state.name == null ? {} : { name: state.name }),
+      name: state.name,
       type: 'tool-call.delta' as const,
     }
     if (text !== '')
@@ -206,10 +206,10 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
       : accumulated.type === 'reasoning'
         ? {
             ...accumulated,
-            ...(accumulated.content.length === 0
-              ? { content: [{ text: '', type: 'text' as const }] }
-              : {}),
-            ...(state.id == null ? {} : { id: state.id }),
+            content: accumulated.content.length === 0
+              ? [{ text: '', type: 'text' as const }]
+              : accumulated.content,
+            id: state.id,
           }
         : accumulated
     const authoritative = extra?.content ?? built
@@ -235,7 +235,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
         ? { ...message, id: messageId }
         : message,
       type: 'stream.end' as const,
-      ...(usage == null ? {} : { usage }),
+      usage,
     }
     if (terminal.status === 'failed') {
       emit({ ...common, error: terminal.error, status: terminal.status })
@@ -244,7 +244,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
 
     emit({
       ...common,
-      ...(terminal.reason == null ? {} : { reason: terminal.reason }),
+      reason: terminal.reason,
       status: terminal.status,
     })
   }
@@ -299,12 +299,12 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
 
       const index = states.size
       const state: PartState = {
+        callId: init?.callId,
         closed: false,
+        fallbackId: init?.fallbackId,
+        id: init?.id,
         index,
-        ...(init?.callId == null ? {} : { callId: init.callId }),
-        ...(init?.fallbackId == null ? {} : { fallbackId: init.fallbackId }),
-        ...(init?.id == null ? {} : { id: init.id }),
-        ...(init?.name == null ? {} : { name: init.name }),
+        name: init?.name,
       }
       states.set(key, state)
       parts.push(emptyContent(type))
