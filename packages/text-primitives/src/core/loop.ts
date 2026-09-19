@@ -8,6 +8,7 @@ import { executeTools } from './execute-tools'
 
 export interface LoopOptions extends LanguageModelOptions {
   prepareStep?: PrepareStep
+  /** @default `stepCountAtLeast(1)` */
   stopWhen?: StopCondition
 }
 
@@ -27,15 +28,31 @@ export interface PrepareStepOptions {
 /** Per-step model overrides; `signal` remains owned by the loop. */
 export type PrepareStepResult = Partial<Omit<LanguageModelOptions, 'signal'>>
 
-export type StopCondition = (context: StopContext) => boolean | Promise<boolean>
+export type StopCondition = (context: StopContext) => boolean
 
 export interface StopContext {
-  input: Message[]
+  input: readonly Message[]
   step: LoopStep
-  steps: LoopStep[]
+  steps: readonly LoopStep[]
 }
 
-export const loop = async (model: LanguageModel, { prepareStep, stopWhen, ...options }: LoopOptions): Promise<CollectResult> => {
+export const and = (...conditions: StopCondition[]): StopCondition =>
+  context => conditions.every(condition => condition(context))
+
+export const or = (...conditions: StopCondition[]): StopCondition =>
+  context => conditions.some(condition => condition(context))
+
+export const not = (condition: StopCondition): StopCondition =>
+  context => !condition(context)
+
+export const stepCountAtLeast = (count: number): StopCondition =>
+  ({ steps }) => steps.length >= count
+
+export const hasToolCall = (name?: string): StopCondition =>
+  ({ step }) => step.toolCalls.some(toolCall => name == null || toolCall.name === name)
+
+export const loop = async (model: LanguageModel, { prepareStep, stopWhen: stopWhenOption, ...options }: LoopOptions): Promise<CollectResult> => {
+  const stopWhen = stopWhenOption ?? stepCountAtLeast(1)
   const input: Message[] = Array.isArray(options.input) ? options.input : [{ content: options.input, role: 'user' }]
   const steps: LoopStep[] = []
 
@@ -62,11 +79,11 @@ export const loop = async (model: LanguageModel, { prepareStep, stopWhen, ...opt
     if (options.signal?.aborted === true)
       throw options.signal.reason ?? new DOMException('The operation was aborted', 'AbortError')
 
-    const stop = await stopWhen?.({
+    const stop = stopWhen({
       input,
       step,
       steps,
-    }) ?? true
+    })
 
     if (stop || toolCalls.length === 0 || options.signal?.aborted)
       return result
