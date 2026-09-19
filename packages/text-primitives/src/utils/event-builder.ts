@@ -1,10 +1,10 @@
 import type {
   AssistantMessage,
   AssistantMessageContent,
-  Event,
   PartMetadata,
   StopReason,
   StreamStatus,
+  TextEvent,
   Usage,
 } from '../core'
 
@@ -94,7 +94,7 @@ const resolveCallId = (state: PartState): string =>
   state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
 
 /** @internal */
-export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIError) => void): EventBuilder => {
+export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSAIError) => void): EventBuilder => {
   const parts: AssistantMessageContent[] = []
   const states = new Map<PartKey, PartState>()
   let terminalEmitted = false
@@ -314,7 +314,7 @@ export const eventBuilder = (emit: (event: Event) => void, fail: (error: XSAIErr
 }
 
 /** Parses wire events and enforces stream termination. @internal */
-export class WireEventStream<W> extends TransformStream<string, Event> {
+export class WireEventStream<W> extends TransformStream<string, TextEvent> {
   constructor(map: (wire: W, builder: EventBuilder) => void) {
     let builder!: EventBuilder
     super({

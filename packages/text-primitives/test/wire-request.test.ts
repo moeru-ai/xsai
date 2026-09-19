@@ -1,4 +1,4 @@
-import type { Event } from '../src'
+import type { TextEvent } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
@@ -14,7 +14,7 @@ describe('wireRequest', () => {
       { ...options, fetch: async () => { throw cause } },
       { input: 'hi' },
       init,
-      new TransformStream<string, Event>(),
+      new TransformStream<string, TextEvent>(),
     )
 
     await expect(request).rejects.toMatchObject({ cause, code: 'network-error' })
@@ -32,7 +32,7 @@ describe('wireRequest', () => {
       },
       { input: 'hi', signal },
       init,
-      new TransformStream<string, Event>(),
+      new TransformStream<string, TextEvent>(),
     )
 
     await expect(request).rejects.toBe(reason)
@@ -49,7 +49,7 @@ describe('wireRequest', () => {
       },
       { input: 'hi' },
       init,
-      new TransformStream<string, Event>(),
+      new TransformStream<string, TextEvent>(),
     )
 
     const error = await request.catch((error: unknown) => error)
@@ -68,7 +68,7 @@ describe('wireRequest', () => {
       { ...options, fetch: async () => new Response(null) },
       { input: 'hi' },
       init,
-      new TransformStream<string, Event>(),
+      new TransformStream<string, TextEvent>(),
     )
 
     await expect(request).rejects.toMatchObject({ code: 'invalid-response' })

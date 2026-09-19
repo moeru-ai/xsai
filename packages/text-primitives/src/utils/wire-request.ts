@@ -1,6 +1,6 @@
 import type { HttpOptions } from '@xsai/shared'
 
-import type { Event, LanguageModelOptions } from '../core'
+import type { LanguageModelOptions, TextEvent } from '../core'
 
 import { HttpError, XSAIError } from '@xsai/shared'
 
@@ -33,8 +33,8 @@ export const wireRequest = async (
   options: HttpOptions,
   modelOptions: LanguageModelOptions,
   init: WireRequestInit,
-  eventStream: TransformStream<string, Event>,
-): Promise<ReadableStream<Event>> => {
+  eventStream: TransformStream<string, TextEvent>,
+): Promise<ReadableStream<TextEvent>> => {
   const base = options.baseURL.toString()
   const url = new URL(init.path, base.endsWith('/') ? base : `${base}/`)
 

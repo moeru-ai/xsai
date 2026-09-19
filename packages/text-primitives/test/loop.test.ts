@@ -1,10 +1,10 @@
-import type { Event, LanguageModel } from '../src'
+import type { LanguageModel, TextEvent } from '../src'
 
 import { describe, expect, it, vi } from 'vitest'
 
 import { loop, tool } from '../src'
 
-const eventStream = (event: Event): ReadableStream<Event> => new ReadableStream<Event>({
+const eventStream = (event: TextEvent): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {
     controller.enqueue(event)
     controller.close()

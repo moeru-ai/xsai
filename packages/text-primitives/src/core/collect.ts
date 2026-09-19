@@ -1,5 +1,5 @@
-import type { StreamEndEvent } from './types/event'
 import type { LanguageModel, LanguageModelOptions } from './types/language-model'
+import type { StreamEndEvent } from './types/text-event'
 
 import { XSAIError } from '@xsai/shared'
 
