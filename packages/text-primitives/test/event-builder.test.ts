@@ -1,4 +1,4 @@
-import type { Event } from '../src'
+import type { TextEvent } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
@@ -7,7 +7,7 @@ import { XSAIError } from '../src/shared'
 
 describe('eventBuilder', () => {
   it('preserves an empty reasoning part when no delta arrives', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const failures: XSAIError[] = []
     const builder = eventBuilder(event => events.push(event), error => failures.push(error))
 
@@ -25,7 +25,7 @@ describe('eventBuilder', () => {
   })
 
   it('assembles refusal parts', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.start('refusal', 'refusal')
@@ -46,7 +46,7 @@ describe('eventBuilder', () => {
   })
 
   it('does not carry response-level identity on the stream.end event', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.meta({ messageId: 'msg_1' })
@@ -64,7 +64,7 @@ describe('eventBuilder', () => {
   })
 
   it('backfills a streamed message id onto an override message without one', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.meta({ messageId: 'msg_1' })
@@ -82,7 +82,7 @@ describe('eventBuilder', () => {
   })
 
   it('prefers the override message id over a streamed one', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.meta({ messageId: 'msg_streamed' })
@@ -100,7 +100,7 @@ describe('eventBuilder', () => {
   })
 
   it('keeps unknown reasons as strings', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
@@ -120,7 +120,7 @@ describe('eventBuilder', () => {
   })
 
   it('upgrades an explicit stop to tool-calls when the final message contains a tool call', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
@@ -132,7 +132,7 @@ describe('eventBuilder', () => {
   })
 
   it('checks an override message when reconciling tool-call stops', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.finish('completed', 'stop', {
@@ -145,7 +145,7 @@ describe('eventBuilder', () => {
   })
 
   it('does not infer tool calls for incomplete terminal statuses', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
@@ -164,7 +164,7 @@ describe('eventBuilder', () => {
   })
 
   it('does not use streamed tool calls when an override message omits them', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
@@ -181,7 +181,7 @@ describe('eventBuilder', () => {
   })
 
   it('carries the terminating error on the stream.end event', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
 
@@ -195,7 +195,7 @@ describe('eventBuilder', () => {
   })
 
   it('carries a partial message on a failed terminal event', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded')
     const message = { content: [{ text: 'partial', type: 'text' as const }], role: 'assistant' as const }
@@ -207,7 +207,7 @@ describe('eventBuilder', () => {
   })
 
   it('keeps the first terminal state: a later finish cannot replace the recorded error', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded')
 
@@ -221,7 +221,7 @@ describe('eventBuilder', () => {
   })
 
   it('fails the stream when the wire ends without a terminal signal', () => {
-    const events: Event[] = []
+    const events: TextEvent[] = []
     const failures: XSAIError[] = []
     const builder = eventBuilder(event => events.push(event), error => failures.push(error))
 
