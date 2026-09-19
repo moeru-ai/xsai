@@ -17,12 +17,16 @@ export const collect = async (
   const eventStream = await model(options)
 
   for await (const event of eventStream) {
-    if (event.type !== 'stream.end')
+    if (event.type !== 'stream.end') {
       continue
-    else if (event.status === 'failed')
+    }
+    else if (event.status === 'failed') {
       throw event.error
-    else
-      return event
+    }
+    else {
+      const { type, ...result } = event
+      return result
+    }
   }
 
   throw new XSAIError('truncated-stream', 'model stream ended without a stream.end event')
