@@ -1,15 +1,15 @@
-import type { Format } from '@xsai/text-primitives'
+import type { UnresolvedSchema } from '@xsai/text-primitives'
 
 import type { TextParam } from '../generated'
 
 import { resolveSchema, toFormatName } from '@xsai/text-primitives'
 
 /** @internal */
-export const normalizeFormat = (format: Format | undefined): TextParam | undefined => {
-  if (format == null)
+export const normalizeFormat = (outputFormat: undefined | UnresolvedSchema): TextParam | undefined => {
+  if (outputFormat == null)
     return undefined
 
-  const { schema } = resolveSchema(format)
+  const { schema } = resolveSchema(outputFormat)
   return {
     format: {
       description: schema.description,
