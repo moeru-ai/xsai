@@ -19,16 +19,10 @@ export const collect = async (
   for await (const event of eventStream) {
     if (event.type !== 'stream.end')
       continue
-
-    if (event.status === 'failed')
+    else if (event.status === 'failed')
       throw event.error
-
-    return {
-      message: event.message,
-      ...(event.reason == null ? {} : { reason: event.reason }),
-      status: event.status,
-      ...(event.usage == null ? {} : { usage: event.usage }),
-    }
+    else
+      return event
   }
 
   throw new XSAIError('truncated-stream', 'model stream ended without a stream.end event')
