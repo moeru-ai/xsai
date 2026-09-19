@@ -13,7 +13,7 @@ const ANTHROPIC_VERSION = '2023-06-01'
 export const messages = (options: HttpOptions): LanguageModel => async (modelOptions) => {
   const { messages: inputMessages, system } = normalizeInput(modelOptions)
   const maxTokens = modelOptions.maxOutputTokens ?? modelOptions.extraBody?.max_tokens
-  const format = normalizeFormat(modelOptions.format)
+  const outputFormat = normalizeFormat(modelOptions.outputFormat)
 
   if (typeof maxTokens !== 'number')
     throw new XSAIError('invalid-input', 'maxOutputTokens is required for the Messages API')
@@ -23,9 +23,9 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
       max_tokens: maxTokens,
       messages: inputMessages,
       model: options.model,
-      output_config: modelOptions.reasoningEffort == null && format == null
+      output_config: modelOptions.reasoningEffort == null && outputFormat == null
         ? undefined
-        : { effort: modelOptions.reasoningEffort, format },
+        : { effort: modelOptions.reasoningEffort, format: outputFormat },
       stream: true,
       system,
       temperature: modelOptions.temperature,

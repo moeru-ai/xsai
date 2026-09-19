@@ -17,7 +17,7 @@ export const responses = (options: HttpOptions): LanguageModel => async modelOpt
         : { effort: modelOptions.reasoningEffort },
       stream: true,
       temperature: modelOptions.temperature,
-      text: normalizeFormat(modelOptions.format),
+      text: normalizeFormat(modelOptions.outputFormat),
       tool_choice: normalizeToolChoice(modelOptions.toolChoice),
       tools: normalizeTools(modelOptions.tools),
       top_p: modelOptions.topP,

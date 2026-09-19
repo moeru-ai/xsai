@@ -28,17 +28,17 @@ describe('responses options', () => {
     })
   })
 
-  it('maps format to text.format', async () => {
+  it('maps outputFormat to text.format', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
     const stream = await model({
-      format: {
+      input: 'hi',
+      outputFormat: {
         properties: { a: { type: 'string' } },
         required: ['a'],
         title: 'answer',
         type: 'object',
       },
-      input: 'hi',
     })
     await stream.cancel()
 
