@@ -194,6 +194,6 @@ export const normalizeInput = (options: LanguageModelOptions): NormalizedInput =
 
   return {
     messages,
-    ...(system.length === 0 ? {} : { system }),
+    system: system.length === 0 ? undefined : system,
   }
 }

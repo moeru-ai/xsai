@@ -6,7 +6,7 @@ import { strictSchema } from '@xsai/text-primitives'
 
 /** @internal */
 export const normalizeTools = (tools?: readonly Tool[]): FunctionToolParam[] | undefined => tools?.map(tool => ({
-  ...(tool.description == null ? {} : { description: tool.description }),
+  description: tool.description,
   name: tool.name,
   parameters: strictSchema(tool.inputSchema) as Record<string, unknown>,
   strict: true,
