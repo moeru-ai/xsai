@@ -136,7 +136,7 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
 
   return {
     content,
-    ...(id == null ? {} : { id }),
+    id,
     role: 'assistant',
   }
 }

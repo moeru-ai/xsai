@@ -4,7 +4,7 @@ import type { MessagesTool, MessagesToolChoice } from '../types'
 
 /** @internal */
 export const normalizeTools = (tools?: readonly Tool[]): MessagesTool[] | undefined => tools?.map(tool => ({
-  ...(tool.description == null ? {} : { description: tool.description }),
+  description: tool.description,
   input_schema: tool.inputSchema,
   name: tool.name,
 }))
