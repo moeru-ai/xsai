@@ -1,15 +1,15 @@
-import type { Format } from '@xsai/text-primitives'
+import type { UnresolvedSchema } from '@xsai/text-primitives'
 
 import type { ChatResponseFormat } from '../types'
 
 import { resolveSchema, toFormatName } from '@xsai/text-primitives'
 
 /** @internal */
-export const normalizeFormat = (format: Format | undefined): ChatResponseFormat | undefined => {
-  if (format == null)
+export const normalizeFormat = (outputFormat: undefined | UnresolvedSchema): ChatResponseFormat | undefined => {
+  if (outputFormat == null)
     return undefined
 
-  const { schema } = resolveSchema(format)
+  const { schema } = resolveSchema(outputFormat)
   return {
     json_schema: {
       description: schema.description,

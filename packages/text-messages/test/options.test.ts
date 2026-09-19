@@ -45,18 +45,18 @@ describe('messages options', () => {
     expect(bodies[0]).toMatchObject({ tool_choice: { type: 'any' } })
   })
 
-  it('maps format to output_config.format and merges with effort', async () => {
+  it('maps outputFormat to output_config.format and merges with effort', async () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
     const stream = await model({
-      format: {
+      input: 'hi',
+      maxOutputTokens: 10,
+      outputFormat: {
         properties: { a: { type: 'string' } },
         required: ['a'],
         title: 'answer',
         type: 'object',
       },
-      input: 'hi',
-      maxOutputTokens: 10,
       reasoningEffort: 'high',
     })
     await stream.cancel()

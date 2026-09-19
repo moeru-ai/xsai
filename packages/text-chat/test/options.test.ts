@@ -30,18 +30,18 @@ describe('chat options', () => {
     })
   })
 
-  it('maps format to response_format.json_schema', async () => {
+  it('maps outputFormat to response_format.json_schema', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
     const stream = await model({
-      format: {
+      input: 'hi',
+      outputFormat: {
         description: 'The answer',
         properties: { a: { type: 'string' } },
         required: ['a'],
         title: 'answer',
         type: 'object',
       },
-      input: 'hi',
     })
     await stream.cancel()
 
@@ -59,12 +59,12 @@ describe('chat options', () => {
     })
   })
 
-  it('accepts a StandardJSONSchemaV1 as format', async () => {
+  it('accepts a StandardJSONSchemaV1 as outputFormat', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
     const stream = await model({
-      format: z.object({ name: z.string() }).meta({ title: 'user' }),
       input: 'hi',
+      outputFormat: z.object({ name: z.string() }).meta({ title: 'user' }),
     })
     await stream.cancel()
 
@@ -86,8 +86,8 @@ describe('chat options', () => {
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
     const stream = await model({
       extraBody: { response_format: { type: 'json_object' } },
-      format: { title: 'answer', type: 'object' },
       input: 'hi',
+      outputFormat: { title: 'answer', type: 'object' },
     })
     await stream.cancel()
 
