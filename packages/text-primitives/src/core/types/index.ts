@@ -1,7 +1,7 @@
 export type * from './content'
-export type * from './event'
 export type * from './finish-reason'
 export type * from './language-model'
 export type * from './message'
 export type * from './metadata'
+export type * from './text-event'
 export type * from './usage'

@@ -1,11 +1,11 @@
-import type { Event, LanguageModel } from '../src'
+import type { LanguageModel, TextEvent } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
 import { collect } from '../src'
 import { XSAIError } from '../src/shared'
 
-const eventStream = (events: Event[]): ReadableStream<Event> => new ReadableStream<Event>({
+const eventStream = (events: TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {
     for (const event of events)
       controller.enqueue(event)
@@ -14,7 +14,7 @@ const eventStream = (events: Event[]): ReadableStream<Event> => new ReadableStre
   },
 })
 
-const modelOf = (events: Event[]): LanguageModel => async () => eventStream(events)
+const modelOf = (events: TextEvent[]): LanguageModel => async () => eventStream(events)
 
 describe('collect', () => {
   it('resolves with the finished message, reason, and usage', async () => {
@@ -65,7 +65,7 @@ describe('collect', () => {
   })
 
   it('resolves on the stream.end event without waiting for the stream to close', async () => {
-    const model: LanguageModel = async () => new ReadableStream<Event>({
+    const model: LanguageModel = async () => new ReadableStream<TextEvent>({
       start: (controller) => {
         controller.enqueue({
           message: { content: [], role: 'assistant' },
@@ -81,7 +81,7 @@ describe('collect', () => {
 
   it('propagates stream rejections with their typed error', async () => {
     const error = new XSAIError('truncated-stream', 'wire stream ended without a terminal signal')
-    const model: LanguageModel = async () => new ReadableStream<Event>({
+    const model: LanguageModel = async () => new ReadableStream<TextEvent>({
       start: (controller) => {
         controller.enqueue({ contentType: 'text', index: 0, type: 'content.start' })
         controller.error(error)

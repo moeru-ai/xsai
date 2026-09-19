@@ -2,10 +2,10 @@ import type { Promisable } from '@xsai/shared'
 
 import type { UnresolvedSchema } from '../../utils/schema'
 import type { Tool } from '../tool'
-import type { Event } from './event'
 import type { Message } from './message'
+import type { TextEvent } from './text-event'
 
-export type LanguageModel = (options: LanguageModelOptions) => Promisable<ReadableStream<Event>>
+export type LanguageModel = (options: LanguageModelOptions) => Promisable<ReadableStream<TextEvent>>
 
 export interface LanguageModelOptions {
   /** Wire-native fields merged last into the request body. */

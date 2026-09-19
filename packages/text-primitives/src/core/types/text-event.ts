@@ -16,21 +16,6 @@ export interface ContentStartEvent {
   type: 'content.start'
 }
 
-export type Event = EventMap[EventType]
-
-export interface EventMap {
-  'content.end': ContentEndEvent
-  'content.start': ContentStartEvent
-  'reasoning.delta': ReasoningDeltaEvent
-  'refusal.delta': RefusalDeltaEvent
-  'stream.end': StreamEndEvent
-  'stream.start': StreamStartEvent
-  'text.delta': TextDeltaEvent
-  'tool-call.delta': ToolCallDeltaEvent
-}
-
-export type EventType = keyof EventMap
-
 export interface ReasoningDeltaEvent {
   delta: string
   index: number
@@ -72,6 +57,21 @@ export interface TextDeltaEvent {
   index: number
   type: 'text.delta'
 }
+
+export type TextEvent = TextEventMap[TextEventType]
+
+export interface TextEventMap {
+  'content.end': ContentEndEvent
+  'content.start': ContentStartEvent
+  'reasoning.delta': ReasoningDeltaEvent
+  'refusal.delta': RefusalDeltaEvent
+  'stream.end': StreamEndEvent
+  'stream.start': StreamStartEvent
+  'text.delta': TextDeltaEvent
+  'tool-call.delta': ToolCallDeltaEvent
+}
+
+export type TextEventType = keyof TextEventMap
 
 export interface ToolCallDeltaEvent {
   delta: string

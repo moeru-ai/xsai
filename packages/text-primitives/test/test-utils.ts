@@ -1,6 +1,6 @@
 import type { HttpOptions } from '@xsai/shared'
 
-import type { AssistantMessageContent, Event, ExecutableTool, LanguageModel, Message, StreamEndEvent, TextDeltaEvent, ToolCallPart } from '../src'
+import type { AssistantMessageContent, ExecutableTool, LanguageModel, Message, StreamEndEvent, TextDeltaEvent, TextEvent, ToolCallPart } from '../src'
 
 import { env } from 'node:process'
 
@@ -26,8 +26,8 @@ export const captureRequests = (terminalData = '[DONE]'): { bodies: Record<strin
   return { bodies, fetch: mockFetch }
 }
 
-const readEvents = async (stream: ReadableStream<Event>): Promise<Event[]> => {
-  const events: Event[] = []
+const readEvents = async (stream: ReadableStream<TextEvent>): Promise<TextEvent[]> => {
+  const events: TextEvent[] = []
   for await (const event of stream)
     events.push(event)
   return events

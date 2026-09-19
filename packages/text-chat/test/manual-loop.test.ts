@@ -1,4 +1,4 @@
-import type { Event, Message } from '@xsai/text-primitives'
+import type { Message, TextEvent } from '@xsai/text-primitives'
 
 import { HttpError, XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
@@ -68,7 +68,7 @@ describe('manual tool loop', () => {
     const input: Message[] = [{ content: 'What is the weather?', role: 'user' }]
 
     const firstStream = await model({ input })
-    let streamEnd: Extract<Event, { type: 'stream.end' }> | undefined
+    let streamEnd: Extract<TextEvent, { type: 'stream.end' }> | undefined
     for await (const event of firstStream) {
       if (event.type === 'stream.end')
         streamEnd = event
