@@ -1,4 +1,4 @@
-import type { LanguageModel, LoopStep, StopContext, TextEvent } from '../src'
+import type { LanguageModel, StepResult, StopContext, TextEvent } from '../src'
 
 import { describe, expect, it, vi } from 'vitest'
 
@@ -20,7 +20,7 @@ const readEvents = async (stream: ReadableStream<TextEvent>): Promise<TextEvent[
   return events
 }
 
-const createLoopStep = (overrides: Partial<LoopStep> = {}): LoopStep => ({
+const createStepResult = (overrides: Partial<StepResult> = {}): StepResult => ({
   message: { content: '', role: 'assistant' },
   status: 'completed',
   toolCalls: [],
@@ -29,7 +29,7 @@ const createLoopStep = (overrides: Partial<LoopStep> = {}): LoopStep => ({
 })
 
 const createStopContext = (overrides: Partial<StopContext> = {}): StopContext => {
-  const step = overrides.step ?? createLoopStep()
+  const step = overrides.step ?? createStepResult()
 
   return {
     input: [],
@@ -49,7 +49,7 @@ describe('loop', () => {
         { message: { content: 'Hi', role: 'assistant' }, status: 'completed', type: 'stream.end' },
       ])
     }
-    const stream = await loop(model, { input: 'hi' })
+    const stream = loop(model, { input: 'hi' })
 
     expect(stream).toBeInstanceOf(ReadableStream)
     await expect(readEvents(stream)).resolves.toEqual([
@@ -66,7 +66,7 @@ describe('loop', () => {
       { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
     ])
 
-    await expect(readEvents(await loop(model, { input: 'hi' }))).resolves.toEqual([
+    await expect(readEvents(loop(model, { input: 'hi' }))).resolves.toEqual([
       { type: 'stream.start' },
       { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
     ])
@@ -75,17 +75,17 @@ describe('loop', () => {
   it('rejects truncated model streams', async () => {
     const model: LanguageModel = async () => eventStream({ type: 'stream.start' })
 
-    await expect(readEvents(await loop(model, { input: 'hi' }))).rejects.toMatchObject({
+    await expect(readEvents(loop(model, { input: 'hi' }))).rejects.toMatchObject({
       code: 'truncated-stream',
     })
   })
 
   it('provides the main stopWhen helpers', () => {
     const context = createStopContext({
-      step: createLoopStep({
+      step: createStepResult({
         toolCalls: [{ arguments: '{}', callId: 'call-1', id: 'tool-1', name: 'get_weather', type: 'tool-call' }],
       }),
-      steps: [createLoopStep(), createLoopStep()],
+      steps: [createStepResult(), createStepResult()],
     })
 
     expect(stepCountAtLeast(2)(context)).toBe(true)
@@ -132,7 +132,7 @@ describe('loop', () => {
           ])
     }
 
-    const events = await readEvents(await loop(model, {
+    const events = await readEvents(loop(model, {
       input: 'What is the weather?',
       stopWhen: ({ steps }) => {
         seenStepCounts.push(steps.length)
@@ -175,7 +175,7 @@ describe('loop', () => {
           })
     }
 
-    await readEvents(await loop(model, {
+    await readEvents(loop(model, {
       input: 'What is the weather in Taipei?',
       signal: controller.signal,
       stopWhen: () => false,
