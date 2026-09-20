@@ -1,6 +1,6 @@
 import type { XSAIError } from '@xsai/shared'
 
-import type { StopReason } from './finish-reason'
+import type { FinishReason } from './finish-reason'
 import type { AssistantMessage, AssistantMessageContent } from './message'
 import type { Usage } from './usage'
 
@@ -28,23 +28,27 @@ export interface RefusalDeltaEvent {
   type: 'refusal.delta'
 }
 
-export type StreamEndEvent
-  = | {
-    error: XSAIError
-    message: AssistantMessage
-    reason?: never
-    status: 'failed'
-    type: 'stream.end'
-    usage?: Usage
-  }
-  | {
-    error?: never
-    message: AssistantMessage
-    reason?: StopReason
-    status: Exclude<StreamStatus, 'failed'>
-    type: 'stream.end'
-    usage?: Usage
-  }
+/** @internal */
+export interface StreamEndDoneEvent {
+  error?: never
+  message: AssistantMessage
+  reason?: FinishReason
+  status: Exclude<StreamStatus, 'failed'>
+  type: 'stream.end'
+  usage?: Usage
+}
+
+export type StreamEndEvent = StreamEndDoneEvent | StreamEndFailEvent
+
+/** @internal */
+export interface StreamEndFailEvent {
+  error: XSAIError
+  message: AssistantMessage
+  reason?: never
+  status: 'failed'
+  type: 'stream.end'
+  usage?: Usage
+}
 
 export interface StreamStartEvent {
   type: 'stream.start'

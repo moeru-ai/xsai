@@ -1,5 +1,4 @@
-/** Why the model stopped generating, when the wire reports a reason. */
-export type StopReason
+export type FinishReason
   = | 'content-filter'
     | 'length'
     | 'refusal'

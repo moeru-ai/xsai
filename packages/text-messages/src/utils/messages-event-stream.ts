@@ -1,4 +1,4 @@
-import type { EventBuilder, StopReason, StreamStatus, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, FinishReason, StreamStatus, Usage } from '@xsai/text-primitives'
 
 import type {
   ContentBlockStartEvent,
@@ -9,8 +9,8 @@ import type {
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives'
 
-const mapStop = (stopReason: null | string | undefined): { reason?: StopReason, status: Exclude<StreamStatus, 'failed'> } => {
-  switch (stopReason) {
+const mapStop = (FinishReason: null | string | undefined): { reason?: FinishReason, status: Exclude<StreamStatus, 'failed'> } => {
+  switch (FinishReason) {
     case 'content_filter':
       return { reason: 'content-filter', status: 'incomplete' }
     case 'end_turn':
@@ -27,7 +27,7 @@ const mapStop = (stopReason: null | string | undefined): { reason?: StopReason, 
     case 'tool_use':
       return { reason: 'tool-calls', status: 'completed' }
     default:
-      return { reason: stopReason, status: 'completed' }
+      return { reason: FinishReason, status: 'completed' }
   }
 }
 
@@ -56,9 +56,9 @@ const mergeUsage = (start: MessagesUsage | undefined, delta: MessagesUsage | und
 
 export class MessagesEventStream extends WireEventStream<MessagesEvent> {
   private deltaUsage?: MessagesUsage
+  private FinishReason?: null | string
   private readonly signatures = new Map<number, string>()
   private startUsage?: MessagesUsage
-  private stopReason?: null | string
 
   constructor() {
     super((event, builder) => {
@@ -89,12 +89,12 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           break
         }
         case 'error':
-          builder.finishFailure(new XSAIError('model-error', event.error.message, {
+          builder.fail(new XSAIError('model-error', event.error.message, {
             cause: event.error,
           }))
           break
         case 'message_delta':
-          this.stopReason = event.delta.stop_reason
+          this.FinishReason = event.delta.stop_reason
           this.deltaUsage = event.usage
           break
         case 'message_start':
@@ -105,8 +105,8 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           const usage = mergeUsage(this.startUsage, this.deltaUsage)
           if (usage != null)
             builder.meta({ usage })
-          const finish = mapStop(this.stopReason)
-          builder.finish(finish.status, finish.reason)
+          const finish = mapStop(this.FinishReason)
+          builder.done(finish.status, finish.reason)
           break
         }
         case 'ping':

@@ -1,8 +1,8 @@
 import type {
   AssistantMessage,
   AssistantMessageContent,
+  FinishReason,
   PartMetadata,
-  StopReason,
   StreamStatus,
   TextEvent,
   Usage,
@@ -14,12 +14,12 @@ import { XSAIError } from '@xsai/shared'
 export interface EventBuilder {
   /** Appends text or tool-call identity to a part. */
   delta: (key: PartKey, text: string, extra?: PartDeltaExtra) => void
+  /** Records a non-failed terminal status and closes open parts. */
+  done: (status: Exclude<StreamStatus, 'failed'>, reason?: FinishReason, message?: AssistantMessage) => void
   /** Closes a part and emits `content.end`. */
   end: (key: PartKey, extra?: PartEndExtra) => void
-  /** Records a non-failed terminal status and closes open parts. */
-  finish: (status: Exclude<StreamStatus, 'failed'>, reason?: StopReason, message?: AssistantMessage) => void
   /** Records a provider-declared failure and closes open parts. */
-  finishFailure: (error: XSAIError, message?: AssistantMessage) => void
+  fail: (error: XSAIError, message?: AssistantMessage) => void
   /** Emits `stream.end` or fails for an incomplete wire stream. */
   flush: () => void
   /** Records message identity and usage metadata. */
@@ -73,7 +73,7 @@ type TerminalState
   }
   | {
     message?: AssistantMessage
-    reason?: StopReason
+    reason?: FinishReason
     status: Exclude<StreamStatus, 'failed'>
   }
 
@@ -251,8 +251,7 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
 
   return {
     delta,
-    end,
-    finish: (status, reason, message) => {
+    done: (status, reason, message) => {
       if (terminal !== undefined)
         return
 
@@ -265,7 +264,8 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
       for (const key of states.keys())
         end(key)
     },
-    finishFailure: (error, message) => {
+    end,
+    fail: (error, message) => {
       if (terminal !== undefined)
         return
 

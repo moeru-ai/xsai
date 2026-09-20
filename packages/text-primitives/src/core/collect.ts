@@ -1,15 +1,10 @@
 import type { LanguageModel, LanguageModelOptions } from './types/language-model'
-import type { StreamEndEvent } from './types/text-event'
+import type { StreamEndDoneEvent } from './types/text-event'
 
 import { readStreamEnd } from '../utils/read-stream-end'
 
-/** The resolved value of {@link collect}. */
-export type CollectResult = Omit<Exclude<StreamEndEvent, { status: 'failed' }>, 'error' | 'type'>
+export type CollectResult = Omit<StreamEndDoneEvent, 'error' | 'type'>
 
-/**
- * Resolves with `stream.end`; rejects on errors or truncated streams. The
- * stream is cancelled once `stream.end` arrives.
- */
 export const collect = async (
   model: LanguageModel,
   options: LanguageModelOptions,

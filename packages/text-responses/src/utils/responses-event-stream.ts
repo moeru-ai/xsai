@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, EventBuilder, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, StopReason, StreamStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, EventBuilder, FinishReason, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, StreamStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -141,7 +141,7 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
   }
 }
 
-const normalizeFinishReason = (response: Responses.ResponseResource): StopReason | undefined => {
+const normalizeFinishReason = (response: Responses.ResponseResource): FinishReason | undefined => {
   if (response.status !== 'incomplete')
     return undefined
 
@@ -183,13 +183,13 @@ const finishResponse = (builder: EventBuilder, response: Responses.ResponseResou
     const error = new XSAIError('model-error', response.error?.message ?? 'response failed', {
       cause: response.error ?? undefined,
     })
-    builder.finishFailure(error, message)
+    builder.fail(error, message)
     return
   }
 
   const reason = normalizeFinishReason(response)
     ?? (status === 'completed' && typeof message.content !== 'string' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
-  builder.finish(status, reason, message)
+  builder.done(status, reason, message)
 }
 
 const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
@@ -214,7 +214,7 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
     super((event, builder) => {
       switch (event.type) {
         case 'error':
-          builder.finishFailure(new XSAIError('model-error', event.error.message, {
+          builder.fail(new XSAIError('model-error', event.error.message, {
             cause: event.error,
           }))
           break
