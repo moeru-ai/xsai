@@ -1,11 +1,11 @@
-import type { EventBuilder, StopReason, StreamStatus, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, FinishReason, StreamStatus, Usage } from '@xsai/text-primitives'
 
 import type { ChatChunk, ChatDelta, ChatUsage } from '../types'
 
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives'
 
-const mapFinish = (reason: null | string | undefined, refusal: boolean): { reason?: StopReason, status: Exclude<StreamStatus, 'failed'> } => {
+const mapFinish = (reason: null | string | undefined, refusal: boolean): { reason?: FinishReason, status: Exclude<StreamStatus, 'failed'> } => {
   switch (reason) {
     case 'content_filter':
       return { reason: 'content-filter', status: 'incomplete' }
@@ -45,7 +45,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
   constructor() {
     super((chunk, builder) => {
       if (chunk.error != null) {
-        builder.finishFailure(new XSAIError('model-error', chunk.error.message, {
+        builder.fail(new XSAIError('model-error', chunk.error.message, {
           cause: chunk.error,
         }))
         return
@@ -66,7 +66,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
           if (this.reasoningField != null)
             builder.end('reasoning', { metadata: { chat: { reasoning_field: this.reasoningField } } })
           const finish = mapFinish(choice.finish_reason, this.hasRefusal)
-          builder.finish(finish.status, finish.reason)
+          builder.done(finish.status, finish.reason)
         }
       }
     })

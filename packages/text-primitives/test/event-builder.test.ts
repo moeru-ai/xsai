@@ -12,7 +12,7 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), error => failures.push(error))
 
     builder.start('reasoning', 'reasoning')
-    builder.finish('completed', 'stop')
+    builder.done('completed', 'stop')
     builder.flush()
 
     const reasoning = { content: [{ text: '', type: 'text' }], type: 'reasoning' }
@@ -32,7 +32,7 @@ describe('eventBuilder', () => {
     builder.delta('refusal', 'I cannot')
     builder.delta('refusal', ' help')
     builder.end('refusal')
-    builder.finish('completed', 'stop')
+    builder.done('completed', 'stop')
     builder.flush()
 
     const refusal = { refusal: 'I cannot help', type: 'refusal' }
@@ -50,7 +50,7 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.meta({ messageId: 'msg_1' })
-    builder.finish('completed', 'stop')
+    builder.done('completed', 'stop')
     builder.flush()
 
     expect(events).toEqual([
@@ -68,7 +68,7 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.meta({ messageId: 'msg_1' })
-    builder.finish('completed', 'stop', { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' })
+    builder.done('completed', 'stop', { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' })
     builder.flush()
 
     expect(events).toEqual([
@@ -86,7 +86,7 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), () => {})
 
     builder.meta({ messageId: 'msg_streamed' })
-    builder.finish('completed', 'stop', { content: [], id: 'msg_terminal', role: 'assistant' })
+    builder.done('completed', 'stop', { content: [], id: 'msg_terminal', role: 'assistant' })
     builder.flush()
 
     expect(events).toEqual([
@@ -105,7 +105,7 @@ describe('eventBuilder', () => {
 
     builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
     builder.delta('tool', '{}')
-    builder.finish('completed', 'provider_finished')
+    builder.done('completed', 'provider_finished')
     builder.flush()
 
     expect(events.at(-1)).toEqual({
@@ -125,7 +125,7 @@ describe('eventBuilder', () => {
 
     builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
     builder.delta('tool', '{}')
-    builder.finish('completed', 'stop')
+    builder.done('completed', 'stop')
     builder.flush()
 
     expect(events.at(-1)).toMatchObject({ reason: 'tool-calls', status: 'completed' })
@@ -135,7 +135,7 @@ describe('eventBuilder', () => {
     const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
-    builder.finish('completed', 'stop', {
+    builder.done('completed', 'stop', {
       content: [{ arguments: '{}', callId: 'call_1', id: 'call_1', name: 'weather', type: 'tool-call' }],
       role: 'assistant',
     })
@@ -150,7 +150,7 @@ describe('eventBuilder', () => {
 
     builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
     builder.delta('tool', '{}')
-    builder.finish('incomplete')
+    builder.done('incomplete')
     builder.flush()
 
     expect(events.at(-1)).toEqual({
@@ -169,7 +169,7 @@ describe('eventBuilder', () => {
 
     builder.start('tool', 'tool-call', { callId: 'call_1', id: 'call_1', name: 'weather' })
     builder.delta('tool', '{}')
-    builder.finish('completed', 'stop', { content: [{ text: 'done', type: 'text' }], role: 'assistant' })
+    builder.done('completed', 'stop', { content: [{ text: 'done', type: 'text' }], role: 'assistant' })
     builder.flush()
 
     expect(events.at(-1)).toEqual({
@@ -185,7 +185,7 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
 
-    builder.finishFailure(error)
+    builder.fail(error)
     expect(events).toEqual([
       { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
     ])
@@ -200,7 +200,7 @@ describe('eventBuilder', () => {
     const error = new XSAIError('model-error', 'server exploded')
     const message = { content: [{ text: 'partial', type: 'text' as const }], role: 'assistant' as const }
 
-    builder.finishFailure(error, message)
+    builder.fail(error, message)
     builder.flush()
 
     expect(events).toEqual([{ error, message, status: 'failed', type: 'stream.end' }])
@@ -211,8 +211,8 @@ describe('eventBuilder', () => {
     const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded')
 
-    builder.finishFailure(error)
-    builder.finish('completed', 'stop')
+    builder.fail(error)
+    builder.done('completed', 'stop')
     builder.flush()
 
     expect(events).toEqual([
@@ -265,7 +265,7 @@ describe('eventBuilder', () => {
       },
     })
     const stream = source.pipeThrough(new WireEventStream((_wire, builder) => {
-      builder.finishFailure(error)
+      builder.fail(error)
     }))
     const reader = stream.getReader()
 
