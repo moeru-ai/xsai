@@ -8,7 +8,7 @@ import { normalizeSchema } from './normalize-schema'
 export const normalizeTools = (tools?: readonly Tool[]): FunctionToolParam[] | undefined => tools?.map(tool => ({
   description: tool.description,
   name: tool.name,
-  parameters: normalizeSchema(tool.inputSchema) as Record<string, unknown>,
+  parameters: normalizeSchema(tool.inputSchema.schema) as Record<string, unknown>,
   strict: true,
   type: 'function',
 }))

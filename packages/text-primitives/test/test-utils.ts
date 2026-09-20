@@ -64,9 +64,11 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
       description: 'Get the current weather for a city.',
       execute: () => toolResult,
       inputSchema: {
-        properties: { location: { description: 'The city whose weather should be returned.', type: 'string' } },
-        required: ['location'],
-        type: 'object',
+        schema: {
+          properties: { location: { description: 'The city whose weather should be returned.', type: 'string' } },
+          required: ['location'],
+          type: 'object',
+        },
       },
       name: 'get_weather',
     }
