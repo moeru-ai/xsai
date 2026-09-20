@@ -80,6 +80,51 @@ describe('messages options', () => {
     })
   })
 
+  it('normalizes tool schemas with Messages constraints', async () => {
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+    const schema = {
+      properties: {
+        amount: { maximum: 10, minimum: 0, type: 'number' },
+        list: { items: { type: 'string' }, maxItems: 3, minItems: 2, type: 'array' },
+        optional: { type: 'string' },
+      },
+      required: ['amount'],
+      type: 'object',
+    }
+
+    const stream = await model({
+      input: 'hi',
+      maxOutputTokens: 10,
+      tools: [{ inputSchema: schema, name: 'measure' }],
+    })
+    await stream.cancel()
+
+    expect(bodies[0].tools).toEqual([{
+      description: undefined,
+      input_schema: {
+        additionalProperties: false,
+        properties: {
+          amount: { type: 'number' },
+          list: { items: { type: 'string' }, type: 'array' },
+          optional: { type: 'string' },
+        },
+        required: ['amount'],
+        type: 'object',
+      },
+      name: 'measure',
+    }])
+    expect(schema).toEqual({
+      properties: {
+        amount: { maximum: 10, minimum: 0, type: 'number' },
+        list: { items: { type: 'string' }, maxItems: 3, minItems: 2, type: 'array' },
+        optional: { type: 'string' },
+      },
+      required: ['amount'],
+      type: 'object',
+    })
+  })
+
   it('preserves an x-api-key supplied through extraHeaders', async () => {
     let requestHeaders: Headers | undefined
     const requestFetch: typeof fetch = async (_input, init) => {
