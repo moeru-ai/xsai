@@ -1,5 +1,6 @@
 export * from './normalize-format'
 export * from './normalize-input'
+export * from './normalize-schema'
 export * from './normalize-tool-choice'
 export * from './normalize-tools'
 export * from './responses-event-stream'
