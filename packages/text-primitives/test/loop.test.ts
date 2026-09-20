@@ -2,7 +2,7 @@ import type { LanguageModel, StepResult, StopContext, TextEvent } from '../src'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { and, hasToolCall, loop, not, or, stepCountAtLeast, tool } from '../src'
+import { and, hasToolCall, loop, maxSteps, not, or, tool } from '../src'
 import { XSAIError } from '../src/shared'
 
 const eventStream = (events: TextEvent | TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
@@ -88,13 +88,13 @@ describe('loop', () => {
       steps: [createStepResult(), createStepResult()],
     })
 
-    expect(stepCountAtLeast(2)(context)).toBe(true)
-    expect(stepCountAtLeast(3)(context)).toBe(false)
+    expect(maxSteps(2)(context)).toBe(true)
+    expect(maxSteps(3)(context)).toBe(false)
     expect(hasToolCall()(context)).toBe(true)
     expect(hasToolCall('get_weather')(context)).toBe(true)
     expect(hasToolCall('search')(context)).toBe(false)
-    expect(or(stepCountAtLeast(5), hasToolCall('get_weather'))(context)).toBe(true)
-    expect(and(stepCountAtLeast(2), hasToolCall('get_weather'))(context)).toBe(true)
+    expect(or(maxSteps(5), hasToolCall('get_weather'))(context)).toBe(true)
+    expect(and(maxSteps(2), hasToolCall('get_weather'))(context)).toBe(true)
     expect(not(hasToolCall('search'))(context)).toBe(true)
   })
 
