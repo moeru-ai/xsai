@@ -39,8 +39,7 @@ export const wireRequest = async (
   const url = new URL(init.path, base.endsWith('/') ? base : `${base}/`)
 
   const requestCatch = (cause: unknown): never => {
-    if (modelOptions.signal?.aborted)
-      throw cause
+    modelOptions.signal?.throwIfAborted()
     throw new XSAIError('network-error', `request to ${url.toString()} failed`, {
       cause: cause ?? new Error('fetch rejected without a reason'),
     })

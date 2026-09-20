@@ -46,9 +46,8 @@ export const executeTool = async (
     }
   }
   catch (error) {
-    return toolError(call, signal?.aborted === true
-      ? 'This operation was aborted'
-      : error instanceof Error ? error.message : String(error))
+    signal?.throwIfAborted()
+    return toolError(call, error instanceof Error ? error.message : String(error))
   }
 }
 
