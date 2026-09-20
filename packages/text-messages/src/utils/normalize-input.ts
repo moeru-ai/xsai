@@ -101,13 +101,9 @@ const normalizeReasoningPart = (part: ReasoningPart): ContentBlock[] => {
     return blocks
 
   // A signature belongs to the thinking block it closed.
-  for (let i = blocks.length - 1; i >= 0; i--) {
-    const block = blocks[i]
-    if (block.type === 'thinking') {
-      block.signature = signature
-      break
-    }
-  }
+  const block = blocks.findLast(block => block.type === 'thinking')
+  if (block?.type === 'thinking')
+    block.signature = signature
   return blocks
 }
 
