@@ -18,16 +18,10 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<TextEvent[]> 
   const stream = source
     .pipeThrough(new EventSourceDataStream())
     .pipeThrough(new ResponsesEventStream())
-  const reader = stream.getReader()
   const events: TextEvent[] = []
-
-  while (true) {
-    const result = await reader.read()
-    if (result.done)
-      return events
-
-    events.push(result.value)
-  }
+  for await (const event of stream)
+    events.push(event)
+  return events
 }
 
 const message = (data: unknown): EventSourceMessage => ({ data: JSON.stringify(data) })
