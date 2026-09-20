@@ -10,7 +10,7 @@ import { executeTools } from './execute-tools'
 
 export interface LoopOptions extends LanguageModelOptions {
   prepareStep?: PrepareStep
-  /** @default `stepCountAtLeast(1)` */
+  /** @default `stepCountAtLeast(10)` */
   stopWhen?: StopCondition
 }
 
@@ -59,8 +59,8 @@ const requireStreamEnd = (event: StreamEndEvent | undefined): StreamEndEvent => 
   return event
 }
 
-export const loop = async (model: LanguageModel, { prepareStep, stopWhen: stopWhenOption, ...options }: LoopOptions): Promise<ReadableStream<TextEvent>> => {
-  const stopWhen = stopWhenOption ?? stepCountAtLeast(1)
+export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOption, ...options }: LoopOptions): ReadableStream<TextEvent> => {
+  const stopWhen = stopWhenOption ?? stepCountAtLeast(10)
   const input: Message[] = Array.isArray(options.input) ? options.input : [{ content: options.input, role: 'user' }]
   const steps: LoopStep[] = []
 
