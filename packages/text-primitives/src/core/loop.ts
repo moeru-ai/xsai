@@ -2,10 +2,9 @@ import type { CollectResult } from './collect'
 import type { ToolCallPart, ToolResultPart } from './types/content'
 import type { LanguageModel, LanguageModelOptions } from './types/language-model'
 import type { Message } from './types/message'
-import type { StreamEndEvent, TextEvent } from './types/text-event'
+import type { TextEvent } from './types/text-event'
 
-import { XSAIError } from '@xsai/shared'
-
+import { readStreamEnd } from '../utils/read-stream-end'
 import { executeTools } from './execute-tools'
 
 export interface LoopOptions extends LanguageModelOptions {
@@ -53,12 +52,6 @@ export const stepCountAtLeast = (count: number): StopCondition =>
 export const hasToolCall = (name?: string): StopCondition =>
   ({ step }) => step.toolCalls.some(toolCall => name == null || toolCall.name === name)
 
-const requireStreamEnd = (event: StreamEndEvent | undefined): StreamEndEvent => {
-  if (event == null)
-    throw new XSAIError('truncated-stream', 'model stream ended without a stream.end event')
-  return event
-}
-
 export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOption, ...options }: LoopOptions): ReadableStream<TextEvent> => {
   const stopWhen = stopWhenOption ?? stepCountAtLeast(10)
   const input: Message[] = Array.isArray(options.input) ? options.input : [{ content: options.input, role: 'user' }]
@@ -78,19 +71,7 @@ export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOpti
           input: prepared?.input ?? input,
         }
         const eventStream = await model(modelOptions)
-        let terminal: StreamEndEvent | undefined
-
-        for await (const event of eventStream) {
-          controller.enqueue(event)
-
-          if (event.type !== 'stream.end')
-            continue
-
-          terminal = event
-          break
-        }
-
-        const completed = requireStreamEnd(terminal)
+        const completed = await readStreamEnd(eventStream, event => controller.enqueue(event))
         if (completed.status === 'failed') {
           controller.close()
           return
