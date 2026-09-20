@@ -1,3 +1,4 @@
+import { tool } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
@@ -96,7 +97,7 @@ describe('messages options', () => {
     const stream = await model({
       input: 'hi',
       maxOutputTokens: 10,
-      tools: [{ inputSchema: schema, name: 'measure' }],
+      tools: [tool({ inputSchema: schema, name: 'measure' })],
     })
     await stream.cancel()
 

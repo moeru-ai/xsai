@@ -21,9 +21,9 @@ export const executeTool = async (
   { signal, tools }: Pick<LanguageModelOptions, 'signal' | 'tools'>,
 ): Promise<ToolResultPart> => {
   const tool = tools?.find(candidate => candidate.name === call.name)
-  const execute = (tool as Partial<ExecutableTool> | undefined)?.execute
+  const executableTool = tool as ExecutableTool | undefined
 
-  if (execute == null) {
+  if (executableTool == null || executableTool.execute == null) {
     const available = tools?.map(candidate => candidate.name).join(', ')
     return toolError(call, tool == null
       ? `Model tried to call unavailable tool "${call.name}", ${available == null || available === '' ? 'No tools are available' : `Available tools: ${available}`}.`
@@ -39,9 +39,17 @@ export const executeTool = async (
   }
 
   try {
+    let validatedInput = toolInput
+    if (executableTool.inputSchema.validate != null) {
+      const validation = await executableTool.inputSchema.validate(toolInput)
+      if (validation.issues)
+        return toolError(call, `Tool input validation failed for "${call.name}".`)
+      validatedInput = validation.value
+    }
+
     return {
       callId: call.callId,
-      output: await execute(toolInput, { signal }),
+      output: await executableTool.execute(validatedInput, { signal }),
       type: 'tool-result',
     }
   }

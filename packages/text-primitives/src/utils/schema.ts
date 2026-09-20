@@ -1,4 +1,4 @@
-import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
+import type { StandardJSONSchemaV1, StandardSchemaV1, StandardTypedV1 } from '@standard-schema/spec'
 import type { JSONSchema7 } from 'json-schema'
 
 export type { JSONSchema7, JSONSchema7Definition } from 'json-schema'
@@ -10,7 +10,10 @@ export interface CombinedStandardSchema<Input = unknown, Output = Input> {
 }
 
 export type InferSchemaInput<Schema extends UnresolvedSchema>
-  = Schema extends CombinedStandardSchema<infer Input, infer _Output> ? Input : unknown
+  = Schema extends StandardTypedV1 ? StandardSchemaV1.InferInput<Schema> : unknown
+
+export type InferSchemaOutput<Schema extends UnresolvedSchema>
+  = Schema extends StandardTypedV1 ? StandardSchemaV1.InferOutput<Schema> : unknown
 
 export interface ResolvedSchema<Input = unknown, Output = Input> {
   schema: JSONSchema7
