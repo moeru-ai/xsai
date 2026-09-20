@@ -48,7 +48,7 @@ const normalizeImagePart = (part: ImagePart): InputImageContentParamAutoParam =>
 
 const normalizeFilePart = (part: FilePart): InputFileContentParam => {
   const data = part.data.toString()
-  const protocol = URL.canParse(data) ? new URL(data).protocol : undefined
+  const protocol = URL.parse(data)?.protocol
 
   return protocol === 'http:' || protocol === 'https:'
     ? { file_url: data, type: 'input_file' }
