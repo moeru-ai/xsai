@@ -255,6 +255,21 @@ importers:
 
   packages/shared: {}
 
+  packages/text:
+    dependencies:
+      '@xsai/text-chat':
+        specifier: 'workspace:'
+        version: link:../text-chat
+      '@xsai/text-messages':
+        specifier: 'workspace:'
+        version: link:../text-messages
+      '@xsai/text-primitives':
+        specifier: 'workspace:'
+        version: link:../text-primitives
+      '@xsai/text-responses':
+        specifier: 'workspace:'
+        version: link:../text-responses
+
   packages/text-chat:
     dependencies:
       '@xsai/shared':

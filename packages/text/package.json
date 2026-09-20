@@ -1,0 +1,44 @@
+{
+  "name": "@xsai/text",
+  "type": "module",
+  "version": "0.5.0",
+  "private": true,
+  "sideEffects": false,
+  "exports": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "pkgroll"
+  },
+  "peerDependencies": {
+    "@xsai/text-chat": "workspace:",
+    "@xsai/text-messages": "workspace:",
+    "@xsai/text-responses": "workspace:"
+  },
+  "peerDependenciesMeta": {
+    "@xsai/text-chat": {
+      "optional": true
+    },
+    "@xsai/text-messages": {
+      "optional": true
+    },
+    "@xsai/text-responses": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@xsai/text-primitives": "workspace:"
+  }
+}
