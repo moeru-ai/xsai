@@ -1,4 +1,5 @@
 export * from './core'
+export * from './loop'
 export * from './utils'
 
 declare module '@xsai/shared' {
