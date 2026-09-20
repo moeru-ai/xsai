@@ -1,11 +1,11 @@
 import type { ExecutableTool } from '../core/tool'
 import type { ToolCallPart, ToolResultPart } from '../core/types/content'
-import type { StopReason } from '../core/types/finish-reason'
+import type { FinishReason } from '../core/types/finish-reason'
 import type { LanguageModelOptions } from '../core/types/language-model'
 
 export interface ExecuteToolsOptions extends Pick<LanguageModelOptions, 'signal' | 'tools'> {
   /** Finish reason of the step that produced the tool calls. */
-  reason?: StopReason
+  reason?: FinishReason
   toolCalls: ToolCallPart[]
 }
 
