@@ -110,11 +110,11 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
     if (part.type !== 'reasoning')
       return
     const content = part.content
-    const last = content[content.length - 1]
+    const last = content.at(-1)
     parts[state.index] = {
       ...part,
       content: last?.type === 'text'
-        ? [...content.slice(0, -1), { text: last.text + text, type: 'text' }]
+        ? content.with(-1, { text: last.text + text, type: 'text' })
         : [...content, { text, type: 'text' }],
     }
     emit({ delta: text, index: state.index, type: 'reasoning.delta' })
