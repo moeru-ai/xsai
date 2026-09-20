@@ -8,16 +8,16 @@ import type { StepResult } from './types/step'
 
 import { readStreamEnd } from '../utils/read-stream-end'
 import { executeTools } from './execute-tools'
-import { stepCountAtLeast } from './stop-condition'
+import { maxSteps } from './stop-condition'
 
 export interface LoopOptions extends LanguageModelOptions {
   prepareStep?: PrepareStep
-  /** @default `stepCountAtLeast(10)` */
+  /** @default `maxSteps(10)` */
   stopWhen?: StopCondition
 }
 
 export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOption, ...options }: LoopOptions): ReadableStream<TextEvent> => {
-  const stopWhen = stopWhenOption ?? stepCountAtLeast(10)
+  const stopWhen = stopWhenOption ?? maxSteps(10)
   const input: Message[] = [...(Array.isArray(options.input) ? options.input : [{ content: options.input, role: 'user' } satisfies Message])]
   const steps: StepResult[] = []
 
