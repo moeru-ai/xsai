@@ -30,7 +30,3 @@ export const resolveSchema = <Input = unknown, Output = Input>(schema: Unresolve
         validate: schema['~standard'].validate,
       }
     : { schema }
-
-// OpenAI restricts `json_schema.name` to a-zA-Z0-9_- with a max length of 64.
-export const toFormatName = (title: unknown): string =>
-  (typeof title === 'string' && title.replace(/[^\w-]/g, '_').slice(0, 64)) || 'output'
