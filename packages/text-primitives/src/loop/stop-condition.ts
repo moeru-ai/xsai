@@ -18,8 +18,11 @@ export const or = (...conditions: StopCondition[]): StopCondition =>
 export const not = (condition: StopCondition): StopCondition =>
   context => !condition(context)
 
-export const stepCountAtLeast = (count: number): StopCondition =>
+export const maxSteps = (count: number): StopCondition =>
   ({ steps }) => steps.length >= count
 
 export const hasToolCall = (name?: string): StopCondition =>
   ({ step }) => step.toolCalls.some(toolCall => name == null || toolCall.name === name)
+
+/** @deprecated use `maxSteps` instead. */
+export const stepCountAtLeast = maxSteps
