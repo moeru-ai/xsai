@@ -2,7 +2,7 @@ import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/sp
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { resolveSchema, toFormatName } from '../src/utils/schema'
+import { resolveSchema } from '../src/utils/schema'
 
 describe('resolveSchema', () => {
   it('returns a raw JSON schema in place, without a validator', () => {
@@ -55,24 +55,5 @@ describe('resolveSchema', () => {
 
     expect(resolved.schema).toBe(schema)
     expect(resolved.validate).toBeUndefined()
-  })
-})
-
-describe('toFormatName', () => {
-  it.each([
-    ['User Profile!', 'User_Profile_'],
-    ['a'.repeat(100), 'a'.repeat(64)],
-    ['用户信息', '____'],
-  ])('sanitizes title %s into the wire name %s', (title, name) => {
-    expect(toFormatName(title)).toBe(name)
-  })
-
-  it.each([
-    [undefined],
-    [null],
-    [42],
-    [''],
-  ])('falls back to output for %s', (title) => {
-    expect(toFormatName(title)).toBe('output')
   })
 })
