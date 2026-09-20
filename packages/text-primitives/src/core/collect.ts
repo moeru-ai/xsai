@@ -1,7 +1,7 @@
 import type { LanguageModel, LanguageModelOptions } from './types/language-model'
 import type { StreamEndEvent } from './types/text-event'
 
-import { XSAIError } from '@xsai/shared'
+import { readStreamEnd } from '../utils/read-stream-end'
 
 /** The resolved value of {@link collect}. */
 export type CollectResult = Omit<Exclude<StreamEndEvent, { status: 'failed' }>, 'error' | 'type'>
@@ -15,19 +15,11 @@ export const collect = async (
   options: LanguageModelOptions,
 ): Promise<CollectResult> => {
   const eventStream = await model(options)
+  const terminal = await readStreamEnd(eventStream)
 
-  for await (const event of eventStream) {
-    if (event.type !== 'stream.end') {
-      continue
-    }
-    else if (event.status === 'failed') {
-      throw event.error
-    }
-    else {
-      const { type, ...result } = event
-      return result
-    }
-  }
+  if (terminal.status === 'failed')
+    throw terminal.error
 
-  throw new XSAIError('truncated-stream', 'model stream ended without a stream.end event')
+  const { type, ...result } = terminal
+  return result
 }
