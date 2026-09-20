@@ -87,8 +87,6 @@ export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOpti
         steps.push(step)
         input.push(result.message)
 
-        options.signal?.throwIfAborted()
-
         const stop = stopWhen({
           input,
           step,
@@ -99,6 +97,8 @@ export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOpti
           controller.close()
           return
         }
+
+        options.signal?.throwIfAborted()
 
         const results = await executeTools({
           ...modelOptions,
