@@ -36,7 +36,7 @@ describe('responses options', () => {
       outputFormat: {
         properties: { a: { type: 'string' } },
         required: ['a'],
-        title: 'answer',
+        title: 'User Profile!',
         type: 'object',
       },
     })
@@ -44,7 +44,7 @@ describe('responses options', () => {
 
     expect(bodies[0].text).toMatchObject({
       format: {
-        name: 'answer',
+        name: 'User_Profile_',
         schema: {
           additionalProperties: false,
           properties: { a: { type: 'string' } },

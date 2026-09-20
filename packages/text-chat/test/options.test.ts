@@ -39,7 +39,7 @@ describe('chat options', () => {
         description: 'The answer',
         properties: { a: { type: 'string' } },
         required: ['a'],
-        title: 'answer',
+        title: 'User Profile!',
         type: 'object',
       },
     })
@@ -48,7 +48,7 @@ describe('chat options', () => {
     expect(bodies[0].response_format).toMatchObject({
       json_schema: {
         description: 'The answer',
-        name: 'answer',
+        name: 'User_Profile_',
         schema: {
           additionalProperties: false,
           properties: { a: { type: 'string' } },

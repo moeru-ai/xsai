@@ -2,9 +2,13 @@ import type { UnresolvedSchema } from '@xsai/text-primitives'
 
 import type { ChatResponseFormat } from '../types'
 
-import { resolveSchema, toFormatName } from '@xsai/text-primitives'
+import { resolveSchema } from '@xsai/text-primitives'
 
 import { normalizeSchema } from './normalize-schema'
+
+/** @internal */
+export const normalizeSchemaName = (title?: string): string =>
+  title == null || title === '' ? 'output' : title.replace(/[^\w-]/g, '_').slice(0, 64)
 
 /** @internal */
 export const normalizeFormat = (outputFormat: undefined | UnresolvedSchema): ChatResponseFormat | undefined => {
@@ -16,7 +20,7 @@ export const normalizeFormat = (outputFormat: undefined | UnresolvedSchema): Cha
   return {
     json_schema: {
       description: normalized.description,
-      name: toFormatName(normalized.title),
+      name: normalizeSchemaName(normalized.title),
       schema: normalized as Record<string, unknown>,
       strict: true,
     },
