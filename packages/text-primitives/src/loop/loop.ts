@@ -3,6 +3,7 @@ import type { LanguageModel, LanguageModelOptions } from '../core/types/language
 import type { Message } from '../core/types/message'
 import type { TextEvent } from '../core/types/text-event'
 import type { StopCondition } from './stop-condition'
+import type { PrepareStep } from './types/prepare-step'
 import type { StepResult } from './types/step'
 
 import { readStreamEnd } from '../utils/read-stream-end'
@@ -14,17 +15,6 @@ export interface LoopOptions extends LanguageModelOptions {
   /** @default `stepCountAtLeast(10)` */
   stopWhen?: StopCondition
 }
-
-export type PrepareStep = (options: PrepareStepOptions) => PrepareStepResult | Promise<PrepareStepResult | undefined> | undefined
-
-export interface PrepareStepOptions {
-  input: Message[]
-  stepNumber: number
-  steps: StepResult[]
-}
-
-/** Per-step model overrides; `signal` remains owned by the loop. */
-export type PrepareStepResult = Partial<Omit<LanguageModelOptions, 'signal'>>
 
 export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOption, ...options }: LoopOptions): ReadableStream<TextEvent> => {
   const stopWhen = stopWhenOption ?? stepCountAtLeast(10)
