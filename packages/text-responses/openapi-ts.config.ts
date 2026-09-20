@@ -5,12 +5,11 @@ const removeDiscriminator = (data: unknown): unknown => {
     return data.map(removeDiscriminator)
 
   if (data !== null && typeof data === 'object') {
-    return Object.entries(data).reduce((acc, [key, value]) => {
-      if (key !== 'discriminator') {
-        acc[key] = removeDiscriminator(value)
-      }
-      return acc
-    }, {} as Record<string, unknown>)
+    return Object.fromEntries(
+      Object.entries(data)
+        .filter(([key]) => key !== 'discriminator')
+        .map(([key, value]) => [key, removeDiscriminator(value)]),
+    )
   }
 
   return data
