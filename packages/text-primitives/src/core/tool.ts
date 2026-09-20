@@ -1,6 +1,6 @@
 import type { Promisable } from '@xsai/shared'
 
-import type { InferSchemaOutput, ResolvedSchema, UnresolvedSchema } from '../utils/schema'
+import type { InferSchemaInput, InferSchemaOutput, ResolvedSchema, UnresolvedSchema } from '../utils/schema'
 import type { ToolResultPartContent } from './types/content'
 
 import { resolveSchema } from '../utils/schema'
@@ -23,7 +23,7 @@ export interface ToolExecuteOptions {
 export interface ToolOptions<TInput extends UnresolvedSchema, TOutput extends undefined | UnresolvedSchema = undefined> {
   description?: string
   execute?: (input: InferSchemaOutput<TInput>, options?: ToolExecuteOptions) => TOutput extends UnresolvedSchema
-    ? Promisable<InferSchemaOutput<TOutput>>
+    ? Promisable<InferSchemaInput<TOutput>>
     : Promisable<string | ToolResultPartContent[]>
   inputSchema: TInput
   name: string
