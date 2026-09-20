@@ -12,7 +12,7 @@ export interface WireRequestInit {
   path: string
 }
 
-const definedOnly = <V>(fields: Record<string, undefined | V>): Record<string, V> =>
+const cleanUndefined = <V>(fields: Record<string, undefined | V>): Record<string, V> =>
   Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined)) as Record<string, V>
 
 const responseCatch = async (res: Response): Promise<Response & { body: NonNullable<Response['body']> }> => {
@@ -49,9 +49,9 @@ export const wireRequest = async (
     // Ignore undefined overrides so they cannot erase normalized fields.
     body: JSON.stringify({
       ...init.body,
-      ...definedOnly(modelOptions.extraBody ?? {}),
+      ...cleanUndefined(modelOptions.extraBody ?? {}),
     }),
-    headers: definedOnly(init.headers ?? {
+    headers: cleanUndefined(init.headers ?? {
       ...options.extraHeaders,
       'Content-Type': 'application/json',
       ...(options.apiKey == null ? {} : { Authorization: `Bearer ${options.apiKey}` }),
