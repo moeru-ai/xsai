@@ -18,7 +18,7 @@ export interface LoopOptions extends LanguageModelOptions {
 
 export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOption, ...options }: LoopOptions): ReadableStream<TextEvent> => {
   const stopWhen = stopWhenOption ?? stepCountAtLeast(10)
-  const input: Message[] = Array.isArray(options.input) ? options.input : [{ content: options.input, role: 'user' }]
+  const input: Message[] = [...(Array.isArray(options.input) ? options.input : [{ content: options.input, role: 'user' } satisfies Message])]
   const steps: StepResult[] = []
 
   return new ReadableStream<TextEvent>({
