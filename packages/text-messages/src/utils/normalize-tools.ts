@@ -7,7 +7,7 @@ import { normalizeSchema } from './normalize-schema'
 /** @internal */
 export const normalizeTools = (tools?: readonly Tool[]): MessagesTool[] | undefined => tools?.map(tool => ({
   description: tool.description,
-  input_schema: normalizeSchema(tool.inputSchema) as Record<string, unknown>,
+  input_schema: normalizeSchema(tool.inputSchema.schema) as Record<string, unknown>,
   name: tool.name,
 }))
 

@@ -1,3 +1,4 @@
+import { tool } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 
@@ -73,7 +74,7 @@ describe('chat options', () => {
     const stream = await model({
       input: 'hi',
       outputFormat: schema,
-      tools: [{ inputSchema: schema, name: 'measure' }],
+      tools: [tool({ inputSchema: schema, name: 'measure' })],
     })
     await stream.cancel()
 

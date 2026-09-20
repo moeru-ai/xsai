@@ -276,19 +276,23 @@ describe('normalizeTools', () => {
       {
         description: 'Get the weather.',
         inputSchema: {
-          additionalProperties: false,
-          properties: { location: { type: 'string' } },
-          required: ['location'],
-          type: 'object',
+          schema: {
+            additionalProperties: false,
+            properties: { location: { type: 'string' } },
+            required: ['location'],
+            type: 'object',
+          },
         },
         name: 'weather',
         outputSchema: {
-          properties: { temperature: { type: 'number' } },
-          type: 'object',
+          schema: {
+            properties: { temperature: { type: 'number' } },
+            type: 'object',
+          },
         },
       },
       {
-        inputSchema: { type: 'object' },
+        inputSchema: { schema: { type: 'object' } },
         name: 'noop',
       },
     ]
@@ -297,7 +301,7 @@ describe('normalizeTools', () => {
       {
         description: 'Get the weather.',
         name: 'weather',
-        parameters: tools[0].inputSchema,
+        parameters: tools[0].inputSchema.schema,
         strict: true,
         type: 'function',
       },
