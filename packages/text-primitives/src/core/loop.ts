@@ -87,8 +87,7 @@ export const loop = (model: LanguageModel, { prepareStep, stopWhen: stopWhenOpti
         steps.push(step)
         input.push(result.message)
 
-        if (options.signal?.aborted === true)
-          throw options.signal.reason ?? new DOMException('The operation was aborted', 'AbortError')
+        options.signal?.throwIfAborted()
 
         const stop = stopWhen({
           input,
