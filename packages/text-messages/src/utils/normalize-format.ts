@@ -4,11 +4,13 @@ import type { MessagesOutputFormat } from '../types'
 
 import { resolveSchema } from '@xsai/text-primitives'
 
+import { normalizeSchema } from './normalize-schema'
+
 /** @internal */
 export const normalizeFormat = (outputFormat: undefined | UnresolvedSchema): MessagesOutputFormat | undefined =>
   outputFormat == null
     ? undefined
     : {
-        schema: resolveSchema(outputFormat).schema as Record<string, unknown>,
+        schema: normalizeSchema(resolveSchema(outputFormat).schema) as Record<string, unknown>,
         type: 'json_schema',
       }

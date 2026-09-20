@@ -52,8 +52,11 @@ describe('messages options', () => {
       input: 'hi',
       maxOutputTokens: 10,
       outputFormat: {
-        properties: { a: { type: 'string' } },
-        required: ['a'],
+        properties: {
+          amount: { maximum: 10, minimum: 0, type: 'number' },
+          optional: { type: 'string' },
+        },
+        required: ['amount'],
         title: 'answer',
         type: 'object',
       },
@@ -66,7 +69,11 @@ describe('messages options', () => {
       format: {
         schema: {
           additionalProperties: false,
-          properties: { a: { type: 'string' } },
+          properties: {
+            amount: { type: 'number' },
+            optional: { type: 'string' },
+          },
+          required: ['amount'],
         },
         type: 'json_schema',
       },

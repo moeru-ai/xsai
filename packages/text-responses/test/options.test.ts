@@ -54,4 +54,41 @@ describe('responses options', () => {
       },
     })
   })
+
+  it('normalizes strict output with OpenAI constraints', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    const schema = {
+      properties: {
+        amount: { maximum: 10, minimum: 0, type: 'number' },
+        optional: { type: 'string' },
+      },
+      required: ['amount'],
+      type: 'object',
+    }
+    const stream = await model({ input: 'hi', outputFormat: schema })
+    await stream.cancel()
+
+    expect(bodies[0].text).toMatchObject({
+      format: {
+        schema: {
+          additionalProperties: false,
+          properties: {
+            amount: { maximum: 10, minimum: 0, type: 'number' },
+            optional: { type: 'string' },
+          },
+          required: ['amount', 'optional'],
+          type: 'object',
+        },
+      },
+    })
+    expect(schema).toEqual({
+      properties: {
+        amount: { maximum: 10, minimum: 0, type: 'number' },
+        optional: { type: 'string' },
+      },
+      required: ['amount'],
+      type: 'object',
+    })
+  })
 })

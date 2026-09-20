@@ -16,7 +16,7 @@ const standardSchema = <Input = unknown, Output = Input>(json: Record<string, un
 })
 
 describe('tool', () => {
-  it('accepts a raw JSON schema as inputSchema', () => {
+  it('accepts a raw JSON schema as inputSchema without wire normalization', () => {
     const inputSchema = {
       properties: { city: { type: 'string' } },
       required: ['city'],
@@ -30,7 +30,7 @@ describe('tool', () => {
       name: 'get_weather',
     })
     expect(weather.inputSchema).toBe(inputSchema)
-    expect(weather.inputSchema).toMatchObject({ additionalProperties: false, required: ['city'] })
+    expect(weather.inputSchema).toEqual(inputSchema)
     expect(weather.outputSchema).toBeUndefined()
     expect('execute' in weather).toBe(false)
   })
@@ -51,7 +51,7 @@ describe('tool', () => {
     expect(input).toHaveBeenCalledOnce()
     expect(input).toHaveBeenCalledWith({ target: 'draft-07' })
     expect(weather.inputSchema).toBe(wire)
-    expect(weather.inputSchema).toMatchObject({ additionalProperties: false, required: ['city'] })
+    expect(weather.inputSchema).toEqual(wire)
   })
 
   it('resolves the output schema and keeps handler inference', async () => {

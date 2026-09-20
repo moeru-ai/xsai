@@ -59,6 +59,45 @@ describe('chat options', () => {
     })
   })
 
+  it('normalizes strict output and tool schemas with OpenAI constraints', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
+    const schema = {
+      properties: {
+        amount: { maximum: 10, minimum: 0, type: 'number' },
+        optional: { type: 'string' },
+      },
+      required: ['amount'],
+      type: 'object',
+    }
+    const stream = await model({
+      input: 'hi',
+      outputFormat: schema,
+      tools: [{ inputSchema: schema, name: 'measure' }],
+    })
+    await stream.cancel()
+
+    const normalized = {
+      additionalProperties: false,
+      properties: {
+        amount: { maximum: 10, minimum: 0, type: 'number' },
+        optional: { type: 'string' },
+      },
+      required: ['amount', 'optional'],
+      type: 'object',
+    }
+    expect(bodies[0].response_format).toMatchObject({ json_schema: { schema: normalized } })
+    expect(bodies[0].tools).toMatchObject([{ function: { parameters: normalized } }])
+    expect(schema).toEqual({
+      properties: {
+        amount: { maximum: 10, minimum: 0, type: 'number' },
+        optional: { type: 'string' },
+      },
+      required: ['amount'],
+      type: 'object',
+    })
+  })
+
   it('accepts a StandardJSONSchemaV1 as outputFormat', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
