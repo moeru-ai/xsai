@@ -1,4 +1,5 @@
 export * from './chat-event-stream'
 export * from './normalize-format'
 export * from './normalize-input'
+export * from './normalize-schema'
 export * from './normalize-tools'
