@@ -34,7 +34,7 @@ _Avoid_: complete, runSync
 ## Conventions
 
 - Mechanics are shared, semantics are wire-native: index bookkeeping and termination live in the event builder; adapters normalize finish reasons, statuses, usage fields, and provider errors.
-- `tool-call.delta` identifies its part by `index`; its `id` is always the tool **call id**, never a provider item id.
+- `tool-call.delta` identifies its part by `index`; its `callId` is always the tool **call id**, never a provider item id. The normalized `callId` is stable after it is first exposed, even if a provider call id arrives later.
 - `stream.end.message.id` is the replayable assistant message id; response-scoped provider identities are not part of the event contract.
 - `reason` is an optional normalized string; known reasons use the shared vocabulary and unknown provider reasons remain raw strings. `status` carries the normalized response state.
 - A refusal is its own part (`refusal` + `refusal.delta`), never folded into `text`; a wire whose refusal is only a stop condition (Anthropic `stop_reason`) maps it to `reason: 'refusal'` instead.

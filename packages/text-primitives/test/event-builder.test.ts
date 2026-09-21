@@ -132,8 +132,8 @@ describe('eventBuilder', () => {
     builder.end('tool')
 
     expect(events).toContainEqual({
+      callId: 'call_0',
       delta: '{}',
-      id: 'call_0',
       index: 0,
       name: 'weather',
       type: 'tool-call.delta',
@@ -151,7 +151,7 @@ describe('eventBuilder', () => {
     })
   })
 
-  it('ignores an empty initial call id when resolving a tool-call delta id', () => {
+  it('ignores an empty initial call id when resolving a tool-call delta call id', () => {
     const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
@@ -163,8 +163,61 @@ describe('eventBuilder', () => {
     builder.delta('tool', '{}')
 
     expect(events).toContainEqual({
+      callId: 'call_0',
       delta: '{}',
-      id: 'call_0',
+      index: 0,
+      name: 'weather',
+      type: 'tool-call.delta',
+    })
+  })
+
+  it('keeps the normalized call id stable after a fallback is emitted', () => {
+    const events: TextEvent[] = []
+    const builder = eventBuilder(event => events.push(event), () => {})
+
+    builder.start('tool', 'tool-call', { fallbackId: 'call_0', id: 'item_0', name: 'weather' })
+    builder.delta('tool', '{')
+    builder.delta('tool', '}', { callId: 'actual_123' })
+    builder.end('tool')
+
+    expect(events).toContainEqual({
+      callId: 'call_0',
+      delta: '{',
+      index: 0,
+      name: 'weather',
+      type: 'tool-call.delta',
+    })
+    expect(events).toContainEqual({
+      callId: 'call_0',
+      delta: '}',
+      index: 0,
+      name: 'weather',
+      type: 'tool-call.delta',
+    })
+    expect(events).toContainEqual({
+      content: {
+        arguments: '{}',
+        callId: 'call_0',
+        id: 'item_0',
+        name: 'weather',
+        type: 'tool-call',
+      },
+      index: 0,
+      type: 'content.end',
+    })
+  })
+
+  it('accepts a late call id before the first non-empty delta', () => {
+    const events: TextEvent[] = []
+    const builder = eventBuilder(event => events.push(event), () => {})
+
+    builder.start('tool', 'tool-call', { fallbackId: 'call_0', name: 'weather' })
+    builder.delta('tool', '', { callId: 'actual_123' })
+    builder.delta('tool', '{}')
+
+    expect(events).toContainEqual({
+      callId: 'actual_123',
+      delta: '{}',
       index: 0,
       name: 'weather',
       type: 'tool-call.delta',

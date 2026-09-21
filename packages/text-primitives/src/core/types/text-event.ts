@@ -78,8 +78,8 @@ export interface TextEventMap {
 export type TextEventType = keyof TextEventMap
 
 export interface ToolCallDeltaEvent {
+  callId: string
   delta: string
-  id: string
   index: number
   name?: string
   type: 'tool-call.delta'
