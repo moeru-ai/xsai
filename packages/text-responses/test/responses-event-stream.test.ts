@@ -128,8 +128,8 @@ describe('responses event stream', () => {
       { type: 'stream.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
+        callId: 'call_1',
         delta: '{"location":',
-        id: 'call_1',
         index: 0,
         name: 'weather',
         type: 'tool-call.delta',

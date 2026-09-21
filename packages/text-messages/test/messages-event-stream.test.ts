@@ -76,15 +76,15 @@ describe('messages event stream', () => {
       { content: { text: 'Hello', type: 'text' }, index: 0, type: 'content.end' },
       { contentType: 'tool-call', index: 1, type: 'content.start' },
       {
+        callId: 'toolu_1',
         delta: '{"city":',
-        id: 'toolu_1',
         index: 1,
         name: 'weather',
         type: 'tool-call.delta',
       },
       {
+        callId: 'toolu_1',
         delta: '"Taipei"}',
-        id: 'toolu_1',
         index: 1,
         name: 'weather',
         type: 'tool-call.delta',
