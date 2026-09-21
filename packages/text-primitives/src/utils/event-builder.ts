@@ -52,6 +52,7 @@ export interface PartStartInit {
   callId?: string
   /** Used when the wire never sends a call id, e.g. `call_${index}`. */
   fallbackId?: string
+  /** Wire-level part identity, distinct from the tool call id when both exist. */
   id?: string
   name?: string
 }
@@ -91,7 +92,7 @@ const acceptIdentity = (current: string | undefined, incoming: string | undefine
   incoming != null && incoming !== '' ? incoming : current
 
 const resolveCallId = (state: PartState): string =>
-  state.callId ?? state.id ?? state.fallbackId ?? `call_${state.index}`
+  acceptIdentity(state.fallbackId, state.callId) ?? `call_${state.index}`
 
 /** @internal */
 export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSAIError) => void): EventBuilder => {
