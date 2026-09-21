@@ -119,6 +119,58 @@ describe('eventBuilder', () => {
     })
   })
 
+  it('keeps provider item ids separate from tool-call delta ids', () => {
+    const events: TextEvent[] = []
+    const builder = eventBuilder(event => events.push(event), () => {})
+
+    builder.start('tool', 'tool-call', {
+      fallbackId: 'call_0',
+      id: 'item_0',
+      name: 'weather',
+    })
+    builder.delta('tool', '{}')
+    builder.end('tool')
+
+    expect(events).toContainEqual({
+      delta: '{}',
+      id: 'call_0',
+      index: 0,
+      name: 'weather',
+      type: 'tool-call.delta',
+    })
+    expect(events).toContainEqual({
+      content: {
+        arguments: '{}',
+        callId: 'call_0',
+        id: 'item_0',
+        name: 'weather',
+        type: 'tool-call',
+      },
+      index: 0,
+      type: 'content.end',
+    })
+  })
+
+  it('ignores an empty initial call id when resolving a tool-call delta id', () => {
+    const events: TextEvent[] = []
+    const builder = eventBuilder(event => events.push(event), () => {})
+
+    builder.start('tool', 'tool-call', {
+      callId: '',
+      fallbackId: 'call_0',
+      name: 'weather',
+    })
+    builder.delta('tool', '{}')
+
+    expect(events).toContainEqual({
+      delta: '{}',
+      id: 'call_0',
+      index: 0,
+      name: 'weather',
+      type: 'tool-call.delta',
+    })
+  })
+
   it('upgrades an explicit stop to tool-calls when the final message contains a tool call', () => {
     const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
