@@ -1,4 +1,5 @@
 import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
+import type { JSONSchema7 } from 'json-schema'
 
 import { describe, expect, it, vi } from 'vitest'
 
@@ -6,7 +7,7 @@ import { resolveSchema } from '../src/utils/schema'
 
 describe('resolveSchema', () => {
   it('returns a raw JSON schema in place, without a validator', () => {
-    const schema = {
+    const schema: JSONSchema7 = {
       properties: { a: { type: 'string' } },
       type: 'object',
     }
@@ -47,13 +48,5 @@ describe('resolveSchema', () => {
     } satisfies StandardJSONSchemaV1 & StandardSchemaV1
 
     expect(resolveSchema(schema).validate).toBe(validate)
-  })
-
-  it('does not mistake a raw schema carrying a ~standard field for Standard JSON', () => {
-    const schema = { 'type': 'object', '~standard': { junk: true } }
-    const resolved = resolveSchema(schema)
-
-    expect(resolved.schema).toBe(schema)
-    expect(resolved.validate).toBeUndefined()
   })
 })

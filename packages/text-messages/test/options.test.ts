@@ -1,3 +1,5 @@
+import type { JSONSchema7 } from '@xsai/text-primitives'
+
 import { tool } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
@@ -84,7 +86,7 @@ describe('messages options', () => {
   it('normalizes tool schemas with Messages constraints', async () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
-    const schema = {
+    const schema: JSONSchema7 = {
       properties: {
         amount: { maximum: 10, minimum: 0, type: 'number' },
         list: { items: { type: 'string' }, maxItems: 3, minItems: 2, type: 'array' },
