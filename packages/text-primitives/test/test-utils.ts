@@ -87,7 +87,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
       event.type === 'tool-call.delta' && event.index === toolCallIndex)
 
     expect(toolCallDeltas.length).toBeGreaterThan(0)
-    expect(toolCallDeltas.every(event => event.id === toolCall.callId)).toBe(true)
+    expect(toolCallDeltas.every(event => event.callId === toolCall.callId)).toBe(true)
     const result = await weather.execute(parseWeatherInput(JSON.parse(toolCall.arguments)))
 
     expect(toolCall.name).toBe(weather.name)

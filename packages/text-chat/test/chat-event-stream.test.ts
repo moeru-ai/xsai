@@ -123,15 +123,15 @@ describe('chat event stream', () => {
       { type: 'stream.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
+        callId: 'call_1',
         delta: '{"city":',
-        id: 'call_1',
         index: 0,
         name: 'get_weather',
         type: 'tool-call.delta',
       },
       {
+        callId: 'call_1',
         delta: '"Taipei"}',
-        id: 'call_1',
         index: 0,
         name: 'get_weather',
         type: 'tool-call.delta',
@@ -264,15 +264,15 @@ describe('chat event stream', () => {
       { type: 'stream.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
+        callId: 'call_1',
         delta: 'a',
-        id: 'call_1',
         index: 0,
         name: 'get_weather',
         type: 'tool-call.delta',
       },
       {
+        callId: 'call_1',
         delta: 'b',
-        id: 'call_1',
         index: 0,
         name: 'get_weather',
         type: 'tool-call.delta',
@@ -306,7 +306,7 @@ describe('chat event stream', () => {
     ])
   })
 
-  it('mints an id when the wire never sends one', async () => {
+  it('mints a call id when the wire never sends one', async () => {
     await expect(readEvents([
       message({
         choices: [{
@@ -324,7 +324,7 @@ describe('chat event stream', () => {
     ])).resolves.toEqual([
       { type: 'stream.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
-      { delta: 'a', id: 'call_0', index: 0, name: 't', type: 'tool-call.delta' },
+      { callId: 'call_0', delta: 'a', index: 0, name: 't', type: 'tool-call.delta' },
       {
         content: { arguments: 'a', callId: 'call_0', id: 'call_0', name: 't', type: 'tool-call' },
         index: 0,

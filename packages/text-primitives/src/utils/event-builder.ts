@@ -64,6 +64,7 @@ interface PartState {
   id?: string
   index: number
   name?: string
+  resolvedCallId?: string
 }
 
 type TerminalState
@@ -91,8 +92,13 @@ const emptyContent = (type: AssistantMessageContent['type']): AssistantMessageCo
 const acceptIdentity = (current: string | undefined, incoming: string | undefined): string | undefined =>
   incoming != null && incoming !== '' ? incoming : current
 
-const resolveCallId = (state: PartState): string =>
-  acceptIdentity(state.fallbackId, state.callId) ?? `call_${state.index}`
+const resolveCallId = (state: PartState): string => {
+  if (state.resolvedCallId != null)
+    return state.resolvedCallId
+
+  state.resolvedCallId = acceptIdentity(state.fallbackId, state.callId) ?? `call_${state.index}`
+  return state.resolvedCallId
+}
 
 /** @internal */
 export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSAIError) => void): EventBuilder => {
@@ -146,6 +152,10 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
   const updateToolCall = (state: PartState, text: string, extra?: PartDeltaExtra): void => {
     state.callId = acceptIdentity(state.callId, extra?.callId)
     state.name = acceptIdentity(state.name, extra?.name)
+
+    if (text === '')
+      return
+
     const id = resolveCallId(state)
     const part = parts[state.index]
     if (part.type !== 'tool-call')
@@ -158,14 +168,13 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
       name: state.name ?? part.name,
     }
     const event = {
+      callId: id,
       delta: text,
-      id,
       index: state.index,
       name: state.name,
       type: 'tool-call.delta' as const,
     }
-    if (text !== '')
-      emit(event)
+    emit(event)
   }
 
   const delta = (key: PartKey, text: string, extra?: PartDeltaExtra): void => {
