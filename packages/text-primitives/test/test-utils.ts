@@ -1,6 +1,6 @@
 import type { HttpOptions } from '@xsai/shared'
 
-import type { AssistantMessageContent, ExecutableTool, LanguageModel, Message, StreamEndEvent, TextDeltaEvent, TextEvent, ToolCallPart } from '../src'
+import type { AssistantMessageContent, ExecutableTool, LanguageModel, Message, StreamEndEvent, TextDeltaEvent, TextEvent, ToolCallDeltaEvent, ToolCallPart } from '../src'
 
 import { env } from 'node:process'
 
@@ -80,8 +80,14 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
 
     const firstEvents = await readEvents(await model({ input, tools: [weather] }))
     const firstStreamEnd = firstEvents.find((event): event is StreamEndEvent => event.type === 'stream.end')!
-    const toolCall = (firstStreamEnd.message.content as readonly AssistantMessageContent[])
-      .find((part): part is ToolCallPart => part.type === 'tool-call')!
+    const firstContent = firstStreamEnd.message.content as readonly AssistantMessageContent[]
+    const toolCallIndex = firstContent.findIndex(part => part.type === 'tool-call')
+    const toolCall = firstContent.find((part): part is ToolCallPart => part.type === 'tool-call')!
+    const toolCallDeltas = firstEvents.filter((event): event is ToolCallDeltaEvent =>
+      event.type === 'tool-call.delta' && event.index === toolCallIndex)
+
+    expect(toolCallDeltas.length).toBeGreaterThan(0)
+    expect(toolCallDeltas.every(event => event.id === toolCall.callId)).toBe(true)
     const result = await weather.execute(parseWeatherInput(JSON.parse(toolCall.arguments)))
 
     expect(toolCall.name).toBe(weather.name)
