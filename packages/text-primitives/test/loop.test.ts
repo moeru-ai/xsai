@@ -184,4 +184,106 @@ describe('loop', () => {
 
     expect(execute).toHaveBeenCalledWith({ city: 'Taipei' }, { signal: controller.signal })
   })
+
+  it('runs preToolCall and postToolCall around tool execution', async () => {
+    const execute = vi.fn((input: unknown) => `weather in ${(input as { city: string }).city}`)
+    const weather = tool({
+      execute,
+      inputSchema: { type: 'object' },
+      name: 'get_weather',
+    })
+    const controller = new AbortController()
+    const hooks: unknown[] = []
+    const modelInputs: unknown[] = []
+    let callCount = 0
+    const model: LanguageModel = async (options) => {
+      callCount++
+      modelInputs.push(options.input)
+      return eventStream(callCount === 1
+        ? {
+            message: {
+              content: [{ arguments: '{}', callId: 'call-1', id: 'tool-1', name: 'get_weather', type: 'tool-call' }],
+              role: 'assistant',
+            },
+            reason: 'tool-calls',
+            status: 'completed',
+            type: 'stream.end',
+          }
+        : {
+            message: { content: 'done', role: 'assistant' },
+            reason: 'stop',
+            status: 'completed',
+            type: 'stream.end',
+          })
+    }
+
+    await readEvents(loop(model, {
+      input: 'What is the weather?',
+      postToolCall: (result, options) => {
+        hooks.push(['post', result, options.signal])
+        return { ...result, output: 'patched weather' }
+      },
+      preToolCall: (call, options) => {
+        hooks.push(['pre', call, options.signal])
+        return { ...call, arguments: '{"city":"Hong Kong"}' }
+      },
+      signal: controller.signal,
+      stopWhen: () => false,
+      tools: [weather],
+    }))
+
+    expect(execute).toHaveBeenCalledWith({ city: 'Hong Kong' }, { signal: controller.signal })
+    expect(hooks).toEqual([
+      ['pre', expect.objectContaining({ arguments: '{}', callId: 'call-1' }), controller.signal],
+      ['post', expect.objectContaining({ callId: 'call-1', output: 'weather in Hong Kong' }), controller.signal],
+    ])
+    expect(modelInputs[1]).toEqual(expect.arrayContaining([
+      { content: [{ callId: 'call-1', output: 'patched weather', type: 'tool-result' }], role: 'user' },
+    ]))
+  })
+
+  it('lets preToolCall provide a tool result without executing', async () => {
+    const execute = vi.fn(() => 'sunny')
+    const postToolCall = vi.fn()
+    const weather = tool({
+      execute,
+      inputSchema: { type: 'object' },
+      name: 'get_weather',
+    })
+    let callCount = 0
+    const model: LanguageModel = async () => {
+      callCount++
+      return eventStream(callCount === 1
+        ? {
+            message: {
+              content: [{ arguments: '{}', callId: 'call-1', id: 'tool-1', name: 'get_weather', type: 'tool-call' }],
+              role: 'assistant',
+            },
+            reason: 'tool-calls',
+            status: 'completed',
+            type: 'stream.end',
+          }
+        : {
+            message: { content: 'done', role: 'assistant' },
+            reason: 'stop',
+            status: 'completed',
+            type: 'stream.end',
+          })
+    }
+
+    await readEvents(loop(model, {
+      input: 'What is the weather?',
+      postToolCall,
+      preToolCall: call => ({
+        callId: call.callId,
+        output: 'not allowed',
+        type: 'tool-result',
+      }),
+      stopWhen: () => false,
+      tools: [weather],
+    }))
+
+    expect(execute).not.toHaveBeenCalled()
+    expect(postToolCall).not.toHaveBeenCalled()
+  })
 })
