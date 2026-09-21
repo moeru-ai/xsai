@@ -1,3 +1,5 @@
+import type { JSONSchema7 } from '@xsai/text-primitives'
+
 import { tool } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
@@ -63,7 +65,7 @@ describe('chat options', () => {
   it('normalizes strict output and tool schemas with OpenAI constraints', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
-    const schema = {
+    const schema: JSONSchema7 = {
       properties: {
         amount: { maximum: 10, minimum: 0, type: 'number' },
         optional: { type: 'string' },

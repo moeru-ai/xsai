@@ -1,3 +1,5 @@
+import type { JSONSchema7 } from '@xsai/text-primitives'
+
 import { describe, expect, it } from 'vitest'
 
 import { captureRequests } from '../../text-primitives/test/test-utils'
@@ -58,7 +60,7 @@ describe('responses options', () => {
   it('normalizes strict output with OpenAI constraints', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
-    const schema = {
+    const schema: JSONSchema7 = {
       properties: {
         amount: { maximum: 10, minimum: 0, type: 'number' },
         optional: { type: 'string' },

@@ -21,13 +21,10 @@ export interface ResolvedSchema<Input = unknown, Output = Input> {
 }
 
 export type UnresolvedSchema<Input = unknown, Output = Input>
-  = CombinedStandardSchema<Input, Output> | Record<string, unknown>
-
-const isStandardJsonSchema = <Input, Output>(schema: UnresolvedSchema<Input, Output>): schema is CombinedStandardSchema<Input, Output> =>
-  '~standard' in schema && 'jsonSchema' in (schema as StandardJSONSchemaV1)['~standard']
+  = CombinedStandardSchema<Input, Output> | JSONSchema7
 
 export const resolveSchema = <Input = unknown, Output = Input>(schema: UnresolvedSchema<Input, Output>): ResolvedSchema<Input, Output> =>
-  isStandardJsonSchema(schema)
+  '~standard' in schema
     ? {
         schema: schema['~standard'].jsonSchema.input({ target: 'draft-07' }),
         validate: schema['~standard'].validate,

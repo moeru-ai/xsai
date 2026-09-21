@@ -1,3 +1,5 @@
+import type { JSONSchema7 } from 'json-schema'
+
 import type { CombinedStandardSchema } from '../src/utils/schema'
 
 import { describe, expect, it, vi } from 'vitest'
@@ -18,7 +20,7 @@ const standardSchema = <Input = unknown, Output = Input>(json: Record<string, un
 
 describe('tool', () => {
   it('accepts a raw JSON schema as inputSchema without wire normalization', () => {
-    const inputSchema = {
+    const inputSchema: JSONSchema7 = {
       properties: { city: { type: 'string' } },
       required: ['city'],
       type: 'object',
@@ -39,7 +41,7 @@ describe('tool', () => {
   it('converts a standard schema through the input side', () => {
     const wire = { properties: { city: { type: 'string' } }, type: 'object' }
     const input = vi.fn(() => wire)
-    const schema = {
+    const schema: CombinedStandardSchema = {
       '~standard': {
         jsonSchema: { input, output: () => ({}) },
         vendor: 'test',
