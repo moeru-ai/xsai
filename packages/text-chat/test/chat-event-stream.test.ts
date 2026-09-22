@@ -196,7 +196,7 @@ describe('chat event stream', () => {
       {
         content: {
           content: [{ text: 'Think', type: 'text' }],
-          metadata: { chat: { reasoning_field: 'reasoning' } },
+          providerMetadata: { chat: { reasoning_field: 'reasoning' } },
           type: 'reasoning',
         },
         index: 0,
@@ -208,7 +208,7 @@ describe('chat event stream', () => {
           content: [
             {
               content: [{ text: 'Think', type: 'text' }],
-              metadata: { chat: { reasoning_field: 'reasoning' } },
+              providerMetadata: { chat: { reasoning_field: 'reasoning' } },
               type: 'reasoning',
             },
             { text: 'Done', type: 'text' },

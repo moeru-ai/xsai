@@ -76,7 +76,7 @@ describe('normalize input', () => {
             { text: 'summary text', type: 'summary' },
             { text: 'encrypted-data', type: 'encrypted' },
           ],
-          metadata: { messages: { signature: 'sig_1' } },
+          providerMetadata: { messages: { signature: 'sig_1' } },
           type: 'reasoning',
         }],
         role: 'assistant',

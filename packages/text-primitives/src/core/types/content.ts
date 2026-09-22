@@ -1,4 +1,4 @@
-import type { PartMetadata } from './metadata'
+import type { ProviderPartMetadata } from './metadata'
 
 export type Content = ContentMap[ContentType]
 
@@ -28,7 +28,7 @@ export interface ImagePart {
 export interface ReasoningPart {
   content: ReasoningPartContent[]
   id?: string
-  metadata?: PartMetadata
+  providerMetadata?: ProviderPartMetadata
   type: 'reasoning'
 }
 

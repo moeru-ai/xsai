@@ -4,7 +4,7 @@ export interface MessagesPartMetadata {
 }
 
 declare module '@xsai/text-primitives' {
-  interface PartMetadata {
+  interface ProviderPartMetadata {
     messages?: MessagesPartMetadata
   }
 }

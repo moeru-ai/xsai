@@ -85,7 +85,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
         case 'content_block_stop': {
           const signature = this.signatures.get(event.index)
           this.signatures.delete(event.index)
-          builder.end(event.index, signature == null ? {} : { metadata: { messages: { signature } } })
+          builder.end(event.index, signature == null ? {} : { providerMetadata: { messages: { signature } } })
           break
         }
         case 'error':

@@ -165,7 +165,7 @@ describe('messages event stream', () => {
       {
         content: {
           content: [{ text: 'Think', type: 'text' }],
-          metadata: { messages: { signature: 'sig_1' } },
+          providerMetadata: { messages: { signature: 'sig_1' } },
           type: 'reasoning',
         },
         index: 0,
@@ -175,7 +175,7 @@ describe('messages event stream', () => {
         message: {
           content: [{
             content: [{ text: 'Think', type: 'text' }],
-            metadata: { messages: { signature: 'sig_1' } },
+            providerMetadata: { messages: { signature: 'sig_1' } },
             type: 'reasoning',
           }],
           id: 'msg_1',

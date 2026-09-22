@@ -2,7 +2,7 @@ import type {
   AssistantMessage,
   AssistantMessageContent,
   FinishReason,
-  PartMetadata,
+  ProviderPartMetadata,
   StepStatus,
   TextEvent,
   Usage,
@@ -41,8 +41,8 @@ export interface PartDeltaExtra {
 export interface PartEndExtra {
   /** Authoritative part content, e.g. a Responses `output_item.done` item. */
   content?: AssistantMessageContent
-  /** Attached only to `reasoning` parts — the only part type with a metadata field. */
-  metadata?: PartMetadata
+  /** Attached only to `reasoning` parts — the only part type with provider metadata. */
+  providerMetadata?: ProviderPartMetadata
 }
 
 /** Adapter-assigned identity for a part. */
@@ -223,8 +223,8 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
           }
         : accumulated
     const authoritative = extra?.content ?? built
-    const content = extra?.metadata != null && authoritative.type === 'reasoning'
-      ? { ...authoritative, metadata: extra.metadata }
+    const content = extra?.providerMetadata != null && authoritative.type === 'reasoning'
+      ? { ...authoritative, providerMetadata: extra.providerMetadata }
       : authoritative
     parts[state.index] = content
     emit({ content, index: state.index, type: 'content.end' })

@@ -84,7 +84,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
     switch (part.type) {
       case 'reasoning':
         reasoning.push(reasoningText(part))
-        reasoningField = part.metadata?.chat?.reasoning_field ?? reasoningField
+        reasoningField = part.providerMetadata?.chat?.reasoning_field ?? reasoningField
         break
       case 'refusal':
         refusal.push(part.refusal)
