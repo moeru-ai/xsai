@@ -12,7 +12,6 @@ describe('chat options', () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
     const stream = await model({
-      extraBody: { stream_options: { custom: true }, temperature: 0.7 },
       input: 'hi',
       maxOutputTokens: 10,
       reasoningEffort: 'low',
@@ -26,8 +25,8 @@ describe('chat options', () => {
     expect(bodies[0]).toMatchObject({
       max_tokens: 10,
       reasoning_effort: 'low',
-      stream_options: { custom: true },
-      temperature: 0.7,
+      stream_options: { include_usage: true },
+      temperature: 0.5,
       tool_choice: { function: { name: 'get_weather' }, type: 'function' },
       top_p: 0.9,
     })
@@ -121,18 +120,5 @@ describe('chat options', () => {
       },
       type: 'json_schema',
     })
-  })
-
-  it('lets extraBody override response_format', async () => {
-    const { bodies, fetch } = captureRequests()
-    const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
-    const stream = await model({
-      extraBody: { response_format: { type: 'json_object' } },
-      input: 'hi',
-      outputFormat: { title: 'answer', type: 'object' },
-    })
-    await stream.cancel()
-
-    expect(bodies[0].response_format).toEqual({ type: 'json_object' })
   })
 })

@@ -1,9 +1,19 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
+import type { ResponsesProviderOptions } from './types/provider-options'
+
 import { wireRequest } from '@xsai/text-primitives'
 
-import { normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools, ResponsesEventStream } from './utils'
+import { mergeTools, normalizeFormat, normalizeInput, normalizeToolChoice, ResponsesEventStream } from './utils'
+
+export type * from './types/provider-options'
+
+declare module '@xsai/text-primitives' {
+  interface ProviderOptions {
+    responses?: ResponsesProviderOptions
+  }
+}
 
 export const responses = (options: HttpOptions): LanguageModel => async modelOptions =>
   wireRequest(options, modelOptions, {
@@ -19,7 +29,7 @@ export const responses = (options: HttpOptions): LanguageModel => async modelOpt
       temperature: modelOptions.temperature,
       text: normalizeFormat(modelOptions.outputFormat),
       tool_choice: normalizeToolChoice(modelOptions.toolChoice),
-      tools: normalizeTools(modelOptions.tools),
+      tools: mergeTools(modelOptions.providerOptions?.responses?.tools, modelOptions.tools),
       top_p: modelOptions.topP,
     },
     path: 'responses',
