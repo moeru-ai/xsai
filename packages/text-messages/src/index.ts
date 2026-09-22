@@ -12,7 +12,7 @@ const ANTHROPIC_VERSION = '2023-06-01'
 
 export const messages = (options: HttpOptions): LanguageModel => async (modelOptions) => {
   const { messages: inputMessages, system } = normalizeInput(modelOptions)
-  const maxTokens = modelOptions.maxOutputTokens ?? modelOptions.extraBody?.max_tokens
+  const maxTokens = modelOptions.maxOutputTokens
   const outputFormat = normalizeFormat(modelOptions.outputFormat)
 
   if (typeof maxTokens !== 'number')
