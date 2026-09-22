@@ -1,4 +1,4 @@
-import type { EventSourceMessage, StreamEndEvent, TextEvent } from '@xsai/text-primitives'
+import type { EventSourceMessage, StepEndEvent, TextEvent } from '@xsai/text-primitives'
 
 import { EventSourceDataStream } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
@@ -70,7 +70,7 @@ describe('messages event stream', () => {
       }),
       message({ type: 'message_stop' }),
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'Hello', index: 0, type: 'text.delta' },
       { content: { text: 'Hello', type: 'text' }, index: 0, type: 'content.end' },
@@ -117,7 +117,7 @@ describe('messages event stream', () => {
         },
         reason: 'tool-calls',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
         usage: {
           cacheCreationInputTokens: undefined,
           cacheReadInputTokens: 4,
@@ -159,7 +159,7 @@ describe('messages event stream', () => {
       }),
       message({ type: 'message_stop' }),
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       { contentType: 'reasoning', index: 0, type: 'content.start' },
       { delta: 'Think', index: 0, type: 'reasoning.delta' },
       {
@@ -183,7 +183,7 @@ describe('messages event stream', () => {
         },
         reason: 'stop',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
         usage: {
           cacheCreationInputTokens: undefined,
           cacheReadInputTokens: undefined,
@@ -196,7 +196,7 @@ describe('messages event stream', () => {
     ])
   })
 
-  it('maps a refusal stop reason to a stream.end refusal', async () => {
+  it('maps a refusal stop reason to a step.end refusal', async () => {
     await expect(readEvents([
       message({
         message: { id: 'msg_1', usage: { input_tokens: 10 } },
@@ -209,12 +209,12 @@ describe('messages event stream', () => {
       }),
       message({ type: 'message_stop' }),
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       {
         message: { content: [], id: 'msg_1', role: 'assistant' },
         reason: 'refusal',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
         usage: {
           cacheCreationInputTokens: undefined,
           cacheReadInputTokens: undefined,
@@ -227,7 +227,7 @@ describe('messages event stream', () => {
     ])
   })
 
-  it('maps provider error events to a stream.end error', async () => {
+  it('maps provider error events to a step.end error', async () => {
     const events = await readEvents([
       message({
         error: { message: 'Overloaded', type: 'overloaded_error' },
@@ -236,15 +236,15 @@ describe('messages event stream', () => {
     ])
 
     expect(events).toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         status: 'failed',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
-    expect((events[1] as StreamEndEvent).error).toMatchObject({
+    expect((events[1] as StepEndEvent).error).toMatchObject({
       cause: { message: 'Overloaded', type: 'overloaded_error' },
       code: 'model-error',
       message: 'Overloaded',

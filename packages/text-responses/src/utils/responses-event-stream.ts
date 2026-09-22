@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, EventBuilder, FinishReason, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, StreamStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, EventBuilder, FinishReason, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, StepStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
 
 import type * as Responses from '../generated'
 
@@ -159,7 +159,7 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
   }
 }
 
-const normalizeStatus = (response: Responses.ResponseResource): StreamStatus => {
+const normalizeStatus = (response: Responses.ResponseResource): StepStatus => {
   switch (response.status) {
     case 'cancelled':
       return 'cancelled'

@@ -1,6 +1,6 @@
 import type { HttpOptions } from '@xsai/shared'
 
-import type { AssistantMessageContent, ExecutableTool, LanguageModel, Message, StreamEndEvent, TextDeltaEvent, TextEvent, ToolCallDeltaEvent, ToolCallPart } from '../src'
+import type { AssistantMessageContent, ExecutableTool, LanguageModel, Message, StepEndEvent, TextDeltaEvent, TextEvent, ToolCallDeltaEvent, ToolCallPart } from '../src'
 
 import { env } from 'node:process'
 
@@ -55,7 +55,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
       .join('')
 
     expect(text.length).toBeGreaterThan(0)
-    expect(events.some(event => event.type === 'stream.end')).toBe(true)
+    expect(events.some(event => event.type === 'step.end')).toBe(true)
   }
 
   const continuesManualToolLoop = async (): Promise<void> => {
@@ -79,8 +79,8 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
     }]
 
     const firstEvents = await readEvents(await model({ input, tools: [weather] }))
-    const firstStreamEnd = firstEvents.find((event): event is StreamEndEvent => event.type === 'stream.end')!
-    const firstContent = firstStreamEnd.message.content as readonly AssistantMessageContent[]
+    const firstStepEnd = firstEvents.find((event): event is StepEndEvent => event.type === 'step.end')!
+    const firstContent = firstStepEnd.message.content as readonly AssistantMessageContent[]
     const toolCallIndex = firstContent.findIndex(part => part.type === 'tool-call')
     const toolCall = firstContent.find((part): part is ToolCallPart => part.type === 'tool-call')!
     const toolCallDeltas = firstEvents.filter((event): event is ToolCallDeltaEvent =>
@@ -92,7 +92,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
 
     expect(toolCall.name).toBe(weather.name)
 
-    input.push(firstStreamEnd.message, {
+    input.push(firstStepEnd.message, {
       content: [{ callId: toolCall.callId, output: result, type: 'tool-result' }],
       role: 'user',
     })
@@ -104,7 +104,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
       .join('')
 
     expect(text).toContain(toolResult)
-    expect(secondEvents.some(event => event.type === 'stream.end')).toBe(true)
+    expect(secondEvents.some(event => event.type === 'step.end')).toBe(true)
   }
 
   return { continuesManualToolLoop, streamsResponse }

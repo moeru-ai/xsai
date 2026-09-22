@@ -1,11 +1,11 @@
-import type { EventBuilder, FinishReason, StreamStatus, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, FinishReason, StepStatus, Usage } from '@xsai/text-primitives'
 
 import type { ChatChunk, ChatDelta, ChatUsage } from '../types'
 
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives'
 
-const mapFinish = (reason: null | string | undefined, refusal: boolean): { reason?: FinishReason, status: Exclude<StreamStatus, 'failed'> } => {
+const mapFinish = (reason: null | string | undefined, refusal: boolean): { reason?: FinishReason, status: Exclude<StepStatus, 'failed'> } => {
   switch (reason) {
     case 'content_filter':
       return { reason: 'content-filter', status: 'incomplete' }

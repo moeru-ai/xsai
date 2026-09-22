@@ -7,7 +7,7 @@ import type { StopCondition } from './stop-condition'
 import type { PrepareStep } from './types/prepare-step'
 import type { StepResult } from './types/step'
 
-import { readStreamEnd } from '../utils/read-stream-end'
+import { readStepEnd } from '../utils/read-step-end'
 import { executeTools } from './execute-tools'
 import { maxSteps } from './stop-condition'
 
@@ -38,7 +38,7 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
           input: prepared?.input ?? input,
         }
         const eventStream = await model(modelOptions)
-        const completed = await readStreamEnd(eventStream, event => controller.enqueue(event))
+        const completed = await readStepEnd(eventStream, event => controller.enqueue(event))
         if (completed.status === 'failed') {
           controller.close()
           return

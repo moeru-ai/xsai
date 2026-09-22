@@ -1,4 +1,4 @@
-import type { EventBuilder, FinishReason, StreamStatus, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, FinishReason, StepStatus, Usage } from '@xsai/text-primitives'
 
 import type {
   ContentBlockStartEvent,
@@ -9,7 +9,7 @@ import type {
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives'
 
-const mapStop = (FinishReason: null | string | undefined): { reason?: FinishReason, status: Exclude<StreamStatus, 'failed'> } => {
+const mapStop = (FinishReason: null | string | undefined): { reason?: FinishReason, status: Exclude<StepStatus, 'failed'> } => {
   switch (FinishReason) {
     case 'content_filter':
       return { reason: 'content-filter', status: 'incomplete' }

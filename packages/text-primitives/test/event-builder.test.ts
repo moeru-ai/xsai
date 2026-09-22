@@ -19,7 +19,7 @@ describe('eventBuilder', () => {
     expect(events).toEqual([
       { contentType: 'reasoning', index: 0, type: 'content.start' },
       { content: reasoning, index: 0, type: 'content.end' },
-      { message: { content: [reasoning], role: 'assistant' }, reason: 'stop', status: 'completed', type: 'stream.end' },
+      { message: { content: [reasoning], role: 'assistant' }, reason: 'stop', status: 'completed', type: 'step.end' },
     ])
     expect(failures).toEqual([])
   })
@@ -41,11 +41,11 @@ describe('eventBuilder', () => {
       { delta: 'I cannot', index: 0, type: 'refusal.delta' },
       { delta: ' help', index: 0, type: 'refusal.delta' },
       { content: refusal, index: 0, type: 'content.end' },
-      { message: { content: [refusal], role: 'assistant' }, reason: 'stop', status: 'completed', type: 'stream.end' },
+      { message: { content: [refusal], role: 'assistant' }, reason: 'stop', status: 'completed', type: 'step.end' },
     ])
   })
 
-  it('does not carry response-level identity on the stream.end event', () => {
+  it('does not carry response-level identity on the step.end event', () => {
     const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
 
@@ -58,7 +58,7 @@ describe('eventBuilder', () => {
         message: { content: [], id: 'msg_1', role: 'assistant' },
         reason: 'stop',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
@@ -76,7 +76,7 @@ describe('eventBuilder', () => {
         message: { content: [{ text: 'Hi', type: 'text' }], id: 'msg_1', role: 'assistant' },
         reason: 'stop',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
@@ -94,7 +94,7 @@ describe('eventBuilder', () => {
         message: { content: [], id: 'msg_terminal', role: 'assistant' },
         reason: 'stop',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
@@ -115,7 +115,7 @@ describe('eventBuilder', () => {
       },
       reason: 'provider_finished',
       status: 'completed',
-      type: 'stream.end',
+      type: 'step.end',
     })
   })
 
@@ -264,7 +264,7 @@ describe('eventBuilder', () => {
         role: 'assistant',
       },
       status: 'incomplete',
-      type: 'stream.end',
+      type: 'step.end',
     })
   })
 
@@ -281,18 +281,18 @@ describe('eventBuilder', () => {
       message: { content: [{ text: 'done', type: 'text' }], role: 'assistant' },
       reason: 'stop',
       status: 'completed',
-      type: 'stream.end',
+      type: 'step.end',
     })
   })
 
-  it('carries the terminating error on the stream.end event', () => {
+  it('carries the terminating error on the step.end event', () => {
     const events: TextEvent[] = []
     const builder = eventBuilder(event => events.push(event), () => {})
     const error = new XSAIError('model-error', 'server exploded', { cause: { type: 'server_error' } })
 
     builder.fail(error)
     expect(events).toEqual([
-      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
+      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'step.end' },
     ])
 
     builder.flush()
@@ -308,7 +308,7 @@ describe('eventBuilder', () => {
     builder.fail(error, message)
     builder.flush()
 
-    expect(events).toEqual([{ error, message, status: 'failed', type: 'stream.end' }])
+    expect(events).toEqual([{ error, message, status: 'failed', type: 'step.end' }])
   })
 
   it('keeps the first terminal state: a later finish cannot replace the recorded error', () => {
@@ -321,7 +321,7 @@ describe('eventBuilder', () => {
     builder.flush()
 
     expect(events).toEqual([
-      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
+      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'step.end' },
     ])
   })
 
@@ -354,7 +354,7 @@ describe('eventBuilder', () => {
     }))
     const reader = stream.getReader()
 
-    await expect(reader.read()).resolves.toEqual({ done: false, value: { type: 'stream.start' } })
+    await expect(reader.read()).resolves.toEqual({ done: false, value: { type: 'step.start' } })
     await expect(reader.read()).rejects.toMatchObject({
       cause: expect.any(Error) as unknown,
       code: 'protocol-error',
@@ -374,10 +374,10 @@ describe('eventBuilder', () => {
     }))
     const reader = stream.getReader()
 
-    await expect(reader.read()).resolves.toEqual({ done: false, value: { type: 'stream.start' } })
+    await expect(reader.read()).resolves.toEqual({ done: false, value: { type: 'step.start' } })
     await expect(reader.read()).resolves.toEqual({
       done: false,
-      value: { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
+      value: { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'step.end' },
     })
     await expect(reader.read()).resolves.toEqual({ done: true, value: undefined })
   })

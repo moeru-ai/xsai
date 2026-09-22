@@ -3,7 +3,7 @@ import type {
   AssistantMessageContent,
   FinishReason,
   PartMetadata,
-  StreamStatus,
+  StepStatus,
   TextEvent,
   Usage,
 } from '../core'
@@ -15,12 +15,12 @@ export interface EventBuilder {
   /** Appends text or tool-call identity to a part. */
   delta: (key: PartKey, text: string, extra?: PartDeltaExtra) => void
   /** Records a non-failed terminal status and closes open parts. */
-  done: (status: Exclude<StreamStatus, 'failed'>, reason?: FinishReason, message?: AssistantMessage) => void
+  done: (status: Exclude<StepStatus, 'failed'>, reason?: FinishReason, message?: AssistantMessage) => void
   /** Closes a part and emits `content.end`. */
   end: (key: PartKey, extra?: PartEndExtra) => void
   /** Records a provider-declared failure and closes open parts. */
   fail: (error: XSAIError, message?: AssistantMessage) => void
-  /** Emits `stream.end` or fails for an incomplete wire stream. */
+  /** Emits `step.end` or fails for an incomplete wire stream. */
   flush: () => void
   /** Records message identity and usage metadata. */
   meta: (meta: FinishMeta) => void
@@ -76,7 +76,7 @@ type TerminalState
   | {
     message?: AssistantMessage
     reason?: FinishReason
-    status: Exclude<StreamStatus, 'failed'>
+    status: Exclude<StepStatus, 'failed'>
   }
 
 const emptyContent = (type: AssistantMessageContent['type']): AssistantMessageContent => {
@@ -244,7 +244,7 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
       message: message.id == null && messageId != null
         ? { ...message, id: messageId }
         : message,
-      type: 'stream.end' as const,
+      type: 'step.end' as const,
       usage,
     }
     if (terminal.status === 'failed') {
@@ -335,12 +335,12 @@ export class WireEventStream<W> extends TransformStream<string, TextEvent> {
         builder = eventBuilder(
           (event) => {
             controller.enqueue(event)
-            if (event.type === 'stream.end' && event.status === 'failed')
+            if (event.type === 'step.end' && event.status === 'failed')
               controller.terminate()
           },
           error => controller.error(error),
         )
-        controller.enqueue({ type: 'stream.start' })
+        controller.enqueue({ type: 'step.start' })
       },
       transform: (data, controller) => {
         let wire: W
