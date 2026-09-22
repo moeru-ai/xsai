@@ -52,7 +52,7 @@ export const wireRequest = async (
       ...cleanUndefined(modelOptions.extraBody ?? {}),
     }),
     headers: cleanUndefined(init.headers ?? {
-      ...options.extraHeaders,
+      ...options.headers,
       'Content-Type': 'application/json',
       ...(options.apiKey == null ? {} : { Authorization: `Bearer ${options.apiKey}` }),
     }),

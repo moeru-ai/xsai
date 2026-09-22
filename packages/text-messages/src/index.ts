@@ -34,7 +34,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
       top_p: modelOptions.topP,
     },
     headers: {
-      ...options.extraHeaders,
+      ...options.headers,
       'anthropic-version': ANTHROPIC_VERSION,
       'Content-Type': 'application/json',
       ...(options.apiKey == null ? {} : { 'x-api-key': options.apiKey }),
