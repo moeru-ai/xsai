@@ -1,12 +1,9 @@
-import type { ToolCallPart } from '../core/types/content'
-import type { LanguageModel, LanguageModelOptions } from '../core/types/language-model'
-import type { Message } from '../core/types/message'
-import type { TextEvent } from '../core/types/text-event'
+import type { LanguageModel, LanguageModelOptions, Message, StepResult, TextEvent } from '../core'
 import type { PostToolCall, PreToolCall } from './execute-tools'
 import type { StopCondition } from './stop-condition'
 import type { PrepareStep } from './types/prepare-step'
-import type { StepResult } from './types/step'
 
+import { toStepResult } from '../core/step-result'
 import { readStepEnd } from '../utils/read-step-end'
 import { executeTools } from './execute-tools'
 import { maxSteps } from './stop-condition'
@@ -44,15 +41,10 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
           return
         }
 
-        const { type, ...result } = completed
-
-        const toolCalls = typeof result.message.content === 'string'
-          ? []
-          : result.message.content.filter((part): part is ToolCallPart => part.type === 'tool-call')
-        const step: StepResult = { ...result, toolCalls, toolResults: [] }
+        const step = toStepResult(completed)
 
         steps.push(step)
-        input.push(result.message)
+        input.push(step.message)
 
         const stop = stopWhen({
           input,
@@ -60,7 +52,7 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
           steps,
         })
 
-        if (stop || toolCalls.length === 0) {
+        if (stop || step.toolCalls.length === 0) {
           controller.close()
           return
         }
@@ -71,8 +63,8 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
           ...modelOptions,
           postToolCall,
           preToolCall,
-          reason: result.reason,
-          toolCalls,
+          reason: step.reason,
+          toolCalls: step.toolCalls,
         })
 
         step.toolResults.push(...results)

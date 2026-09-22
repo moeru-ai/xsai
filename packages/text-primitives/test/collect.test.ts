@@ -36,7 +36,53 @@ describe('collect', () => {
       message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' },
       reason: 'stop',
       status: 'completed',
+      text: 'Hi',
+      toolCalls: [],
+      toolResults: [],
       usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
+    })
+  })
+
+  it('derives text and tool calls from the finished message', async () => {
+    const toolCall = {
+      arguments: '{"city":"Taipei"}',
+      callId: 'call-1',
+      id: 'tool-1',
+      name: 'get_weather',
+      type: 'tool-call' as const,
+    }
+    const model = modelOf([
+      {
+        message: {
+          content: [
+            { content: [{ text: 'thinking', type: 'text' as const }], type: 'reasoning' as const },
+            { text: 'The weather is ', type: 'text' as const },
+            toolCall,
+            { text: 'available.', type: 'text' as const },
+          ],
+          role: 'assistant',
+        },
+        reason: 'tool-calls',
+        status: 'completed',
+        type: 'step.end',
+      },
+    ])
+
+    await expect(collect(model, { input: 'hi' })).resolves.toEqual({
+      message: {
+        content: [
+          { content: [{ text: 'thinking', type: 'text' }], type: 'reasoning' },
+          { text: 'The weather is ', type: 'text' },
+          toolCall,
+          { text: 'available.', type: 'text' },
+        ],
+        role: 'assistant',
+      },
+      reason: 'tool-calls',
+      status: 'completed',
+      text: 'The weather is available.',
+      toolCalls: [toolCall],
+      toolResults: [],
     })
   })
 

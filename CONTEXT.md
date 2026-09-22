@@ -28,7 +28,7 @@ A wire that delivers a terminal signal ends with exactly one `step.end` event. N
 _Avoid_: end-of-stream sentinel
 
 **Collect**:
-The consumer-side helper `collect(model, options)` that resolves a non-failed `step.end` payload and rejects on a failed terminal event or a stream rejection. In-progress rendering consumes the `TextEvent` stream directly.
+The consumer-side helper `collect(model, options)` that resolves a non-failed `step.end` payload as a `StepResult` and rejects on a failed terminal event or a stream rejection. `StepResult` carries the normalized assistant message, derived text and tool calls, and any tool results accumulated by a loop. In-progress rendering consumes the `TextEvent` stream directly.
 _Avoid_: complete, runSync
 
 ## Conventions
