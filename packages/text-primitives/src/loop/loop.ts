@@ -24,24 +24,22 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
   return new ReadableStream<TextEvent>({
     start: async (controller) => {
       while (true) {
-        const prepared = await prepareStep?.({
-          input,
-          stepNumber: steps.length,
-          steps,
-        })
+        const preparedOptions = await prepareStep?.({ input, stepNumber: steps.length, steps })
         const modelOptions: LanguageModelOptions = {
           ...options,
-          ...prepared,
-          input: prepared?.input ?? input,
+          ...preparedOptions,
+          input: preparedOptions?.input ?? input,
         }
+
         const eventStream = await model(modelOptions)
-        const completed = await readStepEnd(eventStream, event => controller.enqueue(event))
-        if (completed.status === 'failed') {
+        const stepEnd = await readStepEnd(eventStream, event => controller.enqueue(event))
+
+        if (stepEnd.status === 'failed') {
           controller.close()
           return
         }
 
-        const step = toStepResult(completed)
+        const step = toStepResult(stepEnd)
 
         steps.push(step)
         input.push(step.message)
