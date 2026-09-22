@@ -4,7 +4,7 @@ import { tool } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
 import { describe, expect, it } from 'vitest'
 
-import { ContentEndEvent, ContentStartEvent, StepEndEvent, StepStartEvent, streamText } from '../src'
+import { streamText } from '../src'
 
 const eventStream = (events: TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {
@@ -39,11 +39,19 @@ describe('streamText', () => {
 
     const run = streamText(model, { input: 'hi' })
     const observed: Event[] = []
+    const contentTypes: string[] = []
+    let finalStatus: string | undefined
 
     run.events.addEventListener('step.start', event => observed.push(event))
-    run.events.addEventListener('content.start', event => observed.push(event))
+    run.events.addEventListener('content.start', (event) => {
+      contentTypes.push(event.detail.contentType)
+      observed.push(event)
+    })
     run.events.addEventListener('content.end', event => observed.push(event))
-    run.events.addEventListener('step.end', event => observed.push(event))
+    run.events.addEventListener('step.end', (event) => {
+      finalStatus = event.detail.status
+      observed.push(event)
+    })
 
     await expect(readEvents(run.stream)).resolves.toEqual([
       { type: 'step.start' },
@@ -54,10 +62,9 @@ describe('streamText', () => {
     ])
 
     expect(observed).toHaveLength(4)
-    expect(observed[0]).toBeInstanceOf(StepStartEvent)
-    expect(observed[1]).toBeInstanceOf(ContentStartEvent)
-    expect(observed[2]).toBeInstanceOf(ContentEndEvent)
-    expect(observed[3]).toBeInstanceOf(StepEndEvent)
+    expect(observed.every(event => event instanceof CustomEvent)).toBe(true)
+    expect(contentTypes).toEqual(['text'])
+    expect(finalStatus).toBe('completed')
     expect(observed).not.toContainEqual(expect.objectContaining({ type: 'text.delta' }))
 
     await expect(run.result).resolves.toMatchObject({
