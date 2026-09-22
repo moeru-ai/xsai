@@ -9,6 +9,11 @@ export default defineConfig()
     ],
   })
   .append({
+    rules: {
+      'sonarjs/no-unused-vars': 'off',
+    },
+  })
+  .append({
     files: [GLOB_MARKDOWN],
     rules: {
       'markdown/heading-increment': 'off',
