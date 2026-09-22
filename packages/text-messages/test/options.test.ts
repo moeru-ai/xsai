@@ -12,7 +12,6 @@ describe('messages options', () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
     const stream = await model({
-      extraBody: { tool_choice: { disable_parallel_tool_use: true } },
       input: 'hi',
       maxOutputTokens: 10,
       reasoningEffort: 'max',
@@ -27,7 +26,7 @@ describe('messages options', () => {
       max_tokens: 10,
       output_config: { effort: 'max' },
       temperature: 0.5,
-      tool_choice: { disable_parallel_tool_use: true },
+      tool_choice: { name: 'get_weather', type: 'tool' },
       top_p: 0.9,
     })
     expect(bodies[0]).not.toHaveProperty('effort')

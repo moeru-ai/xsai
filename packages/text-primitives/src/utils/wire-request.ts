@@ -46,11 +46,7 @@ export const wireRequest = async (
   }
 
   return (options.fetch ?? fetch)(url, {
-    // Ignore undefined overrides so they cannot erase normalized fields.
-    body: JSON.stringify({
-      ...init.body,
-      ...cleanUndefined(modelOptions.extraBody ?? {}),
-    }),
+    body: JSON.stringify(init.body),
     headers: cleanUndefined(init.headers ?? {
       ...options.headers,
       'Content-Type': 'application/json',

@@ -8,14 +8,13 @@ import type { TextEvent } from './text-event'
 export type LanguageModel = (options: LanguageModelOptions) => Promisable<ReadableStream<TextEvent>>
 
 export interface LanguageModelOptions {
-  /** Wire-native fields merged last into the request body. */
-  extraBody?: Record<string, unknown>
   input: Message[] | string
   instructions?: string
   maxOutputTokens?: number
   /** Strict structured-output schema. */
   outputFormat?: UnresolvedSchema
-  /** Qualitative reasoning effort; provider-specific knobs stay in `extraBody`. */
+  providerOptions?: ProviderOptions
+  /** Qualitative reasoning effort; provider-specific knobs stay in `providerOptions`. */
   reasoningEffort?: 'high' | 'low' | 'max' | 'medium' | 'none' | 'xhigh' | (string & {})
   signal?: AbortSignal
   temperature?: number
@@ -23,5 +22,8 @@ export interface LanguageModelOptions {
   tools?: Tool[]
   topP?: number
 }
+
+/** Extension point for wire-specific request options. */
+export interface ProviderOptions {}
 
 export type ToolChoice = 'auto' | 'none' | 'required' | { name: string }

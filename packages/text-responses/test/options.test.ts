@@ -1,16 +1,75 @@
 import type { JSONSchema7 } from '@xsai/text-primitives'
 
+import { tool } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { captureRequests } from '../../text-primitives/test/test-utils'
 import { responses } from '../src'
 
 describe('responses options', () => {
+  it('merges Responses tools with local function tools', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      providerOptions: {
+        responses: {
+          tools: [
+            { search_context_size: 'low', type: 'web_search' },
+            { type: 'file_search', vector_store_ids: ['vs_1'] },
+          ],
+        },
+      },
+      tools: [tool({ inputSchema: { type: 'object' }, name: 'local_tool' })],
+    })
+    await stream.cancel()
+
+    expect(bodies[0]).not.toHaveProperty('providerOptions')
+    expect(bodies[0].tools).toEqual([
+      { search_context_size: 'low', type: 'web_search' },
+      { type: 'file_search', vector_store_ids: ['vs_1'] },
+      {
+        name: 'local_tool',
+        parameters: {
+          additionalProperties: false,
+          properties: {},
+          required: [],
+          type: 'object',
+        },
+        strict: true,
+        type: 'function',
+      },
+    ])
+  })
+
+  it('passes provider-specific Responses tools through unchanged', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      providerOptions: {
+        responses: {
+          tools: [
+            { allowed_x_handles: ['xsai'], type: 'x_search' },
+            { parameters: { max_results: 3 }, type: 'openrouter:web_search' },
+            { type: 'custom:provider_tool', value: true },
+          ],
+        },
+      },
+    })
+    await stream.cancel()
+
+    expect(bodies[0].tools).toEqual([
+      { allowed_x_handles: ['xsai'], type: 'x_search' },
+      { parameters: { max_results: 3 }, type: 'openrouter:web_search' },
+      { type: 'custom:provider_tool', value: true },
+    ])
+  })
+
   it('maps model options to Responses fields', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
     const stream = await model({
-      extraBody: { reasoning: { summary: 'detailed' } },
       input: 'hi',
       maxOutputTokens: 10,
       reasoningEffort: 'high',
@@ -23,7 +82,6 @@ describe('responses options', () => {
     expect(bodies).toHaveLength(1)
     expect(bodies[0]).toMatchObject({
       max_output_tokens: 10,
-      reasoning: { summary: 'detailed' },
       temperature: 0.5,
       tool_choice: { name: 'get_weather', type: 'function' },
       top_p: 0.9,
