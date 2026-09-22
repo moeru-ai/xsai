@@ -45,16 +45,16 @@ describe('loop', () => {
     const model: LanguageModel = async () => {
       callCount++
       return eventStream([
-        { type: 'stream.start' },
-        { message: { content: 'Hi', role: 'assistant' }, status: 'completed', type: 'stream.end' },
+        { type: 'step.start' },
+        { message: { content: 'Hi', role: 'assistant' }, status: 'completed', type: 'step.end' },
       ])
     }
     const stream = loop(model, { input: 'hi' })
 
     expect(stream).toBeInstanceOf(ReadableStream)
     await expect(readEvents(stream)).resolves.toEqual([
-      { type: 'stream.start' },
-      { message: { content: 'Hi', role: 'assistant' }, status: 'completed', type: 'stream.end' },
+      { type: 'step.start' },
+      { message: { content: 'Hi', role: 'assistant' }, status: 'completed', type: 'step.end' },
     ])
     expect(callCount).toBe(1)
   })
@@ -62,18 +62,18 @@ describe('loop', () => {
   it('forwards failed terminal events and stops the loop', async () => {
     const error = new XSAIError('model-error', 'server exploded')
     const model: LanguageModel = async () => eventStream([
-      { type: 'stream.start' },
-      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
+      { type: 'step.start' },
+      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'step.end' },
     ])
 
     await expect(readEvents(loop(model, { input: 'hi' }))).resolves.toEqual([
-      { type: 'stream.start' },
-      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'stream.end' },
+      { type: 'step.start' },
+      { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'step.end' },
     ])
   })
 
   it('rejects truncated model streams', async () => {
-    const model: LanguageModel = async () => eventStream({ type: 'stream.start' })
+    const model: LanguageModel = async () => eventStream({ type: 'step.start' })
 
     await expect(readEvents(loop(model, { input: 'hi' }))).rejects.toMatchObject({
       code: 'truncated-stream',
@@ -110,7 +110,7 @@ describe('loop', () => {
       callCount++
       return eventStream(callCount === 1
         ? [
-            { type: 'stream.start' },
+            { type: 'step.start' },
             {
               message: {
                 content: [{ arguments: '{}', callId: 'call-1', id: 'tool-1', name: 'get_weather', type: 'tool-call' }],
@@ -118,16 +118,16 @@ describe('loop', () => {
               },
               reason: 'tool-calls',
               status: 'completed',
-              type: 'stream.end',
+              type: 'step.end',
             },
           ]
         : [
-            { type: 'stream.start' },
+            { type: 'step.start' },
             {
               message: { content: 'sunny', role: 'assistant' },
               reason: 'stop',
               status: 'completed',
-              type: 'stream.end',
+              type: 'step.end',
             },
           ])
     }
@@ -142,8 +142,8 @@ describe('loop', () => {
     }))
 
     expect(seenStepCounts).toStrictEqual([1, 2])
-    expect(events.filter(event => event.type === 'stream.start')).toHaveLength(2)
-    expect(events.filter(event => event.type === 'stream.end')).toHaveLength(2)
+    expect(events.filter(event => event.type === 'step.start')).toHaveLength(2)
+    expect(events.filter(event => event.type === 'step.end')).toHaveLength(2)
   })
 
   it('passes the loop signal to the executable tool handler', async () => {
@@ -165,13 +165,13 @@ describe('loop', () => {
             },
             reason: 'tool-calls',
             status: 'completed',
-            type: 'stream.end',
+            type: 'step.end',
           }
         : {
             message: { content: 'sunny', role: 'assistant' },
             reason: 'stop',
             status: 'completed',
-            type: 'stream.end',
+            type: 'step.end',
           })
     }
 
@@ -207,13 +207,13 @@ describe('loop', () => {
             },
             reason: 'tool-calls',
             status: 'completed',
-            type: 'stream.end',
+            type: 'step.end',
           }
         : {
             message: { content: 'done', role: 'assistant' },
             reason: 'stop',
             status: 'completed',
-            type: 'stream.end',
+            type: 'step.end',
           })
     }
 
@@ -261,13 +261,13 @@ describe('loop', () => {
             },
             reason: 'tool-calls',
             status: 'completed',
-            type: 'stream.end',
+            type: 'step.end',
           }
         : {
             message: { content: 'done', role: 'assistant' },
             reason: 'stop',
             status: 'completed',
-            type: 'stream.end',
+            type: 'step.end',
           })
     }
 

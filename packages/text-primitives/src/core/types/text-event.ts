@@ -29,32 +29,32 @@ export interface RefusalDeltaEvent {
 }
 
 /** @internal */
-export interface StreamEndDoneEvent {
+export interface StepEndDoneEvent {
   error?: never
   message: AssistantMessage
   reason?: FinishReason
-  status: Exclude<StreamStatus, 'failed'>
-  type: 'stream.end'
+  status: Exclude<StepStatus, 'failed'>
+  type: 'step.end'
   usage?: Usage
 }
 
-export type StreamEndEvent = StreamEndDoneEvent | StreamEndFailEvent
+export type StepEndEvent = StepEndDoneEvent | StepEndFailEvent
 
 /** @internal */
-export interface StreamEndFailEvent {
+export interface StepEndFailEvent {
   error: XSAIError
   message: AssistantMessage
   reason?: never
   status: 'failed'
-  type: 'stream.end'
+  type: 'step.end'
   usage?: Usage
 }
 
-export interface StreamStartEvent {
-  type: 'stream.start'
+export interface StepStartEvent {
+  type: 'step.start'
 }
 
-export type StreamStatus = 'cancelled' | 'completed' | 'failed' | 'incomplete'
+export type StepStatus = 'cancelled' | 'completed' | 'failed' | 'incomplete'
 
 export interface TextDeltaEvent {
   delta: string
@@ -69,8 +69,8 @@ export interface TextEventMap {
   'content.start': ContentStartEvent
   'reasoning.delta': ReasoningDeltaEvent
   'refusal.delta': RefusalDeltaEvent
-  'stream.end': StreamEndEvent
-  'stream.start': StreamStartEvent
+  'step.end': StepEndEvent
+  'step.start': StepStartEvent
   'text.delta': TextDeltaEvent
   'tool-call.delta': ToolCallDeltaEvent
 }

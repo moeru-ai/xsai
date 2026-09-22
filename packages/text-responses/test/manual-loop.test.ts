@@ -94,20 +94,20 @@ describe('manual tool loop', () => {
     const input: Message[] = [{ content: 'What is the weather?', role: 'user' }]
 
     const firstStream = await model({ input })
-    let streamEnd: Extract<TextEvent, { type: 'stream.end' }> | undefined
+    let stepEnd: Extract<TextEvent, { type: 'step.end' }> | undefined
     for await (const event of firstStream) {
-      if (event.type === 'stream.end')
-        streamEnd = event
+      if (event.type === 'step.end')
+        stepEnd = event
     }
 
-    input.push(streamEnd!.message)
+    input.push(stepEnd!.message)
     input.push({
       content: [{ callId: 'call_1', output: '24°C', type: 'tool-result' }],
       role: 'user',
     })
 
     for await (const event of await model({ input })) {
-      if (event.type === 'stream.end')
+      if (event.type === 'step.end')
         expect(event.message.content).toEqual([{ text: '24°C', type: 'text' }])
     }
 
