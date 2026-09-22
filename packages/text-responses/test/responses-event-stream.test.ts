@@ -1,4 +1,4 @@
-import type { EventSourceMessage, StreamEndEvent, TextEvent } from '@xsai/text-primitives'
+import type { EventSourceMessage, StepEndEvent, TextEvent } from '@xsai/text-primitives'
 
 import { EventSourceDataStream } from '@xsai/text-primitives'
 import { XSAIError } from '@xsai/text-primitives/shared'
@@ -125,7 +125,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       { contentType: 'tool-call', index: 0, type: 'content.start' },
       {
         callId: 'call_1',
@@ -165,7 +165,7 @@ describe('responses event stream', () => {
         },
         reason: 'tool-calls',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
         usage: { inputTokens: 3, outputTokens: 2, totalTokens: 5 },
       },
     ])
@@ -222,7 +222,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       { contentType: 'refusal', index: 0, type: 'content.start' },
       { delta: 'I cannot', index: 0, type: 'refusal.delta' },
       { content: { refusal: 'I cannot help', type: 'refusal' }, index: 0, type: 'content.end' },
@@ -234,7 +234,7 @@ describe('responses event stream', () => {
         },
         reason: 'refusal',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
@@ -327,7 +327,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'partial', index: 0, type: 'text.delta' },
       { content: { text: 'partial', type: 'text' }, index: 0, type: 'content.end' },
@@ -345,12 +345,12 @@ describe('responses event stream', () => {
         },
         reason: 'refusal',
         status: 'completed',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
 
-  it('maps provider error events to a stream.end error', async () => {
+  it('maps provider error events to a step.end error', async () => {
     const events = await readEvents([
       message({
         error: { code: 'server_error', message: 'something went wrong' },
@@ -360,22 +360,22 @@ describe('responses event stream', () => {
     ])
 
     expect(events).toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         status: 'failed',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
-    expect((events[1] as StreamEndEvent).error).toMatchObject({
+    expect((events[1] as StepEndEvent).error).toMatchObject({
       cause: { code: 'server_error', message: 'something went wrong' },
       code: 'model-error',
       message: 'something went wrong',
     })
   })
 
-  it('maps failed responses to a stream.end error', async () => {
+  it('maps failed responses to a step.end error', async () => {
     const events = await readEvents([
       message({
         response: {
@@ -392,15 +392,15 @@ describe('responses event stream', () => {
     ])
 
     expect(events).toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       {
         error: expect.any(XSAIError) as unknown,
         message: { content: [], role: 'assistant' },
         status: 'failed',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
-    expect((events[1] as StreamEndEvent).error).toMatchObject({
+    expect((events[1] as StepEndEvent).error).toMatchObject({
       cause: { code: 'server_error', message: 'something went wrong' },
       code: 'model-error',
       message: 'something went wrong',
@@ -423,11 +423,11 @@ describe('responses event stream', () => {
       { data: '[DONE]' },
     ])
 
-    expect((events[1] as StreamEndEvent).error).toMatchObject({
+    expect((events[1] as StepEndEvent).error).toMatchObject({
       code: 'model-error',
       message: 'response failed',
     })
-    expect((events[1] as StreamEndEvent).error).not.toMatchObject({
+    expect((events[1] as StepEndEvent).error).not.toMatchObject({
       cause: { id: 'resp_1', status: 'failed' },
     })
   })
@@ -492,7 +492,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       { contentType: 'reasoning', index: 0, type: 'content.start' },
       { delta: 'Think', index: 0, type: 'reasoning.delta' },
       { delta: ' more', index: 0, type: 'reasoning.delta' },
@@ -524,7 +524,7 @@ describe('responses event stream', () => {
         },
         reason: 'length',
         status: 'incomplete',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
@@ -544,11 +544,11 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       {
         message: { content: [], role: 'assistant' },
         status: 'incomplete',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
@@ -574,7 +574,7 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       {
         message: {
           content: [{ refusal: 'I cannot help', type: 'refusal' }],
@@ -582,7 +582,7 @@ describe('responses event stream', () => {
           role: 'assistant',
         },
         status: 'cancelled',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
@@ -602,11 +602,11 @@ describe('responses event stream', () => {
       }),
       { data: '[DONE]' },
     ])).resolves.toEqual([
-      { type: 'stream.start' },
+      { type: 'step.start' },
       {
         message: { content: [], role: 'assistant' },
         status: 'cancelled',
-        type: 'stream.end',
+        type: 'step.end',
       },
     ])
   })
