@@ -15,6 +15,7 @@ const getToolCalls = (message: AssistantMessage): ToolCallPart[] =>
     ? []
     : message.content.filter((part): part is ToolCallPart => part.type === 'tool-call')
 
+/** Converts a successful terminal event into the normalized step result used by the loop facade. */
 export const toStepResult = (event: StepEndDoneEvent): StepResult => {
   const { type: _type, ...result } = event
 
