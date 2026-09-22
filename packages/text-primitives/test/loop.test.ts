@@ -23,6 +23,7 @@ const readEvents = async (stream: ReadableStream<TextEvent>): Promise<TextEvent[
 const createStepResult = (overrides: Partial<StepResult> = {}): StepResult => ({
   message: { content: '', role: 'assistant' },
   status: 'completed',
+  text: '',
   toolCalls: [],
   toolResults: [],
   ...overrides,
@@ -57,6 +58,31 @@ describe('loop', () => {
       { message: { content: 'Hi', role: 'assistant' }, status: 'completed', type: 'step.end' },
     ])
     expect(callCount).toBe(1)
+  })
+
+  it('provides a normalized step result to stopWhen', async () => {
+    let seenStep: StepResult | undefined
+    const model: LanguageModel = async () => eventStream({
+      message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' },
+      status: 'completed',
+      type: 'step.end',
+    })
+
+    await readEvents(loop(model, {
+      input: 'hi',
+      stopWhen: ({ step }) => {
+        seenStep = step
+        return true
+      },
+    }))
+
+    expect(seenStep).toEqual({
+      message: { content: [{ text: 'Hi', type: 'text' }], role: 'assistant' },
+      status: 'completed',
+      text: 'Hi',
+      toolCalls: [],
+      toolResults: [],
+    })
   })
 
   it('forwards failed terminal events and stops the loop', async () => {
