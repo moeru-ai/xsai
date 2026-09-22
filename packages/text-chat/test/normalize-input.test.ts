@@ -98,7 +98,7 @@ describe('normalize input', () => {
               { text: 'Think', type: 'text' },
               { text: 'redacted-data', type: 'redacted' },
             ],
-            metadata: { chat: { reasoning_field: 'reasoning' } },
+            providerMetadata: { chat: { reasoning_field: 'reasoning' } },
             type: 'reasoning',
           },
           { text: 'Done', type: 'text' },

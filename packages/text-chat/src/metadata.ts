@@ -5,7 +5,7 @@ export interface ChatPartMetadata {
 }
 
 declare module '@xsai/text-primitives' {
-  interface PartMetadata {
+  interface ProviderPartMetadata {
     chat?: ChatPartMetadata
   }
 }

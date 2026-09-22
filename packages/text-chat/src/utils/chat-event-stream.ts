@@ -64,7 +64,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
 
         if (choice.finish_reason != null) {
           if (this.reasoningField != null)
-            builder.end('reasoning', { metadata: { chat: { reasoning_field: this.reasoningField } } })
+            builder.end('reasoning', { providerMetadata: { chat: { reasoning_field: this.reasoningField } } })
           const finish = mapFinish(choice.finish_reason, this.hasRefusal)
           builder.done(finish.status, finish.reason)
         }

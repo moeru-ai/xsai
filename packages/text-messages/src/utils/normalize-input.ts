@@ -96,7 +96,7 @@ const normalizeReasoningPartContent = (content: ReasoningPartContent): ContentBl
 
 const normalizeReasoningPart = (part: ReasoningPart): ContentBlock[] => {
   const blocks = part.content.flatMap(normalizeReasoningPartContent)
-  const signature = part.metadata?.messages?.signature
+  const signature = part.providerMetadata?.messages?.signature
   if (signature == null)
     return blocks
 
