@@ -27,7 +27,9 @@ import type {
   SystemMessageItemParam,
   UserMessageItemParam,
 } from '../generated'
+import type { ResponsesOutputItem } from '../types/provider-metadata/message'
 
+type InputItem = ItemParam | ResponsesOutputItem
 type InputMessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam
 
 const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
@@ -104,7 +106,11 @@ const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemPa
   type: 'function_call_output',
 })
 
-const normalizeAssistantMessage = (message: AssistantMessage): ItemParam[] => {
+const normalizeAssistantMessage = (message: AssistantMessage): readonly InputItem[] => {
+  const output = message.providerMetadata?.responses?.output
+  if (output != null)
+    return output
+
   const createMessageItem = (content: (OutputTextContentParam | RefusalContentParam)[], includeId = true): AssistantMessageItemParam => ({
     content,
     id: includeId ? message.id : undefined,
@@ -194,7 +200,7 @@ const normalizeUserMessage = (message: UserMessage): ItemParam[] => {
   return items
 }
 
-const normalizeMessage = (message: Message): ItemParam[] => {
+const normalizeMessage = (message: Message): readonly InputItem[] => {
   switch (message.role) {
     case 'assistant':
       return normalizeAssistantMessage(message)
@@ -216,6 +222,6 @@ const normalizeMessage = (message: Message): ItemParam[] => {
 }
 
 /** @internal */
-export const normalizeInput = (input: readonly Message[] | string): ItemParam[] => typeof input === 'string'
+export const normalizeInput = (input: readonly Message[] | string): InputItem[] => typeof input === 'string'
   ? [{ content: input, role: 'user', type: 'message' }]
   : input.flatMap(normalizeMessage)
