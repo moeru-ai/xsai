@@ -16,8 +16,7 @@ const getToolCalls = (message: AssistantMessage): ToolCallPart[] =>
     : message.content.filter((part): part is ToolCallPart => part.type === 'tool-call')
 
 export const toStepResult = (event: StepEndDoneEvent): StepResult => {
-  const { type, ...result } = event
-  void type
+  const { type: _type, ...result } = event
 
   return {
     ...result,

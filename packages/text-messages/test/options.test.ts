@@ -136,8 +136,8 @@ describe('messages options', () => {
     }
     const model = messages({
       baseURL: 'https://x/',
-      headers: { 'x-api-key': 'custom-key' },
       fetch: requestFetch,
+      headers: { 'x-api-key': 'custom-key' },
       model: 'm',
     })
 
