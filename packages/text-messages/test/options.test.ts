@@ -128,7 +128,7 @@ describe('messages options', () => {
     })
   })
 
-  it('preserves an x-api-key supplied through extraHeaders', async () => {
+  it('preserves an x-api-key supplied through headers', async () => {
     let requestHeaders: Headers | undefined
     const requestFetch: typeof fetch = async (_input, init) => {
       requestHeaders = new Headers(init?.headers)
@@ -136,7 +136,7 @@ describe('messages options', () => {
     }
     const model = messages({
       baseURL: 'https://x/',
-      extraHeaders: { 'x-api-key': 'custom-key' },
+      headers: { 'x-api-key': 'custom-key' },
       fetch: requestFetch,
       model: 'm',
     })
