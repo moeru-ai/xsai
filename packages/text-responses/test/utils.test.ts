@@ -1,5 +1,7 @@
 import type { Message, Tool } from '@xsai/text-primitives'
 
+import type { ResponsesOutputItem } from '../src'
+
 import { describe, expect, it } from 'vitest'
 
 import { normalizeInput } from '../src/utils/normalize-input'
@@ -78,6 +80,31 @@ describe('normalizeInput', () => {
         type: 'function_call_output',
       },
     ])
+  })
+
+  it('replays the raw Responses output attached to an assistant message', () => {
+    const output = [
+      {
+        action: { queries: ['xsai'], type: 'search' },
+        id: 'search_1',
+        status: 'completed',
+        type: 'web_search_call',
+      },
+      {
+        content: [{ annotations: [], text: 'Found it', type: 'output_text' }],
+        id: 'message_1',
+        role: 'assistant',
+        status: 'completed',
+        type: 'message',
+      },
+    ] satisfies readonly ResponsesOutputItem[]
+
+    expect(normalizeInput([{
+      content: [{ text: 'Found it', type: 'text' }],
+      id: 'message_1',
+      providerMetadata: { responses: { output } },
+      role: 'assistant',
+    }])).toEqual(output)
   })
 
   it('replays refusal parts as refusal content', () => {

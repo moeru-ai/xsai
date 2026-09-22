@@ -1,15 +1,21 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
+import type { ResponsesProviderMessageMetadata } from './types/provider-metadata/message'
 import type { ResponsesProviderOptions } from './types/provider-options'
 
 import { wireRequest } from '@xsai/text-primitives'
 
 import { mergeTools, normalizeFormat, normalizeInput, normalizeToolChoice, ResponsesEventStream } from './utils'
 
+export type * from './types/provider-metadata/message'
 export type * from './types/provider-options'
 
 declare module '@xsai/text-primitives' {
+  interface ProviderMessageMetadata {
+    responses?: ResponsesProviderMessageMetadata
+  }
+
   interface ProviderOptions {
     responses?: ResponsesProviderOptions
   }
