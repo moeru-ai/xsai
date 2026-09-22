@@ -29,11 +29,14 @@ export interface StreamTextResult extends StepResult {
   totalUsage?: Usage
 }
 
-const cloneStep = (step: StepResult): StepResult => ({
-  ...step,
-  toolCalls: [...step.toolCalls],
-  toolResults: [...step.toolResults],
-})
+const recordStep = (event: TextEvent, steps: StepResult[]): unknown => {
+  if (event.type !== 'step.end')
+    return
+  if (event.status === 'failed')
+    return event.error
+
+  steps.push(toStepResult(event))
+}
 
 const totalUsage = (steps: readonly StepResult[]): undefined | Usage => {
   const usages = steps.flatMap(step => step.usage == null ? [] : [step.usage])
@@ -67,8 +70,6 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
   const result = Promise.withResolvers<StreamTextResult>()
   const steps: StepResult[] = []
 
-  let activeStep: StepResult | undefined
-  let failed = false
   let failedError: unknown
   let finished = false
   let latestInput: Message[] | string | undefined
@@ -77,12 +78,9 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
 
   const prepareStep: NonNullable<LoopOptions['prepareStep']> = async (prepareOptions) => {
     const previousStep = prepareOptions.steps.at(-1)
-    if (activeStep != null && previousStep != null) {
-      for (const toolResult of previousStep.toolResults) {
-        if (!activeStep.toolResults.includes(toolResult))
-          activeStep.toolResults.push(toolResult)
-      }
-    }
+    const step = steps.at(-1)
+    if (step != null && previousStep != null)
+      step.toolResults = previousStep.toolResults
 
     return options.prepareStep?.(prepareOptions)
   }
@@ -110,23 +108,7 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
     const input = typeof modelOptions.input === 'string' ? modelOptions.input : [...modelOptions.input]
     latestInput = input
 
-    const eventStream = await model(modelOptions)
-    return eventStream.pipeThrough(new TransformStream<TextEvent, TextEvent>({
-      transform: (event, controller) => {
-        if (event.type === 'step.end') {
-          if (event.status === 'failed') {
-            failed = true
-            failedError = event.error
-          }
-          else {
-            activeStep = toStepResult(event)
-            steps.push(activeStep)
-          }
-        }
-
-        controller.enqueue(event)
-      },
-    }))
+    return model(modelOptions)
   }
 
   const loopOptions: LoopOptions = {
@@ -154,6 +136,8 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
             if (cancelled)
               break
 
+            failedError ??= recordStep(event, steps)
+
             const streamEvent = toStreamTextEvent(event)
             if (streamEvent != null)
               events.dispatchEvent(streamEvent)
@@ -168,14 +152,13 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
             return
           }
 
-          if (failed) {
+          if (failedError != null) {
             result.reject(failedError)
             controller.close()
             return
           }
 
-          const completedSteps = steps.map(cloneStep)
-          const finalStep = completedSteps.at(-1)
+          const finalStep = steps.at(-1)
           if (finalStep == null)
             throw new Error('streamText completed without a step result')
 
@@ -185,8 +168,8 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
             input: typeof input === 'string'
               ? [{ content: input, role: 'user' } satisfies Message, finalStep.message]
               : [...input, finalStep.message],
-            steps: completedSteps,
-            totalUsage: totalUsage(completedSteps),
+            steps,
+            totalUsage: totalUsage(steps),
           })
           controller.close()
         }
