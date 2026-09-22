@@ -48,6 +48,7 @@ describe('manual tool loop', () => {
         {
           response: {
             error: null,
+            id: 'resp_1',
             incomplete_details: null,
             output: [{
               arguments: '{"location":"Taipei"}',
@@ -100,6 +101,20 @@ describe('manual tool loop', () => {
         stepEnd = event
     }
 
+    expect(stepEnd?.message.providerMetadata).toMatchObject({
+      responses: {
+        output: [{
+          arguments: '{"location":"Taipei"}',
+          call_id: 'call_1',
+          id: 'fc_1',
+          name: 'weather',
+          status: 'completed',
+          type: 'function_call',
+        }],
+        responseId: 'resp_1',
+      },
+    })
+
     input.push(stepEnd!.message)
     input.push({
       content: [{ callId: 'call_1', output: '24°C', type: 'tool-result' }],
@@ -118,6 +133,7 @@ describe('manual tool loop', () => {
         call_id: 'call_1',
         id: 'fc_1',
         name: 'weather',
+        status: 'completed',
         type: 'function_call',
       },
       {

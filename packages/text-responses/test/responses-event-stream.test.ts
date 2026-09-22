@@ -27,6 +27,47 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<TextEvent[]> 
 const message = (data: unknown): EventSourceMessage => ({ data: JSON.stringify(data) })
 
 describe('responses event stream', () => {
+  it('keeps hosted output items in Responses provider message metadata', async () => {
+    const hostedSearch = {
+      action: { queries: ['xsai'], type: 'search' },
+      id: 'search_1',
+      status: 'completed',
+      type: 'web_search_call',
+    }
+    const outputMessage = {
+      content: [{ annotations: [], text: 'Found it', type: 'output_text' }],
+      id: 'message_1',
+      role: 'assistant',
+      status: 'completed',
+      type: 'message',
+    }
+    const events = await readEvents([
+      message({
+        response: {
+          id: 'resp_1',
+          output: [hostedSearch, outputMessage],
+          status: 'completed',
+        },
+        type: 'response.completed',
+      }),
+      { data: '[DONE]' },
+    ])
+
+    expect(events.at(-1)).toMatchObject({
+      message: {
+        content: [{ text: 'Found it', type: 'text' }],
+        providerMetadata: {
+          responses: {
+            output: [hostedSearch, outputMessage],
+            responseId: 'resp_1',
+          },
+        },
+      },
+      status: 'completed',
+      type: 'step.end',
+    })
+  })
+
   it('maps Responses output events to text primitive events', async () => {
     await expect(readEvents([
       message({
@@ -161,6 +202,28 @@ describe('responses event stream', () => {
             { text: 'Hello', type: 'text' },
           ],
           id: 'message_1',
+          providerMetadata: {
+            responses: {
+              output: [
+                {
+                  arguments: '{"location":"Taipei"}',
+                  call_id: 'call_1',
+                  id: 'fc_1',
+                  name: 'weather',
+                  status: 'completed',
+                  type: 'function_call',
+                },
+                {
+                  content: [{ annotations: [], text: 'Hello', type: 'output_text' }],
+                  id: 'message_1',
+                  role: 'assistant',
+                  status: 'completed',
+                  type: 'message',
+                },
+              ],
+              responseId: 'resp_1',
+            },
+          },
           role: 'assistant',
         },
         reason: 'tool-calls',
@@ -230,6 +293,18 @@ describe('responses event stream', () => {
         message: {
           content: [{ refusal: 'I cannot help', type: 'refusal' }],
           id: 'message_1',
+          providerMetadata: {
+            responses: {
+              output: [{
+                content: [{ refusal: 'I cannot help', type: 'refusal' }],
+                id: 'message_1',
+                role: 'assistant',
+                status: 'completed',
+                type: 'message',
+              }],
+              responseId: 'resp_1',
+            },
+          },
           role: 'assistant',
         },
         reason: 'refusal',
@@ -341,6 +416,21 @@ describe('responses event stream', () => {
             { refusal: 'I cannot continue', type: 'refusal' },
           ],
           id: 'message_1',
+          providerMetadata: {
+            responses: {
+              output: [{
+                content: [
+                  { annotations: [], text: 'partial', type: 'output_text' },
+                  { refusal: 'I cannot continue', type: 'refusal' },
+                ],
+                id: 'message_1',
+                role: 'assistant',
+                status: 'completed',
+                type: 'message',
+              }],
+              responseId: 'resp_1',
+            },
+          },
           role: 'assistant',
         },
         reason: 'refusal',
