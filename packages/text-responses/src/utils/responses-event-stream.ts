@@ -227,7 +227,7 @@ const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: num
 }
 
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
-  constructor() {
+  constructor(includeRawEvents = false) {
     super((event, builder) => {
       switch (event.type) {
         case 'error':
@@ -297,6 +297,6 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
         case 'response.refusal.done':
           break
       }
-    })
+    }, includeRawEvents)
   }
 }
