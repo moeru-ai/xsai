@@ -1,8 +1,8 @@
-import type { EventSourceMessage } from '../src'
+import type { EventSourceMessage } from '../src/internal'
 
 import { describe, expect, it } from 'vitest'
 
-import { EventSourceDataStream } from '../src'
+import { EventSourceDataStream } from '../src/internal'
 
 describe('eventSourceDataStream', () => {
   it('closes when the source ends without [DONE]', async () => {

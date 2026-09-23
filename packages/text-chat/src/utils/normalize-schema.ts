@@ -1,4 +1,4 @@
-import type { JSONSchema7, JSONSchema7Definition } from '@xsai/text-primitives'
+import type { JSONSchema7, JSONSchema7Definition } from '@xsai/text-primitives/internal'
 
 const SUPPORTED_FORMATS = new Set([
   'date',

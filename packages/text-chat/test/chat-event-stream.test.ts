@@ -1,7 +1,8 @@
-import type { EventSourceMessage, StepEndEvent, TextEvent } from '@xsai/text-primitives'
+import type { StepEndEvent, TextEvent } from '@xsai/text-primitives'
+import type { EventSourceMessage } from '@xsai/text-primitives/internal'
 
-import { EventSourceDataStream } from '@xsai/text-primitives'
-import { XSAIError } from '@xsai/text-primitives/shared'
+import { XSAIError } from '@xsai/text-primitives'
+import { EventSourceDataStream } from '@xsai/text-primitives/internal'
 import { describe, expect, it } from 'vitest'
 
 import { ChatEventStream } from '../src/utils/chat-event-stream'

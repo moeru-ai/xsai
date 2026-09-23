@@ -9,7 +9,8 @@ import type {
 
 import type { StreamTextEventMap } from './stream-events'
 
-import { loop, maxSteps, toStepResult } from '@xsai/text-primitives'
+import { loop, maxSteps } from '@xsai/text-primitives'
+import { toStepResult } from '@xsai/text-primitives/internal'
 
 import { toStreamTextEvent } from './stream-events'
 import { TypedEventTarget } from './typed-event-target'
