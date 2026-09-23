@@ -43,6 +43,7 @@ export interface RefusalPart {
 }
 
 export interface TextPart {
+  providerMetadata?: ProviderPartMetadata
   text: string
   type: 'text'
 }
