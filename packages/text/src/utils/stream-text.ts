@@ -12,7 +12,6 @@ import type { StreamTextEventMap } from './stream-events'
 import { loop, maxSteps } from '@xsai/text-primitives'
 import { toStepResult } from '@xsai/text-primitives/internal'
 
-import { toStreamTextEvent } from './stream-events'
 import { TypedEventTarget } from './typed-event-target'
 
 export interface StreamTextHandle {
@@ -139,9 +138,10 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
 
             failedError ??= recordStep(event, steps)
 
-            const streamEvent = toStreamTextEvent(event)
-            if (streamEvent != null)
-              events.dispatchEvent(streamEvent)
+            const { type, ...detail } = event
+            events.dispatchEvent(new CustomEvent(type, {
+              detail: event.type === 'raw' ? event.detail : detail,
+            }))
             controller.enqueue(event)
           }
 
