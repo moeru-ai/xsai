@@ -48,5 +48,5 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
       ...(options.apiKey == null ? {} : { 'x-api-key': options.apiKey }),
     },
     path: 'messages',
-  }, new MessagesEventStream())
+  }, new MessagesEventStream(modelOptions.includeRawEvents))
 }
