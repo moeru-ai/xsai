@@ -2,6 +2,7 @@ import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
 import type { ResponsesProviderMessageMetadata } from './types/provider-metadata/message'
+import type { ResponsesProviderPartMetadata } from './types/provider-metadata/part'
 import type { ResponsesProviderOptions } from './types/provider-options'
 
 import { wireRequest } from '@xsai/text-primitives/internal'
@@ -18,6 +19,10 @@ declare module '@xsai/text-primitives' {
 
   interface ProviderOptions {
     responses?: ResponsesProviderOptions
+  }
+
+  interface ProviderPartMetadata {
+    responses?: ResponsesProviderPartMetadata
   }
 }
 

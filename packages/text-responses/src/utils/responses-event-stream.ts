@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, FinishReason, ReasoningPart, ReasoningPartContent, StepStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, FinishReason, ReasoningPart, ReasoningPartContent, StepStatus, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
 import type { EventBuilder, PartKey, PartStartInit } from '@xsai/text-primitives/internal'
 
 import type * as Responses from '../generated'
@@ -67,8 +67,12 @@ const contentPartKey = (outputIndex: number, contentIndex: number): PartKey => `
 const normalizeContentPart = (part: MessageContent): AssistantMessageContent | undefined => {
   if (part.type === 'refusal')
     return { refusal: part.refusal, type: 'refusal' }
-  if ('text' in part && typeof part.text === 'string')
-    return { text: part.text, type: 'text' }
+  if (part.type === 'output_text') {
+    const textPart: TextPart = { text: part.text, type: 'text' }
+    if (part.annotations?.length)
+      textPart.providerMetadata = { responses: { annotations: part.annotations } }
+    return textPart
+  }
   return undefined
 }
 

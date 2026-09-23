@@ -28,6 +28,68 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<TextEvent[]> 
 const message = (data: unknown): EventSourceMessage => ({ data: JSON.stringify(data) })
 
 describe('responses event stream', () => {
+  it('attaches output text annotations to text parts', async () => {
+    const annotations = [
+      {
+        end_index: 7,
+        start_index: 0,
+        title: 'Source',
+        type: 'url_citation',
+        url: 'https://example.com',
+      },
+      { file_id: 'file_1', filename: 'paper.pdf', index: 0, type: 'file_citation' },
+      {
+        container_id: 'container_1',
+        end_index: 12,
+        file_id: 'file_2',
+        filename: 'result.txt',
+        start_index: 8,
+        type: 'container_file_citation',
+      },
+      { file_id: 'file_3', index: 1, type: 'file_path' },
+    ]
+    const outputMessage = {
+      content: [{ annotations, text: 'Found it', type: 'output_text' }],
+      id: 'message_1',
+      role: 'assistant',
+      status: 'completed',
+      type: 'message',
+    }
+    const events = await readEvents([
+      message({
+        content_index: 0,
+        output_index: 0,
+        part: outputMessage.content[0],
+        type: 'response.content_part.done',
+      }),
+      message({
+        response: { id: 'resp_1', output: [outputMessage], status: 'completed' },
+        type: 'response.completed',
+      }),
+      { data: '[DONE]' },
+    ])
+
+    expect(events).toContainEqual({
+      content: {
+        providerMetadata: { responses: { annotations } },
+        text: 'Found it',
+        type: 'text',
+      },
+      index: 0,
+      type: 'content.end',
+    })
+    expect(events.at(-1)).toMatchObject({
+      message: {
+        content: [{
+          providerMetadata: { responses: { annotations } },
+          text: 'Found it',
+          type: 'text',
+        }],
+      },
+      type: 'step.end',
+    })
+  })
+
   it('keeps hosted output items in Responses provider message metadata', async () => {
     const hostedSearch = {
       action: { queries: ['xsai'], type: 'search' },
@@ -67,6 +129,7 @@ describe('responses event stream', () => {
       status: 'completed',
       type: 'step.end',
     })
+    expect(events.at(-1)).not.toHaveProperty('message.content.0.providerMetadata')
   })
 
   it('maps Responses output events to text primitive events', async () => {
