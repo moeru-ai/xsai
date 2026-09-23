@@ -44,7 +44,7 @@ describe('streamText', () => {
     await expect(run.result).resolves.toMatchObject({ text: 'Done' })
   })
 
-  it('exposes the full stream and non-delta EventTarget events', async () => {
+  it('exposes the full stream through EventTarget events', async () => {
     const model: LanguageModel = async () => eventStream([
       { type: 'step.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
@@ -63,6 +63,10 @@ describe('streamText', () => {
       contentTypes.push(event.detail.contentType)
       observed.push(event)
     })
+    run.events.addEventListener('text.delta', (event) => {
+      expect(event.detail).toEqual({ delta: 'hello', index: 0 })
+      observed.push(event)
+    })
     run.events.addEventListener('content.end', event => observed.push(event))
     run.events.addEventListener('step.end', (event) => {
       finalStatus = event.detail.status
@@ -77,12 +81,16 @@ describe('streamText', () => {
       { message: { content: 'hello', role: 'assistant' }, status: 'completed', type: 'step.end' },
     ])
 
-    expect(observed).toHaveLength(4)
+    expect(observed.map(event => event.type)).toEqual([
+      'step.start',
+      'content.start',
+      'text.delta',
+      'content.end',
+      'step.end',
+    ])
     expect(observed.every(event => event instanceof CustomEvent)).toBe(true)
     expect(contentTypes).toEqual(['text'])
     expect(finalStatus).toBe('completed')
-    expect(observed).not.toContainEqual(expect.objectContaining({ type: 'text.delta' }))
-
     await expect(run.result).resolves.toMatchObject({
       input: [
         { content: 'hi', role: 'user' },
@@ -91,6 +99,30 @@ describe('streamText', () => {
       steps: [{ text: 'hello', toolCalls: [], toolResults: [] }],
       text: 'hello',
     })
+  })
+
+  it('exposes reasoning, refusal, and tool call deltas through EventTarget', async () => {
+    const model: LanguageModel = async () => eventStream([
+      { delta: 'thinking', index: 0, type: 'reasoning.delta' },
+      { delta: 'cannot', index: 1, type: 'refusal.delta' },
+      { callId: 'call-1', delta: '{"city":', index: 2, name: 'weather', type: 'tool-call.delta' },
+      { message: { content: '', role: 'assistant' }, status: 'completed', type: 'step.end' },
+    ])
+    const run = streamText(model, { input: 'hi' })
+    const details: unknown[] = []
+
+    run.events.addEventListener('reasoning.delta', event => details.push(event.detail))
+    run.events.addEventListener('refusal.delta', event => details.push(event.detail))
+    run.events.addEventListener('tool-call.delta', event => details.push(event.detail))
+
+    await readEvents(run.stream)
+
+    expect(details).toEqual([
+      { delta: 'thinking', index: 0 },
+      { delta: 'cannot', index: 1 },
+      { callId: 'call-1', delta: '{"city":', index: 2, name: 'weather' },
+    ])
+    await expect(run.result).resolves.toMatchObject({ text: '' })
   })
 
   it('resolves aggregate step results after executing tools', async () => {
