@@ -61,7 +61,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
   private readonly signatures = new Map<number, string>()
   private startUsage?: MessagesUsage
 
-  constructor() {
+  constructor(includeRawEvents = false) {
     super((event, builder) => {
       switch (event.type) {
         case 'content_block_delta':
@@ -113,7 +113,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
         case 'ping':
           break
       }
-    })
+    }, includeRawEvents)
   }
 
   private onStart(builder: EventBuilder, event: ContentBlockStartEvent): void {

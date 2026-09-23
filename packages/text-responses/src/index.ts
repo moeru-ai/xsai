@@ -44,4 +44,4 @@ export const responses = (options: HttpOptions): LanguageModel => async modelOpt
       top_p: modelOptions.topP,
     },
     path: 'responses',
-  }, new ResponsesEventStream())
+  }, new ResponsesEventStream(modelOptions.includeRawEvents))

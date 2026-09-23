@@ -16,6 +16,11 @@ export interface ContentStartEvent {
   type: 'content.start'
 }
 
+export interface RawEvent {
+  detail: unknown
+  type: 'raw'
+}
+
 export interface ReasoningDeltaEvent {
   delta: string
   index: number
@@ -67,6 +72,7 @@ export type TextEvent = TextEventMap[TextEventType]
 export interface TextEventMap {
   'content.end': ContentEndEvent
   'content.start': ContentStartEvent
+  'raw': RawEvent
   'reasoning.delta': ReasoningDeltaEvent
   'refusal.delta': RefusalDeltaEvent
   'step.end': StepEndEvent

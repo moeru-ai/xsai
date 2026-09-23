@@ -17,8 +17,12 @@ One entry of an assistant message's `content` array (`text`, `reasoning`, `refus
 _Avoid_: block, chunk, content item
 
 **TextEvent**:
-The normalized stream vocabulary: `step.start`, `content.start`, `text.delta`, `reasoning.delta`, `refusal.delta`, `tool-call.delta`, `content.end`, `step.end`. Wire adapters translate their frames into it.
+The stream vocabulary: `step.start`, `content.start`, `text.delta`, `reasoning.delta`, `refusal.delta`, `tool-call.delta`, `content.end`, `step.end`, plus opt-in `raw` events. Wire adapters translate wire frames into normalized events.
 _Avoid_: chunk, SSE event
+
+**Raw event**:
+A decoded wire event exposed alongside normalized `TextEvent`s for observation.
+_Avoid_: unknown event
 
 **Event builder**:
 The internal `eventBuilder` in `text-primitives` that owns part bookkeeping — index assignment, delta accumulation, tool-call identity fallback — and the termination invariant. Adapters feed it part-level facts; wire semantics (finish-reason mapping, usage shape) stay in the adapter.

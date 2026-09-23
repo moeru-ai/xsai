@@ -325,7 +325,7 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
 
 /** Parses wire events and enforces stream termination. @internal */
 export class WireEventStream<W> extends TransformStream<string, TextEvent> {
-  constructor(map: (wire: W, builder: EventBuilder) => void) {
+  constructor(map: (wire: W, builder: EventBuilder) => void, includeRawEvents = false) {
     let builder!: EventBuilder
     super({
       flush: () => {
@@ -353,6 +353,8 @@ export class WireEventStream<W> extends TransformStream<string, TextEvent> {
         }
 
         try {
+          if (includeRawEvents)
+            controller.enqueue({ detail: wire, type: 'raw' })
           map(wire, builder)
         }
         catch (cause) {

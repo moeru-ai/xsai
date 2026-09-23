@@ -27,6 +27,23 @@ const abortableModel: LanguageModel = async ({ signal }) => new ReadableStream<T
 })
 
 describe('streamText', () => {
+  it('passes raw event detail directly to CustomEvent listeners', async () => {
+    const detail = { item_id: 'ws_1', type: 'response.web_search_call.searching' }
+    const model: LanguageModel = async () => eventStream([
+      { detail, type: 'raw' },
+      { message: { content: 'Done', role: 'assistant' }, status: 'completed', type: 'step.end' },
+    ])
+    const run = streamText(model, { input: 'hi' })
+    const observed: unknown[] = []
+    run.events.addEventListener('raw', event => observed.push(event.detail))
+
+    await readEvents(run.stream)
+
+    expect(observed).toEqual([detail])
+    expect(observed[0]).toBe(detail)
+    await expect(run.result).resolves.toMatchObject({ text: 'Done' })
+  })
+
   it('exposes the full stream and non-delta EventTarget events', async () => {
     const model: LanguageModel = async () => eventStream([
       { type: 'step.start' },
