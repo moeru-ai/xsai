@@ -1,12 +1,20 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
+import type { MessagesPartMetadata } from './metadata'
+
 import { XSAIError } from '@xsai/shared'
 import { wireRequest } from '@xsai/text-primitives'
 
 import { MessagesEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
+
+declare module '@xsai/text-primitives' {
+  interface ProviderPartMetadata {
+    messages?: MessagesPartMetadata
+  }
+}
 
 const ANTHROPIC_VERSION = '2023-06-01'
 

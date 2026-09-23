@@ -1,11 +1,19 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
+import type { ChatPartMetadata } from './metadata'
+
 import { wireRequest } from '@xsai/text-primitives'
 
 import { ChatEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
+
+declare module '@xsai/text-primitives' {
+  interface ProviderPartMetadata {
+    chat?: ChatPartMetadata
+  }
+}
 
 export const chat = (options: HttpOptions): LanguageModel => async modelOptions =>
   wireRequest(options, modelOptions, {

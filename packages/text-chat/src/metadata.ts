@@ -3,9 +3,3 @@ export interface ChatPartMetadata {
   /** Which assistant-message field carried reasoning on this wire. */
   reasoning_field?: 'reasoning' | 'reasoning_content'
 }
-
-declare module '@xsai/text-primitives' {
-  interface ProviderPartMetadata {
-    chat?: ChatPartMetadata
-  }
-}

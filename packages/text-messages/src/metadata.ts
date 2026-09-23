@@ -2,9 +2,3 @@
 export interface MessagesPartMetadata {
   signature?: string
 }
-
-declare module '@xsai/text-primitives' {
-  interface ProviderPartMetadata {
-    messages?: MessagesPartMetadata
-  }
-}
