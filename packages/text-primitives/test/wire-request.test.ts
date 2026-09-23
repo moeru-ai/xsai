@@ -2,7 +2,7 @@ import type { TextEvent } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
-import { wireRequest } from '../src'
+import { wireRequest } from '../src/internal'
 
 const options = { baseURL: 'https://example.com/v1', model: 'test-model' }
 const init = { body: {}, path: 'chat/completions' }

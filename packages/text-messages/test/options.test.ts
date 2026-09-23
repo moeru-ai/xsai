@@ -1,7 +1,6 @@
-import type { JSONSchema7 } from '@xsai/text-primitives'
+import type { JSONSchema7 } from '@xsai/text-primitives/internal'
 
-import { tool } from '@xsai/text-primitives'
-import { XSAIError } from '@xsai/text-primitives/shared'
+import { tool, XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { captureRequests } from '../../text-primitives/test/test-utils'

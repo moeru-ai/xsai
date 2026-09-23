@@ -1,9 +1,10 @@
-import type { EventBuilder, FinishReason, StepStatus, Usage } from '@xsai/text-primitives'
+import type { FinishReason, StepStatus, Usage } from '@xsai/text-primitives'
+import type { EventBuilder } from '@xsai/text-primitives/internal'
 
 import type { ChatChunk, ChatDelta, ChatUsage } from '../types'
 
 import { XSAIError } from '@xsai/shared'
-import { WireEventStream } from '@xsai/text-primitives'
+import { WireEventStream } from '@xsai/text-primitives/internal'
 
 const mapFinish = (reason: null | string | undefined, refusal: boolean): { reason?: FinishReason, status: Exclude<StepStatus, 'failed'> } => {
   switch (reason) {

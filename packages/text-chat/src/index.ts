@@ -3,7 +3,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 
 import type { ChatPartMetadata } from './metadata'
 
-import { wireRequest } from '@xsai/text-primitives'
+import { wireRequest } from '@xsai/text-primitives/internal'
 
 import { ChatEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 

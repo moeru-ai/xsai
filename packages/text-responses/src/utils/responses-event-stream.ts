@@ -1,9 +1,10 @@
-import type { AssistantMessage, AssistantMessageContent, EventBuilder, FinishReason, PartKey, PartStartInit, ReasoningPart, ReasoningPartContent, StepStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, FinishReason, ReasoningPart, ReasoningPartContent, StepStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { EventBuilder, PartKey, PartStartInit } from '@xsai/text-primitives/internal'
 
 import type * as Responses from '../generated'
 
 import { XSAIError } from '@xsai/shared'
-import { WireEventStream } from '@xsai/text-primitives'
+import { WireEventStream } from '@xsai/text-primitives/internal'
 
 // The generated schema misses these official reasoning_text events.
 type ReasoningTextDeltaEvent = Omit<Responses.ResponseReasoningDeltaStreamingEvent, 'type'> & {

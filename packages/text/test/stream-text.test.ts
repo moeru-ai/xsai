@@ -1,7 +1,6 @@
 import type { LanguageModel, TextEvent } from '@xsai/text-primitives'
 
-import { tool } from '@xsai/text-primitives'
-import { XSAIError } from '@xsai/text-primitives/shared'
+import { tool, XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'

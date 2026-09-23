@@ -1,4 +1,5 @@
-import type { EventBuilder, FinishReason, StepStatus, Usage } from '@xsai/text-primitives'
+import type { FinishReason, StepStatus, Usage } from '@xsai/text-primitives'
+import type { EventBuilder } from '@xsai/text-primitives/internal'
 
 import type {
   ContentBlockStartEvent,
@@ -7,7 +8,7 @@ import type {
 } from '../types'
 
 import { XSAIError } from '@xsai/shared'
-import { WireEventStream } from '@xsai/text-primitives'
+import { WireEventStream } from '@xsai/text-primitives/internal'
 
 const mapStop = (FinishReason: null | string | undefined): { reason?: FinishReason, status: Exclude<StepStatus, 'failed'> } => {
   switch (FinishReason) {

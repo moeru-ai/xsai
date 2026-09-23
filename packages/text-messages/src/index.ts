@@ -4,7 +4,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 import type { MessagesPartMetadata } from './metadata'
 
 import { XSAIError } from '@xsai/shared'
-import { wireRequest } from '@xsai/text-primitives'
+import { wireRequest } from '@xsai/text-primitives/internal'
 
 import { MessagesEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 

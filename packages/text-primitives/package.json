@@ -6,7 +6,7 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
-    "./shared": "./src/shared.ts"
+    "./internal": "./src/internal.ts"
   },
   "files": [
     "dist"
@@ -17,9 +17,9 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       },
-      "./shared": {
-        "types": "./dist/shared.d.ts",
-        "default": "./dist/shared.js"
+      "./internal": {
+        "types": "./dist/internal.d.ts",
+        "default": "./dist/internal.js"
       },
       "./package.json": "./package.json"
     },
