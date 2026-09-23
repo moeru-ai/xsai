@@ -1,8 +1,8 @@
-import type { UnresolvedSchema } from '@xsai/text-primitives'
+import type { UnresolvedSchema } from '@xsai/text-primitives/internal'
 
 import type { TextParam } from '../generated'
 
-import { resolveSchema } from '@xsai/text-primitives'
+import { resolveSchema } from '@xsai/text-primitives/internal'
 
 import { normalizeSchema } from './normalize-schema'
 
