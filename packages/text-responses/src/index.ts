@@ -1,7 +1,6 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
-import type { ResponsesProviderPartMetadata } from './types/provider-metadata/part'
 import type { ResponsesProviderOptions } from './types/provider-options'
 
 import { wireRequest } from '@xsai/text-primitives/internal'
@@ -13,10 +12,6 @@ export type * from './types/provider-options'
 declare module '@xsai/text-primitives' {
   interface ProviderOptions {
     responses?: ResponsesProviderOptions
-  }
-
-  interface ProviderPartMetadata {
-    responses?: ResponsesProviderPartMetadata
   }
 }
 

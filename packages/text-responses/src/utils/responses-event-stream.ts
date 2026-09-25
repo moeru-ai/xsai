@@ -1,4 +1,4 @@
-import type { AssistantMessage, AssistantMessageContent, FinishReason, ReasoningPart, ReasoningPartContent, StepStatus, TextPart, ToolCallPart, Usage } from '@xsai/text-primitives'
+import type { AssistantMessage, AssistantMessageContent, FinishReason, ReasoningPart, ReasoningPartContent, StepStatus, ToolCallPart, Usage } from '@xsai/text-primitives'
 import type { EventBuilder, PartKey, PartStartInit } from '@xsai/text-primitives/internal'
 
 import type * as Responses from '../generated'
@@ -30,7 +30,6 @@ type ResponsesEvent
     | Responses.ResponseInProgressStreamingEvent
     | Responses.ResponseOutputItemAddedStreamingEvent
     | Responses.ResponseOutputItemDoneStreamingEvent
-    | Responses.ResponseOutputTextAnnotationAddedStreamingEvent
     | Responses.ResponseOutputTextDeltaStreamingEvent
     | Responses.ResponseOutputTextDoneStreamingEvent
     | Responses.ResponseQueuedStreamingEvent
@@ -67,12 +66,8 @@ const contentPartKey = (outputIndex: number, contentIndex: number): PartKey => `
 const normalizeContentPart = (part: MessageContent): AssistantMessageContent | undefined => {
   if (part.type === 'refusal')
     return { refusal: part.refusal, type: 'refusal' }
-  if (part.type === 'output_text') {
-    const textPart: TextPart = { text: part.text, type: 'text' }
-    if (part.annotations?.length)
-      textPart.providerMetadata = { responses: { annotations: part.annotations } }
-    return textPart
-  }
+  if (part.type === 'output_text')
+    return { text: part.text, type: 'text' }
   return undefined
 }
 
@@ -256,7 +251,6 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
         case 'response.function_call_arguments.done':
           break
         case 'response.in_progress':
-        case 'response.output_text.annotation.added':
         case 'response.output_text.done':
         case 'response.queued':
         case 'response.reasoning.done':
