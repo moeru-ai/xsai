@@ -28,7 +28,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<TextEvent[]> 
 const message = (data: unknown): EventSourceMessage => ({ data: JSON.stringify(data) })
 
 describe('responses event stream', () => {
-  it('attaches output text annotations to text parts', async () => {
+  it('does not attach output text annotations to text parts', async () => {
     const annotations = [
       {
         end_index: 7,
@@ -71,7 +71,6 @@ describe('responses event stream', () => {
 
     expect(events).toContainEqual({
       content: {
-        providerMetadata: { responses: { annotations } },
         text: 'Found it',
         type: 'text',
       },
@@ -81,7 +80,6 @@ describe('responses event stream', () => {
     expect(events.at(-1)).toMatchObject({
       message: {
         content: [{
-          providerMetadata: { responses: { annotations } },
           text: 'Found it',
           type: 'text',
         }],
