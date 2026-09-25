@@ -27,6 +27,7 @@ import type {
   SystemMessageItemParam,
   UserMessageItemParam,
 } from '../generated'
+
 type InputMessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam
 
 const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
