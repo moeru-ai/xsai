@@ -11,7 +11,7 @@ const sseResponse = (events: unknown[]): Response => new Response([
 ].join(''))
 
 describe('manual tool loop', () => {
-  it('replays the finish message and tool result in the next request', async () => {
+  it('replays a normalized tool call and tool result in the next request', async () => {
     const requests: Record<string, unknown>[] = []
     const responsesByTurn = [
       sseResponse([
@@ -101,19 +101,13 @@ describe('manual tool loop', () => {
         stepEnd = event
     }
 
-    expect(stepEnd?.message.providerMetadata).toMatchObject({
-      responses: {
-        output: [{
-          arguments: '{"location":"Taipei"}',
-          call_id: 'call_1',
-          id: 'fc_1',
-          name: 'weather',
-          status: 'completed',
-          type: 'function_call',
-        }],
-        responseId: 'resp_1',
-      },
-    })
+    expect(stepEnd?.message.content).toEqual([{
+      arguments: '{"location":"Taipei"}',
+      callId: 'call_1',
+      id: 'fc_1',
+      name: 'weather',
+      type: 'tool-call',
+    }])
 
     input.push(stepEnd!.message)
     input.push({
@@ -133,7 +127,6 @@ describe('manual tool loop', () => {
         call_id: 'call_1',
         id: 'fc_1',
         name: 'weather',
-        status: 'completed',
         type: 'function_call',
       },
       {
