@@ -7,6 +7,45 @@ import { captureRequests } from '../../text-primitives/test/test-utils'
 import { messages } from '../src'
 
 describe('messages options', () => {
+  it('sends provider tools, beta headers, and MCP servers with local tools', async () => {
+    let requestBody: Record<string, unknown> | undefined
+    let requestHeaders: Headers | undefined
+    const requestFetch: typeof fetch = async (_input, init) => {
+      requestBody = JSON.parse(init?.body as string) as Record<string, unknown>
+      requestHeaders = new Headers(init?.headers)
+      return new Response('data: {"type":"message_stop"}\n\n')
+    }
+    const model = messages({ baseURL: 'https://x/', fetch: requestFetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      maxOutputTokens: 10,
+      providerOptions: {
+        messages: {
+          betas: ['mcp-client-2025-11-20'],
+          mcpServers: [{ name: 'docs', type: 'url', url: 'https://mcp.example.com' }],
+          tools: [
+            { max_uses: 3, name: 'web_search', type: 'web_search_20250305' },
+            { mcp_server_name: 'docs', type: 'mcp_toolset' },
+          ],
+        },
+      },
+      tools: [tool({ inputSchema: { type: 'object' }, name: 'local_tool' })],
+    })
+    await stream.cancel()
+
+    expect(requestHeaders?.get('anthropic-beta')).toBe('mcp-client-2025-11-20')
+    expect(requestBody).not.toHaveProperty('providerOptions')
+    expect(requestBody?.mcp_servers).toEqual([{ name: 'docs', type: 'url', url: 'https://mcp.example.com' }])
+    expect(requestBody?.tools).toEqual([
+      { max_uses: 3, name: 'web_search', type: 'web_search_20250305' },
+      { mcp_server_name: 'docs', type: 'mcp_toolset' },
+      {
+        input_schema: { additionalProperties: false, properties: {}, type: 'object' },
+        name: 'local_tool',
+      },
+    ])
+  })
+
   it('maps model options to Messages fields', async () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
