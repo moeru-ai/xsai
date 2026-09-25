@@ -1,7 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text-primitives'
 
-import type { MessagesPartMetadata } from './metadata'
+import type { MessagesPartMetadata } from './types/provider-metadata'
 import type { MessagesProviderOptions } from './types/provider-options'
 
 import { XSAIError } from '@xsai/shared'
@@ -9,7 +9,7 @@ import { wireRequest } from '@xsai/text-primitives/internal'
 
 import { mergeTools, MessagesEventStream, normalizeFormat, normalizeInput, normalizeToolChoice } from './utils'
 
-export type * from './metadata'
+export type * from './types/provider-metadata'
 export type * from './types/provider-options'
 
 declare module '@xsai/text-primitives' {
