@@ -196,17 +196,7 @@ const finishResponse = (builder: EventBuilder, response: Responses.ResponseResou
 
   const reason = normalizeFinishReason(response)
     ?? (status === 'completed' && typeof message.content !== 'string' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
-  builder.done(status, reason, status === 'completed'
-    ? {
-        ...message,
-        providerMetadata: {
-          responses: {
-            output: response.output,
-            responseId: response.id,
-          },
-        },
-      }
-    : message)
+  builder.done(status, reason, message)
 }
 
 const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
