@@ -27,11 +27,11 @@ import type {
   SystemMessageItemParam,
   UserMessageItemParam,
 } from '../generated'
-import type { WebSearchAction, WebSearchCallParam } from '../types/web-search'
+import type { WebSearchAction, WebSearchCall } from '../types/web-search'
 
 type InputMessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam
 
-type ReplayItem = ItemParam | WebSearchCallParam
+type ReplayItem = ItemParam | WebSearchCall
 
 const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
   text: part.text,
@@ -108,21 +108,6 @@ const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemPa
   type: 'function_call_output',
 })
 
-const normalizeWebSearchAction = (action: WebSearchAction): WebSearchAction => {
-  switch (action.type) {
-    case 'find_in_page':
-      return { pattern: action.pattern, type: 'find_in_page', url: action.url }
-    case 'open_page':
-      return { ...(action.url == null ? {} : { url: action.url }), type: 'open_page' }
-    case 'search':
-      return {
-        ...(action.queries == null ? {} : { queries: action.queries }),
-        ...(action.query == null ? {} : { query: action.query }),
-        type: 'search',
-      }
-  }
-}
-
 const normalizeAssistantMessage = (message: AssistantMessage): readonly ReplayItem[] => {
   const createMessageItem = (content: (OutputTextContentParam | RefusalContentParam)[], includeId = true): AssistantMessageItemParam => ({
     content,
@@ -169,7 +154,9 @@ const normalizeAssistantMessage = (message: AssistantMessage): readonly ReplayIt
           const call = message.content.find(candidate => candidate.type === 'tool-call' && candidate.callId === part.callId)
           if (call?.type === 'tool-call' && call.name === 'web_search') {
             const action = JSON.parse(part.output as string) as WebSearchAction
-            items.push({ action: normalizeWebSearchAction(action), id: call.id, status: 'completed', type: 'web_search_call' })
+            const inputAction = Object.fromEntries(Object.entries(action)
+              .filter(([key, value]) => key !== 'sources' && value != null)) as WebSearchAction
+            items.push({ action: inputAction, id: call.id, status: 'completed', type: 'web_search_call' })
           }
         }
         break

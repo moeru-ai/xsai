@@ -37,7 +37,7 @@ describe('provider-executed web search on Responses', () => {
   })
 
   it('emits ordered call and returned action, then replays only input fields', async () => {
-    const action = { queries: ['Taipei weather'], sources: [{ type: 'url', url: 'https://example.com' }], type: 'search' }
+    const action = { queries: ['Taipei weather'], query: null, sources: [{ type: 'url', url: 'https://example.com' }], type: 'search' }
     const annotation = { end_index: 5, start_index: 0, title: 'Forecast', type: 'url_citation', url: 'https://example.com' }
     const item = { action, id: 'ws_1', status: 'completed', type: 'web_search_call' }
     const requests: Record<string, unknown>[] = []
@@ -59,7 +59,7 @@ describe('provider-executed web search on Responses', () => {
 
     const events = await read(await model({
       input: 'weather?',
-      providerOptions: { responses: { include: ['web_search_call.action.sources'] } },
+      providerOptions: { responses: { include: ['web_search_call.action.sources', 'provider.future_field'] } },
     }))
     const content = events.filter(event => event.type === 'content.end').map(event => event.content)
     expect(content).toEqual([
@@ -69,7 +69,7 @@ describe('provider-executed web search on Responses', () => {
     ])
     expect(events.filter(event => event.type === 'content.start').map(event => event.contentType)).toEqual(['tool-call', 'tool-result', 'text'])
     expect((events.find(event => event.type === 'step.end') as Extract<TextEvent, { type: 'step.end' }>).message.content).toEqual(content)
-    expect(requests[0].include).toEqual(['web_search_call.action.sources'])
+    expect(requests[0].include).toEqual(['web_search_call.action.sources', 'provider.future_field'])
     const first = events.find(event => event.type === 'step.end') as Extract<TextEvent, { type: 'step.end' }>
     await read(await model({ input: [{ content: 'weather?', role: 'user' }, first.message] }))
     expect(requests[1].input).toEqual([

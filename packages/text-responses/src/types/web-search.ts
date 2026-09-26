@@ -11,10 +11,3 @@ export interface WebSearchCall {
   status: 'completed' | 'failed' | 'in_progress' | 'incomplete' | 'searching'
   type: 'web_search_call'
 }
-
-export interface WebSearchCallParam {
-  action: WebSearchAction
-  id: string
-  status: 'completed'
-  type: 'web_search_call'
-}
