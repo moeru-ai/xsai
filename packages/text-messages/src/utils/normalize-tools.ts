@@ -1,6 +1,7 @@
 import type { Tool, ToolChoice } from '@xsai/text-primitives'
 
 import type { MessagesTool, MessagesToolChoice } from '../types'
+import type { MessagesToolInput } from '../types/provider-options'
 
 import { normalizeSchema } from './normalize-schema'
 
@@ -10,6 +11,17 @@ export const normalizeTools = (tools?: readonly Tool[]): MessagesTool[] | undefi
   input_schema: normalizeSchema(tool.inputSchema.schema) as Record<string, unknown>,
   name: tool.name,
 }))
+
+export const mergeTools = (
+  providerTools?: readonly MessagesToolInput[],
+  tools?: readonly Tool[],
+): (MessagesTool | MessagesToolInput)[] | undefined => {
+  const merged = [
+    ...(providerTools ?? []),
+    ...(normalizeTools(tools) ?? []),
+  ]
+  return merged.length === 0 ? undefined : merged
+}
 
 /** @internal */
 export const normalizeToolChoice = (toolChoice: ToolChoice | undefined): MessagesToolChoice | undefined =>

@@ -13,8 +13,12 @@ The `LanguageModel` function every wire adapter satisfies: `(options) => Promise
 _Avoid_: model instance, provider object
 
 **Part**:
-One entry of an assistant message's `content` array (`text`, `reasoning`, `refusal`, `tool-call`). Events address parts by `index`, their position in the finished message.
+One entry of a message's `content` array. Assistant output events address parts by `index`, their position in the finished message.
 _Avoid_: block, chunk, content item
+
+**Provider-executed tool**:
+A tool run by the model provider during a model response. Its call and available result belong to the assistant's output; the caller observes them but does not execute the call.
+_Avoid_: native tool, hosted tool
 
 **TextEvent**:
 The stream vocabulary: `step.start`, `content.start`, `text.delta`, `reasoning.delta`, `refusal.delta`, `tool-call.delta`, `content.end`, `step.end`, plus opt-in `raw` events. Wire adapters translate wire frames into normalized events.

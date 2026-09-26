@@ -41,6 +41,58 @@ const createStopContext = (overrides: Partial<StopContext> = {}): StopContext =>
 }
 
 describe('loop', () => {
+  it('observes provider results while executing and returning only client calls', async () => {
+    const executeSearch = vi.fn()
+    const executeWeather = vi.fn(() => 'sunny')
+    const preToolCall = vi.fn()
+    const postToolCall = vi.fn()
+    const inputs: unknown[] = []
+    const stepsSeen: StepResult[][] = []
+    const model: LanguageModel = async (options) => {
+      inputs.push(Array.isArray(options.input) ? [...options.input] : options.input)
+      return eventStream(inputs.length === 1
+        ? {
+            message: { content: [
+              { arguments: '{}', callId: 'srv_1', id: 'srv_1', name: 'web_search', providerExecuted: true, type: 'tool-call' },
+              { callId: 'srv_1', output: '[{"title":"Forecast"}]', providerExecuted: true, type: 'tool-result' },
+              { arguments: '{}', callId: 'local_1', id: 'local_1', name: 'weather', type: 'tool-call' },
+            ], role: 'assistant' },
+            reason: 'tool-calls',
+            status: 'completed',
+            type: 'step.end',
+          }
+        : { message: { content: 'done', role: 'assistant' }, status: 'completed', type: 'step.end' })
+    }
+
+    await readEvents(loop(model, {
+      input: 'weather?',
+      postToolCall,
+      preToolCall,
+      stopWhen: ({ steps }) => {
+        stepsSeen.push([...steps])
+        return false
+      },
+      tools: [
+        tool({ execute: executeSearch, inputSchema: { type: 'object' }, name: 'web_search' }),
+        tool({ execute: executeWeather, inputSchema: { type: 'object' }, name: 'weather' }),
+      ],
+    }))
+
+    expect(executeSearch).not.toHaveBeenCalled()
+    expect(executeWeather).toHaveBeenCalledOnce()
+    expect(preToolCall).toHaveBeenCalledOnce()
+    expect(postToolCall).toHaveBeenCalledOnce()
+    expect(stepsSeen[0][0].toolResults).toEqual([
+      { callId: 'srv_1', output: '[{"title":"Forecast"}]', providerExecuted: true, type: 'tool-result' },
+      { callId: 'local_1', output: 'sunny', type: 'tool-result' },
+    ])
+    expect(inputs[1]).toEqual([
+      { content: 'weather?', role: 'user' },
+      expect.objectContaining({ role: 'assistant' }),
+      { content: [{ callId: 'local_1', output: 'sunny', type: 'tool-result' }], role: 'user' },
+    ])
+  })
+
   it('returns a stream that forwards model events', async () => {
     let callCount = 0
     const model: LanguageModel = async () => {

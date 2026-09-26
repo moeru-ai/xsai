@@ -5,6 +5,8 @@ import type {
   ContentBlockStartEvent,
   MessagesEvent,
   MessagesUsage,
+  ServerWebSearchUseBlock,
+  WebSearchCitation,
 } from '../types'
 
 import { XSAIError } from '@xsai/shared'
@@ -56,8 +58,10 @@ const mergeUsage = (start: MessagesUsage | undefined, delta: MessagesUsage | und
 }
 
 export class MessagesEventStream extends WireEventStream<MessagesEvent> {
+  private readonly citations = new Map<number, WebSearchCitation[]>()
   private deltaUsage?: MessagesUsage
   private FinishReason?: null | string
+  private readonly serverCalls = new Map<number, { arguments: string, block: ServerWebSearchUseBlock }>()
   private readonly signatures = new Map<number, string>()
   private startUsage?: MessagesUsage
 
@@ -65,28 +69,13 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
     super((event, builder) => {
       switch (event.type) {
         case 'content_block_delta':
-          switch (event.delta.type) {
-            case 'input_json_delta':
-              builder.delta(event.index, event.delta.partial_json)
-              break
-            case 'signature_delta':
-              this.signatures.set(event.index, (this.signatures.get(event.index) ?? '') + event.delta.signature)
-              break
-            case 'text_delta':
-              builder.delta(event.index, event.delta.text)
-              break
-            case 'thinking_delta':
-              builder.delta(event.index, event.delta.thinking)
-              break
-          }
+          this.onDelta(builder, event)
           break
         case 'content_block_start':
           this.onStart(builder, event)
           break
         case 'content_block_stop': {
-          const signature = this.signatures.get(event.index)
-          this.signatures.delete(event.index)
-          builder.end(event.index, signature == null ? {} : { providerMetadata: { messages: { signature } } })
+          this.onStop(builder, event.index)
           break
         }
         case 'error':
@@ -116,6 +105,42 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
     }, includeRawEvents)
   }
 
+  private onDelta(builder: EventBuilder, event: Extract<MessagesEvent, { type: 'content_block_delta' }>): void {
+    switch (event.delta.type) {
+      case 'citations_delta':
+        // TODO: Move citations to a first-class text field.
+        if (event.delta.citation.type === 'web_search_result_location') {
+          const citations = this.citations.get(event.index) ?? []
+          citations.push(event.delta.citation)
+          this.citations.set(event.index, citations)
+        }
+        break
+      case 'input_json_delta': {
+        builder.delta(event.index, event.delta.partial_json)
+        const call = this.serverCalls.get(event.index)
+        if (call != null)
+          call.arguments += event.delta.partial_json
+        break
+      }
+      case 'signature_delta':
+        this.signatures.set(event.index, (this.signatures.get(event.index) ?? '') + event.delta.signature)
+        break
+      case 'text_delta':
+        builder.delta(event.index, event.delta.text)
+        break
+      case 'thinking_delta':
+        builder.delta(event.index, event.delta.thinking)
+        break
+    }
+  }
+
+  private onServerCallStart(builder: EventBuilder, index: number, block: ServerWebSearchUseBlock): void {
+    if (block.name !== 'web_search' || (block.caller?.type != null && block.caller.type !== 'direct'))
+      return
+    this.serverCalls.set(index, { arguments: '', block })
+    builder.start(index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
+  }
+
   private onStart(builder: EventBuilder, event: ContentBlockStartEvent): void {
     const block = event.content_block
 
@@ -130,8 +155,17 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           content: { content: [{ text: block.data, type: 'redacted' }], type: 'reasoning' },
         })
         break
+      case 'server_tool_use':
+        this.onServerCallStart(builder, event.index, block)
+        break
       case 'text':
         builder.start(event.index, 'text')
+        // TODO: Move citations to a first-class text field.
+        if (block.citations != null) {
+          const citations = block.citations.filter(citation => citation.type === 'web_search_result_location')
+          if (citations.length > 0)
+            this.citations.set(event.index, citations)
+        }
         if (block.text !== '')
           builder.delta(event.index, block.text)
         break
@@ -145,6 +179,47 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
       case 'tool_use':
         builder.start(event.index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
         break
+      case 'web_search_tool_result':
+        this.onWebSearchResultStart(builder, event.index, block)
+        break
     }
+  }
+
+  private onStop(builder: EventBuilder, index: number): void {
+    const signature = this.signatures.get(index)
+    this.signatures.delete(index)
+    const serverCall = this.serverCalls.get(index)
+    this.serverCalls.delete(index)
+    const citations = this.citations.get(index)
+    this.citations.delete(index)
+    if (serverCall != null) {
+      const { block } = serverCall
+      builder.end(index, { content: {
+        arguments: serverCall.arguments || JSON.stringify(block.input),
+        callId: block.id,
+        id: block.id,
+        name: block.name,
+        providerExecuted: true,
+        type: 'tool-call',
+      } })
+    }
+    else {
+      builder.end(index, signature != null
+        ? { providerMetadata: { messages: { signature } } }
+        : citations == null ? {} : { providerMetadata: { messages: { citations } } })
+    }
+  }
+
+  private onWebSearchResultStart(builder: EventBuilder, index: number, block: Extract<ContentBlockStartEvent['content_block'], { type: 'web_search_tool_result' }>): void {
+    if (block.caller?.type != null && block.caller.type !== 'direct')
+      return
+    builder.start(index, 'tool-result')
+    builder.end(index, { content: {
+      callId: block.tool_use_id,
+      isError: Array.isArray(block.content) ? undefined : true,
+      output: JSON.stringify(block.content),
+      providerExecuted: true,
+      type: 'tool-result',
+    } })
   }
 }

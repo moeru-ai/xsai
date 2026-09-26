@@ -1,4 +1,4 @@
-import type { AssistantMessage, TextPart, ToolCallPart } from './types'
+import type { AssistantMessage, TextPart, ToolCallPart, ToolResultPart } from './types'
 import type { StepResult } from './types/step-result'
 import type { StepEndDoneEvent } from './types/text-event'
 
@@ -15,6 +15,11 @@ const getToolCalls = (message: AssistantMessage): ToolCallPart[] =>
     ? []
     : message.content.filter((part): part is ToolCallPart => part.type === 'tool-call')
 
+const getToolResults = (message: AssistantMessage): ToolResultPart[] =>
+  typeof message.content === 'string'
+    ? []
+    : message.content.filter((part): part is ToolResultPart => part.type === 'tool-result')
+
 /** Converts a successful terminal event into the normalized step result used by the loop facade. */
 export const toStepResult = (event: StepEndDoneEvent): StepResult => {
   const { type: _type, ...result } = event
@@ -23,6 +28,6 @@ export const toStepResult = (event: StepEndDoneEvent): StepResult => {
     ...result,
     text: getText(event.message),
     toolCalls: getToolCalls(event.message),
-    toolResults: [],
+    toolResults: getToolResults(event.message),
   }
 }

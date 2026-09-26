@@ -15,7 +15,7 @@ import type {
   UserMessageContent,
 } from '@xsai/text-primitives'
 
-import type { ContentBlock, DocumentBlock, ImageBlock, InputMessage, TextBlock, ToolResultBlock, ToolUseBlock } from '../types'
+import type { ContentBlock, DocumentBlock, ImageBlock, InputMessage, TextBlock, ToolResultBlock, ToolUseBlock, WebSearchToolResultBlock } from '../types'
 
 import { XSAIError } from '@xsai/shared'
 
@@ -134,9 +134,20 @@ const normalizeAssistantPart = (part: AssistantMessageContent): ContentBlock[] =
     case 'refusal':
       throw new XSAIError('invalid-input', 'Refusal parts cannot be replayed on the Messages API')
     case 'text':
-      return [{ text: part.text, type: 'text' }]
+      // TODO: Move citations to a first-class text field.
+      return [{
+        ...(part.providerMetadata?.messages?.citations == null ? {} : { citations: part.providerMetadata.messages.citations }),
+        text: part.text,
+        type: 'text',
+      }]
     case 'tool-call':
-      return [normalizeToolCallPart(part)]
+      return [part.providerExecuted === true
+        ? { id: part.callId, input: JSON.parse(part.arguments), name: 'web_search', type: 'server_tool_use' }
+        : normalizeToolCallPart(part)]
+    case 'tool-result':
+      return part.providerExecuted === true
+        ? [{ content: JSON.parse(part.output as string) as WebSearchToolResultBlock['content'], tool_use_id: part.callId, type: 'web_search_tool_result' }]
+        : []
   }
 }
 

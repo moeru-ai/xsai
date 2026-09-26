@@ -53,6 +53,7 @@ export interface ToolCallPart {
   callId: string
   id: string
   name: string
+  providerExecuted?: true
   type: 'tool-call'
 }
 
@@ -60,6 +61,7 @@ export interface ToolResultPart {
   callId: string
   isError?: boolean
   output: string | ToolResultPartContent[]
+  providerExecuted?: true
   type: 'tool-result'
 }
 

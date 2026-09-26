@@ -50,10 +50,14 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
           steps,
         })
 
-        if (stop || step.toolCalls.length === 0) {
+        const clientCalls = step.toolCalls.filter(call => call.providerExecuted !== true)
+        if (stop || (clientCalls.length === 0 && step.reason !== 'pause_turn')) {
           controller.close()
           return
         }
+
+        if (clientCalls.length === 0)
+          continue
 
         options.signal?.throwIfAborted()
 
@@ -62,7 +66,7 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
           postToolCall,
           preToolCall,
           reason: step.reason,
-          toolCalls: step.toolCalls,
+          toolCalls: clientCalls,
         })
 
         step.toolResults.push(...results)

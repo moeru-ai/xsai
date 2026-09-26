@@ -2,10 +2,12 @@ export type ContentBlock
   = | DocumentBlock
     | ImageBlock
     | RedactedThinkingBlock
+    | ServerWebSearchUseBlock
     | TextBlock
     | ThinkingBlock
     | ToolResultBlock
     | ToolUseBlock
+    | WebSearchToolResultBlock
 
 export interface ContentBlockDeltaEvent {
   delta: ContentDelta
@@ -25,7 +27,8 @@ export interface ContentBlockStopEvent {
 }
 
 export type ContentDelta
-  = | { partial_json: string, type: 'input_json_delta' }
+  = | { citation: WebSearchCitation, type: 'citations_delta' }
+    | { partial_json: string, type: 'input_json_delta' }
     | { signature: string, type: 'signature_delta' }
     | { text: string, type: 'text_delta' }
     | { thinking: string, type: 'thinking_delta' }
@@ -127,7 +130,18 @@ export interface RedactedThinkingBlock {
   type: 'redacted_thinking'
 }
 
+// Anthropic SDK Messages web search blocks, checked 2026-09-26.
+// https://github.com/anthropics/anthropic-sdk-typescript/blob/main/src/resources/messages/messages.ts
+export interface ServerWebSearchUseBlock {
+  caller?: WebSearchCaller
+  id: string
+  input: unknown
+  name: 'web_search'
+  type: 'server_tool_use'
+}
+
 export interface TextBlock {
+  citations?: null | WebSearchCitation[]
   text: string
   type: 'text'
 }
@@ -150,4 +164,31 @@ export interface ToolUseBlock {
   input: unknown
   name: string
   type: 'tool_use'
+}
+
+export type WebSearchCaller
+  = | { tool_id: string, type: 'code_execution_20250825' | 'code_execution_20260120' }
+    | { type: 'direct' }
+
+export interface WebSearchCitation {
+  cited_text: string
+  encrypted_index: string
+  title: null | string
+  type: 'web_search_result_location'
+  url: string
+}
+
+export interface WebSearchResultBlock {
+  encrypted_content: string
+  page_age: null | string
+  title: string
+  type: 'web_search_result'
+  url: string
+}
+
+export interface WebSearchToolResultBlock {
+  caller?: WebSearchCaller
+  content: WebSearchResultBlock[] | { error_code: string, type: 'web_search_tool_result_error' }
+  tool_use_id: string
+  type: 'web_search_tool_result'
 }
