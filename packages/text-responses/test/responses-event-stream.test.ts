@@ -28,7 +28,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<TextEvent[]> 
 const message = (data: unknown): EventSourceMessage => ({ data: JSON.stringify(data) })
 
 describe('responses event stream', () => {
-  it('does not attach output text annotations to text parts', async () => {
+  it('keeps URL citations on text parts and leaves unknown annotations raw-only', async () => {
     const annotations = [
       {
         end_index: 7,
@@ -71,6 +71,7 @@ describe('responses event stream', () => {
 
     expect(events).toContainEqual({
       content: {
+        providerMetadata: { responses: { annotations: [annotations[0]] } },
         text: 'Found it',
         type: 'text',
       },
@@ -80,6 +81,7 @@ describe('responses event stream', () => {
     expect(events.at(-1)).toMatchObject({
       message: {
         content: [{
+          providerMetadata: { responses: { annotations: [annotations[0]] } },
           text: 'Found it',
           type: 'text',
         }],
@@ -88,7 +90,7 @@ describe('responses event stream', () => {
     })
   })
 
-  it('does not attach hosted output items to the assistant message', async () => {
+  it('normalizes known web search calls and results into assistant content', async () => {
     const hostedSearch = {
       action: { queries: ['xsai'], type: 'search' },
       id: 'search_1',
@@ -116,7 +118,11 @@ describe('responses event stream', () => {
 
     expect(events.at(-1)).toMatchObject({
       message: {
-        content: [{ text: 'Found it', type: 'text' }],
+        content: [
+          { arguments: '{}', callId: 'search_1', id: 'search_1', name: 'web_search', providerExecuted: true, type: 'tool-call' },
+          { callId: 'search_1', output: JSON.stringify(hostedSearch.action), providerExecuted: true, type: 'tool-result' },
+          { text: 'Found it', type: 'text' },
+        ],
       },
       status: 'completed',
       type: 'step.end',

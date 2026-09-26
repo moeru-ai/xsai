@@ -2,34 +2,36 @@ import type { AssistantMessage, AssistantMessageContent, FinishReason, Reasoning
 import type { EventBuilder, PartKey, PartStartInit } from '@xsai/text-primitives/internal'
 
 import type * as Responses from '../generated'
+import type { WebSearchCall } from '../types/web-search'
 
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text-primitives/internal'
 
+type OutputItem = Responses.ItemField | WebSearchCall
+
+type OutputItemAddedEvent = Omit<Responses.ResponseOutputItemAddedStreamingEvent, 'item'> & { item: null | OutputItem }
+
+type OutputItemDoneEvent = Omit<Responses.ResponseOutputItemDoneStreamingEvent, 'item'> & { item: null | OutputItem }
 // The generated schema misses these official reasoning_text events.
 type ReasoningTextDeltaEvent = Omit<Responses.ResponseReasoningDeltaStreamingEvent, 'type'> & {
   type: 'response.reasoning_text.delta'
 }
-
 type ReasoningTextDoneEvent = Omit<Responses.ResponseReasoningDoneStreamingEvent, 'type'> & {
   type: 'response.reasoning_text.done'
 }
-
+type ResponseResource = Omit<Responses.ResponseResource, 'output'> & { output: OutputItem[] }
 type ResponsesEvent
-  = | ReasoningTextDeltaEvent
+  = | OutputItemAddedEvent
+    | OutputItemDoneEvent
+    | ReasoningTextDeltaEvent
     | ReasoningTextDoneEvent
     | Responses.ErrorStreamingEvent
-    | Responses.ResponseCompletedStreamingEvent
     | Responses.ResponseContentPartAddedStreamingEvent
     | Responses.ResponseContentPartDoneStreamingEvent
     | Responses.ResponseCreatedStreamingEvent
-    | Responses.ResponseFailedStreamingEvent
     | Responses.ResponseFunctionCallArgumentsDeltaStreamingEvent
     | Responses.ResponseFunctionCallArgumentsDoneStreamingEvent
-    | Responses.ResponseIncompleteStreamingEvent
     | Responses.ResponseInProgressStreamingEvent
-    | Responses.ResponseOutputItemAddedStreamingEvent
-    | Responses.ResponseOutputItemDoneStreamingEvent
     | Responses.ResponseOutputTextDeltaStreamingEvent
     | Responses.ResponseOutputTextDoneStreamingEvent
     | Responses.ResponseQueuedStreamingEvent
@@ -41,6 +43,11 @@ type ResponsesEvent
     | Responses.ResponseReasoningSummaryPartDoneStreamingEvent
     | Responses.ResponseRefusalDeltaStreamingEvent
     | Responses.ResponseRefusalDoneStreamingEvent
+    | TerminalEvent
+
+type TerminalEvent = Omit<Responses.ResponseCompletedStreamingEvent, 'response'> & { response: ResponseResource }
+  | Omit<Responses.ResponseFailedStreamingEvent, 'response'> & { response: ResponseResource }
+  | Omit<Responses.ResponseIncompleteStreamingEvent, 'response'> & { response: ResponseResource }
 
 const normalizeUsage = (usage: Responses.Usage): Usage => ({
   cacheReadInputTokens: usage.input_tokens_details?.cached_tokens,
@@ -66,8 +73,14 @@ const contentPartKey = (outputIndex: number, contentIndex: number): PartKey => `
 const normalizeContentPart = (part: MessageContent): AssistantMessageContent | undefined => {
   if (part.type === 'refusal')
     return { refusal: part.refusal, type: 'refusal' }
-  if (part.type === 'output_text')
-    return { text: part.text, type: 'text' }
+  if (part.type === 'output_text') {
+    const annotations = part.annotations?.filter(annotation => annotation.type === 'url_citation')
+    return {
+      ...(annotations == null || annotations.length === 0 ? {} : { providerMetadata: { responses: { annotations } } }),
+      text: part.text,
+      type: 'text',
+    }
+  }
   return undefined
 }
 
@@ -103,7 +116,7 @@ interface NormalizedPart {
   key?: PartKey
 }
 
-const normalizeOutputItem = (item: Responses.ItemField, index: number): NormalizedOutputItem => {
+const normalizeOutputItem = (item: OutputItem, index: number): NormalizedOutputItem => {
   switch (item.type) {
     case 'compaction':
     case 'function_call_output':
@@ -119,12 +132,21 @@ const normalizeOutputItem = (item: Responses.ItemField, index: number): Normaliz
       return { messageId: item.id, parts: normalizeMessageContent(item, index) }
     case 'reasoning':
       return { parts: [{ content: normalizeReasoningPart(item) }] }
+    case 'web_search_call':
+      return { parts: [
+        {
+          content: { arguments: '{}', callId: item.id, id: item.id, name: 'web_search', providerExecuted: true, type: 'tool-call' },
+          init: { callId: item.id, id: item.id, name: 'web_search' },
+          key: `${index}:call`,
+        },
+        ...(item.action == null ? [] : [{ content: { callId: item.id, output: JSON.stringify(item.action), providerExecuted: true as const, type: 'tool-result' as const }, key: `${index}:result` }]),
+      ] }
     default:
       return {}
   }
 }
 
-const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMessage => {
+const normalizeAssistantMessage = (output: OutputItem[]): AssistantMessage => {
   const content: AssistantMessageContent[] = []
   let id: string | undefined
 
@@ -143,7 +165,7 @@ const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMess
   }
 }
 
-const normalizeFinishReason = (response: Responses.ResponseResource): FinishReason | undefined => {
+const normalizeFinishReason = (response: ResponseResource): FinishReason | undefined => {
   if (response.status !== 'incomplete')
     return undefined
 
@@ -161,7 +183,7 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
   }
 }
 
-const normalizeStatus = (response: Responses.ResponseResource): StepStatus => {
+const normalizeStatus = (response: ResponseResource): StepStatus => {
   switch (response.status) {
     case 'cancelled':
       return 'cancelled'
@@ -176,10 +198,33 @@ const normalizeStatus = (response: Responses.ResponseResource): StepStatus => {
   }
 }
 
-const finishResponse = (builder: EventBuilder, response: Responses.ResponseResource): void => {
+const onItemAdded = (builder: EventBuilder, item: OutputItem, index: number): void => {
+  const normalized = normalizeOutputItem(item, index)
+  for (const part of normalized.parts ?? []) {
+    if (part.content.type !== 'tool-result')
+      builder.start(part.key ?? index, part.content.type, part.init)
+  }
+  if (normalized.messageId != null)
+    builder.meta({ messageId: normalized.messageId })
+}
+
+const onItemDone = (builder: EventBuilder, item: OutputItem, index: number): void => {
+  // The done item is authoritative, including parts without deltas.
+  for (const part of normalizeOutputItem(item, index).parts ?? []) {
+    const key = part.key ?? index
+    builder.start(key, part.content.type, part.init)
+    builder.end(key, { content: part.content })
+  }
+}
+
+const finishResponse = (builder: EventBuilder, response: ResponseResource): void => {
   const status = normalizeStatus(response)
   if (response.usage != null)
     builder.meta({ usage: normalizeUsage(response.usage) })
+  if (response.output.some(item => item.type === 'web_search_call')) {
+    for (const [index, item] of response.output.entries())
+      onItemDone(builder, item, index)
+  }
   const message = normalizeAssistantMessage(response.output)
   if (status === 'failed') {
     const error = new XSAIError('model-error', response.error?.message ?? 'response failed', {
@@ -192,23 +237,6 @@ const finishResponse = (builder: EventBuilder, response: Responses.ResponseResou
   const reason = normalizeFinishReason(response)
     ?? (status === 'completed' && typeof message.content !== 'string' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
   builder.done(status, reason, message)
-}
-
-const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
-  const normalized = normalizeOutputItem(item, index)
-  for (const part of normalized.parts ?? [])
-    builder.start(part.key ?? index, part.content.type, part.init)
-  if (normalized.messageId != null)
-    builder.meta({ messageId: normalized.messageId })
-}
-
-const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
-  // The done item is authoritative, including parts without deltas.
-  for (const part of normalizeOutputItem(item, index).parts ?? []) {
-    const key = part.key ?? index
-    builder.start(key, part.content.type, part.init)
-    builder.end(key, { content: part.content })
-  }
 }
 
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {

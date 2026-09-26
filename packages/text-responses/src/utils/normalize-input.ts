@@ -27,8 +27,11 @@ import type {
   SystemMessageItemParam,
   UserMessageItemParam,
 } from '../generated'
+import type { WebSearchAction, WebSearchCallParam } from '../types/web-search'
 
 type InputMessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam
+
+type ReplayItem = ItemParam | WebSearchCallParam
 
 const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
   text: part.text,
@@ -36,6 +39,7 @@ const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
 })
 
 const normalizeOutputTextPart = (part: TextPart): OutputTextContentParam => ({
+  ...(part.providerMetadata?.responses?.annotations == null ? {} : { annotations: part.providerMetadata.responses.annotations }),
   text: part.text,
   type: 'output_text',
 })
@@ -104,7 +108,22 @@ const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemPa
   type: 'function_call_output',
 })
 
-const normalizeAssistantMessage = (message: AssistantMessage): readonly ItemParam[] => {
+const normalizeWebSearchAction = (action: WebSearchAction): WebSearchAction => {
+  switch (action.type) {
+    case 'find_in_page':
+      return { pattern: action.pattern, type: 'find_in_page', url: action.url }
+    case 'open_page':
+      return { ...(action.url == null ? {} : { url: action.url }), type: 'open_page' }
+    case 'search':
+      return {
+        ...(action.queries == null ? {} : { queries: action.queries }),
+        ...(action.query == null ? {} : { query: action.query }),
+        type: 'search',
+      }
+  }
+}
+
+const normalizeAssistantMessage = (message: AssistantMessage): readonly ReplayItem[] => {
   const createMessageItem = (content: (OutputTextContentParam | RefusalContentParam)[], includeId = true): AssistantMessageItemParam => ({
     content,
     id: includeId ? message.id : undefined,
@@ -115,7 +134,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): readonly ItemPara
   if (typeof message.content === 'string')
     return [createMessageItem([{ text: message.content, type: 'output_text' }])]
 
-  const items: ItemParam[] = []
+  const items: ReplayItem[] = []
   let content: (OutputTextContentParam | RefusalContentParam)[] = []
   let includeId = true
 
@@ -142,7 +161,17 @@ const normalizeAssistantMessage = (message: AssistantMessage): readonly ItemPara
         break
       case 'tool-call':
         flushContent()
-        items.push(normalizeToolCallPart(part))
+        if (part.providerExecuted !== true)
+          items.push(normalizeToolCallPart(part))
+        break
+      case 'tool-result':
+        if (part.providerExecuted === true) {
+          const call = message.content.find(candidate => candidate.type === 'tool-call' && candidate.callId === part.callId)
+          if (call?.type === 'tool-call' && call.name === 'web_search') {
+            const action = JSON.parse(part.output as string) as WebSearchAction
+            items.push({ action: normalizeWebSearchAction(action), id: call.id, status: 'completed', type: 'web_search_call' })
+          }
+        }
         break
     }
   }
@@ -194,7 +223,7 @@ const normalizeUserMessage = (message: UserMessage): ItemParam[] => {
   return items
 }
 
-const normalizeMessage = (message: Message): readonly ItemParam[] => {
+const normalizeMessage = (message: Message): readonly ReplayItem[] => {
   switch (message.role) {
     case 'assistant':
       return normalizeAssistantMessage(message)
@@ -216,6 +245,6 @@ const normalizeMessage = (message: Message): readonly ItemParam[] => {
 }
 
 /** @internal */
-export const normalizeInput = (input: readonly Message[] | string): ItemParam[] => typeof input === 'string'
+export const normalizeInput = (input: readonly Message[] | string): ReplayItem[] => typeof input === 'string'
   ? [{ content: input, role: 'user', type: 'message' }]
   : input.flatMap(normalizeMessage)
