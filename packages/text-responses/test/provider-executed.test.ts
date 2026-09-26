@@ -22,7 +22,7 @@ const read = async (stream: ReadableStream<TextEvent>): Promise<TextEvent[]> => 
   return events
 }
 
-describe('responses provider web search', () => {
+describe('provider-executed web search on Responses', () => {
   it('emits completed parts when only the terminal response carries a web search item', async () => {
     const item = { action: { type: 'open_page', url: 'https://example.com' }, id: 'ws_3', status: 'completed', type: 'web_search_call' }
     const model = responses({

@@ -19,7 +19,7 @@ const end = (reason: string) => [
   { type: 'message_stop' },
 ]
 
-describe('messages provider web search', () => {
+describe('provider-executed web search on Messages', () => {
   it('replays an unresolved server call beside a client call and sends only the client result', async () => {
     const executeSearch = vi.fn()
     const executeWeather = vi.fn(() => 'sunny')

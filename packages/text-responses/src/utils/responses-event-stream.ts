@@ -199,6 +199,9 @@ const normalizeStatus = (response: ResponseResource): StepStatus => {
 }
 
 const onItemAdded = (builder: EventBuilder, item: OutputItem, index: number): void => {
+  // Web search progress is raw-only until a completed item confirms the call.
+  if (item.type === 'web_search_call')
+    return
   const normalized = normalizeOutputItem(item, index)
   for (const part of normalized.parts ?? []) {
     if (part.content.type !== 'tool-result')

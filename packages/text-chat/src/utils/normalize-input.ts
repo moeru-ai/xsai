@@ -95,6 +95,8 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
       case 'tool-call':
         toolCalls.push(normalizeToolCallPart(part))
         break
+      case 'tool-result':
+        throw new XSAIError('invalid-input', 'Assistant tool results cannot be replayed on the Chat Completions API')
     }
   }
 
