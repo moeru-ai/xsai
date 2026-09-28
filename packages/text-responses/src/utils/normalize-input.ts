@@ -38,7 +38,8 @@ const normalizeInputTextPart = (part: TextPart): InputTextContentParam => ({
 
 const normalizeOutputTextPart = (part: TextPart): OutputTextContentParam => ({
   // TODO: Move citations to a first-class TextPart field.
-  annotations: part.providerMetadata?.responses?.citations,
+  // The generated OpenResponses type lists only URL citations.
+  annotations: part.providerMetadata?.responses?.citations as OutputTextContentParam['annotations'],
   text: part.text,
   type: 'output_text',
 })

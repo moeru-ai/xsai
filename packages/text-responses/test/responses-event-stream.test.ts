@@ -67,7 +67,7 @@ describe('responses event stream', () => {
     expect(events.at(-1)).toMatchObject({ message: { content: [{ providerMetadata: { responses: { citations: [citation] } } }] } })
   })
 
-  it('preserves URL citation annotations on text parts', async () => {
+  it('preserves all citation annotations on text parts', async () => {
     const annotations = [
       {
         end_index: 7,
@@ -82,13 +82,14 @@ describe('responses event stream', () => {
         end_index: 12,
         file_id: 'file_2',
         filename: 'result.txt',
+        index: null,
         start_index: 8,
         type: 'container_file_citation',
       },
       { file_id: 'file_3', index: 1, type: 'file_path' },
     ]
     const outputMessage = {
-      content: [{ annotations, text: 'Found it', type: 'output_text' }],
+      content: [{ annotations, text: 'Found it here', type: 'output_text' }],
       id: 'message_1',
       role: 'assistant',
       status: 'completed',
@@ -110,8 +111,8 @@ describe('responses event stream', () => {
 
     expect(events).toContainEqual({
       content: {
-        providerMetadata: { responses: { citations: [annotations[0]] } },
-        text: 'Found it',
+        providerMetadata: { responses: { citations: annotations } },
+        text: 'Found it here',
         type: 'text',
       },
       index: 0,
@@ -120,8 +121,8 @@ describe('responses event stream', () => {
     expect(events.at(-1)).toMatchObject({
       message: {
         content: [{
-          providerMetadata: { responses: { citations: [annotations[0]] } },
-          text: 'Found it',
+          providerMetadata: { responses: { citations: annotations } },
+          text: 'Found it here',
           type: 'text',
         }],
       },
