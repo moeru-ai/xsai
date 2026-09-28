@@ -26,6 +26,7 @@ describe('messages options', () => {
           tools: [
             { max_uses: 3, name: 'web_search', type: 'web_search_20250305' },
             { mcp_server_name: 'docs', type: 'mcp_toolset' },
+            { name: 'tool_search_tool_bm25', type: 'tool_search_tool_bm25_20251119' },
           ],
         },
       },
@@ -39,6 +40,7 @@ describe('messages options', () => {
     expect(requestBody?.tools).toEqual([
       { max_uses: 3, name: 'web_search', type: 'web_search_20250305' },
       { mcp_server_name: 'docs', type: 'mcp_toolset' },
+      { name: 'tool_search_tool_bm25', type: 'tool_search_tool_bm25_20251119' },
       {
         input_schema: { additionalProperties: false, properties: {}, type: 'object' },
         name: 'local_tool',

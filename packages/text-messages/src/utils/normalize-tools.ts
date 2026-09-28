@@ -1,7 +1,7 @@
 import type { Tool, ToolChoice } from '@xsai/text-primitives'
 
 import type { MessagesTool, MessagesToolChoice } from '../types'
-import type { MessagesToolInput } from '../types/provider-options'
+import type { MessagesProviderTool } from '../types/provider-options'
 
 import { normalizeSchema } from './normalize-schema'
 
@@ -13,9 +13,9 @@ export const normalizeTools = (tools?: readonly Tool[]): MessagesTool[] | undefi
 }))
 
 export const mergeTools = (
-  providerTools?: readonly MessagesToolInput[],
+  providerTools?: readonly MessagesProviderTool[],
   tools?: readonly Tool[],
-): (MessagesTool | MessagesToolInput)[] | undefined => {
+): (MessagesProviderTool | MessagesTool)[] | undefined => {
   const merged = [
     ...(providerTools ?? []),
     ...(normalizeTools(tools) ?? []),

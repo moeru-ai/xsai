@@ -1,5 +1,3 @@
-import type { MessagesToolInput } from './tools'
-
 export interface MessagesMcpServer {
   authorization_token?: string
   name: string
@@ -10,7 +8,10 @@ export interface MessagesMcpServer {
 export interface MessagesProviderOptions {
   betas?: readonly string[]
   mcpServers?: readonly MessagesMcpServer[]
-  tools?: readonly MessagesToolInput[]
+  tools?: readonly MessagesProviderTool[]
 }
 
-export type * from './tools'
+export interface MessagesProviderTool {
+  [key: string]: unknown
+  type: string
+}

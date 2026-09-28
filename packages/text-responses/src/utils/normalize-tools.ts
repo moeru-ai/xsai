@@ -1,7 +1,7 @@
 import type { Tool } from '@xsai/text-primitives'
 
 import type { FunctionToolParam } from '../generated'
-import type { ResponsesToolInput } from '../types/provider-options'
+import type { ResponsesProviderTool } from '../types/provider-options'
 
 import { normalizeSchema } from './normalize-schema'
 
@@ -16,9 +16,9 @@ export const normalizeTools = (tools?: readonly Tool[]): FunctionToolParam[] | u
 
 /** Combines provider-managed Responses tools with locally executable function tools. */
 export const mergeTools = (
-  providerTools?: readonly ResponsesToolInput[],
+  providerTools?: readonly ResponsesProviderTool[],
   tools?: readonly Tool[],
-): (FunctionToolParam | ResponsesToolInput)[] | undefined => {
+): (FunctionToolParam | ResponsesProviderTool)[] | undefined => {
   const merged = [
     ...(providerTools ?? []),
     ...(normalizeTools(tools) ?? []),
