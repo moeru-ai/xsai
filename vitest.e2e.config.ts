@@ -5,6 +5,7 @@ export default defineConfig({
     env: {
       XSAI_E2E_BASE_URL: 'http://localhost:11434/v1/',
       XSAI_E2E_MODEL: 'qwen3.5:0.8b',
+      XSAI_E2E_MODEL_EMBED: 'qwen3-embedding:0.6b',
     },
     include: ['packages/**/e2e/**/*.test.ts'],
     testTimeout: 120_000,
