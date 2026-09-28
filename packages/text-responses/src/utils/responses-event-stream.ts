@@ -110,6 +110,15 @@ interface NormalizedPart {
   key?: PartKey
 }
 
+const stripWebSearchSources = (item: Responses.ItemField): unknown => {
+  const value = item as Record<string, unknown>
+  if (value.type !== 'web_search_call' || value.action == null)
+    return item
+
+  const { sources: _sources, ...action } = value.action as Record<string, unknown>
+  return { ...value, action }
+}
+
 const normalizeOutputItem = (item: Responses.ItemField, index: number): NormalizedOutputItem => {
   if (item.type === 'function_call_output')
     return {}
@@ -119,7 +128,7 @@ const normalizeOutputItem = (item: Responses.ItemField, index: number): Normaliz
     return { messageId: item.id, parts: normalizeMessageContent(item, index) }
   if (item.type === 'reasoning')
     return { parts: [{ content: normalizeReasoningPart(item) }] }
-  return { parts: [{ content: { key: 'responses', type: 'provider', value: item } }] }
+  return { parts: [{ content: { key: 'responses', type: 'provider', value: stripWebSearchSources(item) } }] }
 }
 
 const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMessage => {

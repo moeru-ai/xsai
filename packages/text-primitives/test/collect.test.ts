@@ -18,7 +18,7 @@ const modelOf = (events: TextEvent[]): LanguageModel => async () => eventStream(
 
 describe('collect', () => {
   it('keeps provider content out of text and local tool results', async () => {
-    const provider = { key: 'responses', type: 'provider' as const, value: { id: 'ws_1', type: 'web_search_call' } }
+    const provider = { key: 'responses', type: 'provider' as const, value: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' } }
     const model = modelOf([{
       message: { content: [provider, { text: 'Found', type: 'text' }], role: 'assistant' },
       status: 'completed',

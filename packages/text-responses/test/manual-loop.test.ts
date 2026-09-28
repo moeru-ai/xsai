@@ -11,9 +11,16 @@ const sseResponse = (events: unknown[]): Response => new Response([
 ].join(''))
 
 describe('manual tool loop', () => {
-  it('skips action-less web searches and foreign provider parts but replays file search items', async () => {
+  it('skips foreign provider parts and replays a file search item unchanged', async () => {
     const requests: Record<string, unknown>[] = []
-    const fileSearch = { id: 'fs_1', queries: ['xsai'], status: 'completed', type: 'file_search_call' }
+    const fileSearch = {
+      id: 'fs_67c09ccea8c48191ade9367e3ba71515',
+      queries: ['What is deep research?'],
+      results: [{ file_id: 'file_1', filename: 'research.pdf', score: 0.92, text: 'Deep research combines sources.' }],
+      status: 'completed',
+      type: 'file_search_call',
+    }
+    const foreignUse = { id: 'srvtoolu_01ABC123', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' }
     const model = responses({
       baseURL: 'https://example.com/v1/',
       fetch: async (_input, init) => {
@@ -22,18 +29,18 @@ describe('manual tool loop', () => {
       },
       model: 'm',
     })
-    const first = await model({ input: 'find' })
+    const first = await model({ input: 'find', providerOptions: { responses: { include: ['file_search_call.results'] } } })
     let step: Extract<TextEvent, { type: 'step.end' }> | undefined
     for await (const event of first) {
       if (event.type === 'step.end')
         step = event
     }
     expect(step?.message.content).toEqual([{ key: 'responses', type: 'provider', value: fileSearch }])
+    expect(requests[0].include).toEqual(['file_search_call.results'])
 
     await collect(model, { input: [
-      { content: [{ key: 'messages', type: 'provider', value: { type: 'server_tool_use' } }], role: 'assistant' },
-      { content: [{ key: 'responses', type: 'provider', value: { id: 'ws_2', type: 'web_search_call' } }], role: 'assistant' },
-      { content: [{ text: 'a', type: 'text' }, { key: 'messages', type: 'provider', value: { type: 'server_tool_use' } }, { text: 'b', type: 'text' }], role: 'assistant' },
+      { content: [{ key: 'messages', type: 'provider', value: foreignUse }], role: 'assistant' },
+      { content: [{ text: 'a', type: 'text' }, { key: 'messages', type: 'provider', value: foreignUse }, { text: 'b', type: 'text' }], role: 'assistant' },
       step!.message,
       { content: 'more', role: 'user' },
     ] })
@@ -47,7 +54,8 @@ describe('manual tool loop', () => {
   it('streams and replays web search output with citations and source filtering', async () => {
     const requests: Record<string, unknown>[] = []
     const citation = { end_index: 5, start_index: 0, title: 'Source', type: 'url_citation', url: 'https://example.com' }
-    const search = { action: { queries: ['xsai'], sources: [{ url: 'https://example.com' }], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' }
+    const search = { action: { queries: ['xsai'], sources: [{ type: 'url', url: 'https://example.com' }], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' }
+    const savedSearch = { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' }
     const answer = { content: [{ annotations: [citation], text: 'Found', type: 'output_text' }], id: 'msg_1', role: 'assistant', status: 'completed', type: 'message' }
     const model = responses({
       baseURL: 'https://example.com/v1/',
@@ -72,7 +80,7 @@ describe('manual tool loop', () => {
       events.push(event)
 
     const content = [
-      { key: 'responses', type: 'provider', value: search },
+      { key: 'responses', type: 'provider', value: savedSearch },
       { providerMetadata: { responses: { citations: [citation] } }, text: 'Found', type: 'text' },
     ]
     expect(events.filter(event => event.type === 'content.start')).toEqual([
@@ -89,11 +97,11 @@ describe('manual tool loop', () => {
 
     await collect(model, { input: [step.message, { content: 'more', role: 'user' }] })
     expect(requests[1].input).toEqual([
-      { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' },
+      savedSearch,
       { content: [{ annotations: [citation], text: 'Found', type: 'output_text' }], id: 'msg_1', role: 'assistant', type: 'message' },
       { content: 'more', role: 'user', type: 'message' },
     ])
-    expect(search.action.sources).toEqual([{ url: 'https://example.com' }])
+    expect(search.action.sources).toEqual([{ type: 'url', url: 'https://example.com' }])
   })
 
   it('replays a normalized tool call and tool result in the next request', async () => {

@@ -45,7 +45,7 @@ describe('loop', () => {
     const execute = vi.fn(() => 'unexpected')
     const model = vi.fn<LanguageModel>(async () => eventStream({
       message: { content: [
-        { key: 'responses', type: 'provider', value: { id: 'ws_1', type: 'web_search_call' } },
+        { key: 'responses', type: 'provider', value: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' } },
         { text: 'Found', type: 'text' },
       ], role: 'assistant' },
       status: 'completed',
@@ -65,8 +65,13 @@ describe('loop', () => {
     const model: LanguageModel = async (options) => {
       inputs.push(structuredClone(options.input))
       toolsByTurn.push(options.tools)
+      const number = inputs.length
+      const content = [
+        ...(number === 1 ? [] : [{ key: 'messages' as const, type: 'provider' as const, value: { content: [], tool_use_id: `srvtoolu_0${number - 1}`, type: 'web_search_tool_result' } }]),
+        { key: 'messages' as const, type: 'provider' as const, value: { id: `srvtoolu_0${number}`, input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' } },
+      ]
       return eventStream({
-        message: { content: [{ key: 'messages', type: 'provider', value: { id: `srv_${inputs.length}`, type: 'server_tool_use' } }], role: 'assistant' },
+        message: { content, role: 'assistant' },
         reason: 'pause_turn',
         status: 'completed',
         type: 'step.end',
@@ -79,7 +84,7 @@ describe('loop', () => {
     expect(inputs).toHaveLength(3)
     expect(inputs[1]).toEqual([
       { content: 'search', role: 'user' },
-      { content: [{ key: 'messages', type: 'provider', value: { id: 'srv_1', type: 'server_tool_use' } }], role: 'assistant' },
+      { content: [{ key: 'messages', type: 'provider', value: { id: 'srvtoolu_01', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' } }], role: 'assistant' },
     ])
     expect(toolsByTurn).toEqual([[search], [search], [search]])
   })
@@ -93,9 +98,10 @@ describe('loop', () => {
       return eventStream(inputs.length === 1
         ? {
             message: { content: [
-              { key: 'messages', type: 'provider', value: { id: 'srv_1', type: 'server_tool_use' } },
+              { key: 'messages', type: 'provider', value: { id: 'srvtoolu_01ABC123', input: { url: 'https://example.com' }, name: 'web_fetch', type: 'server_tool_use' } },
               { arguments: '{}', callId: 'call_1', id: 'call_1', name: 'weather', type: 'tool-call' },
             ], role: 'assistant' },
+            reason: 'tool-calls',
             status: 'completed',
             type: 'step.end',
           }
@@ -112,7 +118,7 @@ describe('loop', () => {
     expect(inputs[1]).toEqual([
       { content: 'weather', role: 'user' },
       { content: [
-        { key: 'messages', type: 'provider', value: { id: 'srv_1', type: 'server_tool_use' } },
+        { key: 'messages', type: 'provider', value: { id: 'srvtoolu_01ABC123', input: { url: 'https://example.com' }, name: 'web_fetch', type: 'server_tool_use' } },
         { arguments: '{}', callId: 'call_1', id: 'call_1', name: 'weather', type: 'tool-call' },
       ], role: 'assistant' },
       { content: [{ callId: 'call_1', output: 'sunny', type: 'tool-result' }], role: 'user' },

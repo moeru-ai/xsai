@@ -3,7 +3,6 @@ import type {
   FilePart,
   ImagePart,
   Message,
-  ProviderPart,
   ReasoningPart,
   TextPart,
   ToolCallPart,
@@ -108,20 +107,6 @@ const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemPa
   type: 'function_call_output',
 })
 
-const normalizeProviderPart = (part: ProviderPart): Record<string, unknown> | undefined => {
-  if (part.key !== 'responses')
-    return undefined
-
-  const item = part.value as Record<string, unknown>
-  if (item.type !== 'web_search_call')
-    return item
-  if (item.action == null)
-    return undefined
-
-  const { sources: _sources, ...action } = item.action as Record<string, unknown>
-  return { ...item, action }
-}
-
 const normalizeAssistantMessage = (message: AssistantMessage): readonly ReplayItem[] => {
   const createMessageItem = (content: (OutputTextContentParam | RefusalContentParam)[], includeId = true): AssistantMessageItemParam => ({
     content,
@@ -149,12 +134,9 @@ const normalizeAssistantMessage = (message: AssistantMessage): readonly ReplayIt
   for (const part of message.content) {
     switch (part.type) {
       case 'provider':
-        {
-          const item = normalizeProviderPart(part)
-          if (item != null) {
-            flushContent()
-            items.push(item)
-          }
+        if (part.key === 'responses') {
+          flushContent()
+          items.push(part.value as Record<string, unknown>)
         }
         break
       case 'reasoning':

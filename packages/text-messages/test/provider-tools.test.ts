@@ -10,7 +10,17 @@ const sseResponse = (events: unknown[]): Response => new Response(events.map(eve
 describe('messages provider tools', () => {
   it('replays a web fetch result and skips foreign provider-only assistant messages', async () => {
     const requests: Record<string, unknown>[] = []
-    const fetchResult = { content: { encrypted_content: 'secret', type: 'web_fetch_result' }, tool_use_id: 'srv_2', type: 'web_fetch_tool_result' }
+    const fetchUse = { id: 'srvtoolu_01234567890abcdef', input: { url: 'https://example.com/article' }, name: 'web_fetch', type: 'server_tool_use' }
+    const fetchResult = {
+      content: {
+        content: { source: { data: 'Full text content of the article...', media_type: 'text/plain', type: 'text' }, title: 'Article Title', type: 'document' },
+        retrieved_at: '2025-08-25T10:30:02Z',
+        type: 'web_fetch_result',
+        url: 'https://example.com/article',
+      },
+      tool_use_id: fetchUse.id,
+      type: 'web_fetch_tool_result',
+    }
     const model = messages({
       baseURL: 'https://example.com/v1/',
       fetch: async (_input, init) => {
@@ -18,8 +28,11 @@ describe('messages provider tools', () => {
         return requests.length === 1
           ? sseResponse([
               { message: { id: 'msg_1', usage: {} }, type: 'message_start' },
-              { content_block: fetchResult, index: 0, type: 'content_block_start' },
+              { content_block: { ...fetchUse, input: {} }, index: 0, type: 'content_block_start' },
+              { delta: { partial_json: '{"url":"https://example.com/article"}', type: 'input_json_delta' }, index: 0, type: 'content_block_delta' },
               { index: 0, type: 'content_block_stop' },
+              { content_block: fetchResult, index: 1, type: 'content_block_start' },
+              { index: 1, type: 'content_block_stop' },
               { delta: { stop_reason: 'end_turn' }, type: 'message_delta' },
               { type: 'message_stop' },
             ])
@@ -28,19 +41,22 @@ describe('messages provider tools', () => {
       model: 'm',
     })
     let step: Extract<TextEvent, { type: 'step.end' }> | undefined
-    for await (const event of await model({ input: 'fetch', maxOutputTokens: 100 })) {
+    for await (const event of await model({ input: 'Fetch https://example.com/article', maxOutputTokens: 100 })) {
       if (event.type === 'step.end')
         step = event
     }
-    expect(step?.message.content).toEqual([{ key: 'messages', type: 'provider', value: fetchResult }])
+    expect(step?.message.content).toEqual([
+      { key: 'messages', type: 'provider', value: fetchUse },
+      { key: 'messages', type: 'provider', value: fetchResult },
+    ])
 
     await collect(model, { input: [
-      { content: [{ key: 'responses', type: 'provider', value: { type: 'web_search_call' } }], role: 'assistant' },
+      { content: [{ key: 'responses', type: 'provider', value: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' } }], role: 'assistant' },
       step!.message,
       { content: 'more', role: 'user' },
     ], maxOutputTokens: 100 })
     expect(requests[1].messages).toEqual([
-      { content: [fetchResult], role: 'assistant' },
+      { content: [fetchUse, fetchResult], role: 'assistant' },
       { content: [{ text: 'more', type: 'text' }], role: 'user' },
     ])
   })
@@ -48,7 +64,7 @@ describe('messages provider tools', () => {
   it('streams and replays a web search call, encrypted result, and cited text', async () => {
     const requests: Record<string, unknown>[] = []
     const citation = { cited_text: 'Result', encrypted_index: 'enc_1', title: 'Source', type: 'web_search_result_location', url: 'https://example.com' }
-    const searchResult = { content: [{ encrypted_content: 'secret', title: 'Source', type: 'web_search_result', url: 'https://example.com' }], tool_use_id: 'srv_1', type: 'web_search_tool_result' }
+    const searchResult = { content: [{ encrypted_content: 'secret', title: 'Source', type: 'web_search_result', url: 'https://example.com' }], tool_use_id: 'srvtoolu_01ABC123', type: 'web_search_tool_result' }
     const model = messages({
       baseURL: 'https://example.com/v1/',
       fetch: async (_input, init) => {
@@ -56,7 +72,7 @@ describe('messages provider tools', () => {
         return requests.length === 1
           ? sseResponse([
               { message: { id: 'msg_1', usage: {} }, type: 'message_start' },
-              { content_block: { id: 'srv_1', input: {}, name: 'web_search', type: 'server_tool_use' }, index: 0, type: 'content_block_start' },
+              { content_block: { id: 'srvtoolu_01ABC123', input: {}, name: 'web_search', type: 'server_tool_use' }, index: 0, type: 'content_block_start' },
               { delta: { partial_json: '{"query":"xsai"}', type: 'input_json_delta' }, index: 0, type: 'content_block_delta' },
               { index: 0, type: 'content_block_stop' },
               { content_block: searchResult, index: 1, type: 'content_block_start' },
@@ -77,7 +93,7 @@ describe('messages provider tools', () => {
       events.push(event)
 
     const content = [
-      { key: 'messages', type: 'provider', value: { id: 'srv_1', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' } },
+      { key: 'messages', type: 'provider', value: { id: 'srvtoolu_01ABC123', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' } },
       { key: 'messages', type: 'provider', value: searchResult },
       { providerMetadata: { messages: { citations: [citation] } }, text: 'Found', type: 'text' },
     ]
