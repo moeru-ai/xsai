@@ -78,12 +78,6 @@ const normalizeContentPart = (part: MessageContent): AssistantMessageContent | u
   return undefined
 }
 
-const normalizeMessageContent = (item: Extract<Responses.ItemField, { type: 'message' }>, index: number): NormalizedPart[] =>
-  item.content.flatMap((part, contentIndex): NormalizedPart[] => {
-    const content = normalizeContentPart(part)
-    return content == null ? [] : [{ content, key: contentPartKey(index, contentIndex) }]
-  })
-
 const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reasoning' }>): ReasoningPart => {
   // Added reasoning items may omit summary/content.
   const reasoningContent: ReasoningPartContent[] = [
@@ -115,8 +109,13 @@ const normalizeOutputItem = (item: Responses.ItemField, index: number): Normaliz
     return {}
   if (item.type === 'function_call')
     return { parts: [{ content: normalizeToolCall(item), init: { callId: item.call_id, id: item.id, name: item.name } }] }
-  if (item.type === 'message')
-    return { messageId: item.id, parts: normalizeMessageContent(item, index) }
+  if (item.type === 'message') {
+    const parts = item.content.flatMap((part, contentIndex): NormalizedPart[] => {
+      const content = normalizeContentPart(part)
+      return content == null ? [] : [{ content, key: contentPartKey(index, contentIndex) }]
+    })
+    return { messageId: item.id, parts }
+  }
   if (item.type === 'reasoning')
     return { parts: [{ content: normalizeReasoningPart(item) }] }
   return { parts: [{ content: { key: 'responses', type: 'provider', value: item } }] }
