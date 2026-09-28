@@ -20,7 +20,7 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll",
+    "build": "pkgroll --clean-dist",
     "sync": "openapi-ts",
     "test": "vitest run --exclude e2e/**",
     "test:watch": "vitest"
