@@ -24,22 +24,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "peerDependencies": {
-    "@xsai/text-chat": "workspace:",
-    "@xsai/text-messages": "workspace:",
-    "@xsai/text-responses": "workspace:"
-  },
-  "peerDependenciesMeta": {
-    "@xsai/text-chat": {
-      "optional": true
-    },
-    "@xsai/text-messages": {
-      "optional": true
-    },
-    "@xsai/text-responses": {
-      "optional": true
-    }
-  },
   "dependencies": {
     "@xsai/text-primitives": "workspace:"
   }
