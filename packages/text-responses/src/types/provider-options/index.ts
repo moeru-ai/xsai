@@ -1,7 +1,9 @@
-import type { ResponsesToolInput } from './tools'
-
 export interface ResponsesProviderOptions {
-  tools?: readonly ResponsesToolInput[]
+  include?: readonly string[]
+  tools?: readonly ResponsesProviderTool[]
 }
 
-export type * from './tools'
+export interface ResponsesProviderTool {
+  [key: string]: unknown
+  type: string
+}

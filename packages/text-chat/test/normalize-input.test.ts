@@ -4,6 +4,15 @@ import { describe, expect, it } from 'vitest'
 import { normalizeInput } from '../src/utils/normalize-input'
 
 describe('normalize input', () => {
+  it('skips foreign provider-only assistant messages', () => {
+    expect(normalizeInput({
+      input: [
+        { content: [{ key: 'responses', type: 'provider', value: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' } }], role: 'assistant' },
+        { content: 'more', role: 'user' },
+      ],
+    })).toEqual([{ content: 'more', role: 'user' }])
+  })
+
   it('keeps system/developer roles and prepends instructions as a system message', () => {
     expect(normalizeInput({
       input: [

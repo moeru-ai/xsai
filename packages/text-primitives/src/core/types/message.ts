@@ -1,4 +1,4 @@
-import type { FilePart, ImagePart, ReasoningPart, RefusalPart, TextPart, ToolCallPart, ToolResultPart } from './content'
+import type { FilePart, ImagePart, ProviderPart, ReasoningPart, RefusalPart, TextPart, ToolCallPart, ToolResultPart } from './content'
 import type { ProviderMessageMetadata } from './metadata'
 
 export interface AssistantMessage {
@@ -8,7 +8,7 @@ export interface AssistantMessage {
   role: 'assistant'
 }
 
-export type AssistantMessageContent = ReasoningPart | RefusalPart | TextPart | ToolCallPart
+export type AssistantMessageContent = ProviderPart | ReasoningPart | RefusalPart | TextPart | ToolCallPart
 
 export interface DeveloperMessage {
   content: readonly DeveloperMessageContent[] | string
