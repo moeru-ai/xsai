@@ -66,16 +66,17 @@ const contentPartKey = (outputIndex: number, contentIndex: number): PartKey => `
 const normalizeContentPart = (part: MessageContent): AssistantMessageContent | undefined => {
   if (part.type === 'refusal')
     return { refusal: part.refusal, type: 'refusal' }
-  if (part.type === 'output_text')
-    return { text: part.text, type: 'text' }
+  if (part.type === 'output_text') {
+    // TODO: Move citations to a first-class TextPart field.
+    const citations = part.annotations
+    return {
+      ...(citations?.length ? { providerMetadata: { responses: { citations } } } : {}),
+      text: part.text,
+      type: 'text',
+    }
+  }
   return undefined
 }
-
-const normalizeMessageContent = (item: Extract<Responses.ItemField, { type: 'message' }>, index: number): NormalizedPart[] =>
-  item.content.flatMap((part, contentIndex): NormalizedPart[] => {
-    const content = normalizeContentPart(part)
-    return content == null ? [] : [{ content, key: contentPartKey(index, contentIndex) }]
-  })
 
 const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reasoning' }>): ReasoningPart => {
   // Added reasoning items may omit summary/content.
@@ -104,24 +105,20 @@ interface NormalizedPart {
 }
 
 const normalizeOutputItem = (item: Responses.ItemField, index: number): NormalizedOutputItem => {
-  switch (item.type) {
-    case 'compaction':
-    case 'function_call_output':
-      return {}
-    case 'function_call':
-      return {
-        parts: [{
-          content: normalizeToolCall(item),
-          init: { callId: item.call_id, id: item.id, name: item.name },
-        }],
-      }
-    case 'message':
-      return { messageId: item.id, parts: normalizeMessageContent(item, index) }
-    case 'reasoning':
-      return { parts: [{ content: normalizeReasoningPart(item) }] }
-    default:
-      return {}
+  if (item.type === 'function_call_output')
+    return {}
+  if (item.type === 'function_call')
+    return { parts: [{ content: normalizeToolCall(item), init: { callId: item.call_id, id: item.id, name: item.name } }] }
+  if (item.type === 'message') {
+    const parts = item.content.flatMap((part, contentIndex): NormalizedPart[] => {
+      const content = normalizeContentPart(part)
+      return content == null ? [] : [{ content, key: contentPartKey(index, contentIndex) }]
+    })
+    return { messageId: item.id, parts }
   }
+  if (item.type === 'reasoning')
+    return { parts: [{ content: normalizeReasoningPart(item) }] }
+  return { parts: [{ content: { key: 'responses', type: 'provider', value: item } }] }
 }
 
 const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMessage => {
@@ -176,10 +173,31 @@ const normalizeStatus = (response: Responses.ResponseResource): StepStatus => {
   }
 }
 
+const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
+  const normalized = normalizeOutputItem(item, index)
+  for (const part of normalized.parts ?? []) {
+    if (part.content.type !== 'provider')
+      builder.start(part.key ?? index, part.content.type, part.init)
+  }
+  if (normalized.messageId != null)
+    builder.meta({ messageId: normalized.messageId })
+}
+
+const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
+  // The done item is authoritative, including parts without deltas.
+  for (const part of normalizeOutputItem(item, index).parts ?? []) {
+    const key = part.key ?? index
+    builder.start(key, part.content.type, part.init)
+    builder.end(key, { content: part.content })
+  }
+}
+
 const finishResponse = (builder: EventBuilder, response: Responses.ResponseResource): void => {
   const status = normalizeStatus(response)
   if (response.usage != null)
     builder.meta({ usage: normalizeUsage(response.usage) })
+  for (const [index, item] of response.output.entries())
+    onItemDone(builder, item, index)
   const message = normalizeAssistantMessage(response.output)
   if (status === 'failed') {
     const error = new XSAIError('model-error', response.error?.message ?? 'response failed', {
@@ -192,23 +210,6 @@ const finishResponse = (builder: EventBuilder, response: Responses.ResponseResou
   const reason = normalizeFinishReason(response)
     ?? (status === 'completed' && typeof message.content !== 'string' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
   builder.done(status, reason, message)
-}
-
-const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
-  const normalized = normalizeOutputItem(item, index)
-  for (const part of normalized.parts ?? [])
-    builder.start(part.key ?? index, part.content.type, part.init)
-  if (normalized.messageId != null)
-    builder.meta({ messageId: normalized.messageId })
-}
-
-const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
-  // The done item is authoritative, including parts without deltas.
-  for (const part of normalizeOutputItem(item, index).parts ?? []) {
-    const key = part.key ?? index
-    builder.start(key, part.content.type, part.init)
-    builder.end(key, { content: part.content })
-  }
 }
 
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {

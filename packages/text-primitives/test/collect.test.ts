@@ -17,6 +17,22 @@ const eventStream = (events: TextEvent[]): ReadableStream<TextEvent> => new Read
 const modelOf = (events: TextEvent[]): LanguageModel => async () => eventStream(events)
 
 describe('collect', () => {
+  it('keeps provider content out of text and local tool results', async () => {
+    const provider = { key: 'responses', type: 'provider' as const, value: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' } }
+    const model = modelOf([{
+      message: { content: [provider, { text: 'Found', type: 'text' }], role: 'assistant' },
+      status: 'completed',
+      type: 'step.end',
+    }])
+
+    await expect(collect(model, { input: 'search' })).resolves.toMatchObject({
+      message: { content: [provider, { text: 'Found', type: 'text' }] },
+      text: 'Found',
+      toolCalls: [],
+      toolResults: [],
+    })
+  })
+
   it('resolves with the finished message, reason, and usage', async () => {
     const model = modelOf([
       { type: 'step.start' },

@@ -5,6 +5,7 @@ export type Content = ContentMap[ContentType]
 export interface ContentMap {
   'file': FilePart
   'image': ImagePart
+  'provider': ProviderPart
   'reasoning': ReasoningPart
   'refusal': RefusalPart
   'text': TextPart
@@ -23,6 +24,12 @@ export interface ImagePart {
   data: string | URL
   detail?: 'auto' | 'high' | 'low'
   type: 'image'
+}
+
+export interface ProviderPart {
+  key: string
+  type: 'provider'
+  value: unknown
 }
 
 export interface ReasoningPart {

@@ -41,7 +41,7 @@ export interface PartDeltaExtra {
 export interface PartEndExtra {
   /** Authoritative part content, e.g. a Responses `output_item.done` item. */
   content?: AssistantMessageContent
-  /** Attached only to `reasoning` parts — the only part type with provider metadata. */
+  /** Attached to reasoning or text parts. */
   providerMetadata?: ProviderPartMetadata
 }
 
@@ -81,6 +81,7 @@ type TerminalState
 
 const emptyContent = (type: AssistantMessageContent['type']): AssistantMessageContent => {
   switch (type) {
+    case 'provider': return { key: '', type, value: null }
     case 'reasoning': return { content: [], type }
     case 'refusal': return { refusal: '', type }
     case 'text': return { text: '', type }
@@ -183,6 +184,8 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
       return
 
     switch (parts[state.index].type) {
+      case 'provider':
+        break
       case 'reasoning':
         updateReasoning(state, text)
         break
@@ -223,7 +226,7 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
           }
         : accumulated
     const authoritative = extra?.content ?? built
-    const content = extra?.providerMetadata != null && authoritative.type === 'reasoning'
+    const content = extra?.providerMetadata != null && (authoritative.type === 'reasoning' || authoritative.type === 'text')
       ? { ...authoritative, providerMetadata: extra.providerMetadata }
       : authoritative
     parts[state.index] = content

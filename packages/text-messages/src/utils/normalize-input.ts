@@ -32,6 +32,8 @@ const parseDataUrl = (data: string): DataUrl | undefined => {
 }
 
 const normalizeInputTextPart = (part: TextPart): TextBlock => ({
+  // TODO: Move citations to a first-class TextPart field.
+  ...(part.providerMetadata?.messages?.citations == null ? {} : { citations: part.providerMetadata.messages.citations }),
   text: part.text,
   type: 'text',
 })
@@ -129,12 +131,14 @@ const normalizeUserPart = (part: UserMessageContent): ContentBlock => {
 
 const normalizeAssistantPart = (part: AssistantMessageContent): ContentBlock[] => {
   switch (part.type) {
+    case 'provider':
+      return part.key === 'messages' ? [part.value as ContentBlock] : []
     case 'reasoning':
       return normalizeReasoningPart(part)
     case 'refusal':
       throw new XSAIError('invalid-input', 'Refusal parts cannot be replayed on the Messages API')
     case 'text':
-      return [{ text: part.text, type: 'text' }]
+      return [normalizeInputTextPart(part)]
     case 'tool-call':
       return [normalizeToolCallPart(part)]
   }
@@ -147,12 +151,12 @@ const normalizeUserMessage = (message: UserMessage): InputMessage => ({
   role: 'user',
 })
 
-const normalizeAssistantMessage = (message: AssistantMessage): InputMessage => ({
-  content: typeof message.content === 'string'
+const normalizeAssistantMessage = (message: AssistantMessage): InputMessage | undefined => {
+  const content: ContentBlock[] = typeof message.content === 'string'
     ? [{ text: message.content, type: 'text' }]
-    : message.content.flatMap(normalizeAssistantPart),
-  role: 'assistant',
-})
+    : message.content.flatMap(normalizeAssistantPart)
+  return content.length === 0 ? undefined : { content, role: 'assistant' }
+}
 
 export interface NormalizedInput {
   messages: InputMessage[]
@@ -176,7 +180,11 @@ export const normalizeInput = (options: LanguageModelOptions): NormalizedInput =
     : options.input) {
     switch (message.role) {
       case 'assistant':
-        messages.push(normalizeAssistantMessage(message))
+        {
+          const assistant = normalizeAssistantMessage(message)
+          if (assistant != null)
+            messages.push(assistant)
+        }
         break
       case 'developer':
       case 'system':

@@ -1,3 +1,5 @@
+import type { MessagesCitation } from './provider-metadata'
+
 export type ContentBlock
   = | DocumentBlock
     | ImageBlock
@@ -25,7 +27,8 @@ export interface ContentBlockStopEvent {
 }
 
 export type ContentDelta
-  = | { partial_json: string, type: 'input_json_delta' }
+  = | { citation: MessagesCitation, type: 'citations_delta' }
+    | { partial_json: string, type: 'input_json_delta' }
     | { signature: string, type: 'signature_delta' }
     | { text: string, type: 'text_delta' }
     | { thinking: string, type: 'thinking_delta' }
@@ -128,6 +131,7 @@ export interface RedactedThinkingBlock {
 }
 
 export interface TextBlock {
+  citations?: MessagesCitation[]
   text: string
   type: 'text'
 }
