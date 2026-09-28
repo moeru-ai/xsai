@@ -1,6 +1,6 @@
 import type { Message, TextEvent } from '@xsai/text-primitives'
 
-import { HttpError } from '@xsai/text-primitives'
+import { collect, HttpError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { responses } from '../src'
@@ -11,6 +11,91 @@ const sseResponse = (events: unknown[]): Response => new Response([
 ].join(''))
 
 describe('manual tool loop', () => {
+  it('skips action-less web searches and foreign provider parts but replays file search items', async () => {
+    const requests: Record<string, unknown>[] = []
+    const fileSearch = { id: 'fs_1', queries: ['xsai'], status: 'completed', type: 'file_search_call' }
+    const model = responses({
+      baseURL: 'https://example.com/v1/',
+      fetch: async (_input, init) => {
+        requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+        return sseResponse([{ response: { output: requests.length === 1 ? [fileSearch] : [], status: 'completed' }, type: 'response.completed' }])
+      },
+      model: 'm',
+    })
+    const first = await model({ input: 'find' })
+    let step: Extract<TextEvent, { type: 'step.end' }> | undefined
+    for await (const event of first) {
+      if (event.type === 'step.end')
+        step = event
+    }
+    expect(step?.message.content).toEqual([{ key: 'responses', type: 'provider', value: fileSearch }])
+
+    await collect(model, { input: [
+      { content: [{ key: 'messages', type: 'provider', value: { type: 'server_tool_use' } }], role: 'assistant' },
+      { content: [{ key: 'responses', type: 'provider', value: { id: 'ws_2', type: 'web_search_call' } }], role: 'assistant' },
+      { content: [{ text: 'a', type: 'text' }, { key: 'messages', type: 'provider', value: { type: 'server_tool_use' } }, { text: 'b', type: 'text' }], role: 'assistant' },
+      step!.message,
+      { content: 'more', role: 'user' },
+    ] })
+    expect(requests[1].input).toEqual([
+      { content: [{ text: 'a', type: 'output_text' }, { text: 'b', type: 'output_text' }], role: 'assistant', type: 'message' },
+      fileSearch,
+      { content: 'more', role: 'user', type: 'message' },
+    ])
+  })
+
+  it('streams and replays web search output with citations and source filtering', async () => {
+    const requests: Record<string, unknown>[] = []
+    const citation = { end_index: 5, start_index: 0, title: 'Source', type: 'url_citation', url: 'https://example.com' }
+    const search = { action: { queries: ['xsai'], sources: [{ url: 'https://example.com' }], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' }
+    const answer = { content: [{ annotations: [citation], text: 'Found', type: 'output_text' }], id: 'msg_1', role: 'assistant', status: 'completed', type: 'message' }
+    const model = responses({
+      baseURL: 'https://example.com/v1/',
+      fetch: async (_input, init) => {
+        requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+        return requests.length === 1
+          ? sseResponse([
+              { item: { id: 'ws_1', status: 'in_progress', type: 'web_search_call' }, output_index: 0, type: 'response.output_item.added' },
+              { item: search, output_index: 0, type: 'response.output_item.done' },
+              { content_index: 0, output_index: 1, part: answer.content[0], type: 'response.content_part.done' },
+              { response: { output: [search, answer], status: 'completed' }, type: 'response.completed' },
+            ])
+          : sseResponse([{ response: { output: [], status: 'completed' }, type: 'response.completed' }])
+      },
+      model: 'm',
+    })
+    const events: TextEvent[] = []
+    for await (const event of await model({
+      input: 'search',
+      providerOptions: { responses: { include: ['web_search_call.action.sources'] } },
+    }))
+      events.push(event)
+
+    const content = [
+      { key: 'responses', type: 'provider', value: search },
+      { providerMetadata: { responses: { citations: [citation] } }, text: 'Found', type: 'text' },
+    ]
+    expect(events.filter(event => event.type === 'content.start')).toEqual([
+      { contentType: 'provider', index: 0, type: 'content.start' },
+      { contentType: 'text', index: 1, type: 'content.start' },
+    ])
+    expect(events.filter(event => event.type === 'content.end')).toEqual([
+      { content: content[0], index: 0, type: 'content.end' },
+      { content: content[1], index: 1, type: 'content.end' },
+    ])
+    const step = events.find(event => event.type === 'step.end')!
+    expect(step.message.content).toEqual(content)
+    expect(requests[0].include).toEqual(['web_search_call.action.sources'])
+
+    await collect(model, { input: [step.message, { content: 'more', role: 'user' }] })
+    expect(requests[1].input).toEqual([
+      { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' },
+      { content: [{ annotations: [citation], text: 'Found', type: 'output_text' }], id: 'msg_1', role: 'assistant', type: 'message' },
+      { content: 'more', role: 'user', type: 'message' },
+    ])
+    expect(search.action.sources).toEqual([{ url: 'https://example.com' }])
+  })
+
   it('replays a normalized tool call and tool result in the next request', async () => {
     const requests: Record<string, unknown>[] = []
     const responsesByTurn = [

@@ -28,7 +28,46 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<TextEvent[]> 
 const message = (data: unknown): EventSourceMessage => ({ data: JSON.stringify(data) })
 
 describe('responses event stream', () => {
-  it('does not attach output text annotations to text parts', async () => {
+  it('does not complete a provider part that is absent from final output', async () => {
+    const events = await readEvents([
+      message({ item: { id: 'ws_1', status: 'in_progress', type: 'web_search_call' }, output_index: 0, type: 'response.output_item.added' }),
+      message({ response: { output: [], status: 'completed' }, type: 'response.completed' }),
+      { data: '[DONE]' },
+    ])
+
+    expect(events).toEqual([
+      { type: 'step.start' },
+      { message: { content: [], role: 'assistant' }, status: 'completed', type: 'step.end' },
+    ])
+  })
+
+  it('does not turn a local function result into provider content', async () => {
+    const events = await readEvents([
+      message({ response: { output: [{ call_id: 'call_1', id: 'fco_1', output: 'sunny', status: 'completed', type: 'function_call_output' }], status: 'completed' }, type: 'response.completed' }),
+      { data: '[DONE]' },
+    ])
+
+    expect(events.filter(event => event.type === 'content.start' || event.type === 'content.end')).toEqual([])
+    expect(events.at(-1)).toMatchObject({ message: { content: [] } })
+  })
+
+  it('takes streamed URL citations from the authoritative completed output', async () => {
+    const citation = { end_index: 5, start_index: 0, title: 'Source', type: 'url_citation', url: 'https://example.com' }
+    const events = await readEvents([
+      message({ annotation: citation, annotation_index: 0, content_index: 0, item_id: 'msg_1', output_index: 0, type: 'response.output_text.annotation.added' }),
+      message({ response: { output: [{ content: [{ annotations: [citation], text: 'Found', type: 'output_text' }], id: 'msg_1', role: 'assistant', status: 'completed', type: 'message' }], status: 'completed' }, type: 'response.completed' }),
+      { data: '[DONE]' },
+    ])
+
+    expect(events.filter(event => event.type === 'content.end')).toEqual([{
+      content: { providerMetadata: { responses: { citations: [citation] } }, text: 'Found', type: 'text' },
+      index: 0,
+      type: 'content.end',
+    }])
+    expect(events.at(-1)).toMatchObject({ message: { content: [{ providerMetadata: { responses: { citations: [citation] } } }] } })
+  })
+
+  it('preserves URL citation annotations on text parts', async () => {
     const annotations = [
       {
         end_index: 7,
@@ -71,6 +110,7 @@ describe('responses event stream', () => {
 
     expect(events).toContainEqual({
       content: {
+        providerMetadata: { responses: { citations: [annotations[0]] } },
         text: 'Found it',
         type: 'text',
       },
@@ -80,6 +120,7 @@ describe('responses event stream', () => {
     expect(events.at(-1)).toMatchObject({
       message: {
         content: [{
+          providerMetadata: { responses: { citations: [annotations[0]] } },
           text: 'Found it',
           type: 'text',
         }],
@@ -88,7 +129,7 @@ describe('responses event stream', () => {
     })
   })
 
-  it('does not attach hosted output items to the assistant message', async () => {
+  it('keeps hosted output items in the assistant message', async () => {
     const hostedSearch = {
       action: { queries: ['xsai'], type: 'search' },
       id: 'search_1',
@@ -116,13 +157,17 @@ describe('responses event stream', () => {
 
     expect(events.at(-1)).toMatchObject({
       message: {
-        content: [{ text: 'Found it', type: 'text' }],
+        content: [{ key: 'responses', type: 'provider', value: hostedSearch }, { text: 'Found it', type: 'text' }],
       },
       status: 'completed',
       type: 'step.end',
     })
     expect(events.at(-1)).not.toHaveProperty('message.providerMetadata')
     expect(events.at(-1)).not.toHaveProperty('message.content.0.providerMetadata')
+    expect(events.filter(event => event.type === 'content.start')).toEqual([
+      { contentType: 'provider', index: 0, type: 'content.start' },
+      { contentType: 'text', index: 1, type: 'content.start' },
+    ])
   })
 
   it('maps Responses output events to text primitive events', async () => {
@@ -673,6 +718,8 @@ describe('responses event stream', () => {
       { data: '[DONE]' },
     ])).resolves.toEqual([
       { type: 'step.start' },
+      { contentType: 'refusal', index: 0, type: 'content.start' },
+      { content: { refusal: 'I cannot help', type: 'refusal' }, index: 0, type: 'content.end' },
       {
         message: {
           content: [{ refusal: 'I cannot help', type: 'refusal' }],

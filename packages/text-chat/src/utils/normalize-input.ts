@@ -70,7 +70,7 @@ const normalizeToolCallPart = (part: ToolCallPart): NonNullable<ChatMessage['too
   type: 'function',
 })
 
-const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
+const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage | undefined => {
   if (typeof message.content === 'string')
     return { content: message.content, role: 'assistant' }
 
@@ -82,6 +82,8 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
 
   for (const part of message.content) {
     switch (part.type) {
+      case 'provider':
+        break
       case 'reasoning':
         reasoning.push(reasoningText(part))
         reasoningField = part.providerMetadata?.chat?.reasoning_field ?? reasoningField
@@ -97,6 +99,9 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage => {
         break
     }
   }
+
+  if (content.length === 0 && reasoning.length === 0 && refusal.length === 0 && toolCalls.length === 0)
+    return undefined
 
   return {
     // Some gateways reject `content: null` even when tool_calls is set.
@@ -163,7 +168,11 @@ export const normalizeInput = (options: LanguageModelOptions): ChatMessage[] => 
     : options.input) {
     switch (message.role) {
       case 'assistant':
-        messages.push(normalizeAssistantMessage(message))
+        {
+          const assistant = normalizeAssistantMessage(message)
+          if (assistant != null)
+            messages.push(assistant)
+        }
         break
       case 'developer':
       case 'system':

@@ -14,17 +14,25 @@ describe('responses raw events', () => {
         type: 'response.output_item.added',
       },
       { item_id: 'ws_1', output_index: 0, type: 'response.web_search_call.searching' },
+      {
+        item: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' },
+        output_index: 0,
+        type: 'response.output_item.done',
+      },
       { content_index: 0, delta: 'Hello', output_index: 1, type: 'response.output_text.delta' },
       {
         response: {
           id: 'resp_1',
-          output: [{
-            content: [{ annotations: [], text: 'Hello', type: 'output_text' }],
-            id: 'message_1',
-            role: 'assistant',
-            status: 'completed',
-            type: 'message',
-          }],
+          output: [
+            { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' },
+            {
+              content: [{ annotations: [], text: 'Hello', type: 'output_text' }],
+              id: 'message_1',
+              role: 'assistant',
+              status: 'completed',
+              type: 'message',
+            },
+          ],
           status: 'completed',
         },
         type: 'response.completed',
@@ -58,6 +66,9 @@ describe('responses raw events', () => {
       'raw',
       'raw',
       'raw',
+      'raw',
+      'content.start',
+      'content.end',
       'raw',
       'content.start',
       'text.delta',

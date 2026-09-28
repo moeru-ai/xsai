@@ -41,6 +41,84 @@ const createStopContext = (overrides: Partial<StopContext> = {}): StopContext =>
 }
 
 describe('loop', () => {
+  it('ends a provider-only final turn without executing a local tool', async () => {
+    const execute = vi.fn(() => 'unexpected')
+    const model = vi.fn<LanguageModel>(async () => eventStream({
+      message: { content: [
+        { key: 'responses', type: 'provider', value: { id: 'ws_1', type: 'web_search_call' } },
+        { text: 'Found', type: 'text' },
+      ], role: 'assistant' },
+      status: 'completed',
+      type: 'step.end',
+    }))
+
+    await readEvents(loop(model, { input: 'search', tools: [tool({ execute, inputSchema: { type: 'object' }, name: 'search' })] }))
+
+    expect(model).toHaveBeenCalledTimes(1)
+    expect(execute).not.toHaveBeenCalled()
+  })
+
+  it('continues provider-only pause turns until stopWhen, keeping the tool declarations', async () => {
+    const search = tool({ inputSchema: { type: 'object' }, name: 'local_search' })
+    const inputs: unknown[] = []
+    const toolsByTurn: unknown[] = []
+    const model: LanguageModel = async (options) => {
+      inputs.push(structuredClone(options.input))
+      toolsByTurn.push(options.tools)
+      return eventStream({
+        message: { content: [{ key: 'messages', type: 'provider', value: { id: `srv_${inputs.length}`, type: 'server_tool_use' } }], role: 'assistant' },
+        reason: 'pause_turn',
+        status: 'completed',
+        type: 'step.end',
+      })
+    }
+
+    const events = await readEvents(loop(model, { input: 'search', stopWhen: maxSteps(3), tools: [search] }))
+
+    expect(events.filter(event => event.type === 'step.end')).toHaveLength(3)
+    expect(inputs).toHaveLength(3)
+    expect(inputs[1]).toEqual([
+      { content: 'search', role: 'user' },
+      { content: [{ key: 'messages', type: 'provider', value: { id: 'srv_1', type: 'server_tool_use' } }], role: 'assistant' },
+    ])
+    expect(toolsByTurn).toEqual([[search], [search], [search]])
+  })
+
+  it('executes only local calls in a mixed provider and local turn', async () => {
+    const execute = vi.fn(() => 'sunny')
+    const weather = tool({ execute, inputSchema: { type: 'object' }, name: 'weather' })
+    const inputs: unknown[] = []
+    const model: LanguageModel = async (options) => {
+      inputs.push(structuredClone(options.input))
+      return eventStream(inputs.length === 1
+        ? {
+            message: { content: [
+              { key: 'messages', type: 'provider', value: { id: 'srv_1', type: 'server_tool_use' } },
+              { arguments: '{}', callId: 'call_1', id: 'call_1', name: 'weather', type: 'tool-call' },
+            ], role: 'assistant' },
+            status: 'completed',
+            type: 'step.end',
+          }
+        : {
+            message: { content: [{ text: 'Done', type: 'text' }], role: 'assistant' },
+            status: 'completed',
+            type: 'step.end',
+          })
+    }
+
+    await readEvents(loop(model, { input: 'weather', tools: [weather] }))
+
+    expect(execute).toHaveBeenCalledTimes(1)
+    expect(inputs[1]).toEqual([
+      { content: 'weather', role: 'user' },
+      { content: [
+        { key: 'messages', type: 'provider', value: { id: 'srv_1', type: 'server_tool_use' } },
+        { arguments: '{}', callId: 'call_1', id: 'call_1', name: 'weather', type: 'tool-call' },
+      ], role: 'assistant' },
+      { content: [{ callId: 'call_1', output: 'sunny', type: 'tool-result' }], role: 'user' },
+    ])
+  })
+
   it('returns a stream that forwards model events', async () => {
     let callCount = 0
     const model: LanguageModel = async () => {

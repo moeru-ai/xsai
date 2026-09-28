@@ -50,12 +50,15 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
           steps,
         })
 
-        if (stop || step.toolCalls.length === 0) {
+        if (stop || (step.toolCalls.length === 0 && step.reason !== 'pause_turn')) {
           controller.close()
           return
         }
 
         options.signal?.throwIfAborted()
+
+        if (step.toolCalls.length === 0)
+          continue
 
         const results = await executeTools({
           ...modelOptions,
