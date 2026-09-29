@@ -13,11 +13,11 @@ The `LanguageModel` function every wire adapter satisfies: `(options) => Promise
 _Avoid_: model instance, provider object
 
 **Part**:
-One entry of an assistant message's `content` array (`text`, `reasoning`, `refusal`, `tool-call`). Events address parts by `index`, their position in the finished message.
+One entry of a message's `content` array. Assistant parts include text, reasoning, refusal, and tool calls; a user message can contain local tool results. Content events address a part by its `index` in that message.
 _Avoid_: block, chunk, content item
 
 **TextEvent**:
-The stream vocabulary: `step.start`, `content.start`, `text.delta`, `reasoning.delta`, `refusal.delta`, `tool-call.delta`, `content.end`, `step.end`, plus opt-in `raw` events. Wire adapters translate wire frames into normalized events.
+The stream vocabulary: `step.start`, `content.start`, `text.delta`, `reasoning.delta`, `refusal.delta`, `tool-call.delta`, `content.end`, `step.end`, plus opt-in `raw` events. Wire adapters translate wire frames into normalized events; a loop also emits content events for local tool results.
 _Avoid_: chunk, SSE event
 
 **Raw event**:
@@ -32,7 +32,7 @@ A wire that delivers a terminal signal ends with exactly one `step.end` event. N
 _Avoid_: end-of-stream sentinel
 
 **Collect**:
-The consumer-side helper `collect(model, options)` that resolves a non-failed `step.end` payload as a `StepResult` and rejects on a failed terminal event or a stream rejection. `StepResult` carries the normalized assistant message, derived text and tool calls, and any tool results accumulated by a loop. In-progress rendering consumes the `TextEvent` stream directly.
+The consumer-side operation that turns a completed text-generation event stream into a result. It can collect a multi-step loop, including tool results; in-progress rendering consumes the stream directly.
 _Avoid_: complete, runSync
 
 ## Conventions

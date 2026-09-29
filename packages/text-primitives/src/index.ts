@@ -1,4 +1,5 @@
-export * from './core/collect'
+export { collect } from './core/collect'
+export type { CollectedResult } from './core/collect'
 export * from './core/tool'
 export type * from './core/types'
 

@@ -1,17 +1,18 @@
 import type { XSAIError } from '@xsai/shared'
 
+import type { ToolResultPart } from './content'
 import type { FinishReason } from './finish-reason'
 import type { AssistantMessage, AssistantMessageContent } from './message'
 import type { Usage } from './usage'
 
 export interface ContentEndEvent {
-  content: AssistantMessageContent
+  content: AssistantMessageContent | ToolResultPart
   index: number
   type: 'content.end'
 }
 
 export interface ContentStartEvent {
-  contentType: AssistantMessageContent['type']
+  contentType: AssistantMessageContent['type'] | ToolResultPart['type']
   index: number
   type: 'content.start'
 }
