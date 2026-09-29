@@ -50,11 +50,11 @@ describe('messages provider tools', () => {
       { key: 'messages', type: 'provider', value: fetchResult },
     ])
 
-    await collect(model, { input: [
+    await collect(await model({ input: [
       { content: [{ key: 'responses', type: 'provider', value: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' } }], role: 'assistant' },
       step!.message,
       { content: 'more', role: 'user' },
-    ], maxOutputTokens: 100 })
+    ], maxOutputTokens: 100 }))
     expect(requests[1].messages).toEqual([
       { content: [fetchUse, fetchResult], role: 'assistant' },
       { content: [{ text: 'more', type: 'text' }], role: 'user' },
@@ -106,7 +106,7 @@ describe('messages provider tools', () => {
     const step = events.find(event => event.type === 'step.end')!
     expect(step.message.content).toEqual(content)
 
-    await collect(model, { input: [step.message, { content: 'more', role: 'user' }], maxOutputTokens: 100 })
+    await collect(await model({ input: [step.message, { content: 'more', role: 'user' }], maxOutputTokens: 100 }))
     expect(requests[1].messages).toEqual([
       { content: [content[0].value, searchResult, { citations: [citation], text: 'Found', type: 'text' }], role: 'assistant' },
       { content: [{ text: 'more', type: 'text' }], role: 'user' },

@@ -1,13 +1,52 @@
-import type { TextEvent } from '../src'
+import type { LanguageModel, TextEvent } from '../src'
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
+import { loop } from '../src'
 import { wireRequest } from '../src/internal'
 
 const options = { baseURL: 'https://example.com/v1', model: 'test-model' }
 const init = { body: {}, path: 'chat/completions' }
 
 describe('wireRequest', () => {
+  it('propagates stream cancellation to the response body', async () => {
+    const cancelBody = vi.fn()
+    const body = new ReadableStream<Uint8Array>({ cancel: cancelBody })
+    const stream = await wireRequest(
+      { ...options, fetch: async () => new Response(body) },
+      { input: 'hi' },
+      init,
+      new TransformStream<string, TextEvent>(),
+    )
+
+    const reason = new Error('stop')
+    await stream.cancel(reason)
+    await vi.waitFor(() => expect(cancelBody).toHaveBeenCalledWith(reason))
+  })
+
+  it('propagates loop cancellation through the model stream to the response body', async () => {
+    const cancelBody = vi.fn()
+    const requested = Promise.withResolvers<void>()
+    const model: LanguageModel = async (modelOptions) => {
+      const stream = await wireRequest(
+        { ...options, fetch: async () => new Response(new ReadableStream<Uint8Array>({ cancel: cancelBody })) },
+        modelOptions,
+        init,
+        new TransformStream<string, TextEvent>(),
+      )
+      requested.resolve()
+      return stream
+    }
+    const reader = loop(model, { input: 'hi' }).getReader()
+    void reader.read()
+
+    await requested.promise
+    const reason = new Error('stop')
+    await reader.cancel(reason)
+
+    await vi.waitFor(() => expect(cancelBody).toHaveBeenCalledWith(reason))
+  })
+
   it('rejects with a typed network error when fetch rejects', async () => {
     const cause = new TypeError('fetch failed')
     const request = wireRequest(

@@ -43,12 +43,12 @@ describe('manual tool loop', () => {
     ])
     expect(requests[0].include).toEqual(['file_search_call.results'])
 
-    await collect(model, { input: [
+    await collect(await model({ input: [
       { content: [{ key: 'messages', type: 'provider', value: foreignUse }], role: 'assistant' },
       { content: [{ text: 'a', type: 'text' }, { key: 'messages', type: 'provider', value: foreignUse }, { text: 'b', type: 'text' }], role: 'assistant' },
       step!.message,
       { content: 'more', role: 'user' },
-    ] })
+    ] }))
     expect(requests[1].input).toEqual([
       { content: [{ text: 'a', type: 'output_text' }, { text: 'b', type: 'output_text' }], role: 'assistant', type: 'message' },
       fileSearch,
@@ -100,7 +100,7 @@ describe('manual tool loop', () => {
     expect(step.message.content).toEqual(content)
     expect(requests[0].include).toEqual(['web_search_call.action.sources'])
 
-    await collect(model, { input: [step.message, { content: 'more', role: 'user' }] })
+    await collect(await model({ input: [step.message, { content: 'more', role: 'user' }] }))
     expect(requests[1].input).toEqual([
       search,
       { content: [{ annotations: [citation], text: 'Found', type: 'output_text' }], id: 'msg_1', role: 'assistant', type: 'message' },

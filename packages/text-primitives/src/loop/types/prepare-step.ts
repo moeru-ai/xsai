@@ -6,6 +6,7 @@ export type PrepareStep = (options: PrepareStepOptions) => Promisable<PrepareSte
 
 export interface PrepareStepOptions {
   input: Message[]
+  signal: AbortSignal
   stepNumber: number
   steps: StepResult[]
 }

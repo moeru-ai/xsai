@@ -112,9 +112,20 @@ describe('loop', () => {
           })
     }
 
-    await readEvents(loop(model, { input: 'weather', tools: [weather] }))
+    const events = await readEvents(loop(model, { input: 'weather', tools: [weather] }))
 
     expect(execute).toHaveBeenCalledTimes(1)
+    expect(events.filter(event => event.type === 'content.start' && event.contentType === 'tool-result')).toEqual([
+      { contentType: 'tool-result', index: 0, type: 'content.start' },
+    ])
+    expect(events.filter(event => event.type === 'content.end' && event.content.type === 'tool-result')).toEqual([
+      { content: { callId: 'call_1', output: 'sunny', type: 'tool-result' }, index: 0, type: 'content.end' },
+    ])
+    const firstEnd = events.findIndex(event => event.type === 'step.end')
+    const toolResult = events.findIndex(event => event.type === 'content.start' && event.contentType === 'tool-result')
+    const secondEnd = events.findIndex((event, index) => index > firstEnd && event.type === 'step.end')
+    expect(firstEnd).toBeLessThan(toolResult)
+    expect(toolResult).toBeLessThan(secondEnd)
     expect(inputs[1]).toEqual([
       { content: 'weather', role: 'user' },
       { content: [
@@ -137,6 +148,7 @@ describe('loop', () => {
     const stream = loop(model, { input: 'hi' })
 
     expect(stream).toBeInstanceOf(ReadableStream)
+    expect(callCount).toBe(0)
     await expect(readEvents(stream)).resolves.toEqual([
       { type: 'step.start' },
       { message: { content: 'Hi', role: 'assistant' }, status: 'completed', type: 'step.end' },
@@ -180,6 +192,93 @@ describe('loop', () => {
       { type: 'step.start' },
       { error, message: { content: [], role: 'assistant' }, status: 'failed', type: 'step.end' },
     ])
+  })
+
+  it('stops without running tools after a model-declared cancellation', async () => {
+    const execute = vi.fn(() => 'unexpected')
+    const model: LanguageModel = async () => eventStream({
+      message: {
+        content: [{ arguments: '{}', callId: 'call-1', id: 'tool-1', name: 'weather', type: 'tool-call' }],
+        role: 'assistant',
+      },
+      status: 'cancelled',
+      type: 'step.end',
+    })
+
+    await expect(readEvents(loop(model, {
+      input: 'weather',
+      tools: [tool({ execute, inputSchema: { type: 'object' }, name: 'weather' })],
+    }))).resolves.toMatchObject([{ status: 'cancelled', type: 'step.end' }])
+    expect(execute).not.toHaveBeenCalled()
+  })
+
+  it('forwards stream cancellation to the active model reader and step signal', async () => {
+    const reading = Promise.withResolvers<void>()
+    const modelCancel = vi.fn()
+    let preparedSignal: AbortSignal | undefined
+    let modelSignal: AbortSignal | undefined
+    const model: LanguageModel = async ({ signal }) => {
+      modelSignal = signal
+      return new ReadableStream<TextEvent>({
+        cancel: modelCancel,
+        pull: () => reading.resolve(),
+      })
+    }
+    const stream = loop(model, {
+      input: 'hi',
+      prepareStep: ({ signal }) => { preparedSignal = signal },
+    })
+    const reader = stream.getReader()
+    void reader.read()
+
+    await reading.promise
+    const reason = new Error('stop')
+    await reader.cancel(reason)
+
+    expect(modelCancel).toHaveBeenCalledWith(reason)
+    expect(modelSignal).toBe(preparedSignal)
+    expect(modelSignal?.aborted).toBe(true)
+    expect(modelSignal?.reason).toBe(reason)
+  })
+
+  it('cancels a model stream that arrives after output cancellation', async () => {
+    const modelStarted = Promise.withResolvers<void>()
+    const modelStream = Promise.withResolvers<ReadableStream<TextEvent>>()
+    const modelCancelled = Promise.withResolvers<void>()
+    const modelCancel = vi.fn(() => modelCancelled.resolve())
+    const model: LanguageModel = async () => {
+      modelStarted.resolve()
+      return modelStream.promise
+    }
+    const stream = loop(model, { input: 'hi' })
+    const reader = stream.getReader()
+    void reader.read()
+
+    await modelStarted.promise
+    const cancellation = reader.cancel()
+    modelStream.resolve(new ReadableStream<TextEvent>({ cancel: modelCancel }))
+    await cancellation
+    await modelCancelled.promise
+
+    expect(modelCancel).toHaveBeenCalledOnce()
+  })
+
+  it('cancels the model reader and errors the loop stream on external abort', async () => {
+    const reading = Promise.withResolvers<void>()
+    const modelCancel = vi.fn()
+    const controller = new AbortController()
+    const model: LanguageModel = async () => new ReadableStream<TextEvent>({
+      cancel: modelCancel,
+      pull: () => reading.resolve(),
+    })
+    const events = readEvents(loop(model, { input: 'hi', signal: controller.signal }))
+
+    await reading.promise
+    const reason = new Error('external stop')
+    controller.abort(reason)
+
+    await expect(events).rejects.toBe(reason)
+    expect(modelCancel).toHaveBeenCalledWith(reason)
   })
 
   it('rejects truncated model streams', async () => {
@@ -258,6 +357,7 @@ describe('loop', () => {
 
   it('passes the loop signal to the executable tool handler', async () => {
     const execute = vi.fn(() => 'sunny')
+    let loopSignal: AbortSignal | undefined
     const weather = tool({
       execute,
       inputSchema: { type: 'object' },
@@ -287,16 +387,19 @@ describe('loop', () => {
 
     await readEvents(loop(model, {
       input: 'What is the weather in Taipei?',
+      prepareStep: ({ signal }) => { loopSignal = signal },
       signal: controller.signal,
       stopWhen: () => false,
       tools: [weather],
     }))
 
-    expect(execute).toHaveBeenCalledWith({ city: 'Taipei' }, { signal: controller.signal })
+    expect(loopSignal).toBeInstanceOf(AbortSignal)
+    expect(execute).toHaveBeenCalledWith({ city: 'Taipei' }, { signal: loopSignal })
   })
 
   it('runs preToolCall and postToolCall around tool execution', async () => {
     const execute = vi.fn((input: unknown) => `weather in ${(input as { city: string }).city}`)
+    let loopSignal: AbortSignal | undefined
     const weather = tool({
       execute,
       inputSchema: { type: 'object' },
@@ -333,6 +436,7 @@ describe('loop', () => {
         hooks.push(['post', result, options.signal])
         return { ...result, output: 'patched weather' }
       },
+      prepareStep: ({ signal }) => { loopSignal = signal },
       preToolCall: (call, options) => {
         hooks.push(['pre', call, options.signal])
         return { ...call, arguments: '{"city":"Hong Kong"}' }
@@ -342,10 +446,11 @@ describe('loop', () => {
       tools: [weather],
     }))
 
-    expect(execute).toHaveBeenCalledWith({ city: 'Hong Kong' }, { signal: controller.signal })
+    expect(loopSignal).toBeInstanceOf(AbortSignal)
+    expect(execute).toHaveBeenCalledWith({ city: 'Hong Kong' }, { signal: loopSignal })
     expect(hooks).toEqual([
-      ['pre', expect.objectContaining({ arguments: '{}', callId: 'call-1' }), controller.signal],
-      ['post', expect.objectContaining({ callId: 'call-1', output: 'weather in Hong Kong' }), controller.signal],
+      ['pre', expect.objectContaining({ arguments: '{}', callId: 'call-1' }), loopSignal],
+      ['post', expect.objectContaining({ callId: 'call-1', output: 'weather in Hong Kong' }), loopSignal],
     ])
     expect(modelInputs[1]).toEqual(expect.arrayContaining([
       { content: [{ callId: 'call-1', output: 'patched weather', type: 'tool-result' }], role: 'user' },

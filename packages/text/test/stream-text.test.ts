@@ -44,6 +44,20 @@ describe('streamText', () => {
     await expect(run.result).resolves.toMatchObject({ text: 'Done' })
   })
 
+  it('finishes the result before the output stream is read', async () => {
+    const sequence: TextEvent[] = [
+      { type: 'step.start' },
+      { message: { content: 'Done', role: 'assistant' }, status: 'completed', type: 'step.end' },
+    ]
+    const model: LanguageModel = async () => eventStream(sequence)
+    const run = streamText(model, { input: 'hi' })
+
+    const result = await run.result
+    expect(result).toMatchObject({ steps: [{ text: 'Done' }], text: 'Done' })
+    expect(result.totalUsage).toBeUndefined()
+    await expect(readEvents(run.stream)).resolves.toEqual(sequence)
+  })
+
   it('exposes the full stream through EventTarget events', async () => {
     const model: LanguageModel = async () => eventStream([
       { type: 'step.start' },
@@ -92,10 +106,6 @@ describe('streamText', () => {
     expect(contentTypes).toEqual(['text'])
     expect(finalStatus).toBe('completed')
     await expect(run.result).resolves.toMatchObject({
-      input: [
-        { content: 'hi', role: 'user' },
-        { content: 'hello', role: 'assistant' },
-      ],
       steps: [{ text: 'hello', toolCalls: [], toolResults: [] }],
       text: 'hello',
     })
@@ -155,17 +165,12 @@ describe('streamText', () => {
     const run = streamText(model, {
       input: 'What is the weather?',
       prepareStep: ({ stepNumber }) => stepNumber === 1 ? { input: 'Use the tool result.' } : undefined,
-      stopWhen: ({ steps }) => steps.length >= 2,
       tools: [weather],
     })
 
     await readEvents(run.stream)
 
     await expect(run.result).resolves.toMatchObject({
-      input: [
-        { content: 'Use the tool result.', role: 'user' },
-        { content: 'sunny', role: 'assistant' },
-      ],
       steps: [
         {
           text: '',
@@ -221,13 +226,32 @@ describe('streamText', () => {
     await expect(run.result).rejects.toBe(error)
   })
 
-  it('cancels the model run from the top-level handle', async () => {
-    const run = streamText(abortableModel, { input: 'hi' })
+  it('cancels the model run from the output stream', async () => {
+    const reading = Promise.withResolvers<void>()
+    let cancelledReason: unknown
+    const model: LanguageModel = async () => new ReadableStream<TextEvent>({
+      cancel: (reason) => { cancelledReason = reason },
+      pull: () => reading.resolve(),
+    })
+    const run = streamText(model, { input: 'hi' })
 
+    await reading.promise
     const reason = new Error('stop')
-    run.cancel(reason)
+    await run.stream.cancel(reason)
 
+    expect(cancelledReason).toBe(reason)
     await expect(run.result).rejects.toBe(reason)
+  })
+
+  it('rejects the result with AbortError when cancelled without a reason', async () => {
+    const reading = Promise.withResolvers<void>()
+    const model: LanguageModel = async () => new ReadableStream<TextEvent>({ pull: () => reading.resolve() })
+    const run = streamText(model, { input: 'hi' })
+
+    await reading.promise
+    await run.stream.cancel()
+
+    await expect(run.result).rejects.toMatchObject({ name: 'AbortError' })
   })
 
   it('cancels the model run when the input signal aborts', async () => {
@@ -253,7 +277,7 @@ describe('streamText', () => {
     const run = streamText(model, { input: 'hi', signal: controller.signal })
 
     await expect(run.result).rejects.toBe(reason)
-    await expect(readEvents(run.stream)).resolves.toEqual([])
+    await expect(readEvents(run.stream)).rejects.toBe(reason)
     expect(called).toBe(false)
   })
 })
