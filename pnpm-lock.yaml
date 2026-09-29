@@ -265,6 +265,12 @@ importers:
         specifier: 'workspace:'
         version: link:../shared
 
+  packages/model:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+
   packages/shared: {}
 
   packages/text:
