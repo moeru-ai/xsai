@@ -7,6 +7,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
     },
     exclude: [...configDefaults.exclude, '**/e2e/**'],
+    fsModuleCache: true,
     testTimeout: 60_000,
   },
 })
