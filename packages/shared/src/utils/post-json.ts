@@ -3,8 +3,9 @@ import type { HttpOptions } from '../types'
 import { HttpError, XSAIError } from './error'
 
 export interface PostJSONInit {
-  body: Record<string, unknown>
+  body?: Record<string, unknown>
   headers?: Record<string, string | undefined>
+  method?: 'GET' | 'POST'
   path: string
   signal?: AbortSignal
 }
@@ -14,11 +15,11 @@ const requestURL = (path: string, baseURL: string | URL) => {
   return new URL(path, base.endsWith('/') ? base : `${base}/`)
 }
 
-export const postJSON = async (options: HttpOptions, init: PostJSONInit): Promise<Response & { body: NonNullable<Response['body']> }> => {
+export const postJSON = async (options: Omit<HttpOptions, 'model'>, init: PostJSONInit): Promise<Response & { body: NonNullable<Response['body']> }> => {
   const url = requestURL(init.path, options.baseURL)
   const headers = init.headers ?? {
     ...options.headers,
-    'Content-Type': 'application/json',
+    ...(init.body == null ? {} : { 'Content-Type': 'application/json' }),
     ...(options.apiKey == null ? {} : { Authorization: `Bearer ${options.apiKey}` }),
   }
 
@@ -43,9 +44,9 @@ export const postJSON = async (options: HttpOptions, init: PostJSONInit): Promis
   }
 
   return (options.fetch ?? fetch)(url, {
-    body: JSON.stringify(init.body),
+    ...(init.body == null ? {} : { body: JSON.stringify(init.body) }),
     headers: Object.fromEntries(Object.entries(headers).filter(([, value]) => value !== undefined)) as Record<string, string>,
-    method: 'POST',
+    method: init.method ?? 'POST',
     signal: init.signal,
   })
     .then(responseCatch, requestCatch)
