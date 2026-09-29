@@ -19,8 +19,8 @@ export const postJSON = async (options: Omit<HttpOptions, 'model'>, init: PostJS
   const url = requestURL(init.path, options.baseURL)
   const headers = init.headers ?? {
     ...options.headers,
+    'Authorization': options.apiKey == null ? options.headers?.Authorization : `Bearer ${options.apiKey}`,
     'Content-Type': init.body == null ? options.headers?.['Content-Type'] : 'application/json',
-    Authorization: options.apiKey == null ? options.headers?.Authorization : `Bearer ${options.apiKey}`,
   }
 
   const responseCatch = async (res: Response): Promise<Response & { body: NonNullable<Response['body']> }> => {
