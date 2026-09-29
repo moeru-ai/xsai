@@ -33,7 +33,7 @@ const parseDataUrl = (data: string): DataUrl | undefined => {
 
 const normalizeInputTextPart = (part: TextPart): TextBlock => ({
   // TODO: Move citations to a first-class TextPart field.
-  ...(part.providerMetadata?.messages?.citations == null ? {} : { citations: part.providerMetadata.messages.citations }),
+  citations: part.providerMetadata?.messages?.citations,
   text: part.text,
   type: 'text',
 })

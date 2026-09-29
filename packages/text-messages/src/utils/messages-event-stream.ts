@@ -107,9 +107,14 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
 
   private onDelta(builder: EventBuilder, event: ContentBlockDeltaEvent): void {
     switch (event.delta.type) {
-      case 'citations_delta':
-        this.citations.set(event.index, [...(this.citations.get(event.index) ?? []), event.delta.citation])
+      case 'citations_delta': {
+        const citations = this.citations.get(event.index)
+        if (citations == null)
+          this.citations.set(event.index, [event.delta.citation])
+        else
+          citations.push(event.delta.citation)
         break
+      }
       case 'input_json_delta': {
         const provider = this.providerBlocks.get(event.index)
         if (provider == null)

@@ -51,12 +51,12 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
     },
     headers: {
       ...options.headers,
-      ...(providerOptions?.betas !== undefined && providerOptions.betas.length > 0
-        ? { 'anthropic-beta': providerOptions.betas.join(',') }
-        : {}),
+      'anthropic-beta': providerOptions?.betas !== undefined && providerOptions.betas.length > 0
+        ? providerOptions.betas.join(',')
+        : options.headers?.['anthropic-beta'],
       'anthropic-version': ANTHROPIC_VERSION,
       'Content-Type': 'application/json',
-      ...(options.apiKey == null ? {} : { 'x-api-key': options.apiKey }),
+      'x-api-key': options.apiKey ?? options.headers?.['x-api-key'],
     },
     path: 'messages',
   }, new MessagesEventStream(modelOptions.includeRawEvents))

@@ -19,8 +19,8 @@ export const postJSON = async (options: Omit<HttpOptions, 'model'>, init: PostJS
   const url = requestURL(init.path, options.baseURL)
   const headers = init.headers ?? {
     ...options.headers,
-    ...(init.body == null ? {} : { 'Content-Type': 'application/json' }),
-    ...(options.apiKey == null ? {} : { Authorization: `Bearer ${options.apiKey}` }),
+    'Content-Type': init.body == null ? options.headers?.['Content-Type'] : 'application/json',
+    Authorization: options.apiKey == null ? options.headers?.Authorization : `Bearer ${options.apiKey}`,
   }
 
   const responseCatch = async (res: Response): Promise<Response & { body: NonNullable<Response['body']> }> => {
@@ -44,7 +44,7 @@ export const postJSON = async (options: Omit<HttpOptions, 'model'>, init: PostJS
   }
 
   return (options.fetch ?? fetch)(url, {
-    ...(init.body == null ? {} : { body: JSON.stringify(init.body) }),
+    body: init.body == null ? undefined : JSON.stringify(init.body),
     headers: Object.fromEntries(Object.entries(headers).filter(([, value]) => value !== undefined)) as Record<string, string>,
     method: init.method ?? 'POST',
     signal: init.signal,
