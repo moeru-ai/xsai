@@ -5,10 +5,10 @@ import type { LanguageModelOptions, Message, StepResult } from '../../core'
 export type PrepareStep = (options: PrepareStepOptions) => Promisable<PrepareStepResult | undefined>
 
 export interface PrepareStepOptions {
-  input: Message[]
+  input: readonly Message[]
   signal: AbortSignal
   stepNumber: number
-  steps: StepResult[]
+  steps: readonly StepResult[]
 }
 
 export type PrepareStepResult = Partial<Omit<LanguageModelOptions, 'signal'>>
