@@ -6,7 +6,7 @@ import { XSAIError } from '@xsai/shared'
 
 import { toStepResult } from './step-result'
 
-export interface CollectedResult extends StepResult {
+export interface CollectResult extends StepResult {
   steps: readonly StepResult[]
   totalUsage?: Usage
 }
@@ -46,7 +46,7 @@ export const collectEvent = (steps: StepResult[], event: TextEvent): unknown => 
 }
 
 /** Builds the result after a stream has closed. @internal */
-export const collectedResult = (steps: StepResult[]): CollectedResult => {
+export const collectResult = (steps: StepResult[]): CollectResult => {
   const finalStep = steps.at(-1)
   if (finalStep == null)
     throw new XSAIError('truncated-stream', 'model stream ended without a step.end event')
@@ -58,7 +58,7 @@ export const collectedResult = (steps: StepResult[]): CollectedResult => {
   }
 }
 
-export const collect = async (stream: ReadableStream<TextEvent>): Promise<CollectedResult> => {
+export const collect = async (stream: ReadableStream<TextEvent>): Promise<CollectResult> => {
   const steps: StepResult[] = []
   let failedError: unknown
 
@@ -68,5 +68,5 @@ export const collect = async (stream: ReadableStream<TextEvent>): Promise<Collec
   if (failedError != null)
     throw failedError
 
-  return collectedResult(steps)
+  return collectResult(steps)
 }

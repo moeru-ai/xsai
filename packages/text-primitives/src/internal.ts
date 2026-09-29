@@ -1,4 +1,4 @@
-export { collectedResult, collectEvent } from './core/collect'
+export { collectEvent, collectResult } from './core/collect'
 export { WireEventStream } from './utils/event-builder'
 export type * from './utils/event-builder'
 export { EventSourceDataStream } from './utils/event-source-stream'

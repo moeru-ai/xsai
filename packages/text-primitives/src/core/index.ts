@@ -1,5 +1,5 @@
 export { collect } from './collect'
-export type { CollectedResult } from './collect'
+export type { CollectResult } from './collect'
 export { toStepResult } from './step-result'
 export * from './tool'
 export type * from './types'
