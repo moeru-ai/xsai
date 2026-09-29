@@ -17,9 +17,7 @@
     "standard-schema",
     "typeschema"
   ],
-  "sideEffects": [
-    "src/to-json-schema/sync.ts"
-  ],
+  "sideEffects": false,
   "exports": "./src/index.ts",
   "files": [
     "dist"
