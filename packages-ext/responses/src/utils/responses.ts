@@ -279,86 +279,102 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     const functionCalls: FunctionCall[] = []
     const toolCalls: CompletionToolCall[] = []
     const toolResults: CompletionToolResult[] = []
+    const cancel = () => {
+      void reader.cancel(options.abortSignal?.reason).catch(() => {})
+    }
 
-    while (true) {
-      const { done, value: event } = await reader.read()
+    options.abortSignal?.addEventListener('abort', cancel, { once: true })
 
-      if (done)
-        return
+    try {
+      while (true) {
+        options.abortSignal?.throwIfAborted()
+        const { done, value: event } = await reader.read()
+        options.abortSignal?.throwIfAborted()
 
-      let shouldContinue = false
-      const events = mapFullEvent(event)
-      const step = { events, functionCalls, toolCalls, toolResults }
+        if (done)
+          throw new Error('Responses stream ended before a terminal event')
 
-      // eslint-disable-next-line ts/switch-exhaustiveness-check
-      switch (event.type) {
-        case 'response.completed': {
-          pushUsage(event.response.usage ?? undefined)
+        let shouldContinue = false
+        const events = mapFullEvent(event)
+        const step = { events, functionCalls, toolCalls, toolResults }
 
-          const completionStep = createStep(event.response, {
-            finishReason: getFunctionCalls(event.response).length > 0 ? 'tool-calls' : 'stop',
-            toolCalls,
-            toolResults,
-          })
+        // eslint-disable-next-line ts/switch-exhaustiveness-check
+        switch (event.type) {
+          case 'response.completed': {
+            pushUsage(event.response.usage ?? undefined)
 
-          if (options.abortSignal?.aborted === true)
-            throw options.abortSignal.reason ?? new Error('This operation was aborted')
+            const completionStep = createStep(event.response, {
+              finishReason: getFunctionCalls(event.response).length > 0 ? 'tool-calls' : 'stop',
+              toolCalls,
+              toolResults,
+            })
 
-          const stop = shouldStop(stopWhen, {
-            input,
-            step: completionStep,
-            steps: [...steps, completionStep],
-          })
+            const stop = shouldStop(stopWhen, {
+              input,
+              step: completionStep,
+              steps: [...steps, completionStep],
+            })
 
-          if (!stop && functionCalls.length > 0) {
-            const stepDoneEvent = events.pop()
-            const results = await Promise.all(functionCalls.map(executeFunctionCall))
+            if (!stop && functionCalls.length > 0) {
+              const stepDoneEvent = events.pop()
+              const results = await Promise.all(functionCalls.map(executeFunctionCall))
 
-            toolCalls.length = 0
-            for (const { completionToolCall, completionToolResult, functionCallOutput } of results) {
-              toolCalls.push(completionToolCall)
-              toolResults.push(completionToolResult)
-              input.push(normalizeOutput(functionCallOutput))
-              events.push({ ...completionToolResult, type: 'tool-result.done' })
+              toolCalls.length = 0
+              for (const { completionToolCall, completionToolResult, functionCallOutput } of results) {
+                toolCalls.push(completionToolCall)
+                toolResults.push(completionToolResult)
+                input.push(normalizeOutput(functionCallOutput))
+                events.push({ ...completionToolResult, type: 'tool-result.done' })
+              }
+              if (stepDoneEvent != null)
+                events.push(stepDoneEvent)
             }
-            if (stepDoneEvent != null)
-              events.push(stepDoneEvent)
+
+            shouldContinue = functionCalls.length > 0 && !stop && !options.abortSignal?.aborted
+
+            pushStep(completionStep)
+
+            break
           }
-
-          shouldContinue = functionCalls.length > 0 && !stop && !options.abortSignal?.aborted
-
-          pushStep(completionStep)
-
-          break
+          case 'response.failed':
+            pushResponseStep(event.response, {
+              finishReason: 'error',
+              toolCalls,
+              toolResults,
+            })
+            break
+          case 'response.incomplete':
+            pushResponseStep(event.response, {
+              finishReason: 'length',
+              toolCalls,
+              toolResults,
+            })
+            break
+          case 'response.output_item.done':
+            handleOutputItemDone(event, step)
+            break
+          default:
+            break
         }
-        case 'response.failed':
-          pushResponseStep(event.response, {
-            finishReason: 'error',
-            toolCalls,
-            toolResults,
-          })
-          break
-        case 'response.incomplete':
-          pushResponseStep(event.response, {
-            finishReason: 'length',
-            toolCalls,
-            toolResults,
-          })
-          break
-        case 'response.output_item.done':
-          handleOutputItemDone(event, step)
-          break
-        default:
-          break
-      }
 
-      pushStreamingEvent(event)
-      pushEvents(events)
+        pushStreamingEvent(event)
+        pushEvents(events)
+        options.abortSignal?.throwIfAborted()
 
-      if (shouldContinue) {
-        reader.releaseLock()
-        return async () => doStream()
+        if (event.type === 'response.failed')
+          throw new Error(event.response.error?.message ?? 'Responses request failed')
+
+        if (event.type === 'response.completed')
+          return shouldContinue ? async () => doStream() : undefined
+
+        if (event.type === 'response.incomplete')
+          return
       }
+    }
+    finally {
+      options.abortSignal?.removeEventListener('abort', cancel)
+      await reader.cancel().catch(() => {})
+      reader.releaseLock()
     }
   }
 
