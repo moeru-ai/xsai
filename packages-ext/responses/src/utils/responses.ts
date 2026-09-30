@@ -75,10 +75,10 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     usage,
   })
 
-  const pushStep = (step: CompletionStep) => {
+  const pushStep = async (step: CompletionStep) => {
     steps.push(step)
 
-    void options.onStepFinish?.(step)
+    await options.onStepFinish?.(step)
   }
 
   const pushUsage = (nextUsage?: NonNullable<ResponseResource['usage']>) => {
@@ -89,14 +89,14 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     totalUsage = computeTotalUsage(totalUsage, usage)
   }
 
-  const pushResponseStep = (response: ResponseResource, stepOptions: {
+  const pushResponseStep = async (response: ResponseResource, stepOptions: {
     finishReason: FinishReason
     toolCalls: CompletionToolCall[]
     toolResults: CompletionToolResult[]
-  }): CompletionStep => {
+  }): Promise<CompletionStep> => {
     pushUsage(response.usage ?? undefined)
     const step = createStep(response, stepOptions)
-    pushStep(step)
+    await pushStep(step)
 
     return step
   }
@@ -185,15 +185,15 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     }
   }
 
-  const pushEvent = (event: Event) => {
+  const pushEvent = async (event: Event) => {
     eventCtrl.current?.enqueue(event)
 
-    void options.onEvent?.(event)
+    await options.onEvent?.(event)
   }
 
-  const pushEvents = (events: Event[]) => {
+  const pushEvents = async (events: Event[]) => {
     for (const event of events) {
-      pushEvent(event)
+      await pushEvent(event)
     }
   }
 
@@ -330,19 +330,19 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
 
             shouldContinue = functionCalls.length > 0 && !stop && !options.abortSignal?.aborted
 
-            pushStep(completionStep)
+            await pushStep(completionStep)
 
             break
           }
           case 'response.failed':
-            pushResponseStep(event.response, {
+            await pushResponseStep(event.response, {
               finishReason: 'error',
               toolCalls,
               toolResults,
             })
             break
           case 'response.incomplete':
-            pushResponseStep(event.response, {
+            await pushResponseStep(event.response, {
               finishReason: 'length',
               toolCalls,
               toolResults,
@@ -356,7 +356,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         }
 
         pushStreamingEvent(event)
-        pushEvents(events)
+        await pushEvents(events)
         options.abortSignal?.throwIfAborted()
 
         if (event.type === 'response.failed')
