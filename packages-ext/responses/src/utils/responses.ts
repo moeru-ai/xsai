@@ -222,7 +222,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         ? objCamelToSnake(options.streamOptions)
         : undefined,
       toolChoice: stepOptions.toolChoice,
-      tools: options.tools?.map(toFunctionTool),
+      tools: options.tools?.map(tool => tool.type === 'function' ? toFunctionTool(tool) : tool),
     })
 
     return res.body!
@@ -239,7 +239,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       postToolCall: options.postToolCall,
       preToolCall: options.preToolCall,
       toolCall: toToolCall(functionCall),
-      tools: options.tools,
+      tools: options.tools?.filter(tool => tool.type === 'function'),
       wrapResult: toFunctionCallOutput,
     })
 
