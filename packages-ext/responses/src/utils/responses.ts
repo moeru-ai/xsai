@@ -1,6 +1,6 @@
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, Event, FinishReason, PostToolCall, PrepareStep, PreToolCall, Usage } from '@xsai/shared-chat'
 
-import type { FunctionCall, FunctionCallOutput, ItemParam, ResponseResource } from '../generated'
+import type { FunctionCall, FunctionCallOutputItemParam, ItemParam, ResponseResource } from '../generated'
 import type { FullEvent } from '../types/event-full'
 import type { OpenResponsesOptions } from '../types/open-responses-options'
 import type { StopCondition } from '../types/stop-when'
@@ -243,9 +243,8 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
       wrapResult: toFunctionCallOutput,
     })
 
-    const functionCallOutput: FunctionCallOutput = {
+    const functionCallOutput: FunctionCallOutputItemParam = {
       call_id: functionCall.call_id,
-      id: crypto.randomUUID(),
       output: result,
       status: 'completed',
       type: 'function_call_output',
