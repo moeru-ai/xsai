@@ -1,3 +1,4 @@
+import type { CommonRequestOptions } from '@xsai/shared'
 import type { CompletionStep, CompletionToolCall, CompletionToolResult, Event, FinishReason, PostToolCall, PrepareStep, PreToolCall, Usage } from '@xsai/shared-chat'
 
 import type { FunctionCall, FunctionCallOutputItemParam, ItemParam, ResponseResource } from '../generated'
@@ -18,8 +19,8 @@ export interface ResponsesOptions extends OpenResponsesOptions {
   abortSignal?: AbortSignal
   apiKey?: string
   baseURL: string | URL
-  fetch?: typeof globalThis.fetch
-  headers?: Record<string, string>
+  fetch?: NonNullable<CommonRequestOptions['fetch']>
+  headers?: NonNullable<CommonRequestOptions['headers']>
   onEvent?: (event: Event) => Promise<unknown> | unknown
   onFinish?: (step?: CompletionStep) => Promise<unknown> | unknown
   onStepFinish?: (step: CompletionStep) => Promise<unknown> | unknown
@@ -208,6 +209,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     })
     const res = await postJSON('responses', {
       ...options,
+      headers: options.headers instanceof Headers ? Object.fromEntries(options.headers) : options.headers,
       input: stepOptions.input,
       model: stepOptions.model,
       onEvent: undefined,

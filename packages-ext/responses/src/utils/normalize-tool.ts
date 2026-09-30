@@ -13,7 +13,16 @@ export const toFunctionCallOutput = (result: ToolExecuteResult | undefined): Fun
   if (Array.isArray(result) && result.length > 0 && result.every(item => item !== null && typeof item === 'object' && 'type' in item && ['input_file', 'input_image', 'input_text'].includes((item as { type: string }).type)))
     return result as FunctionCallOutputItemParam['output']
 
-  if (Array.isArray(result) && result.length > 0 && result.every(item => item !== null && typeof item === 'object' && 'type' in item && ['file', 'image_url', 'input_audio', 'text'].includes((item as { type: string }).type))) {
+  if (Array.isArray(result) && result.length > 0 && result.every((item) => {
+    if (item === null || typeof item !== 'object')
+      return false
+
+    const part = item as { file?: unknown, image_url?: null | { url?: unknown }, input_audio?: unknown, text?: unknown, type?: string }
+    return (part.type === 'text' && typeof part.text === 'string')
+      || (part.type === 'image_url' && typeof part.image_url?.url === 'string')
+      || (part.type === 'file' && part.file !== null && typeof part.file === 'object')
+      || (part.type === 'input_audio' && part.input_audio !== null && typeof part.input_audio === 'object')
+  })) {
     return (result as CommonContentPart[]).map((item) => {
       if (item.type === 'text')
         return { text: item.text, type: 'input_text' }
