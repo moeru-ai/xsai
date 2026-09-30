@@ -23,7 +23,17 @@ export type FullEvent
     | ResponseReasoningSummaryDoneStreamingEvent
     | ResponseReasoningSummaryPartAddedStreamingEvent
     | ResponseReasoningSummaryPartDoneStreamingEvent
+    | ResponseReasoningTextDeltaStreamingEvent
+    | ResponseReasoningTextDoneStreamingEvent
     | ResponseRefusalDeltaStreamingEvent
     | ResponseRefusalDoneStreamingEvent
 
 export type FullEventType = FullEvent['type']
+
+export interface ResponseReasoningTextDeltaStreamingEvent extends Omit<ResponseReasoningDeltaStreamingEvent, 'type'> {
+  type: 'response.reasoning_text.delta'
+}
+
+export interface ResponseReasoningTextDoneStreamingEvent extends Omit<ResponseReasoningDoneStreamingEvent, 'type'> {
+  type: 'response.reasoning_text.done'
+}

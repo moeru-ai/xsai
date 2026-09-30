@@ -142,9 +142,11 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         return [{ content: event.text, type: 'text.done' }]
       case 'response.reasoning.delta':
       case 'response.reasoning_summary_text.delta':
+      case 'response.reasoning_text.delta':
         return [{ delta: event.delta, type: 'reasoning.delta' }]
       case 'response.reasoning.done':
       case 'response.reasoning_summary_text.done':
+      case 'response.reasoning_text.done':
         return [{ content: event.text, type: 'reasoning.done' }]
       case 'response.refusal.done':
         return [{ content: event.refusal, type: 'text.done' }]
@@ -176,6 +178,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
         break
       case 'response.reasoning.delta':
       case 'response.reasoning_summary_text.delta':
+      case 'response.reasoning_text.delta':
         reasoningTextCtrl.current?.enqueue(event.delta)
         break
       default:
