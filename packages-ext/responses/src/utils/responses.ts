@@ -10,7 +10,6 @@ import { computeTotalUsage, executeTool, resolvePrepareStep, toCompletionToolCal
 import { closeControllers, createControlledStream, errorControllers, EventSourceParserStream, JsonMessageTransformStream } from '@xsai/shared-stream'
 
 import { normalizeInput } from './normalize-input'
-import { normalizeOutput } from './normalize-output'
 import { toFunctionCallOutput, toFunctionTool, toToolCall } from './normalize-tool'
 import { normalizeUsage } from './normalize-usage'
 import { shouldStop, stepCountAtLeast } from './stop-when'
@@ -263,7 +262,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
     if (event.item == null)
       return
 
-    input.push(normalizeOutput(event.item))
+    input.push(event.item as ItemParam)
 
     if (event.item.type === 'function_call') {
       step.functionCalls.push(event.item)
@@ -323,7 +322,7 @@ export const responses = (options: ResponsesOptions): ResponsesResult => {
               for (const { completionToolCall, completionToolResult, functionCallOutput } of results) {
                 toolCalls.push(completionToolCall)
                 toolResults.push(completionToolResult)
-                input.push(normalizeOutput(functionCallOutput))
+                input.push(functionCallOutput)
                 events.push({ ...completionToolResult, type: 'tool-result.done' })
               }
               if (stepDoneEvent != null)
