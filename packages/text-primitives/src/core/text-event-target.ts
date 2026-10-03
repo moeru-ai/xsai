@@ -24,8 +24,7 @@ type TextEventListener<E extends Event>
   = | ((this: EventTarget, event: E) => unknown)
     | { handleEvent: (event: E) => unknown }
 
-// The type declaration and the constructor intentionally share a name.
 // eslint-disable-next-line ts/no-redeclare -- merge the typed interface with the native constructor
-export const TextEventTarget = EventTarget as unknown as {
+export const TextEventTarget = EventTarget as {
   new(): TextEventTarget
 }

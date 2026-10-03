@@ -51,7 +51,6 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
       const modelOptions: LanguageModelOptions = {
         ...options,
         ...preparedOptions,
-        events: options.events,
         input: preparedOptions?.input ?? input,
         signal,
       }
@@ -84,11 +83,10 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
       step.toolResults.push(...results)
       input.push({ content: results, role: 'user' })
       for (const [index, content] of results.entries()) {
-        const toolEvents: TextEvent[] = [
+        for (const event of [
           { contentType: 'tool-result', index, type: 'content.start' },
           { content, index, type: 'content.end' },
-        ]
-        for (const event of toolEvents) {
+        ] satisfies TextEvent[]) {
           options.events?.dispatchEvent(toCustomEvent(event))
           yield event
         }

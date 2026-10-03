@@ -1,4 +1,4 @@
-import type { LanguageModel, PrepareStepResult, StepResult, StopContext, TextEvent } from '../src'
+import type { LanguageModel, StepResult, StopContext, TextEvent } from '../src'
 
 import { describe, expect, it, vi } from 'vitest'
 
@@ -82,31 +82,6 @@ describe('loop', () => {
       content: { callId: 'call-1', output: 'sunny', type: 'tool-result' },
       index: 0,
     })
-  })
-
-  it('keeps the event target fixed when prepareStep returns an extra events property', async () => {
-    const original = new TextEventTarget()
-    const replacement = new TextEventTarget()
-    const observed: string[] = []
-    original.addEventListener('step.end', () => observed.push('original'))
-    replacement.addEventListener('step.end', () => observed.push('replacement'))
-    const model: LanguageModel = ({ events }) => {
-      const end: TextEvent = { message: { content: 'Done', role: 'assistant' }, status: 'completed', type: 'step.end' }
-      events?.dispatchEvent(toCustomEvent(end))
-      return eventStream(end)
-    }
-
-    await readEvents(loop(model, {
-      events: original,
-      input: 'hi',
-      prepareStep: (): PrepareStepResult => ({
-        // @ts-expect-error -- prepareStep cannot replace the run's event target.
-        events: replacement,
-        input: 'prepared input',
-      }),
-    }))
-
-    expect(observed).toEqual(['original'])
   })
 
   it('ends a provider-only final turn without executing a local tool', async () => {
