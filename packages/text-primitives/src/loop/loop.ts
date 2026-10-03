@@ -6,6 +6,7 @@ import type { PrepareStep } from './types/prepare-step'
 import { XSAIError } from '@xsai/shared'
 
 import { toStepResult } from '../core/step-result'
+import { toCustomEvent } from '../core/text-event-target'
 import { executeTools } from './execute-tools'
 import { maxSteps } from './stop-condition'
 
@@ -82,8 +83,13 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
       step.toolResults.push(...results)
       input.push({ content: results, role: 'user' })
       for (const [index, content] of results.entries()) {
-        yield { contentType: 'tool-result', index, type: 'content.start' }
-        yield { content, index, type: 'content.end' }
+        for (const event of [
+          { contentType: 'tool-result', index, type: 'content.start' },
+          { content, index, type: 'content.end' },
+        ] satisfies TextEvent[]) {
+          options.events?.dispatchEvent(toCustomEvent(event))
+          yield event
+        }
       }
     }
   }

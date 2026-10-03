@@ -2,7 +2,7 @@ import type { LanguageModel, StepResult, StopContext, TextEvent } from '../src'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { and, hasToolCall, loop, maxSteps, not, or, tool } from '../src'
+import { and, hasToolCall, loop, maxSteps, not, or, TextEventTarget, toCustomEvent, tool } from '../src'
 import { XSAIError } from '../src/shared'
 
 const eventStream = (events: TextEvent | TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
@@ -41,6 +41,49 @@ const createStopContext = (overrides: Partial<StopContext> = {}): StopContext =>
 }
 
 describe('loop', () => {
+  it('observes local tool results once alongside model events', async () => {
+    const target = new TextEventTarget()
+    const observed: Event[] = []
+    for (const type of ['step.start', 'step.end', 'content.start', 'content.end'] as const)
+      target.addEventListener(type, event => observed.push(event))
+    let stepNumber = 0
+    const model: LanguageModel = ({ events }) => {
+      const sequence: TextEvent[] = [
+        { type: 'step.start' },
+        stepNumber++ === 0
+          ? {
+              message: { content: [{ arguments: '{}', callId: 'call-1', id: 'tool-1', name: 'weather', type: 'tool-call' }], role: 'assistant' },
+              reason: 'tool-calls',
+              status: 'completed',
+              type: 'step.end',
+            }
+          : { message: { content: 'sunny', role: 'assistant' }, status: 'completed', type: 'step.end' },
+      ]
+      for (const event of sequence)
+        events?.dispatchEvent(toCustomEvent(event))
+      return eventStream(sequence)
+    }
+
+    await readEvents(loop(model, {
+      events: target,
+      input: 'weather',
+      tools: [tool({ execute: () => 'sunny', inputSchema: { type: 'object' }, name: 'weather' })],
+    }))
+
+    expect(observed.map(event => event.type)).toEqual([
+      'step.start',
+      'step.end',
+      'content.start',
+      'content.end',
+      'step.start',
+      'step.end',
+    ])
+    expect((observed.find(event => event.type === 'content.end') as CustomEvent).detail).toEqual({
+      content: { callId: 'call-1', output: 'sunny', type: 'tool-result' },
+      index: 0,
+    })
+  })
+
   it('ends a provider-only final turn without executing a local tool', async () => {
     const execute = vi.fn(() => 'unexpected')
     const model = vi.fn<LanguageModel>(async () => eventStream({

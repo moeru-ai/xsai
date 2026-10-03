@@ -1,14 +1,16 @@
 import type { LanguageModel, TextEvent } from '@xsai/text-primitives'
 
-import { tool, XSAIError } from '@xsai/text-primitives'
+import { TextEventTarget, toCustomEvent, tool, XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'
 
-const eventStream = (events: TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
+const eventStream = (events: TextEvent[], target?: EventTarget): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {
-    for (const event of events)
+    for (const event of events) {
+      target?.dispatchEvent(toCustomEvent(event))
       controller.enqueue(event)
+    }
     controller.close()
   },
 })
@@ -27,15 +29,27 @@ const abortableModel: LanguageModel = async ({ signal }) => new ReadableStream<T
 })
 
 describe('streamText', () => {
-  it('passes raw event detail directly to CustomEvent listeners', async () => {
-    const detail = { item_id: 'ws_1', type: 'response.web_search_call.searching' }
-    const model: LanguageModel = async () => eventStream([
-      { detail, type: 'raw' },
+  it('returns only the stream and result', async () => {
+    const model: LanguageModel = () => eventStream([
       { message: { content: 'Done', role: 'assistant' }, status: 'completed', type: 'step.end' },
     ])
     const run = streamText(model, { input: 'hi' })
+
+    expect(Object.keys(run)).toHaveLength(2)
+    expect(run).not.toHaveProperty('events')
+    await run.result
+  })
+
+  it('passes raw event detail directly to CustomEvent listeners', async () => {
+    const detail = { item_id: 'ws_1', type: 'response.web_search_call.searching' }
+    const target = new TextEventTarget()
     const observed: unknown[] = []
-    run.events.addEventListener('raw', event => observed.push(event.detail))
+    target.addEventListener('raw', event => observed.push(event.detail))
+    const model: LanguageModel = async ({ events }) => eventStream([
+      { detail, type: 'raw' },
+      { message: { content: 'Done', role: 'assistant' }, status: 'completed', type: 'step.end' },
+    ], events)
+    const run = streamText(model, { events: target, input: 'hi' })
 
     await readEvents(run.stream)
 
@@ -59,33 +73,34 @@ describe('streamText', () => {
   })
 
   it('exposes the full stream through EventTarget events', async () => {
-    const model: LanguageModel = async () => eventStream([
+    const target = new TextEventTarget()
+    const model: LanguageModel = async ({ events }) => eventStream([
       { type: 'step.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'hello', index: 0, type: 'text.delta' },
       { content: { text: 'hello', type: 'text' }, index: 0, type: 'content.end' },
       { message: { content: 'hello', role: 'assistant' }, status: 'completed', type: 'step.end' },
-    ])
+    ], events)
 
-    const run = streamText(model, { input: 'hi' })
     const observed: Event[] = []
     const contentTypes: string[] = []
     let finalStatus: string | undefined
 
-    run.events.addEventListener('step.start', event => observed.push(event))
-    run.events.addEventListener('content.start', (event) => {
+    target.addEventListener('step.start', event => observed.push(event))
+    target.addEventListener('content.start', (event) => {
       contentTypes.push(event.detail.contentType)
       observed.push(event)
     })
-    run.events.addEventListener('text.delta', (event) => {
+    target.addEventListener('text.delta', (event) => {
       expect(event.detail).toEqual({ delta: 'hello', index: 0 })
       observed.push(event)
     })
-    run.events.addEventListener('content.end', event => observed.push(event))
-    run.events.addEventListener('step.end', (event) => {
+    target.addEventListener('content.end', event => observed.push(event))
+    target.addEventListener('step.end', (event) => {
       finalStatus = event.detail.status
       observed.push(event)
     })
+    const run = streamText(model, { events: target, input: 'hi' })
 
     await expect(readEvents(run.stream)).resolves.toEqual([
       { type: 'step.start' },
@@ -112,18 +127,19 @@ describe('streamText', () => {
   })
 
   it('exposes reasoning, refusal, and tool call deltas through EventTarget', async () => {
-    const model: LanguageModel = async () => eventStream([
+    const target = new TextEventTarget()
+    const model: LanguageModel = async ({ events }) => eventStream([
       { delta: 'thinking', index: 0, type: 'reasoning.delta' },
       { delta: 'cannot', index: 1, type: 'refusal.delta' },
       { callId: 'call-1', delta: '{"city":', index: 2, name: 'weather', type: 'tool-call.delta' },
       { message: { content: '', role: 'assistant' }, status: 'completed', type: 'step.end' },
-    ])
-    const run = streamText(model, { input: 'hi' })
+    ], events)
     const details: unknown[] = []
 
-    run.events.addEventListener('reasoning.delta', event => details.push(event.detail))
-    run.events.addEventListener('refusal.delta', event => details.push(event.detail))
-    run.events.addEventListener('tool-call.delta', event => details.push(event.detail))
+    target.addEventListener('reasoning.delta', event => details.push(event.detail))
+    target.addEventListener('refusal.delta', event => details.push(event.detail))
+    target.addEventListener('tool-call.delta', event => details.push(event.detail))
+    const run = streamText(model, { events: target, input: 'hi' })
 
     await readEvents(run.stream)
 

@@ -1,11 +1,17 @@
 import type { TextEvent } from '@xsai/text-primitives'
 
+import { TextEventTarget } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { responses } from '../src'
 
 describe('responses raw events', () => {
   it('exposes every provider event before normalization when requested', async () => {
+    const target = new TextEventTarget()
+    const rawDetails: unknown[] = []
+    const deltas: string[] = []
+    target.addEventListener('raw', event => rawDetails.push(event.detail))
+    target.addEventListener('text.delta', event => deltas.push(event.detail.delta))
     const wireEvents = [
       { type: 'response.created' },
       {
@@ -48,13 +54,18 @@ describe('responses raw events', () => {
     })
     const read = async (includeRawEvents?: boolean): Promise<TextEvent[]> => {
       const events: TextEvent[] = []
-      for await (const event of await model({ includeRawEvents, input: 'hi' }))
+      for await (const event of await model({ events: target, includeRawEvents, input: 'hi' }))
         events.push(event)
       return events
     }
 
     const normal = await read()
+    expect(rawDetails).toEqual([])
     const observed = await read(true)
+
+    expect(rawDetails).toEqual(wireEvents)
+    expect(rawDetails[0]).toBe(observed.find(event => event.type === 'raw')?.detail)
+    expect(deltas).toEqual(['Hello', 'Hello'])
 
     expect(normal.some(event => event.type === 'raw')).toBe(false)
     expect(observed.filter(event => event.type === 'raw')).toEqual(
