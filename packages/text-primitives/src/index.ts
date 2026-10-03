@@ -1,7 +1,6 @@
 export { collect } from './core/collect'
 export type { CollectResult } from './core/collect'
-export { TextEventTarget } from './core/text-event-target'
-export { toCustomEvent } from './core/to-custom-event'
+export { TextEventTarget, toCustomEvent } from './core/text-event-target'
 export * from './core/tool'
 export type * from './core/types'
 

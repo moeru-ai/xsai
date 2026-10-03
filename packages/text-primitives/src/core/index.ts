@@ -1,7 +1,6 @@
 export { collect } from './collect'
 export type { CollectResult } from './collect'
 export { toStepResult } from './step-result'
-export { TextEventTarget } from './text-event-target'
-export { toCustomEvent } from './to-custom-event'
+export { TextEventTarget, toCustomEvent } from './text-event-target'
 export * from './tool'
 export type * from './types'

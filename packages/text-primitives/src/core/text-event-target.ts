@@ -16,15 +16,22 @@ export interface TextEventTarget {
   ) => void
 }
 
-export type TextEventTargetMap = {
-  [K in Exclude<TextEvent['type'], 'raw'>]: CustomEvent<Omit<Extract<TextEvent, { type: K }>, 'type'>>
-} & { raw: CustomEvent<unknown> }
-
 type TextEventListener<E extends Event>
   = | ((this: EventTarget, event: E) => unknown)
     | { handleEvent: (event: E) => unknown }
 
+type TextEventTargetMap = {
+  [K in Exclude<TextEvent['type'], 'raw'>]: CustomEvent<Omit<Extract<TextEvent, { type: K }>, 'type'>>
+} & { raw: CustomEvent<unknown> }
+
 // eslint-disable-next-line ts/no-redeclare -- merge the typed interface with the native constructor
 export const TextEventTarget = EventTarget as {
   new(): TextEventTarget
+}
+
+export const toCustomEvent = <E extends TextEvent>(event: E): TextEventTargetMap[E['type']] => {
+  const { type, ...detail } = event
+  return new CustomEvent(type, {
+    detail: event.type === 'raw' ? event.detail : detail,
+  }) as TextEventTargetMap[E['type']]
 }

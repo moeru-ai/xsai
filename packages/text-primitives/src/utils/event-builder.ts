@@ -10,7 +10,7 @@ import type {
 
 import { XSAIError } from '@xsai/shared'
 
-import { toCustomEvent } from '../core/to-custom-event'
+import { toCustomEvent } from '../core/text-event-target'
 
 /** Internal adapter/event protocol boundary. */
 export interface EventBuilder {
