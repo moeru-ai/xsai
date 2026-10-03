@@ -224,6 +224,43 @@ describe('loop', () => {
     })
   })
 
+  it('uses the prepared model for each step and falls back to the original model', async () => {
+    const firstModel: LanguageModel = options => eventStream({
+      message: { content: `first: ${options.instructions}`, role: 'assistant' },
+      reason: 'pause_turn',
+      status: 'completed',
+      type: 'step.end',
+    })
+    const secondModel: LanguageModel = options => eventStream({
+      message: { content: `second: ${options.instructions}`, role: 'assistant' },
+      reason: 'pause_turn',
+      status: 'completed',
+      type: 'step.end',
+    })
+    const originalModel: LanguageModel = options => eventStream({
+      message: { content: `original: ${options.instructions}`, role: 'assistant' },
+      status: 'completed',
+      type: 'step.end',
+    })
+
+    const events = await readEvents(loop(originalModel, {
+      input: 'hi',
+      instructions: 'default',
+      prepareStep: async ({ stepNumber }) => {
+        if (stepNumber === 0)
+          return { instructions: 'prepared', model: firstModel }
+        if (stepNumber === 1)
+          return { model: secondModel }
+      },
+    }))
+
+    expect(events).toEqual([
+      { message: { content: 'first: prepared', role: 'assistant' }, reason: 'pause_turn', status: 'completed', type: 'step.end' },
+      { message: { content: 'second: default', role: 'assistant' }, reason: 'pause_turn', status: 'completed', type: 'step.end' },
+      { message: { content: 'original: default', role: 'assistant' }, status: 'completed', type: 'step.end' },
+    ])
+  })
+
   it('forwards failed terminal events and stops the loop', async () => {
     const error = new XSAIError('model-error', 'server exploded')
     const model: LanguageModel = async () => eventStream([

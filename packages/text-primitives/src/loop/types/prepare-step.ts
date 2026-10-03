@@ -1,6 +1,6 @@
 import type { Promisable } from '@xsai/shared'
 
-import type { LanguageModelOptions, Message, StepResult } from '../../core'
+import type { LanguageModel, LanguageModelOptions, Message, StepResult } from '../../core'
 
 export type PrepareStep = (options: PrepareStepOptions) => Promisable<PrepareStepResult | undefined>
 
@@ -11,4 +11,6 @@ export interface PrepareStepOptions {
   steps: readonly StepResult[]
 }
 
-export type PrepareStepResult = Partial<Omit<LanguageModelOptions, 'events' | 'signal'>>
+export interface PrepareStepResult extends Partial<Omit<LanguageModelOptions, 'events' | 'signal'>> {
+  model?: LanguageModel
+}
