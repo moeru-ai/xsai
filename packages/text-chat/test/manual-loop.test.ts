@@ -1,6 +1,6 @@
 import type { Message, TextEvent } from '@xsai/text-primitives'
 
-import { HttpError, XSAIError } from '@xsai/text-primitives'
+import { HttpError, TextEventTarget, XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
 import { chat } from '../src'
@@ -11,6 +11,43 @@ const sseResponse = (events: unknown[]): Response => new Response([
 ].join(''))
 
 describe('manual tool loop', () => {
+  it.each([
+    { create: () => new TextEventTarget(), name: 'typed' },
+    { create: () => new EventTarget(), name: 'native' },
+    { create: () => new EventTarget() as TextEventTarget, name: 'cast' },
+  ])('observes bare model events with a $name target', async ({ create }) => {
+    const events = create()
+    const observed: Event[] = []
+    for (const type of ['step.start', 'raw', 'content.start', 'text.delta', 'content.end', 'step.end'] as const)
+      events.addEventListener(type, (event: Event) => observed.push(event))
+    const model = chat({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => sseResponse([
+        { choices: [{ delta: { content: 'Hello' }, finish_reason: 'stop', index: 0 }] },
+      ]),
+      model: 'test-model',
+    })
+
+    const stream = await model({ events, includeRawEvents: true, input: 'hi' })
+    expect(stream.locked).toBe(false)
+    expect(observed.map(event => event.type)).toEqual(['step.start'])
+    const sequence: TextEvent[] = []
+    for await (const event of stream)
+      sequence.push(event)
+
+    expect(observed.map(event => event.type)).toEqual([
+      'step.start',
+      'raw',
+      'content.start',
+      'text.delta',
+      'content.end',
+      'step.end',
+    ])
+    expect(observed.every(event => event instanceof CustomEvent)).toBe(true)
+    expect((observed.find(event => event.type === 'text.delta') as CustomEvent).detail).toEqual({ delta: 'Hello', index: 0 })
+    expect((observed.find(event => event.type === 'raw') as CustomEvent).detail).toBe(sequence.find(event => event.type === 'raw')?.detail)
+  })
+
   it('replays the finish message and tool result in the next request', async () => {
     const requests: Record<string, unknown>[] = []
     const responsesByTurn = [
