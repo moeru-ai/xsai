@@ -1,14 +1,9 @@
 import type { CollectResult, LanguageModel, LoopOptions, StepResult, TextEvent } from '@xsai/text-primitives'
 
-import type { StreamTextEventMap } from './stream-events'
-
 import { loop } from '@xsai/text-primitives'
 import { collectEvent, collectResult } from '@xsai/text-primitives/internal'
 
-import { TypedEventTarget } from './typed-event-target'
-
 export interface StreamTextHandle {
-  events: TypedEventTarget<StreamTextEventMap>
   result: Promise<StreamTextResult>
   stream: ReadableStream<TextEvent>
 }
@@ -17,7 +12,6 @@ export type StreamTextOptions = LoopOptions
 export type StreamTextResult = CollectResult
 
 export const streamText = (model: LanguageModel, options: StreamTextOptions): StreamTextHandle => {
-  const events = new TypedEventTarget<StreamTextEventMap>()
   const result = Promise.withResolvers<StreamTextResult>()
   void result.promise.catch(() => {})
   const steps: StepResult[] = []
@@ -45,10 +39,6 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
               return
 
             failedError ??= collectEvent(steps, value)
-            const { type, ...detail } = value
-            events.dispatchEvent(new CustomEvent(type, {
-              detail: value.type === 'raw' ? value.detail : detail,
-            }))
             controller.enqueue(value)
           }
 
@@ -79,5 +69,5 @@ export const streamText = (model: LanguageModel, options: StreamTextOptions): St
     },
   })
 
-  return { events, result: result.promise, stream }
+  return { result: result.promise, stream }
 }

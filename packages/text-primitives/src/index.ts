@@ -1,5 +1,7 @@
 export { collect } from './core/collect'
 export type { CollectResult } from './core/collect'
+export * from './core/text-event-target'
+export * from './core/to-custom-event'
 export * from './core/tool'
 export type * from './core/types'
 

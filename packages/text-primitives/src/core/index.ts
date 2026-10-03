@@ -1,5 +1,7 @@
 export { collect } from './collect'
 export type { CollectResult } from './collect'
 export { toStepResult } from './step-result'
+export * from './text-event-target'
+export * from './to-custom-event'
 export * from './tool'
 export type * from './types'

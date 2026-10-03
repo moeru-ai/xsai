@@ -43,7 +43,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
   private hasRefusal = false
   private reasoningField?: 'reasoning' | 'reasoning_content'
 
-  constructor(includeRawEvents = false) {
+  constructor(includeRawEvents = false, events?: EventTarget) {
     super((chunk, builder) => {
       if (chunk.error != null) {
         builder.fail(new XSAIError('model-error', chunk.error.message, {
@@ -70,7 +70,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
           builder.done(finish.status, finish.reason)
         }
       }
-    }, includeRawEvents)
+    }, includeRawEvents, events)
   }
 
   private onDelta(builder: EventBuilder, delta: ChatDelta): void {
