@@ -46,7 +46,7 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
   const generate = async function* (): AsyncGenerator<TextEvent, void> {
     while (true) {
       signal.throwIfAborted()
-      const preparedOptions = await prepareStep?.({ input, signal, stepNumber: steps.length, steps })
+      const { model: preparedModel = model, ...preparedOptions } = await prepareStep?.({ input, signal, stepNumber: steps.length, steps }) ?? {}
       signal.throwIfAborted()
       const modelOptions: LanguageModelOptions = {
         ...options,
@@ -55,7 +55,7 @@ export const loop = (model: LanguageModel, { postToolCall, prepareStep, preToolC
         signal,
       }
 
-      const stepEnd = yield* readStep(await model(modelOptions), signal)
+      const stepEnd = yield* readStep(await preparedModel(modelOptions), signal)
       if (stepEnd.status === 'failed' || stepEnd.status === 'cancelled')
         return
 
