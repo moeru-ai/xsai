@@ -18,21 +18,30 @@ interface WireResult {
   languages?: { code: string }[]
   segments?: WireSegment[]
   text: string
-  words?: { end: number, start: number, word: string }[]
+  words?: { end: number, probability?: number, start: number, word: string }[]
 }
 
 interface WireSegment {
+  avg_logprob?: number
+  compression_ratio?: number
   end: number
   id?: number | string
+  no_speech_prob?: number
+  seek?: number
   speaker?: string
   start: number
+  temperature?: number
   text: string
+  tokens?: number[]
 }
 
 export const transcriptionBody = (model: string, options: TranscriptionOptions, streaming = false): FormData => {
   const wireOptions = options.providerOptions?.transcription
   const body = new FormData()
-  body.append('file', options.audio)
+  if (options.fileName == null)
+    body.append('file', options.audio)
+  else
+    body.append('file', options.audio, options.fileName)
   for (const [key, value] of Object.entries({
     chunking_strategy: wireOptions?.chunkingStrategy,
     language: options.language,
@@ -45,20 +54,31 @@ export const transcriptionBody = (model: string, options: TranscriptionOptions, 
     if (value != null)
       body.append(key, String(value))
   }
-  for (const granularity of wireOptions?.timestampGranularities ?? [])
+  for (const granularity of wireOptions?.timestampGranularities ?? (wireOptions?.responseFormat === 'verbose_json' ? ['segment'] : []))
     body.append('timestamp_granularities[]', granularity)
   return body
 }
 
-export const transcriptionSegment = (value: WireSegment): TranscriptionSegment => ({
-  endSecond: value.end,
-  ...(value.id == null ? {} : { id: String(value.id) }),
-  ...(value.speaker == null ? {} : { speakerId: value.speaker }),
-  startSecond: value.start,
-  text: value.text,
-})
+const transcriptionSegment = (value: WireSegment): TranscriptionSegment => {
+  const metadata = {
+    ...(value.avg_logprob == null ? {} : { avgLogprob: value.avg_logprob }),
+    ...(value.compression_ratio == null ? {} : { compressionRatio: value.compression_ratio }),
+    ...(value.no_speech_prob == null ? {} : { noSpeechProb: value.no_speech_prob }),
+    ...(value.seek == null ? {} : { seek: value.seek }),
+    ...(value.temperature == null ? {} : { temperature: value.temperature }),
+    ...(value.tokens == null ? {} : { tokens: value.tokens }),
+  }
+  return {
+    endSecond: value.end,
+    ...(value.id == null ? {} : { id: String(value.id) }),
+    ...(Object.keys(metadata).length === 0 ? {} : { providerMetadata: { transcription: metadata } }),
+    ...(value.speaker == null ? {} : { speakerId: value.speaker }),
+    startSecond: value.start,
+    text: value.text,
+  }
+}
 
-export const transcriptionResult = (value: unknown): TranscriptionResult => {
+const transcriptionResult = (value: unknown): TranscriptionResult => {
   if (value == null || typeof value !== 'object' || !('text' in value) || typeof value.text !== 'string')
     throw new XSAIError('invalid-response', 'Expected transcription text to be a string', { cause: value })
   const result = value as WireResult
@@ -71,7 +91,12 @@ export const transcriptionResult = (value: unknown): TranscriptionResult => {
     ...(result.words == null
       ? {}
       : {
-          words: result.words.map(word => ({ endSecond: word.end, startSecond: word.start, text: word.word })),
+          words: result.words.map(word => ({
+            endSecond: word.end,
+            ...(word.probability == null ? {} : { providerMetadata: { transcription: { probability: word.probability } } }),
+            startSecond: word.start,
+            text: word.word,
+          })),
         }),
   }
 }

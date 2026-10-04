@@ -11,6 +11,7 @@ export type TranscriptionModel = (options: TranscriptionOptions) => Promisable<R
 
 export interface TranscriptionOptions {
   audio: Blob
+  fileName?: string
   language?: string
   providerOptions?: TranscriptionProviderOptions
   signal?: AbortSignal

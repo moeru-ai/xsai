@@ -1,3 +1,5 @@
+import type { TranscriptionProviderOptions } from '../src'
+
 import { describe, expect, it } from 'vitest'
 
 import { generateTranscription, streamTranscription, transcription, transcriptionNonStreaming } from '../src'
@@ -5,6 +7,43 @@ import { generateTranscription, streamTranscription, transcription, transcriptio
 const audio = new File(['audio'], 'recording.wav', { type: 'audio/wav' })
 
 describe('transcription', () => {
+  it('preserves known segment and word metadata from JSON without exposing unknown fields', async () => {
+    const model = transcriptionNonStreaming({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => Response.json({
+        segments: [{
+          avg_logprob: -0.25,
+          compression_ratio: 1.2,
+          end: 2,
+          id: 0,
+          no_speech_prob: 0,
+          seek: 0,
+          start: 0.5,
+          temperature: 0,
+          text: 'Hello.',
+          tokens: [],
+          unknown_analysis: 'ignored',
+        }],
+        text: 'Hello.',
+        words: [{ end: 2, probability: 0, start: 0.5, unknown_analysis: 'ignored', word: 'Hello.' }],
+      }),
+      model: 'whisper-model',
+    })
+    expect(await generateTranscription(model, { audio })).toStrictEqual({
+      segments: [{
+        endSecond: 2,
+        id: '0',
+        providerMetadata: {
+          transcription: { avgLogprob: -0.25, compressionRatio: 1.2, noSpeechProb: 0, seek: 0, temperature: 0, tokens: [] },
+        },
+        startSecond: 0.5,
+        text: 'Hello.',
+      }],
+      text: 'Hello.',
+      words: [{ endSecond: 2, providerMetadata: { transcription: { probability: 0 } }, startSecond: 0.5, text: 'Hello.' }],
+    })
+  })
+
   it('preserves multiple language codes reported by a complete JSON response', async () => {
     const model = transcriptionNonStreaming({
       baseURL: 'https://example.com/v1/',
@@ -12,6 +51,74 @@ describe('transcription', () => {
       model: 'transcribe-model',
     })
     expect(await generateTranscription(model, { audio })).toStrictEqual({ languages: ['en', 'zh'], text: 'Hello. 你好。' })
+  })
+
+  it('preserves sparse segment metadata in both SSE segment events and the final result', async () => {
+    const model = transcription({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => new Response(
+        'data: {"type":"transcript.text.segment","id":"seg_0","speaker":"speaker_0","start":0.5,"end":2,"text":"Hello.","avg_logprob":0,"tokens":[41,42],"temperature":null,"unknown_analysis":"ignored"}\n\ndata: {"type":"transcript.text.done","text":"Hello."}\n\n',
+        { headers: { 'Content-Type': 'text/event-stream' } },
+      ),
+      model: 'transcribe-model',
+    })
+    const segment = {
+      endSecond: 2,
+      id: 'seg_0',
+      providerMetadata: { transcription: { avgLogprob: 0, tokens: [41, 42] } },
+      speakerId: 'speaker_0',
+      startSecond: 0.5,
+      text: 'Hello.',
+    }
+    expect(await Array.fromAsync(await streamTranscription(model, { audio }))).toStrictEqual([
+      { type: 'transcription.start' },
+      { ...segment, type: 'transcription.text.segment' },
+      { segments: [segment], text: 'Hello.', type: 'transcription.end' },
+    ])
+  })
+
+  describe.each([
+    { factory: transcription, mode: 'SSE' },
+    { factory: transcriptionNonStreaming, mode: 'JSON' },
+  ])('multipart filenames with $mode', ({ factory }) => {
+    it.each([
+      { audio, expectedName: 'recording.wav', fileName: undefined, kind: 'File' },
+      { audio: new Blob(['audio'], { type: 'audio/wav' }), expectedName: 'blob', fileName: undefined, kind: 'Blob' },
+      { audio, expectedName: 'override.wav', fileName: 'override.wav', kind: 'File' },
+      { audio: new Blob(['audio'], { type: 'audio/wav' }), expectedName: 'override.wav', fileName: 'override.wav', kind: 'Blob' },
+    ])('uploads $kind as $expectedName with fileName=$fileName', async ({ audio, expectedName, fileName }) => {
+      const model = factory({
+        baseURL: 'https://example.com/v1/',
+        fetch: async (input, init) => {
+          const body = await new Request(input, init).formData()
+          expect(body.get('file')).toMatchObject({ name: expectedName, type: 'audio/wav' })
+          return factory === transcription
+            ? new Response('data: {"type":"transcript.text.done","text":"Hello."}\n\n', { headers: { 'Content-Type': 'text/event-stream' } })
+            : Response.json({ text: 'Hello.' })
+        },
+        model: 'transcribe-model',
+      })
+      expect(await generateTranscription(model, { audio, fileName })).toStrictEqual({ text: 'Hello.' })
+    })
+  })
+
+  it.each<{ expected: string[], options: NonNullable<TranscriptionProviderOptions['transcription']> }>([
+    { expected: [], options: {} },
+    { expected: [], options: { responseFormat: 'diarized_json' } },
+    { expected: ['segment'], options: { responseFormat: 'verbose_json' } },
+    { expected: ['word'], options: { responseFormat: 'verbose_json', timestampGranularities: ['word'] } },
+    { expected: [], options: { responseFormat: 'verbose_json', timestampGranularities: [] } },
+  ])('uploads timestamp granularities $expected for $options', async ({ expected, options }) => {
+    const model = transcriptionNonStreaming({
+      baseURL: 'https://example.com/v1/',
+      fetch: async (input, init) => {
+        const body = await new Request(input, init).formData()
+        expect(body.getAll('timestamp_granularities[]')).toEqual(expected)
+        return Response.json({ text: 'Hello.' })
+      },
+      model: 'whisper-model',
+    })
+    expect(await generateTranscription(model, { audio, providerOptions: { transcription: options } })).toStrictEqual({ text: 'Hello.' })
   })
 
   it.each(['', 'data: [DONE]\n\n', 'data: {"type":"transcript.text.delta","delta":"unfinished"}\n\n'])(

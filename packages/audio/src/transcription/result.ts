@@ -6,13 +6,31 @@ export interface TranscriptionResult {
   words?: TranscriptionWord[]
 }
 
-export interface TranscriptionSegment extends TranscriptionWord {
+export interface TranscriptionSegment {
+  endSecond: number
   id?: string
+  providerMetadata?: {
+    transcription?: {
+      avgLogprob?: number
+      compressionRatio?: number
+      noSpeechProb?: number
+      seek?: number
+      temperature?: number
+      tokens?: number[]
+    }
+  }
   speakerId?: string
+  startSecond: number
+  text: string
 }
 
 export interface TranscriptionWord {
   endSecond: number
+  providerMetadata?: {
+    transcription?: {
+      probability?: number
+    }
+  }
   startSecond: number
   text: string
 }
