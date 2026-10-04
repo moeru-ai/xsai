@@ -1,0 +1,25 @@
+name: pkg.pr.new
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          cache: pnpm
+          node-version: latest
+
+      - run: pnpm install
+      - run: pnpm build:packages
+      - run: pnpm exec pkg-pr-new publish --pnpm --previewVersion --no-template --packageManager=pnpm './packages/*' './packages-ext/*' './packages-top/*'
