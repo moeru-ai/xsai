@@ -264,6 +264,10 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
+    devDependencies:
+      eventsource-parser:
+        specifier: 'catalog:'
+        version: 4.1.0
 
   packages/embed:
     dependencies:

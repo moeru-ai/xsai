@@ -3,7 +3,7 @@ import type { HttpOptions } from '../types'
 import { HttpError, XSAIError } from './error'
 
 export interface PostJSONInit {
-  body?: Record<string, unknown>
+  body?: FormData | Record<string, unknown>
   headers?: Record<string, string | undefined>
   method?: 'GET' | 'POST'
   path: string
@@ -20,7 +20,7 @@ export const postJSON = async (options: Omit<HttpOptions, 'model'>, init: PostJS
   const headers = init.headers ?? {
     ...options.headers,
     'Authorization': options.apiKey == null ? options.headers?.Authorization : `Bearer ${options.apiKey}`,
-    'Content-Type': init.body == null ? options.headers?.['Content-Type'] : 'application/json',
+    'Content-Type': init.body instanceof FormData ? undefined : init.body == null ? options.headers?.['Content-Type'] : 'application/json',
   }
 
   const responseCatch = async (res: Response): Promise<Response & { body: NonNullable<Response['body']> }> => {
@@ -44,8 +44,10 @@ export const postJSON = async (options: Omit<HttpOptions, 'model'>, init: PostJS
   }
 
   return (options.fetch ?? fetch)(url, {
-    body: init.body == null ? undefined : JSON.stringify(init.body),
-    headers: Object.fromEntries(Object.entries(headers).filter(([, value]) => value !== undefined)) as Record<string, string>,
+    body: init.body == null ? undefined : init.body instanceof FormData ? init.body : JSON.stringify(init.body),
+    headers: Object.fromEntries(Object.entries(headers).filter(([name, value]) =>
+      value !== undefined && (!(init.body instanceof FormData) || name.toLowerCase() !== 'content-type'),
+    )) as Record<string, string>,
     method: init.method ?? 'POST',
     signal: init.signal,
   })

@@ -1,0 +1,193 @@
+import { describe, expect, it } from 'vitest'
+
+import { generateTranscription, streamTranscription, transcription, transcriptionNonStreaming } from '../src'
+
+const audio = new File(['audio'], 'recording.wav', { type: 'audio/wav' })
+
+describe('transcription', () => {
+  it('preserves multiple language codes reported by a complete JSON response', async () => {
+    const model = transcriptionNonStreaming({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => Response.json({ languages: [{ code: 'en' }, { code: 'zh' }], text: 'Hello. 你好。' }),
+      model: 'transcribe-model',
+    })
+    expect(await generateTranscription(model, { audio })).toStrictEqual({ languages: ['en', 'zh'], text: 'Hello. 你好。' })
+  })
+
+  it.each(['', 'data: [DONE]\n\n', 'data: {"type":"transcript.text.delta","delta":"unfinished"}\n\n'])(
+    'rejects SSE EOF without a transcription done event: %s',
+    async (body) => {
+      const model = transcription({
+        baseURL: 'https://example.com/v1/',
+        fetch: async () => new Response(body, { headers: { 'Content-Type': 'text/event-stream' } }),
+        model: 'transcribe-model',
+      })
+      await expect(generateTranscription(model, { audio })).rejects.toMatchObject({ code: 'truncated-stream' })
+    },
+  )
+
+  it.each([transcription, transcriptionNonStreaming])('accepts a complete silent recording without inventing metadata', async (factory) => {
+    const model = factory({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => factory === transcription
+        ? new Response('data: {"type":"transcript.text.done","text":""}\n\n', { headers: { 'Content-Type': 'text/event-stream' } })
+        : Response.json({ text: '' }),
+      model: 'transcribe-model',
+    })
+    expect(await generateTranscription(model, { audio })).toStrictEqual({ text: '' })
+  })
+
+  it('rejects JSON received by the SSE adapter and cancels the unexpected body', async () => {
+    const cancelled = Promise.withResolvers<unknown>()
+    const model = transcription({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => new Response(new ReadableStream({ cancel: reason => cancelled.resolve(reason) }), {
+        headers: { 'Content-Type': 'application/json' },
+      }),
+      model: 'transcribe-model',
+    })
+    await expect(streamTranscription(model, { audio })).rejects.toMatchObject({ code: 'invalid-response' })
+    await expect(cancelled.promise).resolves.toMatchObject({ code: 'invalid-response' })
+  })
+
+  it('propagates a provider SSE error even if a done frame follows it', async () => {
+    const model = transcription({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => new Response(
+        'data: {"type":"error","error":{"message":"Transcription failed"}}\n\ndata: {"type":"transcript.text.done","text":""}\n\n',
+        { headers: { 'Content-Type': 'text/event-stream' } },
+      ),
+      model: 'transcribe-model',
+    })
+    await expect(generateTranscription(model, { audio })).rejects.toMatchObject({
+      cause: { message: 'Transcription failed' },
+      code: 'invalid-response',
+    })
+  })
+
+  it.each(['JSON', 'SSE'])('rejects a %s response without valid final text', async (mode) => {
+    const model = (mode === 'JSON' ? transcriptionNonStreaming : transcription)({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => mode === 'JSON'
+        ? Response.json({ text: null })
+        : new Response('data: {"type":"transcript.text.done","text":null}\n\n', { headers: { 'Content-Type': 'text/event-stream' } }),
+      model: 'transcribe-model',
+    })
+    await expect(generateTranscription(model, { audio })).rejects.toMatchObject({ code: 'invalid-response' })
+  })
+
+  it('delivers SSE deltas and completed segments, then uses done text as the complete result', async () => {
+    let upstream!: ReadableStreamDefaultController<Uint8Array>
+    const encoder = new TextEncoder()
+    const model = transcription({
+      baseURL: 'https://example.com/v1/',
+      fetch: async (_, init) => {
+        expect((init!.body as FormData).get('stream')).toBe('true')
+        expect((init!.body as FormData).get('response_format')).toBe('diarized_json')
+        return new Response(new ReadableStream<Uint8Array>({
+          start: (output) => {
+            upstream = output
+            output.enqueue(encoder.encode(': keepalive\r\ndata: {"type":"transcript.text.delta","delta":"draft","segment_id":"seg_0"}\r\n\r\n'))
+          },
+        }), { headers: { 'Content-Type': 'text/event-stream; charset=utf-8' } })
+      },
+      model: 'diarize-model',
+    })
+    const stream = await streamTranscription(model, {
+      audio,
+      providerOptions: { transcription: { responseFormat: 'diarized_json' } },
+    })
+    const reader = stream.getReader()
+    expect((await reader.read()).value).toEqual({ type: 'transcription.start' })
+    expect((await reader.read()).value).toEqual({ delta: 'draft', segmentId: 'seg_0', type: 'transcription.text.delta' })
+    upstream.enqueue(encoder.encode('data: {"type":"transcript.text.segment","id":"seg_0","speaker":"speaker_0","start":0.5,"end":2,"text":"Hello."}\n\n'))
+    expect((await reader.read()).value).toEqual({
+      endSecond: 2,
+      id: 'seg_0',
+      speakerId: 'speaker_0',
+      startSecond: 0.5,
+      text: 'Hello.',
+      type: 'transcription.text.segment',
+    })
+    upstream.enqueue(encoder.encode('data: {"type":"transcript.text.done","text":"Hello.","languages":[{"code":"en"},{"code":"zh"}]}\n\n'))
+    expect((await reader.read()).value).toEqual({
+      languages: ['en', 'zh'],
+      segments: [{ endSecond: 2, id: 'seg_0', speakerId: 'speaker_0', startSecond: 0.5, text: 'Hello.' }],
+      text: 'Hello.',
+      type: 'transcription.end',
+    })
+    expect(await reader.read()).toEqual({ done: true, value: undefined })
+  }, 1000)
+
+  it('uploads a File as multipart and emits only start/end with normalized JSON data', async () => {
+    const model = transcriptionNonStreaming({
+      apiKey: 'secret',
+      baseURL: 'https://example.com/v1',
+      fetch: async (input, init) => {
+        expect(input.toString()).toBe('https://example.com/v1/audio/transcriptions')
+        const request = new Request(input, init)
+        expect(request.method).toBe('POST')
+        expect(request.headers.get('Authorization')).toBe('Bearer secret')
+        expect(request.headers.get('X-Custom')).toBe('custom')
+        expect(request.headers.get('Content-Type')).toMatch(/^multipart\/form-data; boundary=/)
+        const body = await request.formData()
+        expect(body.get('file')).toMatchObject({ name: 'recording.wav', type: 'audio/wav' })
+        expect(body.get('model')).toBe('whisper-model')
+        expect(body.get('language')).toBe('en')
+        expect(body.get('response_format')).toBe('verbose_json')
+        expect(body.getAll('timestamp_granularities[]')).toEqual(['word', 'segment'])
+        expect(body.get('prompt')).toBe('Previous sentence.')
+        expect(body.get('temperature')).toBe('0')
+        expect(body.get('chunking_strategy')).toBe('auto')
+        expect(body.get('stream')).toBeNull()
+        return Response.json({
+          duration: 2.5,
+          language: 'english',
+          segments: [{ end: 2, id: 0, start: 0.5, text: 'Hello.' }],
+          text: 'Hello.',
+          words: [{ end: 2, start: 0.5, word: 'Hello.' }],
+        })
+      },
+      headers: { 'Content-Type': 'application/json', 'X-Custom': 'custom' },
+      model: 'whisper-model',
+    })
+    const options = {
+      audio,
+      language: 'en',
+      providerOptions: {
+        transcription: {
+          chunkingStrategy: 'auto' as const,
+          prompt: 'Previous sentence.',
+          responseFormat: 'verbose_json' as const,
+          temperature: 0,
+          timestampGranularities: ['word', 'segment'] as ('segment' | 'word')[],
+        },
+      },
+    }
+    const events = []
+    for await (const event of await streamTranscription(model, options))
+      events.push(event)
+    expect(events).toEqual([
+      { type: 'transcription.start' },
+      {
+        durationInSeconds: 2.5,
+        languages: ['english'],
+        segments: [{ endSecond: 2, id: '0', startSecond: 0.5, text: 'Hello.' }],
+        text: 'Hello.',
+        type: 'transcription.end',
+        words: [{ endSecond: 2, startSecond: 0.5, text: 'Hello.' }],
+      },
+    ])
+  })
+  it('reports truncated SSE directly to a streaming consumer', async () => {
+    const model = transcription({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => new Response('data: {"type":"transcript.text.delta","delta":"unfinished"}\n\n', {
+        headers: { 'Content-Type': 'text/event-stream' },
+      }),
+      model: 'transcribe-model',
+    })
+    const stream = await streamTranscription(model, { audio })
+    await expect(Array.fromAsync(stream)).rejects.toMatchObject({ code: 'truncated-stream' })
+  })
+})
