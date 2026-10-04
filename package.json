@@ -27,6 +27,7 @@
     "eslint": "catalog:",
     "eslint-plugin-oxlint": "catalog:",
     "oxlint": "catalog:",
+    "pkg-pr-new": "catalog:",
     "pkgroll": "catalog:",
     "tsdown": "catalog:",
     "tsx": "catalog:",
