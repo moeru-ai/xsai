@@ -1,3 +1,13 @@
+export interface TranscriptionEndEvent extends TranscriptionResult {
+  type: 'transcription.end'
+}
+
+export type TranscriptionEvent
+  = | TranscriptionEndEvent
+    | TranscriptionStartEvent
+    | TranscriptionTextDeltaEvent
+    | TranscriptionTextSegmentEvent
+
 export interface TranscriptionResult {
   durationInSeconds?: number
   languages?: string[]
@@ -10,7 +20,7 @@ export interface TranscriptionSegment {
   endSecond: number
   id?: string
   providerMetadata?: {
-    transcription?: {
+    transcriptions?: {
       avgLogprob?: number
       compressionRatio?: number
       noSpeechProb?: number
@@ -24,10 +34,24 @@ export interface TranscriptionSegment {
   text: string
 }
 
+export interface TranscriptionStartEvent {
+  type: 'transcription.start'
+}
+
+export interface TranscriptionTextDeltaEvent {
+  delta: string
+  segmentId?: string
+  type: 'transcription.text.delta'
+}
+
+export interface TranscriptionTextSegmentEvent extends TranscriptionSegment {
+  type: 'transcription.text.segment'
+}
+
 export interface TranscriptionWord {
   endSecond: number
   providerMetadata?: {
-    transcription?: {
+    transcriptions?: {
       probability?: number
     }
   }

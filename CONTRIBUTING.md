@@ -47,7 +47,7 @@ services:
       - 5050:5050
 ```
 
-### generateTranscription
+### generateTranscribe
 
 It uses [whisper.cpp](https://github.com/ggerganov/whisper.cpp) and the `ggml-large-v3-turbo-q5_0` model.
 

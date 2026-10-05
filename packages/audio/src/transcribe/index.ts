@@ -1,5 +1,5 @@
 export * from './event'
 export * from './generate'
 export * from './model'
-export * from './result'
+export * from './model-transcriptions'
 export * from './stream'

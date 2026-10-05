@@ -1,10 +1,21 @@
+import type { HttpOptions } from '@xsai/shared'
 import type { EventSourceMessage } from 'eventsource-parser/stream'
 
-import type { TranscriptionEvent } from './event'
-import type { TranscriptionOptions } from './model'
-import type { TranscriptionResult, TranscriptionSegment } from './result'
+import type { TranscriptionEvent, TranscriptionResult, TranscriptionSegment } from './event'
+import type { TranscriptionModel, TranscriptionOptions } from './model'
 
-import { XSAIError } from '@xsai/shared'
+import { postJSON, XSAIError } from '@xsai/shared'
+import { EventSourceParserStream } from 'eventsource-parser/stream'
+
+export interface TranscriptionProviderOptions {
+  transcriptions?: {
+    chunkingStrategy?: 'auto'
+    prompt?: string
+    responseFormat?: 'diarized_json' | 'json' | 'verbose_json'
+    temperature?: number
+    timestampGranularities?: ('segment' | 'word')[]
+  }
+}
 
 type WireEvent
   = (WireSegment & { type: 'transcript.text.segment' })
@@ -35,8 +46,8 @@ interface WireSegment {
   tokens?: number[]
 }
 
-export const transcriptionBody = (model: string, options: TranscriptionOptions, streaming = false): FormData => {
-  const wireOptions = options.providerOptions?.transcription
+const transcriptionBody = (model: string, options: TranscriptionOptions, streaming = false): FormData => {
+  const wireOptions = options.providerOptions?.transcriptions
   const body = new FormData()
   if (options.fileName == null)
     body.append('file', options.audio)
@@ -71,7 +82,7 @@ const transcriptionSegment = (value: WireSegment): TranscriptionSegment => {
   return {
     endSecond: value.end,
     ...(value.id == null ? {} : { id: String(value.id) }),
-    ...(Object.keys(metadata).length === 0 ? {} : { providerMetadata: { transcription: metadata } }),
+    ...(Object.keys(metadata).length === 0 ? {} : { providerMetadata: { transcriptions: metadata } }),
     ...(value.speaker == null ? {} : { speakerId: value.speaker }),
     startSecond: value.start,
     text: value.text,
@@ -93,7 +104,7 @@ const transcriptionResult = (value: unknown): TranscriptionResult => {
       : {
           words: result.words.map(word => ({
             endSecond: word.end,
-            ...(word.probability == null ? {} : { providerMetadata: { transcription: { probability: word.probability } } }),
+            ...(word.probability == null ? {} : { providerMetadata: { transcriptions: { probability: word.probability } } }),
             startSecond: word.start,
             text: word.word,
           })),
@@ -101,7 +112,7 @@ const transcriptionResult = (value: unknown): TranscriptionResult => {
   }
 }
 
-export class TranscriptionEventStream extends TransformStream<EventSourceMessage, TranscriptionEvent> {
+class TranscriptionEventStream extends TransformStream<EventSourceMessage, TranscriptionEvent> {
   constructor() {
     const segments: TranscriptionSegment[] = []
     super({
@@ -142,7 +153,7 @@ export class TranscriptionEventStream extends TransformStream<EventSourceMessage
   }
 }
 
-export class TranscriptionResultStream extends TransformStream<string, TranscriptionEvent> {
+class TranscriptionResultStream extends TransformStream<string, TranscriptionEvent> {
   constructor() {
     let text = ''
     super({
@@ -153,4 +164,33 @@ export class TranscriptionResultStream extends TransformStream<string, Transcrip
       transform: (chunk) => { text += chunk },
     })
   }
+}
+
+export const transcriptions = (options: HttpOptions): TranscriptionModel => async (modelOptions) => {
+  const response = await postJSON(options, {
+    body: transcriptionBody(options.model, modelOptions, true),
+    path: 'audio/transcriptions',
+    signal: modelOptions.signal,
+  })
+  const mime = response.headers.get('Content-Type')?.split(';', 1)[0]?.trim().toLowerCase()
+  if (mime !== 'text/event-stream') {
+    const error = new XSAIError('invalid-response', 'Expected an SSE transcription response')
+    await response.body.cancel(error).catch(() => {})
+    throw error
+  }
+  return response.body
+    .pipeThrough(new TextDecoderStream())
+    .pipeThrough(new EventSourceParserStream())
+    .pipeThrough(new TranscriptionEventStream(), { signal: modelOptions.signal })
+}
+
+export const transcriptionsNonStreaming = (options: HttpOptions): TranscriptionModel => async (modelOptions) => {
+  const response = await postJSON(options, {
+    body: transcriptionBody(options.model, modelOptions),
+    path: 'audio/transcriptions',
+    signal: modelOptions.signal,
+  })
+  return response.body
+    .pipeThrough(new TextDecoderStream())
+    .pipeThrough(new TranscriptionResultStream(), { signal: modelOptions.signal })
 }
