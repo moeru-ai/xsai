@@ -2,7 +2,6 @@
   "name": "@xsai/model",
   "type": "module",
   "version": "0.5.1",
-  "private": true,
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts"
