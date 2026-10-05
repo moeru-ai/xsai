@@ -10,7 +10,7 @@ export type TranscriptionEvent
 
 export interface TranscriptionResult {
   durationInSeconds?: number
-  languages?: string[]
+  language?: string
   segments?: TranscriptionSegment[]
   text: string
   words?: TranscriptionWord[]
@@ -25,11 +25,11 @@ export interface TranscriptionSegment {
       compressionRatio?: number
       noSpeechProb?: number
       seek?: number
+      speaker?: string
       temperature?: number
       tokens?: number[]
     }
   }
-  speakerId?: string
   startSecond: number
   text: string
 }

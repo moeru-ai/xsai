@@ -18,6 +18,7 @@ describe('transcribe', () => {
           id: 0,
           no_speech_prob: 0,
           seek: 0,
+          speaker: 'speaker_0',
           start: 0.5,
           temperature: 0,
           text: 'Hello.',
@@ -29,12 +30,12 @@ describe('transcribe', () => {
       }),
       model: 'whisper-model',
     })
-    expect(await generateTranscribe(model, { audio })).toStrictEqual({
+    expect(await generateTranscribe(model, { audio })).toEqual({
       segments: [{
         endSecond: 2,
         id: '0',
         providerMetadata: {
-          transcriptions: { avgLogprob: -0.25, compressionRatio: 1.2, noSpeechProb: 0, seek: 0, temperature: 0, tokens: [] },
+          transcriptions: { avgLogprob: -0.25, compressionRatio: 1.2, noSpeechProb: 0, seek: 0, speaker: 'speaker_0', temperature: 0, tokens: [] },
         },
         startSecond: 0.5,
         text: 'Hello.',
@@ -44,13 +45,13 @@ describe('transcribe', () => {
     })
   })
 
-  it('preserves multiple language codes reported by a complete JSON response', async () => {
+  it.each(['english', 'en', 'custom-language', undefined])('preserves the reported language %s without conversion or an input fallback', async (language) => {
     const model = transcriptionsNonStreaming({
       baseURL: 'https://example.com/v1/',
-      fetch: async () => Response.json({ languages: [{ code: 'en' }, { code: 'zh' }], text: 'Hello. 你好。' }),
+      fetch: async () => Response.json({ language, languages: [{ code: 'en' }, { code: 'zh' }], text: 'Hello. 你好。' }),
       model: 'transcribe-model',
     })
-    expect(await generateTranscribe(model, { audio })).toStrictEqual({ languages: ['en', 'zh'], text: 'Hello. 你好。' })
+    expect(await generateTranscribe(model, { audio, language: 'zh' })).toEqual({ language, text: 'Hello. 你好。' })
   })
 
   it('preserves sparse segment metadata in both SSE segment events and the final result', async () => {
@@ -65,12 +66,11 @@ describe('transcribe', () => {
     const segment = {
       endSecond: 2,
       id: 'seg_0',
-      providerMetadata: { transcriptions: { avgLogprob: 0, tokens: [41, 42] } },
-      speakerId: 'speaker_0',
+      providerMetadata: { transcriptions: { avgLogprob: 0, speaker: 'speaker_0', temperature: null, tokens: [41, 42] } },
       startSecond: 0.5,
       text: 'Hello.',
     }
-    expect(await Array.fromAsync(await streamTranscribe(model, { audio }))).toStrictEqual([
+    expect(await Array.fromAsync(await streamTranscribe(model, { audio }))).toEqual([
       { type: 'transcription.start' },
       { ...segment, type: 'transcription.text.segment' },
       { segments: [segment], text: 'Hello.', type: 'transcription.end' },
@@ -98,7 +98,7 @@ describe('transcribe', () => {
         },
         model: 'transcribe-model',
       })
-      expect(await generateTranscribe(model, { audio, fileName })).toStrictEqual({ text: 'Hello.' })
+      expect(await generateTranscribe(model, { audio, fileName })).toEqual({ text: 'Hello.' })
     })
   })
 
@@ -118,7 +118,7 @@ describe('transcribe', () => {
       },
       model: 'whisper-model',
     })
-    expect(await generateTranscribe(model, { audio, providerOptions: { transcriptions: options } })).toStrictEqual({ text: 'Hello.' })
+    expect(await generateTranscribe(model, { audio, providerOptions: { transcriptions: options } })).toEqual({ text: 'Hello.' })
   })
 
   it.each(['', 'data: [DONE]\n\n', 'data: {"type":"transcript.text.delta","delta":"unfinished"}\n\n'])(
@@ -141,7 +141,7 @@ describe('transcribe', () => {
         : Response.json({ text: '' }),
       model: 'transcribe-model',
     })
-    expect(await generateTranscribe(model, { audio })).toStrictEqual({ text: '' })
+    expect(await generateTranscribe(model, { audio })).toEqual({ text: '' })
   })
 
   it('rejects JSON received by the SSE adapter and cancels the unexpected body', async () => {
@@ -211,15 +211,14 @@ describe('transcribe', () => {
     expect((await reader.read()).value).toEqual({
       endSecond: 2,
       id: 'seg_0',
-      speakerId: 'speaker_0',
+      providerMetadata: { transcriptions: { speaker: 'speaker_0' } },
       startSecond: 0.5,
       text: 'Hello.',
       type: 'transcription.text.segment',
     })
     upstream.enqueue(encoder.encode('data: {"type":"transcript.text.done","text":"Hello.","languages":[{"code":"en"},{"code":"zh"}]}\n\n'))
     expect((await reader.read()).value).toEqual({
-      languages: ['en', 'zh'],
-      segments: [{ endSecond: 2, id: 'seg_0', speakerId: 'speaker_0', startSecond: 0.5, text: 'Hello.' }],
+      segments: [{ endSecond: 2, id: 'seg_0', providerMetadata: { transcriptions: { speaker: 'speaker_0' } }, startSecond: 0.5, text: 'Hello.' }],
       text: 'Hello.',
       type: 'transcription.end',
     })
@@ -278,7 +277,7 @@ describe('transcribe', () => {
       { type: 'transcription.start' },
       {
         durationInSeconds: 2.5,
-        languages: ['english'],
+        language: 'english',
         segments: [{ endSecond: 2, id: '0', startSecond: 0.5, text: 'Hello.' }],
         text: 'Hello.',
         type: 'transcription.end',

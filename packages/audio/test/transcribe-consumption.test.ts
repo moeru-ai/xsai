@@ -129,8 +129,7 @@ describe('transcribe consumption', () => {
       { type: 'transcription.start' },
       { delta: 'draft', type: 'transcription.text.delta' },
       {
-        languages: ['english'],
-        segments: [{ endSecond: 2, id: '0', speakerId: 'speaker_0', startSecond: 0, text: 'Hello.' }],
+        segments: [{ endSecond: 2, id: '0', providerMetadata: { transcriptions: { speaker: 'speaker_0' } }, startSecond: 0, text: 'Hello.' }],
         text: 'Hello.',
         type: 'transcription.end',
       },
@@ -144,8 +143,7 @@ describe('transcribe consumption', () => {
     })
 
     expect(await generateTranscribe(model, { audio })).toEqual({
-      languages: ['english'],
-      segments: [{ endSecond: 2, id: '0', speakerId: 'speaker_0', startSecond: 0, text: 'Hello.' }],
+      segments: [{ endSecond: 2, id: '0', providerMetadata: { transcriptions: { speaker: 'speaker_0' } }, startSecond: 0, text: 'Hello.' }],
       text: 'Hello.',
     })
     const stream = new ReadableStream<TranscriptionEvent>()

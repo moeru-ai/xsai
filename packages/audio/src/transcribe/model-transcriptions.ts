@@ -17,22 +17,21 @@ export interface TranscriptionProviderOptions {
   }
 }
 
-type WireEvent
-  = (WireSegment & { type: 'transcript.text.segment' })
+type OpenAITranscriptionsEvent
+  = (OpenAITranscriptionsSegment & { type: 'transcript.text.segment' })
     | { delta: string, segment_id?: string, type: 'transcript.text.delta' }
     | { error?: unknown, type: 'error' }
-    | { languages?: { code: string }[], text: string, type: 'transcript.text.done' }
+    | { text: string, type: 'transcript.text.done' }
 
-interface WireResult {
+interface OpenAITranscriptionsResult {
   duration?: number
   language?: string
-  languages?: { code: string }[]
-  segments?: WireSegment[]
+  segments?: OpenAITranscriptionsSegment[]
   text: string
   words?: { end: number, probability?: number, start: number, word: string }[]
 }
 
-interface WireSegment {
+interface OpenAITranscriptionsSegment {
   avg_logprob?: number
   compression_ratio?: number
   end: number
@@ -49,10 +48,7 @@ interface WireSegment {
 const transcriptionBody = (model: string, options: TranscriptionOptions, streaming = false): FormData => {
   const wireOptions = options.providerOptions?.transcriptions
   const body = new FormData()
-  if (options.fileName == null)
-    body.append('file', options.audio)
-  else
-    body.append('file', options.audio, options.fileName)
+  body.append('file', options.audio, options.fileName)
   for (const [key, value] of Object.entries({
     chunking_strategy: wireOptions?.chunkingStrategy,
     language: options.language,
@@ -70,20 +66,20 @@ const transcriptionBody = (model: string, options: TranscriptionOptions, streami
   return body
 }
 
-const transcriptionSegment = (value: WireSegment): TranscriptionSegment => {
+const transcriptionSegment = (value: OpenAITranscriptionsSegment): TranscriptionSegment => {
   const metadata = {
-    ...(value.avg_logprob == null ? {} : { avgLogprob: value.avg_logprob }),
-    ...(value.compression_ratio == null ? {} : { compressionRatio: value.compression_ratio }),
-    ...(value.no_speech_prob == null ? {} : { noSpeechProb: value.no_speech_prob }),
-    ...(value.seek == null ? {} : { seek: value.seek }),
-    ...(value.temperature == null ? {} : { temperature: value.temperature }),
-    ...(value.tokens == null ? {} : { tokens: value.tokens }),
+    avgLogprob: value.avg_logprob,
+    compressionRatio: value.compression_ratio,
+    noSpeechProb: value.no_speech_prob,
+    seek: value.seek,
+    speaker: value.speaker,
+    temperature: value.temperature,
+    tokens: value.tokens,
   }
   return {
     endSecond: value.end,
-    ...(value.id == null ? {} : { id: String(value.id) }),
-    ...(Object.keys(metadata).length === 0 ? {} : { providerMetadata: { transcriptions: metadata } }),
-    ...(value.speaker == null ? {} : { speakerId: value.speaker }),
+    id: value.id?.toString(),
+    providerMetadata: Object.values(metadata).some(value => value != null) ? { transcriptions: metadata } : undefined,
     startSecond: value.start,
     text: value.text,
   }
@@ -92,23 +88,18 @@ const transcriptionSegment = (value: WireSegment): TranscriptionSegment => {
 const transcriptionResult = (value: unknown): TranscriptionResult => {
   if (value == null || typeof value !== 'object' || !('text' in value) || typeof value.text !== 'string')
     throw new XSAIError('invalid-response', 'Expected transcription text to be a string', { cause: value })
-  const result = value as WireResult
-  const languages = result.languages?.map(language => language.code) ?? (result.language == null ? undefined : [result.language])
+  const result = value as OpenAITranscriptionsResult
   return {
-    ...(result.duration == null ? {} : { durationInSeconds: result.duration }),
-    ...(languages == null ? {} : { languages }),
-    ...(result.segments == null ? {} : { segments: result.segments.map(transcriptionSegment) }),
+    durationInSeconds: result.duration,
+    language: result.language,
+    segments: result.segments?.map(transcriptionSegment),
     text: result.text,
-    ...(result.words == null
-      ? {}
-      : {
-          words: result.words.map(word => ({
-            endSecond: word.end,
-            ...(word.probability == null ? {} : { providerMetadata: { transcriptions: { probability: word.probability } } }),
-            startSecond: word.start,
-            text: word.word,
-          })),
-        }),
+    words: result.words?.map(word => ({
+      endSecond: word.end,
+      providerMetadata: word.probability == null ? undefined : { transcriptions: { probability: word.probability } },
+      startSecond: word.start,
+      text: word.word,
+    })),
   }
 }
 
@@ -123,7 +114,7 @@ class TranscriptionEventStream extends TransformStream<EventSourceMessage, Trans
       transform: ({ data }, output) => {
         if (data === '' || data === '[DONE]')
           return
-        const event = JSON.parse(data) as WireEvent
+        const event = JSON.parse(data) as OpenAITranscriptionsEvent
         if (event == null || typeof event !== 'object')
           throw new XSAIError('invalid-response', 'Expected a transcription event object', { cause: event })
         if (event.type === 'error' || ('error' in event && event.error != null))
@@ -131,7 +122,7 @@ class TranscriptionEventStream extends TransformStream<EventSourceMessage, Trans
         if (event.type === 'transcript.text.delta') {
           output.enqueue({
             delta: event.delta,
-            ...(event.segment_id == null ? {} : { segmentId: event.segment_id }),
+            segmentId: event.segment_id,
             type: 'transcription.text.delta',
           })
         }
@@ -141,9 +132,10 @@ class TranscriptionEventStream extends TransformStream<EventSourceMessage, Trans
           output.enqueue({ ...segment, type: 'transcription.text.segment' })
         }
         else if (event.type === 'transcript.text.done') {
+          const result = transcriptionResult(event)
           output.enqueue({
-            ...transcriptionResult(event),
-            ...(segments.length === 0 ? {} : { segments }),
+            ...result,
+            segments: segments.length > 0 ? segments : result.segments,
             type: 'transcription.end',
           })
           output.terminate()
