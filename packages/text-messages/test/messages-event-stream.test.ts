@@ -230,6 +230,7 @@ describe('messages event stream', () => {
 
   it('maps provider error events to a step.end error', async () => {
     const events = await readEvents([
+      message({ content_block: { id: 'srvtoolu_1', input: {}, name: 'web_search', type: 'server_tool_use' }, index: 0, type: 'content_block_start' }),
       message({
         error: { message: 'Overloaded', type: 'overloaded_error' },
         type: 'error',
@@ -238,14 +239,16 @@ describe('messages event stream', () => {
 
     expect(events).toEqual([
       { type: 'step.start' },
+      { contentType: 'provider', index: 0, type: 'content.start' },
+      { content: { source: 'https://example.com/v1/messages', type: 'provider', value: null }, index: 0, type: 'content.end' },
       {
         error: expect.any(XSAIError) as unknown,
-        message: { content: [], role: 'assistant' },
+        message: { content: [{ source: 'https://example.com/v1/messages', type: 'provider', value: null }], role: 'assistant' },
         status: 'failed',
         type: 'step.end',
       },
     ])
-    expect((events[1] as StepEndEvent).error).toMatchObject({
+    expect((events.at(-1) as StepEndEvent).error).toMatchObject({
       cause: { message: 'Overloaded', type: 'overloaded_error' },
       code: 'model-error',
       message: 'Overloaded',
