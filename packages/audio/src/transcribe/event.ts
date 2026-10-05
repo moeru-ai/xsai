@@ -19,20 +19,12 @@ export interface TranscriptionResult {
 export interface TranscriptionSegment {
   endSecond: number
   id?: string
-  providerMetadata?: {
-    transcriptions?: {
-      avgLogprob?: number
-      compressionRatio?: number
-      noSpeechProb?: number
-      seek?: number
-      speaker?: string
-      temperature?: number
-      tokens?: number[]
-    }
-  }
+  providerMetadata?: TranscriptionSegmentMetadata
   startSecond: number
   text: string
 }
+
+export interface TranscriptionSegmentMetadata {}
 
 export interface TranscriptionStartEvent {
   type: 'transcription.start'
@@ -50,11 +42,9 @@ export interface TranscriptionTextSegmentEvent extends TranscriptionSegment {
 
 export interface TranscriptionWord {
   endSecond: number
-  providerMetadata?: {
-    transcriptions?: {
-      probability?: number
-    }
-  }
+  providerMetadata?: TranscriptionWordMetadata
   startSecond: number
   text: string
 }
+
+export interface TranscriptionWordMetadata {}

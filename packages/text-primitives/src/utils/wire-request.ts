@@ -2,9 +2,9 @@ import type { HttpOptions } from '@xsai/shared'
 
 import type { LanguageModelOptions, TextEvent } from '../core'
 
-import { postJSON } from '@xsai/shared'
+import { EventSourceParserStream, postJSON } from '@xsai/shared'
 
-import { EventSourceDataStream, EventSourceParserStream } from './event-source-stream'
+import { EventSourceDataStream } from './event-source-stream'
 
 export interface WireRequestInit {
   body: Record<string, unknown>

@@ -1,5 +1,5 @@
+import type { EventSourceMessage } from '@xsai/shared'
 import type { StepEndEvent, TextEvent } from '@xsai/text-primitives'
-import type { EventSourceMessage } from '@xsai/text-primitives/internal'
 
 import { XSAIError } from '@xsai/text-primitives'
 import { EventSourceDataStream } from '@xsai/text-primitives/internal'

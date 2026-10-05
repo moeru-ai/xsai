@@ -27,8 +27,5 @@
   },
   "dependencies": {
     "@xsai/shared": "workspace:"
-  },
-  "devDependencies": {
-    "eventsource-parser": "catalog:"
   }
 }

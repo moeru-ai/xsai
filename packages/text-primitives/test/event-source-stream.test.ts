@@ -1,4 +1,4 @@
-import type { EventSourceMessage } from '../src/internal'
+import type { EventSourceMessage } from '@xsai/shared'
 
 import { describe, expect, it } from 'vitest'
 

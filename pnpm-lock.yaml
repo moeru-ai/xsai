@@ -264,10 +264,6 @@ importers:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
-    devDependencies:
-      eventsource-parser:
-        specifier: 'catalog:'
-        version: 4.1.0
 
   packages/embed:
     dependencies:
@@ -281,7 +277,11 @@ importers:
         specifier: 'workspace:'
         version: link:../shared
 
-  packages/shared: {}
+  packages/shared:
+    devDependencies:
+      eventsource-parser:
+        specifier: 'catalog:'
+        version: 4.1.0
 
   packages/text:
     dependencies:
@@ -324,9 +324,6 @@ importers:
       '@types/json-schema':
         specifier: 'catalog:'
         version: 7.0.15
-      eventsource-parser:
-        specifier: 'catalog:'
-        version: 4.1.0
 
   packages/text-responses:
     dependencies:

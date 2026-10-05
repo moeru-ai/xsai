@@ -1,5 +1,3 @@
-import type { EmbeddingProviderOptions } from './model-embeddings'
-
 export type EmbeddingModel = (options: EmbeddingModelOptions) => Promise<EmbeddingModelResult>
 
 export interface EmbeddingModelOptions {
@@ -17,3 +15,5 @@ export interface EmbeddingModelResultUsage {
   promptTokens: number
   totalTokens: number
 }
+
+export interface EmbeddingProviderOptions {}

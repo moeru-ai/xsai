@@ -1,19 +1,37 @@
-import type { HttpOptions } from '@xsai/shared'
-import type { EventSourceMessage } from 'eventsource-parser/stream'
+import type { EventSourceMessage, HttpOptions } from '@xsai/shared'
 
 import type { TranscriptionEvent, TranscriptionResult, TranscriptionSegment } from './event'
 import type { TranscriptionModel, TranscriptionOptions } from './model'
 
-import { postJSON, XSAIError } from '@xsai/shared'
-import { EventSourceParserStream } from 'eventsource-parser/stream'
+import { EventSourceParserStream, postJSON, XSAIError } from '@xsai/shared'
 
-export interface TranscriptionProviderOptions {
-  transcriptions?: {
-    chunkingStrategy?: 'auto'
-    prompt?: string
-    responseFormat?: 'diarized_json' | 'json' | 'verbose_json'
-    temperature?: number
-    timestampGranularities?: ('segment' | 'word')[]
+declare module '@xsai/audio' {
+  interface TranscriptionProviderOptions {
+    transcriptions?: {
+      chunkingStrategy?: 'auto'
+      prompt?: string
+      responseFormat?: 'diarized_json' | 'json' | 'verbose_json'
+      temperature?: number
+      timestampGranularities?: ('segment' | 'word')[]
+    }
+  }
+
+  interface TranscriptionSegmentMetadata {
+    transcriptions?: {
+      avgLogprob?: number
+      compressionRatio?: number
+      noSpeechProb?: number
+      seek?: number
+      speaker?: string
+      temperature?: number
+      tokens?: number[]
+    }
+  }
+
+  interface TranscriptionWordMetadata {
+    transcriptions?: {
+      probability?: number
+    }
   }
 }
 

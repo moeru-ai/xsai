@@ -4,9 +4,11 @@ import type { EmbeddingModel } from './model'
 
 import { postJSON } from '@xsai/shared'
 
-export interface EmbeddingProviderOptions {
-  embeddings?: {
-    dimensions?: number
+declare module '@xsai/embed' {
+  interface EmbeddingProviderOptions {
+    embeddings?: {
+      dimensions?: number
+    }
   }
 }
 

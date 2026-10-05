@@ -1,6 +1,4 @@
-import type { EventSourceMessage } from 'eventsource-parser/stream'
-
-export { type EventSourceMessage, EventSourceParserStream } from 'eventsource-parser/stream'
+import type { EventSourceMessage } from '@xsai/shared'
 
 export const DONE = '[DONE]'
 
