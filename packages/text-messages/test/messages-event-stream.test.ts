@@ -18,7 +18,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<TextEvent[]> 
   })
   const stream = source
     .pipeThrough(new EventSourceDataStream())
-    .pipeThrough(new MessagesEventStream())
+    .pipeThrough(new MessagesEventStream('https://example.com/v1/messages'))
   const events: TextEvent[] = []
   for await (const event of stream)
     events.push(event)

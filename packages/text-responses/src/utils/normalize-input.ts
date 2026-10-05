@@ -108,7 +108,7 @@ const normalizeToolResultPart = (part: ToolResultPart): FunctionCallOutputItemPa
   type: 'function_call_output',
 })
 
-const normalizeAssistantMessage = (message: AssistantMessage): readonly ReplayItem[] => {
+const normalizeAssistantMessage = (message: AssistantMessage, source: string): readonly ReplayItem[] => {
   const createMessageItem = (content: (OutputTextContentParam | RefusalContentParam)[], includeId = true): AssistantMessageItemParam => ({
     content,
     id: includeId ? message.id : undefined,
@@ -135,7 +135,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): readonly ReplayIt
   for (const part of message.content) {
     switch (part.type) {
       case 'provider':
-        if (part.key === 'responses') {
+        if (part.source === source) {
           flushContent()
           items.push(part.value as Record<string, unknown>)
         }
@@ -204,10 +204,10 @@ const normalizeUserMessage = (message: UserMessage): ItemParam[] => {
   return items
 }
 
-const normalizeMessage = (message: Message): readonly ReplayItem[] => {
+const normalizeMessage = (message: Message, source: string): readonly ReplayItem[] => {
   switch (message.role) {
     case 'assistant':
-      return normalizeAssistantMessage(message)
+      return normalizeAssistantMessage(message, source)
     case 'developer':
       return [{
         content: typeof message.content === 'string' ? message.content : message.content.map(normalizeInputTextPart),
@@ -226,6 +226,6 @@ const normalizeMessage = (message: Message): readonly ReplayItem[] => {
 }
 
 /** @internal */
-export const normalizeInput = (input: readonly Message[] | string): ReplayItem[] => typeof input === 'string'
+export const normalizeInput = (input: readonly Message[] | string, source: string): ReplayItem[] => typeof input === 'string'
   ? [{ content: input, role: 'user', type: 'message' }]
-  : input.flatMap(normalizeMessage)
+  : input.flatMap(message => normalizeMessage(message, source))

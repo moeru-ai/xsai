@@ -1,7 +1,9 @@
 import { XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
 
-import { normalizeInput } from '../src/utils/normalize-input'
+import { normalizeInput as normalizeWireInput } from '../src/utils/normalize-input'
+
+const normalizeInput = (input: Parameters<typeof normalizeWireInput>[0]) => normalizeWireInput(input, 'https://example.com/v1/messages')
 
 describe('normalize input', () => {
   it('hoists instructions and system/developer messages into the system param', () => {

@@ -4,6 +4,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 import type { ResponsesPartMetadata } from './types/provider-metadata'
 import type { ResponsesProviderOptions } from './types/provider-options'
 
+import { requestURL } from '@xsai/shared'
 import { wireRequest } from '@xsai/text-primitives/internal'
 
 import { mergeTools, normalizeFormat, normalizeInput, normalizeToolChoice, ResponsesEventStream } from './utils'
@@ -21,11 +22,12 @@ declare module '@xsai/text-primitives' {
   }
 }
 
-export const responses = (options: HttpOptions): LanguageModel => async modelOptions =>
-  wireRequest(options, modelOptions, {
+export const responses = (options: HttpOptions): LanguageModel => async (modelOptions) => {
+  const source = requestURL('responses', options.baseURL).toString()
+  return wireRequest(options, modelOptions, {
     body: {
       include: modelOptions.providerOptions?.responses?.include,
-      input: normalizeInput(modelOptions.input),
+      input: normalizeInput(modelOptions.input, source),
       instructions: modelOptions.instructions,
       max_output_tokens: modelOptions.maxOutputTokens,
       model: options.model,
@@ -39,5 +41,6 @@ export const responses = (options: HttpOptions): LanguageModel => async modelOpt
       tools: mergeTools(modelOptions.providerOptions?.responses?.tools, modelOptions.tools),
       top_p: modelOptions.topP,
     },
-    path: 'responses',
-  }, new ResponsesEventStream(modelOptions.includeRawEvents, modelOptions.events))
+    path: source,
+  }, new ResponsesEventStream(source, modelOptions.includeRawEvents, modelOptions.events))
+}

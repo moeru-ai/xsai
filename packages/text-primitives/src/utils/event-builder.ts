@@ -57,6 +57,7 @@ export interface PartStartInit {
   /** Wire-level part identity, distinct from the tool call id when both exist. */
   id?: string
   name?: string
+  source?: string
 }
 
 interface PartState {
@@ -81,9 +82,9 @@ type TerminalState
     status: Exclude<StepStatus, 'failed'>
   }
 
-const emptyContent = (type: AssistantMessageContent['type']): AssistantMessageContent => {
+const emptyContent = (type: AssistantMessageContent['type'], init?: PartStartInit): AssistantMessageContent => {
   switch (type) {
-    case 'provider': return { key: '', type, value: null }
+    case 'provider': return { source: init?.source ?? '', type, value: null }
     case 'reasoning': return { content: [], type }
     case 'refusal': return { refusal: '', type }
     case 'text': return { text: '', type }
@@ -322,7 +323,7 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
         name: init?.name,
       }
       states.set(key, state)
-      parts.push(emptyContent(type))
+      parts.push(emptyContent(type, init))
       emit({ contentType: type, index, type: 'content.start' })
     },
   }

@@ -64,9 +64,10 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
   private FinishReason?: null | string
   private readonly providerBlocks = new Map<number, { block: Record<string, unknown>, input: string }>()
   private readonly signatures = new Map<number, string>()
+  private readonly source: string
   private startUsage?: MessagesUsage
 
-  constructor(includeRawEvents = false, events?: EventTarget) {
+  constructor(source: string, includeRawEvents = false, events?: EventTarget) {
     super((event, builder) => {
       switch (event.type) {
         case 'content_block_delta':
@@ -103,6 +104,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           break
       }
     }, includeRawEvents, events)
+    this.source = source
   }
 
   private onDelta(builder: EventBuilder, event: ContentBlockDeltaEvent): void {
@@ -168,7 +170,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
         builder.start(event.index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
         break
       default:
-        builder.start(event.index, 'provider')
+        builder.start(event.index, 'provider', { source: this.source })
         this.providerBlocks.set(event.index, { block, input: '' })
     }
   }
@@ -180,7 +182,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
       const value = provider.input === ''
         ? provider.block
         : { ...provider.block, input: JSON.parse(provider.input) as unknown }
-      builder.end(event.index, { content: { key: 'messages', type: 'provider', value } })
+      builder.end(event.index, { content: { source: this.source, type: 'provider', value } })
       return
     }
 

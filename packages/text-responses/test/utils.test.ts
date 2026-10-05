@@ -2,8 +2,10 @@ import type { Message, Tool } from '@xsai/text-primitives'
 
 import { describe, expect, it } from 'vitest'
 
-import { normalizeInput } from '../src/utils/normalize-input'
+import { normalizeInput as normalizeWireInput } from '../src/utils/normalize-input'
 import { normalizeTools } from '../src/utils/normalize-tools'
+
+const normalizeInput = (input: Parameters<typeof normalizeWireInput>[0]) => normalizeWireInput(input, 'https://example.com/v1/responses')
 
 describe('normalizeInput', () => {
   it('normalizes a string to a user message', () => {

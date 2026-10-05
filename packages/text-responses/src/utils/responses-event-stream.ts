@@ -104,7 +104,7 @@ interface NormalizedPart {
   key?: PartKey
 }
 
-const normalizeOutputItem = (item: Responses.ItemField, index: number): NormalizedOutputItem => {
+const normalizeOutputItem = (item: Responses.ItemField, index: number, source: string): NormalizedOutputItem => {
   if (item.type === 'function_call_output')
     return {}
   if (item.type === 'function_call')
@@ -118,15 +118,15 @@ const normalizeOutputItem = (item: Responses.ItemField, index: number): Normaliz
   }
   if (item.type === 'reasoning')
     return { parts: [{ content: normalizeReasoningPart(item) }] }
-  return { parts: [{ content: { key: 'responses', type: 'provider', value: item } }] }
+  return { parts: [{ content: { source, type: 'provider', value: item } }] }
 }
 
-const normalizeAssistantMessage = (output: Responses.ItemField[]): AssistantMessage => {
+const normalizeAssistantMessage = (output: Responses.ItemField[], source: string): AssistantMessage => {
   const content: AssistantMessageContent[] = []
   let id: string | undefined
 
   for (const [index, item] of output.entries()) {
-    const normalized = normalizeOutputItem(item, index)
+    const normalized = normalizeOutputItem(item, index, source)
     for (const part of normalized.parts ?? [])
       content.push(part.content)
     if (normalized.messageId != null)
@@ -173,8 +173,8 @@ const normalizeStatus = (response: Responses.ResponseResource): StepStatus => {
   }
 }
 
-const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
-  const normalized = normalizeOutputItem(item, index)
+const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: number, source: string): void => {
+  const normalized = normalizeOutputItem(item, index, source)
   for (const part of normalized.parts ?? []) {
     if (part.content.type !== 'provider')
       builder.start(part.key ?? index, part.content.type, part.init)
@@ -183,22 +183,22 @@ const onItemAdded = (builder: EventBuilder, item: Responses.ItemField, index: nu
     builder.meta({ messageId: normalized.messageId })
 }
 
-const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: number): void => {
+const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: number, source: string): void => {
   // The done item is authoritative, including parts without deltas.
-  for (const part of normalizeOutputItem(item, index).parts ?? []) {
+  for (const part of normalizeOutputItem(item, index, source).parts ?? []) {
     const key = part.key ?? index
     builder.start(key, part.content.type, part.init)
     builder.end(key, { content: part.content })
   }
 }
 
-const finishResponse = (builder: EventBuilder, response: Responses.ResponseResource): void => {
+const finishResponse = (builder: EventBuilder, response: Responses.ResponseResource, source: string): void => {
   const status = normalizeStatus(response)
   if (response.usage != null)
     builder.meta({ usage: normalizeUsage(response.usage) })
   for (const [index, item] of response.output.entries())
-    onItemDone(builder, item, index)
-  const message = normalizeAssistantMessage(response.output)
+    onItemDone(builder, item, index, source)
+  const message = normalizeAssistantMessage(response.output, source)
   if (status === 'failed') {
     const error = new XSAIError('model-error', response.error?.message ?? 'response failed', {
       cause: response.error ?? undefined,
@@ -213,7 +213,7 @@ const finishResponse = (builder: EventBuilder, response: Responses.ResponseResou
 }
 
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
-  constructor(includeRawEvents = false, events?: EventTarget) {
+  constructor(source: string, includeRawEvents = false, events?: EventTarget) {
     super((event, builder) => {
       switch (event.type) {
         case 'error':
@@ -225,7 +225,7 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
         case 'response.failed':
         case 'response.incomplete':
           // The terminal response is authoritative and may arrive without item events.
-          finishResponse(builder, event.response)
+          finishResponse(builder, event.response, source)
           break
         case 'response.content_part.added': {
           const content = normalizeContentPart(event.part)
@@ -261,11 +261,11 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           break
         case 'response.output_item.added':
           if (event.item != null)
-            onItemAdded(builder, event.item, event.output_index)
+            onItemAdded(builder, event.item, event.output_index, source)
           break
         case 'response.output_item.done':
           if (event.item != null)
-            onItemDone(builder, event.item, event.output_index)
+            onItemDone(builder, event.item, event.output_index, source)
           break
         case 'response.output_text.delta':
         case 'response.refusal.delta': {

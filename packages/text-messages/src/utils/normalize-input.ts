@@ -129,10 +129,10 @@ const normalizeUserPart = (part: UserMessageContent): ContentBlock => {
   }
 }
 
-const normalizeAssistantPart = (part: AssistantMessageContent): ContentBlock[] => {
+const normalizeAssistantPart = (part: AssistantMessageContent, source: string): ContentBlock[] => {
   switch (part.type) {
     case 'provider':
-      return part.key === 'messages' ? [part.value as ContentBlock] : []
+      return part.source === source ? [part.value as ContentBlock] : []
     case 'reasoning':
       return normalizeReasoningPart(part)
     case 'refusal':
@@ -151,10 +151,10 @@ const normalizeUserMessage = (message: UserMessage): InputMessage => ({
   role: 'user',
 })
 
-const normalizeAssistantMessage = (message: AssistantMessage): InputMessage | undefined => {
+const normalizeAssistantMessage = (message: AssistantMessage, source: string): InputMessage | undefined => {
   const content: ContentBlock[] = typeof message.content === 'string'
     ? [{ text: message.content, type: 'text' }]
-    : message.content.flatMap(normalizeAssistantPart)
+    : message.content.flatMap(part => normalizeAssistantPart(part, source))
   return content.length === 0 ? undefined : { content, role: 'assistant' }
 }
 
@@ -168,7 +168,7 @@ const systemText = (content: readonly SystemMessageContent[] | string): TextBloc
   : content.map(normalizeInputTextPart)
 
 /** @internal */
-export const normalizeInput = (options: LanguageModelOptions): NormalizedInput => {
+export const normalizeInput = (options: LanguageModelOptions, source: string): NormalizedInput => {
   const system: TextBlock[] = []
   const messages: InputMessage[] = []
 
@@ -181,7 +181,7 @@ export const normalizeInput = (options: LanguageModelOptions): NormalizedInput =
     switch (message.role) {
       case 'assistant':
         {
-          const assistant = normalizeAssistantMessage(message)
+          const assistant = normalizeAssistantMessage(message, source)
           if (assistant != null)
             messages.push(assistant)
         }

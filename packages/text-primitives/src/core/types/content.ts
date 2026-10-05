@@ -27,7 +27,7 @@ export interface ImagePart {
 }
 
 export interface ProviderPart {
-  key: string
+  source: string
   type: 'provider'
   value: unknown
 }

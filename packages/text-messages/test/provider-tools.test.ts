@@ -10,6 +10,7 @@ const sseResponse = (events: unknown[]): Response => new Response(events.map(eve
 describe('messages provider tools', () => {
   it('replays a web fetch result and skips foreign provider-only assistant messages', async () => {
     const requests: Record<string, unknown>[] = []
+    const urls: string[] = []
     const fetchUse = { id: 'srvtoolu_01234567890abcdef', input: { url: 'https://example.com/article' }, name: 'web_fetch', type: 'server_tool_use' }
     const fetchResult = {
       content: {
@@ -22,8 +23,9 @@ describe('messages provider tools', () => {
       type: 'web_fetch_tool_result',
     }
     const model = messages({
-      baseURL: 'https://example.com/v1/',
-      fetch: async (_input, init) => {
+      baseURL: 'https://example.com/v1',
+      fetch: async (input, init) => {
+        urls.push(input.toString())
         requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
         return requests.length === 1
           ? sseResponse([
@@ -45,13 +47,15 @@ describe('messages provider tools', () => {
       if (event.type === 'step.end')
         step = event
     }
+    expect(urls).toEqual(['https://example.com/v1/messages'])
     expect(step?.message.content).toEqual([
-      { key: 'messages', type: 'provider', value: fetchUse },
-      { key: 'messages', type: 'provider', value: fetchResult },
+      { source: 'https://example.com/v1/messages', type: 'provider', value: fetchUse },
+      { source: 'https://example.com/v1/messages', type: 'provider', value: fetchResult },
     ])
 
     await collect(await model({ input: [
-      { content: [{ key: 'responses', type: 'provider', value: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' } }], role: 'assistant' },
+      { content: [{ source: 'https://example.com/v1/responses', type: 'provider', value: { action: { queries: ['xsai'], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' } }], role: 'assistant' },
+      { content: [{ source: 'https://other.example/v1/messages', type: 'provider', value: fetchUse }], role: 'assistant' },
       step!.message,
       { content: 'more', role: 'user' },
     ], maxOutputTokens: 100 }))
@@ -63,11 +67,13 @@ describe('messages provider tools', () => {
 
   it('streams and replays a web search call, encrypted result, and cited text', async () => {
     const requests: Record<string, unknown>[] = []
+    const urls: string[] = []
     const citation = { cited_text: 'Result', encrypted_index: 'enc_1', title: 'Source', type: 'web_search_result_location', url: 'https://example.com' }
     const searchResult = { content: [{ encrypted_content: 'secret', title: 'Source', type: 'web_search_result', url: 'https://example.com' }], tool_use_id: 'srvtoolu_01ABC123', type: 'web_search_tool_result' }
     const model = messages({
-      baseURL: 'https://example.com/v1/',
-      fetch: async (_input, init) => {
+      baseURL: new URL('https://example.com/v1/'),
+      fetch: async (input, init) => {
+        urls.push(input.toString())
         requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
         return requests.length === 1
           ? sseResponse([
@@ -92,9 +98,10 @@ describe('messages provider tools', () => {
     for await (const event of await model({ input: 'search', maxOutputTokens: 100 }))
       events.push(event)
 
+    expect(urls).toEqual(['https://example.com/v1/messages'])
     const content = [
-      { key: 'messages', type: 'provider', value: { id: 'srvtoolu_01ABC123', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' } },
-      { key: 'messages', type: 'provider', value: searchResult },
+      { source: 'https://example.com/v1/messages', type: 'provider', value: { id: 'srvtoolu_01ABC123', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' } },
+      { source: 'https://example.com/v1/messages', type: 'provider', value: searchResult },
       { providerMetadata: { messages: { citations: [citation] } }, text: 'Found', type: 'text' },
     ]
     expect(events.filter(event => event.type === 'content.start')).toEqual([

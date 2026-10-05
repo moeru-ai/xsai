@@ -18,7 +18,7 @@ const readEvents = async (messages: EventSourceMessage[]): Promise<TextEvent[]> 
   })
   const stream = source
     .pipeThrough(new EventSourceDataStream())
-    .pipeThrough(new ResponsesEventStream())
+    .pipeThrough(new ResponsesEventStream('https://example.com/v1/responses'))
   const events: TextEvent[] = []
   for await (const event of stream)
     events.push(event)
@@ -158,7 +158,7 @@ describe('responses event stream', () => {
 
     expect(events.at(-1)).toMatchObject({
       message: {
-        content: [{ key: 'responses', type: 'provider', value: hostedSearch }, { text: 'Found it', type: 'text' }],
+        content: [{ source: 'https://example.com/v1/responses', type: 'provider', value: hostedSearch }, { text: 'Found it', type: 'text' }],
       },
       status: 'completed',
       type: 'step.end',

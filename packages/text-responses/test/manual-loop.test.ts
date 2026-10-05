@@ -13,6 +13,7 @@ const sseResponse = (events: unknown[]): Response => new Response([
 describe('manual tool loop', () => {
   it('skips foreign provider parts and replays file search with its citation', async () => {
     const requests: Record<string, unknown>[] = []
+    const urls: string[] = []
     const fileSearch = {
       id: 'fs_67c09ccea8c48191ade9367e3ba71515',
       queries: ['What is deep research?'],
@@ -24,8 +25,9 @@ describe('manual tool loop', () => {
     const answer = { content: [{ annotations: [citation], text: 'Deep research cites research.pdf.', type: 'output_text' }], id: 'msg_1', role: 'assistant', status: 'completed', type: 'message' }
     const foreignUse = { id: 'srvtoolu_01ABC123', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' }
     const model = responses({
-      baseURL: 'https://example.com/v1/',
-      fetch: async (_input, init) => {
+      baseURL: 'https://example.com/v1',
+      fetch: async (input, init) => {
+        urls.push(input.toString())
         requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
         return sseResponse([{ response: { output: requests.length === 1 ? [fileSearch, answer] : [], status: 'completed' }, type: 'response.completed' }])
       },
@@ -37,15 +39,17 @@ describe('manual tool loop', () => {
       if (event.type === 'step.end')
         step = event
     }
+    expect(urls).toEqual(['https://example.com/v1/responses'])
     expect(step?.message.content).toEqual([
-      { key: 'responses', type: 'provider', value: fileSearch },
+      { source: 'https://example.com/v1/responses', type: 'provider', value: fileSearch },
       { providerMetadata: { responses: { citations: [citation] } }, text: 'Deep research cites research.pdf.', type: 'text' },
     ])
     expect(requests[0].include).toEqual(['file_search_call.results'])
 
     await collect(await model({ input: [
-      { content: [{ key: 'messages', type: 'provider', value: foreignUse }], role: 'assistant' },
-      { content: [{ text: 'a', type: 'text' }, { key: 'messages', type: 'provider', value: foreignUse }, { text: 'b', type: 'text' }], role: 'assistant' },
+      { content: [{ source: 'https://example.com/v1/messages', type: 'provider', value: foreignUse }], role: 'assistant' },
+      { content: [{ text: 'a', type: 'text' }, { source: 'https://example.com/v1/messages', type: 'provider', value: foreignUse }, { text: 'b', type: 'text' }], role: 'assistant' },
+      { content: [{ source: 'https://other.example/v1/responses', type: 'provider', value: fileSearch }], role: 'assistant' },
       step!.message,
       { content: 'more', role: 'user' },
     ] }))
@@ -59,12 +63,14 @@ describe('manual tool loop', () => {
 
   it('streams and replays web search output with citations and sources', async () => {
     const requests: Record<string, unknown>[] = []
+    const urls: string[] = []
     const citation = { end_index: 5, start_index: 0, title: 'Source', type: 'url_citation', url: 'https://example.com' }
     const search = { action: { queries: ['xsai'], sources: [{ type: 'url', url: 'https://example.com' }], type: 'search' }, id: 'ws_1', status: 'completed', type: 'web_search_call' }
     const answer = { content: [{ annotations: [citation], text: 'Found', type: 'output_text' }], id: 'msg_1', role: 'assistant', status: 'completed', type: 'message' }
     const model = responses({
-      baseURL: 'https://example.com/v1/',
-      fetch: async (_input, init) => {
+      baseURL: new URL('https://example.com/v1/'),
+      fetch: async (input, init) => {
+        urls.push(input.toString())
         requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
         return requests.length === 1
           ? sseResponse([
@@ -84,8 +90,9 @@ describe('manual tool loop', () => {
     }))
       events.push(event)
 
+    expect(urls).toEqual(['https://example.com/v1/responses'])
     const content = [
-      { key: 'responses', type: 'provider', value: search },
+      { source: 'https://example.com/v1/responses', type: 'provider', value: search },
       { providerMetadata: { responses: { citations: [citation] } }, text: 'Found', type: 'text' },
     ]
     expect(events.filter(event => event.type === 'content.start')).toEqual([

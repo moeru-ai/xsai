@@ -10,7 +10,7 @@ export interface PostJSONInit {
   signal?: AbortSignal
 }
 
-const requestURL = (path: string, baseURL: string | URL) => {
+export const requestURL = (path: string, baseURL: string | URL) => {
   const base = baseURL.toString()
   return new URL(path, base.endsWith('/') ? base : `${base}/`)
 }

@@ -4,7 +4,7 @@ import type { LanguageModel } from '@xsai/text-primitives'
 import type { MessagesPartMetadata } from './types/provider-metadata'
 import type { MessagesProviderOptions } from './types/provider-options'
 
-import { XSAIError } from '@xsai/shared'
+import { requestURL, XSAIError } from '@xsai/shared'
 import { wireRequest } from '@xsai/text-primitives/internal'
 
 import { mergeTools, MessagesEventStream, normalizeFormat, normalizeInput, normalizeToolChoice } from './utils'
@@ -25,7 +25,8 @@ declare module '@xsai/text-primitives' {
 const ANTHROPIC_VERSION = '2023-06-01'
 
 export const messages = (options: HttpOptions): LanguageModel => async (modelOptions) => {
-  const { messages: inputMessages, system } = normalizeInput(modelOptions)
+  const source = requestURL('messages', options.baseURL).toString()
+  const { messages: inputMessages, system } = normalizeInput(modelOptions, source)
   const maxTokens = modelOptions.maxOutputTokens
   const outputFormat = normalizeFormat(modelOptions.outputFormat)
   const providerOptions = modelOptions.providerOptions?.messages
@@ -58,6 +59,6 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
       'Content-Type': 'application/json',
       'x-api-key': options.apiKey ?? options.headers?.['x-api-key'],
     },
-    path: 'messages',
-  }, new MessagesEventStream(modelOptions.includeRawEvents, modelOptions.events))
+    path: source,
+  }, new MessagesEventStream(source, modelOptions.includeRawEvents, modelOptions.events))
 }
