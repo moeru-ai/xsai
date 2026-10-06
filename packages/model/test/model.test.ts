@@ -53,7 +53,7 @@ describe('models', () => {
       apiKey: 'secret',
       baseURL: 'https://example.com/v1/',
       fetch,
-    }), { model: model.id, signal })
+    }), { id: model.id, signal })
 
     expect(result).toStrictEqual({
       id: 'qwen3.5:0.8b',
@@ -69,7 +69,7 @@ describe('models', () => {
   })
 
   it('preserves zero and empty reported values', async () => {
-    const model = models({
+    const catalog = models({
       baseURL: 'https://example.com/v1/',
       fetch: async () => Response.json({
         data: [
@@ -79,22 +79,22 @@ describe('models', () => {
       }),
     })
 
-    await expect(model.list()).resolves.toStrictEqual([
+    await expect(catalog.list()).resolves.toStrictEqual([
       { id: 'empty-values', providerMetadata: { models: { created: 0, ownedBy: '' } } },
     ])
   })
 
   it('returns an empty model list without inventing entries', async () => {
-    const model = models({
+    const catalog = models({
       baseURL: 'https://example.com/v1/',
       fetch: async () => Response.json({ data: [], object: 'list' }),
     })
 
-    await expect(listModels(model)).resolves.toStrictEqual([])
+    await expect(listModels(catalog)).resolves.toStrictEqual([])
   })
 
   it('retrieves different models with one factory and discards extra wire fields', async () => {
-    const model = models({
+    const catalog = models({
       baseURL: 'https://example.com/v1/',
       fetch: async input => Response.json({
         created: 1_700_000_000,
@@ -105,11 +105,11 @@ describe('models', () => {
       }),
     })
 
-    await expect(retrieveModel(model, { model: 'first-model' })).resolves.toStrictEqual({
+    await expect(retrieveModel(catalog, { id: 'first-model' })).resolves.toStrictEqual({
       id: 'first-model',
       providerMetadata: { models: { created: 1_700_000_000, ownedBy: 'library' } },
     })
-    await expect(retrieveModel(model, { model: 'second-model' })).resolves.toStrictEqual({
+    await expect(retrieveModel(catalog, { id: 'second-model' })).resolves.toStrictEqual({
       id: 'second-model',
       providerMetadata: { models: { created: 1_700_000_000, ownedBy: 'library' } },
     })
@@ -117,7 +117,7 @@ describe('models', () => {
 
   it('treats a model identifier as one URL path segment', async () => {
     const requests: string[] = []
-    const model = models({
+    const catalog = models({
       baseURL: 'https://example.com/v1/',
       fetch: async (input) => {
         requests.push(input.toString())
@@ -125,13 +125,13 @@ describe('models', () => {
       },
     })
 
-    await expect(retrieveModel(model, { model: 'org/model?revision=1#fragment' })).resolves.toMatchObject({ id: 'org/model?revision=1#fragment' })
+    await expect(retrieveModel(catalog, { id: 'org/model?revision=1#fragment' })).resolves.toMatchObject({ id: 'org/model?revision=1#fragment' })
     expect(requests).toStrictEqual(['https://example.com/v1/models/org%2Fmodel%3Frevision%3D1%23fragment'])
   })
 
   it('preserves a model-not-found HTTP error without retrying', async () => {
     let calls = 0
-    const model = models({
+    const catalog = models({
       baseURL: 'https://example.com/v1/',
       fetch: async () => {
         calls++
@@ -139,7 +139,7 @@ describe('models', () => {
       },
     })
 
-    await expect(retrieveModel(model, { model: 'missing-model' })).rejects.toMatchObject({
+    await expect(retrieveModel(catalog, { id: 'missing-model' })).rejects.toMatchObject({
       body: 'model not found',
       code: 'http-error',
       status: 404,
@@ -148,28 +148,28 @@ describe('models', () => {
   })
 
   it('preserves list HTTP errors', async () => {
-    const model = models({
+    const catalog = models({
       baseURL: 'https://example.com/v1/',
       fetch: async () => new Response('rate limited', { status: 429 }),
     })
 
-    await expect(listModels(model)).rejects.toMatchObject({ body: 'rate limited', code: 'http-error', status: 429 })
+    await expect(listModels(catalog)).rejects.toMatchObject({ body: 'rate limited', code: 'http-error', status: 429 })
   })
 
   it('preserves the cause of connection failures', async () => {
     const cause = new Error('Connection refused')
-    const model = models({
+    const catalog = models({
       baseURL: 'https://example.com/v1/',
       fetch: async () => { throw cause },
     })
 
-    await expect(listModels(model)).rejects.toMatchObject({ cause, code: 'network-error' })
+    await expect(listModels(catalog)).rejects.toMatchObject({ cause, code: 'network-error' })
   })
 
   it('preserves cancellation for both operations', async () => {
     const reason = new Error('Stop model request')
     const signal = AbortSignal.abort(reason)
-    const model = models({
+    const catalog = models({
       baseURL: 'https://example.com/v1/',
       fetch: async (_, init) => {
         init!.signal!.throwIfAborted()
@@ -177,7 +177,7 @@ describe('models', () => {
       },
     })
 
-    await expect(listModels(model, { signal })).rejects.toBe(reason)
-    await expect(retrieveModel(model, { model: 'some-model', signal })).rejects.toBe(reason)
+    await expect(listModels(catalog, { signal })).rejects.toBe(reason)
+    await expect(retrieveModel(catalog, { id: 'some-model', signal })).rejects.toBe(reason)
   })
 })

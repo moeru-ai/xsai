@@ -1,18 +1,20 @@
-export interface RetrieveModel {
-  list: (options?: RetrieveModelOptions) => Promise<RetrieveModelResult[]>
-  retrieve: (options: RetrieveModelOptions & { model: string }) => Promise<RetrieveModelResult>
+import type { Promisable } from '@xsai/shared'
+
+export interface ModelCatalog {
+  list: (options?: ModelCatalogOptions) => Promisable<ModelCatalogEntry[]>
+  retrieve: (options: ModelCatalogOptions & { id: string }) => Promisable<ModelCatalogEntry>
 }
 
-export interface RetrieveModelOptions {
-  providerOptions?: RetrieveModelProviderOptions
+export interface ModelCatalogEntry {
+  id: string
+  providerMetadata?: ModelCatalogProviderMetadata
+}
+
+export interface ModelCatalogOptions {
+  providerOptions?: ModelCatalogProviderOptions
   signal?: AbortSignal
 }
 
-export interface RetrieveModelProviderMetadata {}
+export interface ModelCatalogProviderMetadata {}
 
-export interface RetrieveModelProviderOptions {}
-
-export interface RetrieveModelResult {
-  id: string
-  providerMetadata?: RetrieveModelProviderMetadata
-}
+export interface ModelCatalogProviderOptions {}

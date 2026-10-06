@@ -6,18 +6,18 @@ import { listModels, models, retrieveModel } from '../src'
 
 const baseURL = env.XSAI_E2E_BASE_URL!
 const modelIds = [env.XSAI_E2E_MODEL!, env.XSAI_E2E_MODEL_EMBED!]
-const model = models({ baseURL })
+const catalog = models({ baseURL })
 
 describe('model e2e', () => {
   it('lists the configured Ollama text and embedding models', async () => {
-    const result = await listModels(model)
+    const result = await listModels(catalog)
 
     for (const id of modelIds)
       expect(result.some(model => model.id === id), `expected Ollama to list ${id}`).toBe(true)
   })
 
   it.each(modelIds)('retrieves the Ollama model %s', async (id) => {
-    const result = await retrieveModel(model, { model: id })
+    const result = await retrieveModel(catalog, { id })
 
     expect(result).toMatchObject({ id })
   })

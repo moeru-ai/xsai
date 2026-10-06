@@ -1,4 +1,4 @@
-import type { RetrieveModel, RetrieveModelOptions } from './model'
+import type { ModelCatalog, ModelCatalogOptions } from './model'
 
-export const retrieveModel = async (model: RetrieveModel, options: RetrieveModelOptions & { model: string }) =>
-  model.retrieve(options)
+export const retrieveModel = async (catalog: ModelCatalog, options: ModelCatalogOptions & { id: string }) =>
+  catalog.retrieve(options)
