@@ -13,8 +13,8 @@ describe('embed e2e', () => {
 
     expect(result.embedding.length).toBeGreaterThan(0)
     expect(result.embedding.every(Number.isFinite)).toBe(true)
-    expect(result.usage.promptTokens).toBeGreaterThan(0)
-    expect(result.usage.totalTokens).toBeGreaterThanOrEqual(result.usage.promptTokens)
+    expect(result.usage?.inputTokens).toBeGreaterThan(0)
+    expect(result.usage?.totalTokens).toBeGreaterThanOrEqual(result.usage!.inputTokens)
   })
 
   it('embeds a batch through the local Ollama Embeddings API', async () => {
@@ -25,7 +25,7 @@ describe('embed e2e', () => {
     expect(result.embeddings[1]?.length).toBe(result.embeddings[0]?.length)
     expect(result.embeddings[0]).not.toEqual(result.embeddings[1])
     expect(result.embeddings.every(embedding => embedding.every(Number.isFinite))).toBe(true)
-    expect(result.usage.promptTokens).toBeGreaterThan(0)
-    expect(result.usage.totalTokens).toBeGreaterThanOrEqual(result.usage.promptTokens)
+    expect(result.usage?.inputTokens).toBeGreaterThan(0)
+    expect(result.usage?.totalTokens).toBeGreaterThanOrEqual(result.usage!.inputTokens)
   })
 })

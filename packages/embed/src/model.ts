@@ -1,19 +1,21 @@
-export type EmbeddingModel = (options: EmbeddingModelOptions) => Promise<EmbeddingModelResult>
+import type { Promisable } from '@xsai/shared'
+
+export type EmbeddingModel = (options: EmbeddingModelOptions) => Promisable<EmbeddingModelResult>
 
 export interface EmbeddingModelOptions {
   input: string | string[]
-  providerOptions?: EmbeddingProviderOptions
+  providerOptions?: EmbeddingModelProviderOptions
   signal?: AbortSignal
 }
 
+export interface EmbeddingModelProviderOptions {}
+
 export interface EmbeddingModelResult {
   embeddings: number[][]
-  usage: EmbeddingModelResultUsage
+  usage?: EmbeddingModelResultUsage
 }
 
 export interface EmbeddingModelResultUsage {
-  promptTokens: number
+  inputTokens: number
   totalTokens: number
 }
-
-export interface EmbeddingProviderOptions {}

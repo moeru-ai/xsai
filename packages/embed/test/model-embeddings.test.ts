@@ -27,7 +27,7 @@ describe('embeddings', () => {
       signal,
     })
 
-    expect(result).toEqual({ embeddings: [[0.25, -0.5]], usage: { promptTokens: 3, totalTokens: 3 } })
+    expect(result).toEqual({ embeddings: [[0.25, -0.5]], usage: { inputTokens: 3, totalTokens: 3 } })
     expect(requests).toHaveLength(1)
     expect(requests[0]?.input.toString()).toBe('https://example.com/v1/embeddings')
     expect(requests[0]?.init).toMatchObject({
@@ -63,13 +63,23 @@ describe('embeddings', () => {
 
     const result = await model({ input: ['first', 'second', 'third'] })
 
-    expect(result).toEqual({ embeddings: [[1], [2], [3]], usage: { promptTokens: 6, totalTokens: 6 } })
+    expect(result).toEqual({ embeddings: [[1], [2], [3]], usage: { inputTokens: 6, totalTokens: 6 } })
     expect(requests).toHaveLength(1)
     expect(requests[0]?.input.toString()).toBe('https://example.com/v1/embeddings')
     expect(JSON.parse(requests[0].init!.body as string)).toEqual({
       input: ['first', 'second', 'third'],
       model: 'embedding-model',
     })
+  })
+
+  it('accepts a response without usage', async () => {
+    const model = embeddings({
+      baseURL: 'https://example.com/v1/',
+      fetch: async () => Response.json({ data: [{ embedding: [1, 2], index: 0 }] }),
+      model: 'embedding-model',
+    })
+
+    await expect(model({ input: 'hello' })).resolves.toEqual({ embeddings: [[1, 2]] })
   })
 
   it('propagates HTTP errors', async () => {
