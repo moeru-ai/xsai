@@ -1,12 +1,12 @@
 import type { EventSourceMessage, HttpOptions } from '@xsai/shared'
 
 import type { TranscriptionEvent, TranscriptionResult, TranscriptionSegment } from './event'
-import type { TranscriptionModel, TranscriptionOptions } from './model'
+import type { TranscriptionModel, TranscriptionModelOptions } from './model'
 
 import { EventSourceParserStream, postJSON, XSAIError } from '@xsai/shared'
 
 declare module '@xsai/audio' {
-  interface TranscriptionProviderOptions {
+  interface TranscriptionModelProviderOptions {
     transcriptions?: {
       chunkingStrategy?: 'auto'
       prompt?: string
@@ -16,7 +16,7 @@ declare module '@xsai/audio' {
     }
   }
 
-  interface TranscriptionSegmentMetadata {
+  interface TranscriptionSegmentProviderMetadata {
     transcriptions?: {
       avgLogprob?: number
       compressionRatio?: number
@@ -28,7 +28,7 @@ declare module '@xsai/audio' {
     }
   }
 
-  interface TranscriptionWordMetadata {
+  interface TranscriptionWordProviderMetadata {
     transcriptions?: {
       probability?: number
     }
@@ -63,7 +63,7 @@ interface OpenAITranscriptionsSegment {
   tokens?: number[]
 }
 
-const transcriptionBody = (model: string, options: TranscriptionOptions, streaming = false): FormData => {
+const transcriptionBody = (model: string, options: TranscriptionModelOptions, streaming = false): FormData => {
   const wireOptions = options.providerOptions?.transcriptions
   const body = new FormData()
   body.append('file', options.audio, options.fileName)

@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 import { listModels, retrieveModel } from '../src'
 
 declare module '@xsai/model' {
-  interface ModelCatalogProviderMetadata {
+  interface ModelCatalogEntryProviderMetadata {
     registry?: {
       displayName: string
       region: string

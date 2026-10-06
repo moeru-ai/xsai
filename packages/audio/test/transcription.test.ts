@@ -1,4 +1,4 @@
-import type { TranscriptionProviderOptions } from '../src'
+import type { TranscriptionModelProviderOptions } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
@@ -102,7 +102,7 @@ describe('transcription', () => {
     })
   })
 
-  it.each<{ expected: string[], options: NonNullable<TranscriptionProviderOptions['transcriptions']> }>([
+  it.each<{ expected: string[], options: NonNullable<TranscriptionModelProviderOptions['transcriptions']> }>([
     { expected: [], options: {} },
     { expected: [], options: { responseFormat: 'diarized_json' } },
     { expected: ['segment'], options: { responseFormat: 'verbose_json' } },

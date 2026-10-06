@@ -5,15 +5,15 @@ export type ImageModel = (options: ImageModelOptions) => Promisable<ImageModelRe
 export interface ImageModelOptions {
   input: string
   n?: number
-  providerOptions?: ImageProviderOptions
+  providerOptions?: ImageModelProviderOptions
   signal?: AbortSignal
   size?: `${number}x${number}`
 }
 
+export interface ImageModelProviderOptions {}
+
 export interface ImageModelResult {
   images: Blob[]
-  providerMetadata?: ImageProviderMetadata
+  providerMetadata?: ImageModelResultProviderMetadata
 }
-
-export interface ImageProviderMetadata {}
-export interface ImageProviderOptions {}
+export interface ImageModelResultProviderMetadata {}

@@ -5,7 +5,7 @@ import type { SpeechModel } from './model'
 import { postJSON, XSAIError } from '@xsai/shared'
 
 declare module '@xsai/audio' {
-  interface SpeechProviderOptions {
+  interface SpeechModelProviderOptions {
     speech?: {
       instructions?: string
       outputFormat?: 'aac' | 'flac' | 'mp3' | 'opus' | 'wav'

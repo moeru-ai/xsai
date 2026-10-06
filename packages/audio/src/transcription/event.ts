@@ -19,12 +19,12 @@ export interface TranscriptionResult {
 export interface TranscriptionSegment {
   endSecond: number
   id?: string
-  providerMetadata?: TranscriptionSegmentMetadata
+  providerMetadata?: TranscriptionSegmentProviderMetadata
   startSecond: number
   text: string
 }
 
-export interface TranscriptionSegmentMetadata {}
+export interface TranscriptionSegmentProviderMetadata {}
 
 export interface TranscriptionStartEvent {
   type: 'transcription.start'
@@ -42,9 +42,9 @@ export interface TranscriptionTextSegmentEvent extends TranscriptionSegment {
 
 export interface TranscriptionWord {
   endSecond: number
-  providerMetadata?: TranscriptionWordMetadata
+  providerMetadata?: TranscriptionWordProviderMetadata
   startSecond: number
   text: string
 }
 
-export interface TranscriptionWordMetadata {}
+export interface TranscriptionWordProviderMetadata {}

@@ -5,11 +5,11 @@ import { describe, expect, it } from 'vitest'
 import { generateImage } from '../src'
 
 declare module '@xsai/image' {
-  interface ImageProviderMetadata {
+  interface ImageModelProviderOptions {
     custom?: { label: string }
   }
 
-  interface ImageProviderOptions {
+  interface ImageModelResultProviderMetadata {
     custom?: { label: string }
   }
 }

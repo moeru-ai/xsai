@@ -5,18 +5,18 @@ import type { ImageModel, ImageModelResult } from './model'
 import { postJSON, XSAIError } from '@xsai/shared'
 
 declare module '@xsai/image' {
-  interface ImageProviderMetadata {
-    generations?: {
-      images?: { revisedPrompt?: string }[]
-    }
-  }
-
-  interface ImageProviderOptions {
+  interface ImageModelProviderOptions {
     generations?: {
       background?: 'auto' | 'opaque' | 'transparent'
       outputCompression?: number
       outputFormat?: 'jpeg' | 'png' | 'webp'
       quality?: 'auto' | 'high' | 'low' | 'max' | 'medium' | 'xhigh'
+    }
+  }
+
+  interface ImageModelResultProviderMetadata {
+    generations?: {
+      images?: { revisedPrompt?: string }[]
     }
   }
 }

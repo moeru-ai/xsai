@@ -7,14 +7,14 @@ export interface ModelCatalog {
 
 export interface ModelCatalogEntry {
   id: string
-  providerMetadata?: ModelCatalogProviderMetadata
+  providerMetadata?: ModelCatalogEntryProviderMetadata
 }
+
+export interface ModelCatalogEntryProviderMetadata {}
 
 export interface ModelCatalogOptions {
   providerOptions?: ModelCatalogProviderOptions
   signal?: AbortSignal
 }
-
-export interface ModelCatalogProviderMetadata {}
 
 export interface ModelCatalogProviderOptions {}

@@ -1,11 +1,11 @@
 import type { TranscriptionResult } from './event'
-import type { TranscriptionModel, TranscriptionOptions } from './model'
+import type { TranscriptionModel, TranscriptionModelOptions } from './model'
 
 import { XSAIError } from '@xsai/shared'
 
 export const generateTranscription = async (
   model: TranscriptionModel,
-  options: TranscriptionOptions,
+  options: TranscriptionModelOptions,
 ): Promise<TranscriptionResult> => {
   let result: TranscriptionResult | undefined
   for await (const event of await model(options)) {

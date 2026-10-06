@@ -1,12 +1,12 @@
 import type { Promisable } from '@xsai/shared'
 
-export type SpeechModel = (options: SpeechOptions) => Promisable<Response>
+export type SpeechModel = (options: SpeechModelOptions) => Promisable<Response>
 
-export interface SpeechOptions {
+export interface SpeechModelOptions {
   input: string
-  providerOptions?: SpeechProviderOptions
+  providerOptions?: SpeechModelProviderOptions
   signal?: AbortSignal
   voice: string
 }
 
-export interface SpeechProviderOptions {}
+export interface SpeechModelProviderOptions {}

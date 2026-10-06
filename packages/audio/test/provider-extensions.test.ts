@@ -5,15 +5,15 @@ import { describe, expect, expectTypeOf, it } from 'vitest'
 import { generateTranscription } from '../src'
 
 declare module '@xsai/audio' {
-  interface TranscriptionProviderOptions {
+  interface TranscriptionModelProviderOptions {
     custom?: { language: string }
   }
 
-  interface TranscriptionSegmentMetadata {
+  interface TranscriptionSegmentProviderMetadata {
     custom?: { confidence: number }
   }
 
-  interface TranscriptionWordMetadata {
+  interface TranscriptionWordProviderMetadata {
     custom?: { tag: string }
   }
 }

@@ -5,7 +5,7 @@ import type { ModelCatalog } from './model'
 import { postJSON } from '@xsai/shared'
 
 declare module '@xsai/model' {
-  interface ModelCatalogProviderMetadata {
+  interface ModelCatalogEntryProviderMetadata {
     models?: {
       created?: number
       ownedBy?: string

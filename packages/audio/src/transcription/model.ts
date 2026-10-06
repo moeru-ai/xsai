@@ -2,14 +2,14 @@ import type { Promisable } from '@xsai/shared'
 
 import type { TranscriptionEvent } from './event'
 
-export type TranscriptionModel = (options: TranscriptionOptions) => Promisable<ReadableStream<TranscriptionEvent>>
+export type TranscriptionModel = (options: TranscriptionModelOptions) => Promisable<ReadableStream<TranscriptionEvent>>
 
-export interface TranscriptionOptions {
+export interface TranscriptionModelOptions {
   audio: Blob
   fileName?: string
   language?: string
-  providerOptions?: TranscriptionProviderOptions
+  providerOptions?: TranscriptionModelProviderOptions
   signal?: AbortSignal
 }
 
-export interface TranscriptionProviderOptions {}
+export interface TranscriptionModelProviderOptions {}

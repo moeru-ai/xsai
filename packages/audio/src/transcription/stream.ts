@@ -1,7 +1,7 @@
 import type { TranscriptionEvent } from './event'
-import type { TranscriptionModel, TranscriptionOptions } from './model'
+import type { TranscriptionModel, TranscriptionModelOptions } from './model'
 
 export const streamTranscription = async (
   model: TranscriptionModel,
-  options: TranscriptionOptions,
+  options: TranscriptionModelOptions,
 ): Promise<ReadableStream<TranscriptionEvent>> => model(options)

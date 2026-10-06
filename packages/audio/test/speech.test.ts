@@ -1,4 +1,4 @@
-import type { SpeechOptions, SpeechProviderOptions } from '../src'
+import type { SpeechModelOptions, SpeechModelProviderOptions } from '../src'
 
 import { Buffer } from 'node:buffer'
 
@@ -87,7 +87,7 @@ describe('speech', () => {
     expect(new Uint8Array(await blob.arrayBuffer())).toEqual(wav)
   })
 
-  it.each<[string | undefined, NonNullable<SpeechProviderOptions['speech']>['outputFormat'], string]>([
+  it.each<[string | undefined, NonNullable<SpeechModelProviderOptions['speech']>['outputFormat'], string]>([
     [undefined, 'mp3', 'audio/mpeg'],
     ['application/octet-stream', 'wav', 'audio/wav'],
     ['audio/ogg; codecs=opus', 'opus', 'audio/ogg; codecs=opus'],
@@ -105,9 +105,9 @@ describe('speech', () => {
   })
 
   it('requires voice and limits output formats through types', () => {
-    expectTypeOf<SpeechOptions>().toExtend<{ voice: string }>()
-    expectTypeOf<SpeechOptions['voice']>().toEqualTypeOf<string>()
-    expectTypeOf<NonNullable<SpeechProviderOptions['speech']>['outputFormat']>().toEqualTypeOf<'aac' | 'flac' | 'mp3' | 'opus' | 'wav' | undefined>()
+    expectTypeOf<SpeechModelOptions>().toExtend<{ voice: string }>()
+    expectTypeOf<SpeechModelOptions['voice']>().toEqualTypeOf<string>()
+    expectTypeOf<NonNullable<SpeechModelProviderOptions['speech']>['outputFormat']>().toEqualTypeOf<'aac' | 'flac' | 'mp3' | 'opus' | 'wav' | undefined>()
   })
 
   it.each(['audio/pcm', 'audio/opus', 'text/event-stream', 'application/json', 'audio/wav'])('rejects unexpected %s and cancels the body', async (contentType) => {
