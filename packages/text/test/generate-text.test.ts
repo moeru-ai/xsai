@@ -1,6 +1,4 @@
-import type { AssistantMessage, LanguageModel, TextEvent } from '@xsai/text-primitives'
-
-import type { GenerateTextOptions, GenerateTextResult } from '../src'
+import type { AssistantMessage, CollectResult, LanguageModel, LoopOptions, TextEvent } from '@xsai/text-primitives'
 
 import { maxSteps, TextEventTarget, toCustomEvent, tool, XSAIError } from '@xsai/text-primitives'
 import { describe, expect, it } from 'vitest'
@@ -33,9 +31,9 @@ describe('generateText', () => {
     const model: LanguageModel = ({ events }) => eventStream([
       { message, reason: 'stop', status: 'completed', type: 'step.end' },
     ], events)
-    const options: GenerateTextOptions = { events: target, input: 'hi' }
+    const options: LoopOptions = { events: target, input: 'hi' }
 
-    const result: GenerateTextResult = await generateText(model, options)
+    const result: CollectResult = await generateText(model, options)
 
     expect(result).toMatchObject({
       message,

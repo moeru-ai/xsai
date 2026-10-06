@@ -4,15 +4,12 @@ import { loop } from '@xsai/text-primitives'
 import { collectEvent, collectResult } from '@xsai/text-primitives/internal'
 
 export interface StreamTextHandle {
-  result: Promise<StreamTextResult>
+  result: Promise<CollectResult>
   stream: ReadableStream<TextEvent>
 }
 
-export type StreamTextOptions = LoopOptions
-export type StreamTextResult = CollectResult
-
-export const streamText = (model: LanguageModel, options: StreamTextOptions): StreamTextHandle => {
-  const result = Promise.withResolvers<StreamTextResult>()
+export const streamText = (model: LanguageModel, options: LoopOptions): StreamTextHandle => {
+  const result = Promise.withResolvers<CollectResult>()
   void result.promise.catch(() => {})
   const steps: StepResult[] = []
   let sourceReader: ReadableStreamDefaultReader<TextEvent> | undefined
