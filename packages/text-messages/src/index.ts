@@ -13,11 +13,11 @@ export type * from './types/provider-metadata'
 export type * from './types/provider-options'
 
 declare module '@xsai/text-primitives' {
-  interface ProviderOptions {
+  interface LanguageModelProviderOptions {
     messages?: MessagesProviderOptions
   }
 
-  interface ProviderPartMetadata {
+  interface PartProviderMetadata {
     messages?: MessagesPartMetadata
   }
 }

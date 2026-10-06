@@ -2,7 +2,7 @@ import type {
   AssistantMessage,
   AssistantMessageContent,
   FinishReason,
-  ProviderPartMetadata,
+  PartProviderMetadata,
   StepStatus,
   TextEvent,
   Usage,
@@ -44,7 +44,7 @@ export interface PartEndExtra {
   /** Authoritative part content, e.g. a Responses `output_item.done` item. */
   content?: AssistantMessageContent
   /** Attached to reasoning or text parts. */
-  providerMetadata?: ProviderPartMetadata
+  providerMetadata?: PartProviderMetadata
 }
 
 /** Adapter-assigned identity for a part. */

@@ -15,7 +15,7 @@ export interface LanguageModelOptions {
   maxOutputTokens?: number
   /** Strict structured-output schema. */
   outputFormat?: UnresolvedSchema
-  providerOptions?: ProviderOptions
+  providerOptions?: LanguageModelProviderOptions
   /** Qualitative reasoning effort; provider-specific knobs stay in `providerOptions`. */
   reasoningEffort?: 'high' | 'low' | 'max' | 'medium' | 'none' | 'xhigh' | (string & {})
   signal?: AbortSignal
@@ -25,7 +25,6 @@ export interface LanguageModelOptions {
   topP?: number
 }
 
-/** Extension point for wire-specific request options. */
-export interface ProviderOptions {}
+export interface LanguageModelProviderOptions {}
 
 export type ToolChoice = 'auto' | 'none' | 'required' | { name: string }

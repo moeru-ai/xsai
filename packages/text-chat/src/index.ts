@@ -10,7 +10,7 @@ import { ChatEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, 
 export type * from './metadata'
 
 declare module '@xsai/text-primitives' {
-  interface ProviderPartMetadata {
+  interface PartProviderMetadata {
     chat?: ChatPartMetadata
   }
 }
