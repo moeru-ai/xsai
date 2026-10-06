@@ -2,7 +2,7 @@ import type { TranscriptionModel, TranscriptionSegment, TranscriptionWord } from
 
 import { describe, expect, expectTypeOf, it } from 'vitest'
 
-import { generateTranscribe } from '../src'
+import { generateTranscription } from '../src'
 
 declare module '@xsai/audio' {
   interface TranscriptionProviderOptions {
@@ -33,7 +33,7 @@ describe('provider extensions', () => {
       },
     })
 
-    expect(await generateTranscribe(model, {
+    expect(await generateTranscription(model, {
       audio: new Blob(['audio']),
       providerOptions: { custom: { language: 'en' } },
     })).toEqual({

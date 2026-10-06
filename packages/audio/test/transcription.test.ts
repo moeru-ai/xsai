@@ -2,11 +2,11 @@ import type { TranscriptionProviderOptions } from '../src'
 
 import { describe, expect, it } from 'vitest'
 
-import { generateTranscribe, streamTranscribe, transcriptions, transcriptionsNonStreaming } from '../src'
+import { generateTranscription, streamTranscription, transcriptions, transcriptionsNonStreaming } from '../src'
 
 const audio = new File(['audio'], 'recording.wav', { type: 'audio/wav' })
 
-describe('transcribe', () => {
+describe('transcription', () => {
   it('preserves known segment and word metadata from JSON without exposing unknown fields', async () => {
     const model = transcriptionsNonStreaming({
       baseURL: 'https://example.com/v1/',
@@ -30,7 +30,7 @@ describe('transcribe', () => {
       }),
       model: 'whisper-model',
     })
-    expect(await generateTranscribe(model, { audio })).toEqual({
+    expect(await generateTranscription(model, { audio })).toEqual({
       segments: [{
         endSecond: 2,
         id: '0',
@@ -49,9 +49,9 @@ describe('transcribe', () => {
     const model = transcriptionsNonStreaming({
       baseURL: 'https://example.com/v1/',
       fetch: async () => Response.json({ language, languages: [{ code: 'en' }, { code: 'zh' }], text: 'Hello. 你好。' }),
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    expect(await generateTranscribe(model, { audio, language: 'zh' })).toEqual({ language, text: 'Hello. 你好。' })
+    expect(await generateTranscription(model, { audio, language: 'zh' })).toEqual({ language, text: 'Hello. 你好。' })
   })
 
   it('preserves sparse segment metadata in both SSE segment events and the final result', async () => {
@@ -61,7 +61,7 @@ describe('transcribe', () => {
         'data: {"type":"transcript.text.segment","id":"seg_0","speaker":"speaker_0","start":0.5,"end":2,"text":"Hello.","avg_logprob":0,"tokens":[41,42],"temperature":null,"unknown_analysis":"ignored"}\n\ndata: {"type":"transcript.text.done","text":"Hello."}\n\n',
         { headers: { 'Content-Type': 'text/event-stream' } },
       ),
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
     const segment = {
       endSecond: 2,
@@ -70,7 +70,7 @@ describe('transcribe', () => {
       startSecond: 0.5,
       text: 'Hello.',
     }
-    expect(await Array.fromAsync(await streamTranscribe(model, { audio }))).toEqual([
+    expect(await Array.fromAsync(await streamTranscription(model, { audio }))).toEqual([
       { type: 'transcription.start' },
       { ...segment, type: 'transcription.text.segment' },
       { segments: [segment], text: 'Hello.', type: 'transcription.end' },
@@ -96,9 +96,9 @@ describe('transcribe', () => {
             ? new Response('data: {"type":"transcript.text.done","text":"Hello."}\n\n', { headers: { 'Content-Type': 'text/event-stream' } })
             : Response.json({ text: 'Hello.' })
         },
-        model: 'transcribe-model',
+        model: 'transcription-model',
       })
-      expect(await generateTranscribe(model, { audio, fileName })).toEqual({ text: 'Hello.' })
+      expect(await generateTranscription(model, { audio, fileName })).toEqual({ text: 'Hello.' })
     })
   })
 
@@ -118,7 +118,7 @@ describe('transcribe', () => {
       },
       model: 'whisper-model',
     })
-    expect(await generateTranscribe(model, { audio, providerOptions: { transcriptions: options } })).toEqual({ text: 'Hello.' })
+    expect(await generateTranscription(model, { audio, providerOptions: { transcriptions: options } })).toEqual({ text: 'Hello.' })
   })
 
   it.each(['', 'data: [DONE]\n\n', 'data: {"type":"transcript.text.delta","delta":"unfinished"}\n\n'])(
@@ -127,9 +127,9 @@ describe('transcribe', () => {
       const model = transcriptions({
         baseURL: 'https://example.com/v1/',
         fetch: async () => new Response(body, { headers: { 'Content-Type': 'text/event-stream' } }),
-        model: 'transcribe-model',
+        model: 'transcription-model',
       })
-      await expect(generateTranscribe(model, { audio })).rejects.toMatchObject({ code: 'truncated-stream' })
+      await expect(generateTranscription(model, { audio })).rejects.toMatchObject({ code: 'truncated-stream' })
     },
   )
 
@@ -139,9 +139,9 @@ describe('transcribe', () => {
       fetch: async () => factory === transcriptions
         ? new Response('data: {"type":"transcript.text.done","text":""}\n\n', { headers: { 'Content-Type': 'text/event-stream' } })
         : Response.json({ text: '' }),
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    expect(await generateTranscribe(model, { audio })).toEqual({ text: '' })
+    expect(await generateTranscription(model, { audio })).toEqual({ text: '' })
   })
 
   it('rejects JSON received by the SSE adapter and cancels the unexpected body', async () => {
@@ -151,9 +151,9 @@ describe('transcribe', () => {
       fetch: async () => new Response(new ReadableStream({ cancel: reason => cancelled.resolve(reason) }), {
         headers: { 'Content-Type': 'application/json' },
       }),
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    await expect(streamTranscribe(model, { audio })).rejects.toMatchObject({ code: 'invalid-response' })
+    await expect(streamTranscription(model, { audio })).rejects.toMatchObject({ code: 'invalid-response' })
     await expect(cancelled.promise).resolves.toMatchObject({ code: 'invalid-response' })
   })
 
@@ -164,9 +164,9 @@ describe('transcribe', () => {
         'data: {"type":"error","error":{"message":"Transcription failed"}}\n\ndata: {"type":"transcript.text.done","text":""}\n\n',
         { headers: { 'Content-Type': 'text/event-stream' } },
       ),
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    await expect(generateTranscribe(model, { audio })).rejects.toMatchObject({
+    await expect(generateTranscription(model, { audio })).rejects.toMatchObject({
       cause: { message: 'Transcription failed' },
       code: 'invalid-response',
     })
@@ -178,9 +178,9 @@ describe('transcribe', () => {
       fetch: async () => mode === 'JSON'
         ? Response.json({ text: null })
         : new Response('data: {"type":"transcript.text.done","text":null}\n\n', { headers: { 'Content-Type': 'text/event-stream' } }),
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    await expect(generateTranscribe(model, { audio })).rejects.toMatchObject({ code: 'invalid-response' })
+    await expect(generateTranscription(model, { audio })).rejects.toMatchObject({ code: 'invalid-response' })
   })
 
   it('delivers SSE deltas and completed segments, then uses done text as the complete result', async () => {
@@ -200,7 +200,7 @@ describe('transcribe', () => {
       },
       model: 'diarize-model',
     })
-    const stream = await streamTranscribe(model, {
+    const stream = await streamTranscription(model, {
       audio,
       providerOptions: { transcriptions: { responseFormat: 'diarized_json' } },
     })
@@ -271,7 +271,7 @@ describe('transcribe', () => {
       },
     }
     const events = []
-    for await (const event of await streamTranscribe(model, options))
+    for await (const event of await streamTranscription(model, options))
       events.push(event)
     expect(events).toEqual([
       { type: 'transcription.start' },
@@ -291,9 +291,9 @@ describe('transcribe', () => {
       fetch: async () => new Response('data: {"type":"transcript.text.delta","delta":"unfinished"}\n\n', {
         headers: { 'Content-Type': 'text/event-stream' },
       }),
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    const stream = await streamTranscribe(model, { audio })
+    const stream = await streamTranscription(model, { audio })
     await expect(Array.fromAsync(stream)).rejects.toMatchObject({ code: 'truncated-stream' })
   })
 })

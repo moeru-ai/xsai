@@ -4,11 +4,11 @@ import { setTimeout as delay } from 'node:timers/promises'
 
 import { describe, expect, it } from 'vitest'
 
-import { generateTranscribe, streamTranscribe, transcriptions, transcriptionsNonStreaming } from '../src'
+import { generateTranscription, streamTranscription, transcriptions, transcriptionsNonStreaming } from '../src'
 
 const audio = new Blob(['audio'], { type: 'audio/wav' })
 
-describe('transcribe consumption', () => {
+describe('transcription consumption', () => {
   it('limits SSE reads with a slow consumer and cancels upstream on early exit', async () => {
     let produced = 0
     const cancelled = Promise.withResolvers<unknown>()
@@ -24,9 +24,9 @@ describe('transcribe consumption', () => {
             output.close()
         },
       }), { headers: { 'Content-Type': 'text/event-stream' } }),
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    const stream = await streamTranscribe(model, { audio })
+    const stream = await streamTranscription(model, { audio })
     await delay(10)
     expect(produced).toBeLessThanOrEqual(8)
     for await (const event of stream) {
@@ -57,10 +57,10 @@ describe('transcribe consumption', () => {
           },
         }), { headers: { 'Content-Type': factory === transcriptions ? 'text/event-stream' : 'application/json' } })
       },
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    const stream = await streamTranscribe(model, { audio, signal: abort.signal })
-    const failed = expect(generateTranscribe(() => stream, { audio })).rejects.toBe(error)
+    const stream = await streamTranscription(model, { audio, signal: abort.signal })
+    const failed = expect(generateTranscription(() => stream, { audio })).rejects.toBe(error)
     abort.abort(error)
     await failed
     await expect(transportStopped.promise).resolves.toBe(error)
@@ -77,11 +77,11 @@ describe('transcribe consumption', () => {
           ? new Response('data: {"type":"transcript.text.done","text":"Hello."}\n\n', { headers: { 'Content-Type': 'text/event-stream' } })
           : Response.json({ text: 'Hello.' })
       },
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    const stream = await streamTranscribe(model, { audio, signal: abort.signal })
+    const stream = await streamTranscription(model, { audio, signal: abort.signal })
     abort.abort(error)
-    await expect(generateTranscribe(() => stream, { audio })).rejects.toBe(error)
+    await expect(generateTranscription(() => stream, { audio })).rejects.toBe(error)
   })
 
   it('stops JSON transport when cancelled while the body is being collected', async () => {
@@ -103,9 +103,9 @@ describe('transcribe consumption', () => {
           },
         }, { highWaterMark: 0 }), { headers: { 'Content-Type': 'application/json' } })
       },
-      model: 'transcribe-model',
+      model: 'transcription-model',
     })
-    const reader = (await streamTranscribe(model, { audio })).getReader()
+    const reader = (await streamTranscription(model, { audio })).getReader()
     expect((await reader.read()).value).toEqual({ type: 'transcription.start' })
     const pending = reader.read()
     await readingBody.promise
@@ -121,7 +121,7 @@ describe('transcribe consumption', () => {
         output.close()
       },
     })
-    await expect(generateTranscribe(model, { audio })).rejects.toMatchObject({ code: 'truncated-stream' })
+    await expect(generateTranscription(model, { audio })).rejects.toMatchObject({ code: 'truncated-stream' })
   })
 
   it('collects the complete end result instead of concatenating provisional deltas', async () => {
@@ -142,12 +142,12 @@ describe('transcribe consumption', () => {
       },
     })
 
-    expect(await generateTranscribe(model, { audio })).toEqual({
+    expect(await generateTranscription(model, { audio })).toEqual({
       segments: [{ endSecond: 2, id: '0', providerMetadata: { transcriptions: { speaker: 'speaker_0' } }, startSecond: 0, text: 'Hello.' }],
       text: 'Hello.',
     })
     const stream = new ReadableStream<TranscriptionEvent>()
-    await expect(streamTranscribe(() => stream, { audio })).resolves.toBe(stream)
+    await expect(streamTranscription(() => stream, { audio })).resolves.toBe(stream)
   })
   it('propagates failures after the end result instead of returning early', async () => {
     const cause = new Error('Failure after end')
@@ -163,12 +163,12 @@ describe('transcribe consumption', () => {
         }
       },
     }, { highWaterMark: 0 })
-    await expect(generateTranscribe(model, { audio })).rejects.toBe(cause)
+    await expect(generateTranscription(model, { audio })).rejects.toBe(cause)
   })
 
   it('keeps streaming a synchronous custom model behind a consistent Promise', async () => {
     const source = new ReadableStream<TranscriptionEvent>()
-    const pending = streamTranscribe(() => source, { audio })
+    const pending = streamTranscription(() => source, { audio })
     expect(pending).toBeInstanceOf(Promise)
     expect(await pending).toBe(source)
     await source.cancel()

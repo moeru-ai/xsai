@@ -1,2 +1,2 @@
 export * from './speech'
-export * from './transcribe'
+export * from './transcription'

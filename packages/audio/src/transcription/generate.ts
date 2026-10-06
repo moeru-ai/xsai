@@ -3,7 +3,7 @@ import type { TranscriptionModel, TranscriptionOptions } from './model'
 
 import { XSAIError } from '@xsai/shared'
 
-export const generateTranscribe = async (
+export const generateTranscription = async (
   model: TranscriptionModel,
   options: TranscriptionOptions,
 ): Promise<TranscriptionResult> => {
