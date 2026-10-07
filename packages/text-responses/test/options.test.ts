@@ -7,6 +7,24 @@ import { captureRequests } from '../../text/test/test-utils'
 import { responses } from '../src'
 
 describe('responses options', () => {
+  it('does not store responses by default', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({ input: 'hi' })
+    await stream.cancel()
+
+    expect(bodies[0].store).toBe(false)
+  })
+
+  it('can opt in to storing responses', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({ input: 'hi', providerOptions: { responses: { store: true } } })
+    await stream.cancel()
+
+    expect(bodies[0].store).toBe(true)
+  })
+
   it('maps compatible Responses provider options to request fields', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })

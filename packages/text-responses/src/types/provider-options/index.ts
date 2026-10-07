@@ -3,6 +3,8 @@ export interface ResponsesProviderOptions {
   include?: readonly string[]
   parallelToolCalls?: boolean
   presencePenalty?: number
+  /** @default `false` */
+  store?: boolean
   tools?: readonly ResponsesProviderTool[]
 }
 

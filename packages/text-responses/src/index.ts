@@ -38,6 +38,7 @@ export const responses = (options: HttpOptions): LanguageModel => async (modelOp
       reasoning: modelOptions.reasoningEffort == null
         ? undefined
         : { effort: modelOptions.reasoningEffort },
+      store: providerOptions?.store ?? false,
       stream: true,
       temperature: modelOptions.temperature,
       text: normalizeFormat(modelOptions.outputFormat),
