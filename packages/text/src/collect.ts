@@ -30,7 +30,7 @@ const totalUsage = (steps: readonly StepResult[]): undefined | Usage => {
   }
 }
 
-/** Adds a completed step or local tool result to the collected steps. @internal */
+/** @internal */
 export const collectEvent = (steps: StepResult[], event: TextEvent): unknown => {
   if (event.type === 'step.end') {
     if (event.status === 'failed')
@@ -45,7 +45,7 @@ export const collectEvent = (steps: StepResult[], event: TextEvent): unknown => 
   }
 }
 
-/** Builds the result after a stream has closed. @internal */
+/** @internal */
 export const collectResult = (steps: StepResult[]): CollectResult => {
   const finalStep = steps.at(-1)
   if (finalStep == null)

@@ -3,7 +3,6 @@ export interface MessagesCitation {
   type: string
 }
 
-/** Anthropic Messages wire fields captured on content parts. */
 export interface MessagesPartMetadata {
   // TODO: Move citations to a first-class TextPart field.
   citations?: MessagesCitation[]

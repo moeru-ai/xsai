@@ -12,21 +12,17 @@ import { XSAIError } from '@xsai/shared'
 
 import { toCustomEvent } from '../text-event-target'
 
-/** Internal adapter/event protocol boundary. */
 export interface EventBuilder {
   /** Appends text or tool-call identity to a part. */
   delta: (key: PartKey, text: string, extra?: PartDeltaExtra) => void
   /** Records a non-failed terminal status and closes open parts. */
   done: (status: Exclude<StepStatus, 'failed'>, reason?: FinishReason, message?: AssistantMessage) => void
-  /** Closes a part and emits `content.end`. */
   end: (key: PartKey, extra?: PartEndExtra) => void
   /** Records a provider-declared failure and closes open parts. */
   fail: (error: XSAIError, message?: AssistantMessage) => void
   /** Emits `step.end` or fails for an incomplete wire stream. */
   flush: () => void
-  /** Records message identity and usage metadata. */
   meta: (meta: FinishMeta) => void
-  /** Opens a part and emits `content.start`. */
   start: (key: PartKey, type: AssistantMessageContent['type'], init?: PartStartInit) => void
 }
 
@@ -92,7 +88,6 @@ const emptyContent = (type: AssistantMessageContent['type'], init?: PartStartIni
   }
 }
 
-// Ignore empty identity values from continuation deltas.
 const acceptIdentity = (current: string | undefined, incoming: string | undefined): string | undefined =>
   incoming != null && incoming !== '' ? incoming : current
 
@@ -246,7 +241,6 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
       role: 'assistant' as const,
     }
     const common = {
-      // Keep the streamed id when the override omits it.
       message: message.id == null && messageId != null
         ? { ...message, id: messageId }
         : message,
@@ -294,7 +288,6 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
       if (terminalEmitted)
         return
 
-      // Fail if the wire ended without a terminal signal.
       if (terminal === undefined) {
         terminalEmitted = true
         fail(new XSAIError('truncated-stream', 'wire stream ended without a terminal signal'))

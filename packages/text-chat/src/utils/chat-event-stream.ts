@@ -56,7 +56,6 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
         builder.meta({ usage: normalizeUsage(chunk.usage) })
 
       for (const choice of chunk.choices ?? []) {
-        // Only the first choice is supported.
         if (choice.index !== 0)
           continue
 
@@ -87,7 +86,6 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
       builder.delta('text', content)
     }
 
-    // Refusal is a separate part from content.
     const refusal = delta.refusal ?? ''
     if (refusal !== '') {
       this.hasRefusal = true

@@ -60,7 +60,6 @@ const normalizeToolCall = (item: Responses.FunctionCall): ToolCallPart => ({
 
 type MessageContent = Extract<Responses.ItemField, { type: 'message' }>['content'][number]
 
-// Keep message content parts distinct by content_index.
 const contentPartKey = (outputIndex: number, contentIndex: number): PartKey => `${outputIndex}:${contentIndex}`
 
 const normalizeContentPart = (part: MessageContent): AssistantMessageContent | undefined => {
@@ -79,7 +78,6 @@ const normalizeContentPart = (part: MessageContent): AssistantMessageContent | u
 }
 
 const normalizeReasoningPart = (item: Extract<Responses.ItemField, { type: 'reasoning' }>): ReasoningPart => {
-  // Added reasoning items may omit summary/content.
   const reasoningContent: ReasoningPartContent[] = [
     ...(item.summary ?? []).flatMap((part): ReasoningPartContent[] =>
       part.type === 'summary_text' ? [{ text: part.text, type: 'summary' }] : []),

@@ -12,7 +12,6 @@ const SUPPORTED_FORMATS = new Set([
   'uuid',
 ])
 
-/** Normalize a schema for OpenAI Responses Structured Outputs. */
 export const normalizeSchema = (schema: JSONSchema7): JSONSchema7 => {
   const normalized = { ...schema }
   const normalize = (schema: JSONSchema7Definition): JSONSchema7Definition =>

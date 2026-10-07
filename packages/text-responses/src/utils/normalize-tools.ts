@@ -14,7 +14,6 @@ export const normalizeTools = (tools?: readonly Tool[]): FunctionToolParam[] | u
   type: 'function',
 }))
 
-/** Combines provider-managed Responses tools with locally executable function tools. */
 export const mergeTools = (
   providerTools?: readonly ResponsesProviderTool[],
   tools?: readonly Tool[],
