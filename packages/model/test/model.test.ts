@@ -10,9 +10,9 @@ describe('models', () => {
       object: 'model' as const,
       owned_by: 'library',
     }]
-    const requests: { init?: RequestInit, input: Request | string | URL }[] = []
-    const fetch: typeof globalThis.fetch = async (input, init) => {
-      requests.push({ init, input })
+    const requests: Request[] = []
+    const fetch = async (request: Request) => {
+      requests.push(request)
       return Response.json({ data: wireModels, object: 'list' })
     }
 
@@ -28,11 +28,9 @@ describe('models', () => {
       providerMetadata: { models: { created: 1_700_000_000, ownedBy: 'library' } },
     }])
     expect(requests).toHaveLength(1)
-    expect(requests[0]?.input.toString()).toBe('https://example.com/v1/models')
-    expect(requests[0]?.init).toMatchObject({
-      headers: { 'Authorization': 'Bearer secret', 'X-Custom': 'custom' },
-      method: 'GET',
-    })
+    expect(requests[0]?.url).toBe('https://example.com/v1/models')
+    expect(requests[0]?.method).toBe('GET')
+    expect(Object.fromEntries(requests[0].headers)).toEqual({ 'authorization': 'Bearer secret', 'x-custom': 'custom' })
   })
 
   it('retrieves one model from the OpenAI-compatible models endpoint', async () => {
@@ -42,30 +40,29 @@ describe('models', () => {
       object: 'model' as const,
       owned_by: 'library',
     }
-    const requests: { init?: RequestInit, input: Request | string | URL }[] = []
-    const fetch: typeof globalThis.fetch = async (input, init) => {
-      requests.push({ init, input })
+    const requests: Request[] = []
+    const fetch = async (request: Request) => {
+      requests.push(request)
       return Response.json(model)
     }
-    const signal = new AbortController().signal
+    const abort = new AbortController()
 
     const result = await retrieveModel(models({
       apiKey: 'secret',
       baseURL: 'https://example.com/v1/',
       fetch,
-    }), { id: model.id, signal })
+    }), { id: model.id, signal: abort.signal })
 
     expect(result).toStrictEqual({
       id: 'qwen3.5:0.8b',
       providerMetadata: { models: { created: 1_700_000_000, ownedBy: 'library' } },
     })
     expect(requests).toHaveLength(1)
-    expect(requests[0]?.input.toString()).toBe('https://example.com/v1/models/qwen3.5%3A0.8b')
-    expect(requests[0]?.init).toMatchObject({
-      headers: { Authorization: 'Bearer secret' },
-      method: 'GET',
-    })
-    expect(requests[0]?.init?.signal).toBe(signal)
+    expect(requests[0]?.url).toBe('https://example.com/v1/models/qwen3.5%3A0.8b')
+    expect(requests[0]?.method).toBe('GET')
+    expect(requests[0]?.headers.get('Authorization')).toBe('Bearer secret')
+    abort.abort()
+    expect(requests[0]?.signal.aborted).toBe(true)
   })
 
   it('preserves zero and empty reported values', async () => {
@@ -96,9 +93,9 @@ describe('models', () => {
   it('retrieves different models with one factory and discards extra wire fields', async () => {
     const catalog = models({
       baseURL: 'https://example.com/v1/',
-      fetch: async input => Response.json({
+      fetch: async request => Response.json({
         created: 1_700_000_000,
-        id: new URL(input.toString()).pathname.split('/').at(-1),
+        id: new URL(request.url).pathname.split('/').at(-1),
         object: 'model',
         owned_by: 'library',
         unknown: 'discard',
@@ -119,8 +116,8 @@ describe('models', () => {
     const requests: string[] = []
     const catalog = models({
       baseURL: 'https://example.com/v1/',
-      fetch: async (input) => {
-        requests.push(input.toString())
+      fetch: async (request) => {
+        requests.push(request.url)
         return Response.json({ created: 1_700_000_000, id: 'org/model?revision=1#fragment', object: 'model', owned_by: 'library' })
       },
     })
@@ -171,8 +168,8 @@ describe('models', () => {
     const signal = AbortSignal.abort(reason)
     const catalog = models({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        init!.signal!.throwIfAborted()
+      fetch: async (request) => {
+        request.signal.throwIfAborted()
         throw new Error('Unexpected request')
       },
     })

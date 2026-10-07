@@ -1,3 +1,3 @@
 export * from './error'
-export * from './post-json'
+export * from './send-request'
 export { type EventSourceMessage, EventSourceParserStream } from 'eventsource-parser/stream'

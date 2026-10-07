@@ -2,7 +2,7 @@ import type { HttpOptions } from '@xsai/shared'
 
 import type { LanguageModelOptions, TextEvent } from '../types'
 
-import { EventSourceParserStream, postJSON } from '@xsai/shared'
+import { EventSourceParserStream, sendRequest } from '@xsai/shared'
 
 import { EventSourceDataStream } from './event-source-stream'
 
@@ -19,10 +19,10 @@ export const wireRequest = async (
   init: WireRequestInit,
   eventStream: TransformStream<string, TextEvent>,
 ): Promise<ReadableStream<TextEvent>> => {
-  return postJSON(options, {
+  return sendRequest({
     ...init,
     signal: modelOptions.signal,
-  })
+  }, options)
     .then(res => res.body
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(new EventSourceParserStream())

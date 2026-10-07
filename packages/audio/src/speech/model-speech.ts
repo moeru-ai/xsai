@@ -2,7 +2,7 @@ import type { HttpOptions } from '@xsai/shared'
 
 import type { SpeechModel } from './model'
 
-import { postJSON, XSAIError } from '@xsai/shared'
+import { sendRequest, XSAIError } from '@xsai/shared'
 
 declare module '@xsai/audio' {
   interface SpeechModelProviderOptions {
@@ -24,7 +24,7 @@ const formats = {
 
 export const speech = (options: HttpOptions): SpeechModel => async (modelOptions) => {
   const format = modelOptions.providerOptions?.speech?.outputFormat ?? 'mp3'
-  const response = await postJSON(options, {
+  const response = await sendRequest({
     body: {
       input: modelOptions.input,
       instructions: modelOptions.providerOptions?.speech?.instructions,
@@ -36,7 +36,7 @@ export const speech = (options: HttpOptions): SpeechModel => async (modelOptions
     },
     path: 'audio/speech',
     signal: modelOptions.signal,
-  })
+  }, options)
   const contentType = response.headers.get('Content-Type')
   const mime = contentType?.split(';', 1)[0]?.trim().toLowerCase()
   const mediaTypes = formats[format]

@@ -2,7 +2,7 @@ import type { HttpOptions } from '@xsai/shared'
 
 import type { ModelCatalog } from './model'
 
-import { postJSON } from '@xsai/shared'
+import { sendRequest } from '@xsai/shared'
 
 declare module '@xsai/model' {
   interface ModelCatalogEntryProviderMetadata {
@@ -26,12 +26,12 @@ const modelEntry = (model: OpenAIModel) => ({
 
 export const models = (options: Omit<HttpOptions, 'model'>): ModelCatalog => ({
   list: async (catalogOptions = {}) => {
-    const response = await postJSON(options, { method: 'GET', path: 'models', signal: catalogOptions.signal })
+    const response = await sendRequest({ method: 'GET', path: 'models', signal: catalogOptions.signal }, options)
     const json = await response.json() as { data: OpenAIModel[] }
     return json.data.map(modelEntry)
   },
   retrieve: async (catalogOptions) => {
-    const response = await postJSON(options, { method: 'GET', path: `models/${encodeURIComponent(catalogOptions.id)}`, signal: catalogOptions.signal })
+    const response = await sendRequest({ method: 'GET', path: `models/${encodeURIComponent(catalogOptions.id)}`, signal: catalogOptions.signal }, options)
     return modelEntry(await response.json() as OpenAIModel)
   },
 })

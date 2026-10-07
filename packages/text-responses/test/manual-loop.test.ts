@@ -26,9 +26,9 @@ describe('manual tool loop', () => {
     const foreignUse = { id: 'srvtoolu_01ABC123', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' }
     const model = responses({
       baseURL: 'https://example.com/v1',
-      fetch: async (input, init) => {
-        urls.push(input.toString())
-        requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+      fetch: async (request) => {
+        urls.push(request.url)
+        requests.push(JSON.parse(await request.text()) as Record<string, unknown>)
         return sseResponse([{ response: { output: requests.length === 1 ? [fileSearch, answer] : [], status: 'completed' }, type: 'response.completed' }])
       },
       model: 'm',
@@ -69,9 +69,9 @@ describe('manual tool loop', () => {
     const answer = { content: [{ annotations: [citation], text: 'Found', type: 'output_text' }], id: 'msg_1', role: 'assistant', status: 'completed', type: 'message' }
     const model = responses({
       baseURL: new URL('https://example.com/v1/'),
-      fetch: async (input, init) => {
-        urls.push(input.toString())
-        requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+      fetch: async (request) => {
+        urls.push(request.url)
+        requests.push(JSON.parse(await request.text()) as Record<string, unknown>)
         return requests.length === 1
           ? sseResponse([
               { item: { id: 'ws_1', status: 'in_progress', type: 'web_search_call' }, output_index: 0, type: 'response.output_item.added' },
@@ -191,8 +191,8 @@ describe('manual tool loop', () => {
     const model = responses({
       apiKey: 'test-key',
       baseURL: 'https://example.com/v1/',
-      fetch: async (_input, init) => {
-        requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+      fetch: async (request) => {
+        requests.push(JSON.parse(await request.text()) as Record<string, unknown>)
         return responsesByTurn[requests.length - 1]
       },
       model: 'test-model',

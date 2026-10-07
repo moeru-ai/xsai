@@ -10,9 +10,9 @@ describe('messages options', () => {
   it('sends provider tools, beta headers, and MCP servers with local tools', async () => {
     let requestBody: Record<string, unknown> | undefined
     let requestHeaders: Headers | undefined
-    const requestFetch: typeof fetch = async (_input, init) => {
-      requestBody = JSON.parse(init?.body as string) as Record<string, unknown>
-      requestHeaders = new Headers(init?.headers)
+    const requestFetch = async (request: Request) => {
+      requestBody = JSON.parse(await request.text()) as Record<string, unknown>
+      requestHeaders = request.headers
       return new Response('data: {"type":"message_stop"}\n\n')
     }
     const model = messages({ baseURL: 'https://x/', fetch: requestFetch, model: 'm' })
@@ -169,8 +169,8 @@ describe('messages options', () => {
 
   it('preserves an x-api-key supplied through headers', async () => {
     let requestHeaders: Headers | undefined
-    const requestFetch: typeof fetch = async (_input, init) => {
-      requestHeaders = new Headers(init?.headers)
+    const requestFetch = async (request: Request) => {
+      requestHeaders = request.headers
       return new Response('data: {"type":"message_stop"}\n\n')
     }
     const model = messages({

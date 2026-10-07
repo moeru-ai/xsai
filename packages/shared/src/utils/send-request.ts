@@ -2,7 +2,7 @@ import type { HttpOptions } from '../types'
 
 import { HttpError, XSAIError } from './error'
 
-export interface PostJSONInit {
+export interface SendRequestOptions {
   body?: FormData | Record<string, unknown>
   headers?: Record<string, string | undefined>
   method?: 'GET' | 'POST'
@@ -15,12 +15,12 @@ export const requestURL = (path: string, baseURL: string | URL) => {
   return new URL(path, base.endsWith('/') ? base : `${base}/`)
 }
 
-export const postJSON = async (options: Omit<HttpOptions, 'model'>, init: PostJSONInit): Promise<Response & { body: NonNullable<Response['body']> }> => {
-  const url = requestURL(init.path, options.baseURL)
-  const headers = init.headers ?? {
-    ...options.headers,
-    'Authorization': options.apiKey == null ? options.headers?.Authorization : `Bearer ${options.apiKey}`,
-    'Content-Type': init.body instanceof FormData ? undefined : init.body == null ? options.headers?.['Content-Type'] : 'application/json',
+export const sendRequest = async (options: SendRequestOptions, httpOptions: Omit<HttpOptions, 'model'>): Promise<Response & { body: NonNullable<Response['body']> }> => {
+  const url = requestURL(options.path, httpOptions.baseURL)
+  const headers = options.headers ?? {
+    ...httpOptions.headers,
+    'Authorization': httpOptions.apiKey == null ? httpOptions.headers?.Authorization : `Bearer ${httpOptions.apiKey}`,
+    'Content-Type': options.body instanceof FormData ? undefined : options.body == null ? httpOptions.headers?.['Content-Type'] : 'application/json',
   }
 
   const responseCatch = async (res: Response): Promise<Response & { body: NonNullable<Response['body']> }> => {
@@ -30,26 +30,25 @@ export const postJSON = async (options: Omit<HttpOptions, 'model'>, init: PostJS
     if (res.body == null)
       throw new XSAIError('invalid-response', 'Response body is empty')
 
-    if (!(res.body instanceof ReadableStream))
-      throw new XSAIError('invalid-response', `Expected Response body to be a ReadableStream, but got ${typeof res.body}`)
-
     return res as Response & { body: NonNullable<Response['body']> }
   }
 
   const requestCatch = (cause: unknown): never => {
-    init.signal?.throwIfAborted()
+    options.signal?.throwIfAborted()
     throw new XSAIError('network-error', `request to ${url.toString()} failed`, {
       cause: cause ?? new Error('fetch rejected without a reason'),
     })
   }
 
-  return (options.fetch ?? fetch)(url, {
-    body: init.body == null ? undefined : init.body instanceof FormData ? init.body : JSON.stringify(init.body),
+  const request = new Request(url, {
+    body: options.body == null ? undefined : options.body instanceof FormData ? options.body : JSON.stringify(options.body),
     headers: Object.fromEntries(Object.entries(headers).filter(([name, value]) =>
-      value !== undefined && (!(init.body instanceof FormData) || name.toLowerCase() !== 'content-type'),
+      value !== undefined && (!(options.body instanceof FormData) || name.toLowerCase() !== 'content-type'),
     )) as Record<string, string>,
-    method: init.method ?? 'POST',
-    signal: init.signal,
+    method: options.method ?? 'POST',
+    signal: options.signal,
   })
+
+  return (httpOptions.fetch ?? fetch)(request)
     .then(responseCatch, requestCatch)
 }

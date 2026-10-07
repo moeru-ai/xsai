@@ -2,7 +2,7 @@ import type { HttpOptions } from '@xsai/shared'
 
 import type { ImageModel, ImageModelResult } from './model'
 
-import { postJSON, XSAIError } from '@xsai/shared'
+import { sendRequest, XSAIError } from '@xsai/shared'
 
 declare module '@xsai/image' {
   interface ImageModelProviderOptions {
@@ -64,7 +64,7 @@ const imageBlob = (base64: string): Blob => {
 
 export const generations = (options: HttpOptions): ImageModel => async (modelOptions) => {
   const wireOptions = modelOptions.providerOptions?.generations
-  const response = await postJSON(options, {
+  const response = await sendRequest({
     body: {
       background: wireOptions?.background,
       model: options.model,
@@ -77,7 +77,7 @@ export const generations = (options: HttpOptions): ImageModel => async (modelOpt
     },
     path: 'images/generations',
     signal: modelOptions.signal,
-  })
+  }, options)
   const json = await response.json() as OpenAIGenerationsResponse
   const result: ImageModelResult = { images: json.data.map(image => imageBlob(image.b64_json)) }
   if (json.data.some(image => image.revised_prompt != null)) {

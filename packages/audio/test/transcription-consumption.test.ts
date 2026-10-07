@@ -45,8 +45,8 @@ describe('transcription consumption', () => {
     const transportStopped = Promise.withResolvers<unknown>()
     const model = factory({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        const signal = init!.signal!
+      fetch: async (request) => {
+        const signal = request.signal
         signal.throwIfAborted()
         return new Response(new ReadableStream<Uint8Array>({
           start: (output) => {
@@ -71,8 +71,8 @@ describe('transcription consumption', () => {
     const error = new Error('Stop transcription')
     const model = factory({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        init!.signal!.throwIfAborted()
+      fetch: async (request) => {
+        request.signal.throwIfAborted()
         return factory === transcriptions
           ? new Response('data: {"type":"transcript.text.done","text":"Hello."}\n\n', { headers: { 'Content-Type': 'text/event-stream' } })
           : Response.json({ text: 'Hello.' })
@@ -89,8 +89,8 @@ describe('transcription consumption', () => {
     const transportStopped = Promise.withResolvers<unknown>()
     const model = transcriptionsNonStreaming({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        const signal = init!.signal!
+      fetch: async (request) => {
+        const signal = request.signal
         signal?.throwIfAborted()
         return new Response(new ReadableStream<Uint8Array>({
           cancel: reason => transportStopped.resolve(reason),

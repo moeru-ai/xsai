@@ -65,8 +65,8 @@ describe('wireRequest', () => {
     const request = wireRequest(
       {
         ...options,
-        fetch: async (_input, requestInit) => {
-          throw requestInit?.signal?.reason
+        fetch: async (request) => {
+          throw request.signal.reason
         },
       },
       { input: 'hi', signal },

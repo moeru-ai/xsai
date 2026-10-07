@@ -96,8 +96,8 @@ describe('manual tool loop', () => {
     const model = chat({
       apiKey: 'test-key',
       baseURL: 'https://example.com/v1/',
-      fetch: async (_input, init) => {
-        requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+      fetch: async (request) => {
+        requests.push(JSON.parse(await request.text()) as Record<string, unknown>)
         return responsesByTurn[requests.length - 1]
       },
       model: 'test-model',

@@ -89,8 +89,8 @@ describe('transcription', () => {
     ])('uploads $kind as $expectedName with fileName=$fileName', async ({ audio, expectedName, fileName }) => {
       const model = factory({
         baseURL: 'https://example.com/v1/',
-        fetch: async (input, init) => {
-          const body = await new Request(input, init).formData()
+        fetch: async (request) => {
+          const body = await request.formData()
           expect(body.get('file')).toMatchObject({ name: expectedName, type: 'audio/wav' })
           return factory === transcriptions
             ? new Response('data: {"type":"transcript.text.done","text":"Hello."}\n\n', { headers: { 'Content-Type': 'text/event-stream' } })
@@ -111,8 +111,8 @@ describe('transcription', () => {
   ])('uploads timestamp granularities $expected for $options', async ({ expected, options }) => {
     const model = transcriptionsNonStreaming({
       baseURL: 'https://example.com/v1/',
-      fetch: async (input, init) => {
-        const body = await new Request(input, init).formData()
+      fetch: async (request) => {
+        const body = await request.formData()
         expect(body.getAll('timestamp_granularities[]')).toEqual(expected)
         return Response.json({ text: 'Hello.' })
       },
@@ -188,9 +188,10 @@ describe('transcription', () => {
     const encoder = new TextEncoder()
     const model = transcriptions({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        expect((init!.body as FormData).get('stream')).toBe('true')
-        expect((init!.body as FormData).get('response_format')).toBe('diarized_json')
+      fetch: async (request) => {
+        const body = await request.formData()
+        expect(body.get('stream')).toBe('true')
+        expect(body.get('response_format')).toBe('diarized_json')
         return new Response(new ReadableStream<Uint8Array>({
           start: (output) => {
             upstream = output
@@ -229,9 +230,8 @@ describe('transcription', () => {
     const model = transcriptionsNonStreaming({
       apiKey: 'secret',
       baseURL: 'https://example.com/v1',
-      fetch: async (input, init) => {
-        expect(input.toString()).toBe('https://example.com/v1/audio/transcriptions')
-        const request = new Request(input, init)
+      fetch: async (request) => {
+        expect(request.url).toBe('https://example.com/v1/audio/transcriptions')
         expect(request.method).toBe('POST')
         expect(request.headers.get('Authorization')).toBe('Bearer secret')
         expect(request.headers.get('X-Custom')).toBe('custom')

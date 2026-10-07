@@ -24,9 +24,9 @@ describe('messages provider tools', () => {
     }
     const model = messages({
       baseURL: 'https://example.com/v1',
-      fetch: async (input, init) => {
-        urls.push(input.toString())
-        requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+      fetch: async (request) => {
+        urls.push(request.url)
+        requests.push(JSON.parse(await request.text()) as Record<string, unknown>)
         return requests.length === 1
           ? sseResponse([
               { message: { id: 'msg_1', usage: {} }, type: 'message_start' },
@@ -72,9 +72,9 @@ describe('messages provider tools', () => {
     const searchResult = { content: [{ encrypted_content: 'secret', title: 'Source', type: 'web_search_result', url: 'https://example.com' }], tool_use_id: 'srvtoolu_01ABC123', type: 'web_search_tool_result' }
     const model = messages({
       baseURL: new URL('https://example.com/v1/'),
-      fetch: async (input, init) => {
-        urls.push(input.toString())
-        requests.push(JSON.parse(init!.body as string) as Record<string, unknown>)
+      fetch: async (request) => {
+        urls.push(request.url)
+        requests.push(JSON.parse(await request.text()) as Record<string, unknown>)
         return requests.length === 1
           ? sseResponse([
               { message: { id: 'msg_1', usage: {} }, type: 'message_start' },

@@ -77,9 +77,9 @@ describe('speech consumption', () => {
     const transportStopped = Promise.withResolvers<unknown>()
     const model = speech({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
+      fetch: async (request) => {
         // Fake fetch follows native fetch: abort stops transport and errors its body.
-        const signal = init!.signal!
+        const signal = request.signal
         signal.throwIfAborted()
         return new Response(new ReadableStream<Uint8Array>({
           start: (output) => {
@@ -104,8 +104,8 @@ describe('speech consumption', () => {
     const error = new Error('Stop initialization')
     const model = speech({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => new Promise((_, reject) => {
-        init!.signal!.addEventListener('abort', () => reject(init!.signal!.reason), { once: true })
+      fetch: async request => new Promise((_, reject) => {
+        request.signal.addEventListener('abort', () => reject(request.signal.reason), { once: true })
       }),
       model: 'tts-model',
     })
@@ -120,8 +120,8 @@ describe('speech consumption', () => {
     abort.abort(error)
     const model = speech({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        init!.signal!.throwIfAborted()
+      fetch: async (request) => {
+        request.signal.throwIfAborted()
         throw new Error('Unexpected request')
       },
       model: 'tts-model',

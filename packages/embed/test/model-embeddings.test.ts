@@ -4,9 +4,9 @@ import { embeddings } from '../src'
 
 describe('embeddings', () => {
   it('posts string input, dimensions and signal to the embeddings endpoint', async () => {
-    const requests: { init?: RequestInit, input: Request | string | URL }[] = []
-    const fetch: typeof globalThis.fetch = async (input, init) => {
-      requests.push({ init, input })
+    const requests: Request[] = []
+    const fetch = async (request: Request) => {
+      requests.push(request)
       return Response.json({
         data: [{ embedding: [0.25, -0.5], index: 0 }],
         usage: { prompt_tokens: 3, total_tokens: 3 },
@@ -19,23 +19,26 @@ describe('embeddings', () => {
       headers: { 'X-Custom': 'custom' },
       model: 'embedding-model',
     })
-    const signal = new AbortController().signal
+    const abort = new AbortController()
 
     const result = await model({
       input: 'hello',
       providerOptions: { embeddings: { dimensions: 2 } },
-      signal,
+      signal: abort.signal,
     })
 
     expect(result).toEqual({ embeddings: [[0.25, -0.5]], usage: { inputTokens: 3, totalTokens: 3 } })
     expect(requests).toHaveLength(1)
-    expect(requests[0]?.input.toString()).toBe('https://example.com/v1/embeddings')
-    expect(requests[0]?.init).toMatchObject({
-      headers: { 'Authorization': 'Bearer secret', 'Content-Type': 'application/json', 'X-Custom': 'custom' },
-      method: 'POST',
+    expect(requests[0]?.url).toBe('https://example.com/v1/embeddings')
+    expect(requests[0]?.method).toBe('POST')
+    expect(Object.fromEntries(requests[0].headers)).toEqual({
+      'authorization': 'Bearer secret',
+      'content-type': 'application/json',
+      'x-custom': 'custom',
     })
-    expect(requests[0]?.init?.signal).toBe(signal)
-    expect(JSON.parse(requests[0].init!.body as string)).toEqual({
+    abort.abort()
+    expect(requests[0].signal.aborted).toBe(true)
+    expect(await requests[0].json()).toEqual({
       dimensions: 2,
       input: 'hello',
       model: 'embedding-model',
@@ -43,9 +46,9 @@ describe('embeddings', () => {
   })
 
   it('posts batch input without dimensions and returns embeddings in input order', async () => {
-    const requests: { init?: RequestInit, input: Request | string | URL }[] = []
-    const fetch: typeof globalThis.fetch = async (input, init) => {
-      requests.push({ init, input })
+    const requests: Request[] = []
+    const fetch = async (request: Request) => {
+      requests.push(request)
       return Response.json({
         data: [
           { embedding: [3], index: 2 },
@@ -65,8 +68,8 @@ describe('embeddings', () => {
 
     expect(result).toEqual({ embeddings: [[1], [2], [3]], usage: { inputTokens: 6, totalTokens: 6 } })
     expect(requests).toHaveLength(1)
-    expect(requests[0]?.input.toString()).toBe('https://example.com/v1/embeddings')
-    expect(JSON.parse(requests[0].init!.body as string)).toEqual({
+    expect(requests[0]?.url).toBe('https://example.com/v1/embeddings')
+    expect(await requests[0].json()).toEqual({
       input: ['first', 'second', 'third'],
       model: 'embedding-model',
     })
@@ -112,8 +115,8 @@ describe('embeddings', () => {
     const signal = AbortSignal.abort(reason)
     const model = embeddings({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        init!.signal!.throwIfAborted()
+      fetch: async (request) => {
+        request.signal.throwIfAborted()
         throw new Error('Expected an aborted signal')
       },
       model: 'embedding-model',

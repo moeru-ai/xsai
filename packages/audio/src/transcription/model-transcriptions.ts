@@ -3,7 +3,7 @@ import type { EventSourceMessage, HttpOptions } from '@xsai/shared'
 import type { TranscriptionEvent, TranscriptionResult, TranscriptionSegment } from './event'
 import type { TranscriptionModel, TranscriptionModelOptions } from './model'
 
-import { EventSourceParserStream, postJSON, XSAIError } from '@xsai/shared'
+import { EventSourceParserStream, sendRequest, XSAIError } from '@xsai/shared'
 
 declare module '@xsai/audio' {
   interface TranscriptionModelProviderOptions {
@@ -177,11 +177,11 @@ class TranscriptionResultStream extends TransformStream<string, TranscriptionEve
 }
 
 export const transcriptions = (options: HttpOptions): TranscriptionModel => async (modelOptions) => {
-  const response = await postJSON(options, {
+  const response = await sendRequest({
     body: transcriptionBody(options.model, modelOptions, true),
     path: 'audio/transcriptions',
     signal: modelOptions.signal,
-  })
+  }, options)
   const mime = response.headers.get('Content-Type')?.split(';', 1)[0]?.trim().toLowerCase()
   if (mime !== 'text/event-stream') {
     const error = new XSAIError('invalid-response', 'Expected an SSE transcription response')
@@ -195,11 +195,11 @@ export const transcriptions = (options: HttpOptions): TranscriptionModel => asyn
 }
 
 export const transcriptionsNonStreaming = (options: HttpOptions): TranscriptionModel => async (modelOptions) => {
-  const response = await postJSON(options, {
+  const response = await sendRequest({
     body: transcriptionBody(options.model, modelOptions),
     path: 'audio/transcriptions',
     signal: modelOptions.signal,
-  })
+  }, options)
   return response.body
     .pipeThrough(new TextDecoderStream())
     .pipeThrough(new TranscriptionResultStream(), { signal: modelOptions.signal })

@@ -2,7 +2,7 @@ import type { HttpOptions } from '@xsai/shared'
 
 import type { EmbeddingModel } from './model'
 
-import { postJSON } from '@xsai/shared'
+import { sendRequest } from '@xsai/shared'
 
 declare module '@xsai/embed' {
   interface EmbeddingModelProviderOptions {
@@ -13,7 +13,7 @@ declare module '@xsai/embed' {
 }
 
 export const embeddings = (options: HttpOptions): EmbeddingModel => async modelOptions =>
-  postJSON(options, {
+  sendRequest({
     body: {
       dimensions: modelOptions.providerOptions?.embeddings?.dimensions,
       input: modelOptions.input,
@@ -21,7 +21,7 @@ export const embeddings = (options: HttpOptions): EmbeddingModel => async modelO
     },
     path: 'embeddings',
     signal: modelOptions.signal,
-  })
+  }, options)
     .then(async res => res.json() as Promise<{
       data: { embedding: number[], index: number }[]
       usage?: { prompt_tokens: number, total_tokens: number }

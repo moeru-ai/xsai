@@ -17,10 +17,10 @@ const sse = (lines: string[]): Response => {
   return new Response(stream.pipeThrough(new TextEncoderStream()))
 }
 
-export const captureRequests = (terminalData = '[DONE]'): { bodies: Record<string, unknown>[], fetch: typeof fetch } => {
+export const captureRequests = (terminalData = '[DONE]'): { bodies: Record<string, unknown>[], fetch: NonNullable<HttpOptions['fetch']> } => {
   const bodies: Record<string, unknown>[] = []
-  const mockFetch: typeof fetch = async (_input, init) => {
-    bodies.push(JSON.parse(init?.body as string) as Record<string, unknown>)
+  const mockFetch = async (request: Request) => {
+    bodies.push(JSON.parse(await request.text()) as Record<string, unknown>)
     return sse([`data: ${terminalData}\n\n`])
   }
   return { bodies, fetch: mockFetch }

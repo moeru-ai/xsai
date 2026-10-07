@@ -8,10 +8,10 @@ import { generateSpeech, speech, streamSpeech } from '../src'
 
 describe('speech', () => {
   it('posts text to the speech endpoint and returns its audio Response', async () => {
-    const requests: { init?: RequestInit, input: Request | string | URL }[] = []
+    const requests: Request[] = []
     let upstream!: Response
-    const fetch: typeof globalThis.fetch = async (input, init) => {
-      requests.push({ init, input })
+    const fetch = async (request: Request) => {
+      requests.push(request)
       upstream = new Response(new Uint8Array([73, 68, 51, 4]), {
         headers: { 'Content-Type': 'audio/mpeg', 'X-Request-ID': 'upstream' },
       })
@@ -30,12 +30,14 @@ describe('speech', () => {
     })
 
     expect(requests).toHaveLength(1)
-    expect(requests[0]?.input.toString()).toBe('https://example.com/v1/audio/speech')
-    expect(requests[0]?.init).toMatchObject({
-      headers: { 'Authorization': 'Bearer secret', 'Content-Type': 'application/json', 'X-Custom': 'custom' },
-      method: 'POST',
+    expect(requests[0]?.url).toBe('https://example.com/v1/audio/speech')
+    expect(requests[0]?.method).toBe('POST')
+    expect(Object.fromEntries(requests[0].headers)).toEqual({
+      'authorization': 'Bearer secret',
+      'content-type': 'application/json',
+      'x-custom': 'custom',
     })
-    expect(JSON.parse(requests[0].init!.body as string)).toEqual({
+    expect(await requests[0].json()).toEqual({
       input: 'hello',
       instructions: 'Speak softly',
       model: 'tts-model',
@@ -76,8 +78,8 @@ describe('speech', () => {
     const wav = new Uint8Array(Buffer.from('UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQQAAAAAAP9/', 'base64'))
     const model = speech({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        expect(JSON.parse(init!.body as string)).toMatchObject({ response_format: 'wav' })
+      fetch: async (request) => {
+        expect(JSON.parse(await request.text())).toMatchObject({ response_format: 'wav' })
         return new Response(wav, { headers: { 'Content-Type': 'audio/wav' } })
       },
       model: 'tts-model',

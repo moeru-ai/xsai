@@ -25,34 +25,37 @@ describe('generations', () => {
   })
 
   it('posts generation options and returns decoded image bytes with their MIME', async () => {
-    const requests: { init?: RequestInit, input: Request | string | URL }[] = []
+    const requests: Request[] = []
     const model = generations({
       apiKey: 'secret',
       baseURL: 'https://example.com/v1',
-      fetch: async (input, init) => {
-        requests.push({ init, input })
+      fetch: async (request) => {
+        requests.push(request)
         return Response.json({ data: [{ b64_json: png }] })
       },
       headers: { 'X-Custom': 'custom' },
       model: 'image-model',
     })
-    const signal = new AbortController().signal
+    const abort = new AbortController()
     const result = await generateImage(model, {
       input: 'a cat',
       n: 2,
       providerOptions: { generations: { background: 'transparent', outputCompression: 0, outputFormat: 'webp', quality: 'high' } },
-      signal,
+      signal: abort.signal,
       size: '1024x1536',
     })
 
     expect(requests).toHaveLength(1)
-    expect(requests[0].input.toString()).toBe('https://example.com/v1/images/generations')
-    expect(requests[0].init).toMatchObject({
-      headers: { 'Authorization': 'Bearer secret', 'Content-Type': 'application/json', 'X-Custom': 'custom' },
-      method: 'POST',
-      signal,
+    expect(requests[0].url).toBe('https://example.com/v1/images/generations')
+    expect(requests[0].method).toBe('POST')
+    expect(Object.fromEntries(requests[0].headers)).toEqual({
+      'authorization': 'Bearer secret',
+      'content-type': 'application/json',
+      'x-custom': 'custom',
     })
-    expect(JSON.parse(requests[0].init!.body as string)).toEqual({
+    abort.abort()
+    expect(requests[0].signal.aborted).toBe(true)
+    expect(await requests[0].json()).toEqual({
       background: 'transparent',
       model: 'image-model',
       n: 2,
@@ -102,8 +105,8 @@ describe('generations', () => {
   it('leaves request defaults to the service and omits absent or null result fields', async () => {
     const model = generations({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        expect(JSON.parse(init!.body as string)).toStrictEqual({ model: 'image-model', prompt: 'a cat' })
+      fetch: async (request) => {
+        expect(JSON.parse(await request.text())).toStrictEqual({ model: 'image-model', prompt: 'a cat' })
         return Response.json({
           background: null,
           created: null,
@@ -190,8 +193,8 @@ describe('generations', () => {
     const reading = Promise.withResolvers<void>()
     const model = generations({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        const signal = init!.signal!
+      fetch: async (request) => {
+        const signal = request.signal
         signal.throwIfAborted()
         return new Response(new ReadableStream<Uint8Array>({
           pull: () => { reading.resolve() },
@@ -212,8 +215,8 @@ describe('generations', () => {
     const reason = new Error('Already stopped')
     const model = generations({
       baseURL: 'https://example.com/v1/',
-      fetch: async (_, init) => {
-        init!.signal!.throwIfAborted()
+      fetch: async (request) => {
+        request.signal.throwIfAborted()
         throw new Error('Unexpected request')
       },
       model: 'image-model',
