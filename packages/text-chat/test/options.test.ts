@@ -8,6 +8,35 @@ import { captureRequests } from '../../text/test/test-utils'
 import { chat } from '../src'
 
 describe('chat options', () => {
+  it('maps compatible Chat provider options to request fields', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      providerOptions: {
+        chat: {
+          frequencyPenalty: 0.4,
+          parallelToolCalls: false,
+          presencePenalty: -0.2,
+          seed: 0,
+          stopSequences: ['END'],
+          topK: 20,
+        },
+      },
+    })
+    await stream.cancel()
+
+    expect(bodies[0]).toMatchObject({
+      frequency_penalty: 0.4,
+      parallel_tool_calls: false,
+      presence_penalty: -0.2,
+      seed: 0,
+      stop: ['END'],
+      top_k: 20,
+    })
+    expect(bodies[0]).not.toHaveProperty('providerOptions')
+  })
+
   it('maps model options to Chat Completions fields', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })

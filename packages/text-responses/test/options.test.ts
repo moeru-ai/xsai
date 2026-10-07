@@ -7,6 +7,29 @@ import { captureRequests } from '../../text/test/test-utils'
 import { responses } from '../src'
 
 describe('responses options', () => {
+  it('maps compatible Responses provider options to request fields', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      providerOptions: {
+        responses: {
+          frequencyPenalty: 0.4,
+          parallelToolCalls: false,
+          presencePenalty: -0.2,
+        },
+      },
+    })
+    await stream.cancel()
+
+    expect(bodies[0]).toMatchObject({
+      frequency_penalty: 0.4,
+      parallel_tool_calls: false,
+      presence_penalty: -0.2,
+    })
+    expect(bodies[0]).not.toHaveProperty('providerOptions')
+  })
+
   it('merges Responses tools with local function tools', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })

@@ -8,6 +8,7 @@ export interface MessagesMcpServer {
 export interface MessagesProviderOptions {
   betas?: readonly string[]
   mcpServers?: readonly MessagesMcpServer[]
+  stopSequences?: readonly string[]
   tools?: readonly MessagesProviderTool[]
 }
 

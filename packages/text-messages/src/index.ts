@@ -43,6 +43,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
       output_config: modelOptions.reasoningEffort == null && outputFormat == null
         ? undefined
         : { effort: modelOptions.reasoningEffort, format: outputFormat },
+      stop_sequences: providerOptions?.stopSequences,
       stream: true,
       system,
       temperature: modelOptions.temperature,

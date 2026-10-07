@@ -24,13 +24,17 @@ declare module '@xsai/text' {
 
 export const responses = (options: HttpOptions): LanguageModel => async (modelOptions) => {
   const source = requestURL('responses', options.baseURL).toString()
+  const providerOptions = modelOptions.providerOptions?.responses
   return wireRequest({
     body: {
-      include: modelOptions.providerOptions?.responses?.include,
+      frequency_penalty: providerOptions?.frequencyPenalty,
+      include: providerOptions?.include,
       input: normalizeInput(modelOptions.input, source),
       instructions: modelOptions.instructions,
       max_output_tokens: modelOptions.maxOutputTokens,
       model: options.model,
+      parallel_tool_calls: providerOptions?.parallelToolCalls,
+      presence_penalty: providerOptions?.presencePenalty,
       reasoning: modelOptions.reasoningEffort == null
         ? undefined
         : { effort: modelOptions.reasoningEffort },
@@ -38,7 +42,7 @@ export const responses = (options: HttpOptions): LanguageModel => async (modelOp
       temperature: modelOptions.temperature,
       text: normalizeFormat(modelOptions.outputFormat),
       tool_choice: normalizeToolChoice(modelOptions.toolChoice),
-      tools: mergeTools(modelOptions.providerOptions?.responses?.tools, modelOptions.tools),
+      tools: mergeTools(providerOptions?.tools, modelOptions.tools),
       top_p: modelOptions.topP,
     },
     path: source,

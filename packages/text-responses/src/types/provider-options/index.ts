@@ -1,5 +1,8 @@
 export interface ResponsesProviderOptions {
+  frequencyPenalty?: number
   include?: readonly string[]
+  parallelToolCalls?: boolean
+  presencePenalty?: number
   tools?: readonly ResponsesProviderTool[]
 }
 

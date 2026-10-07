@@ -7,6 +7,20 @@ import { captureRequests } from '../../text/test/test-utils'
 import { messages } from '../src'
 
 describe('messages options', () => {
+  it('maps Messages stop sequences to the request', async () => {
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      maxOutputTokens: 10,
+      providerOptions: { messages: { stopSequences: ['END'] } },
+    })
+    await stream.cancel()
+
+    expect(bodies[0].stop_sequences).toEqual(['END'])
+    expect(bodies[0]).not.toHaveProperty('providerOptions')
+  })
+
   it('sends provider tools, beta headers, and MCP servers with local tools', async () => {
     let requestBody: Record<string, unknown> | undefined
     let requestHeaders: Headers | undefined
