@@ -1,16 +1,14 @@
-import type { AssistantMessage, CollectResult, LanguageModel, LoopOptions, TextEvent } from '@xsai/text'
+import type { AssistantMessage, CollectResult, LanguageModel, TextEvent } from '@xsai/text'
 
-import { maxSteps, TextEventTarget, toCustomEvent, tool, XSAIError } from '@xsai/text'
+import { maxSteps, tool, XSAIError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { generateText } from '../src'
 
-const eventStream = (events: TextEvent[], target?: EventTarget): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
+const eventStream = (events: TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {
-    for (const event of events) {
-      target?.dispatchEvent(toCustomEvent(event))
+    for (const event of events)
       controller.enqueue(event)
-    }
     controller.close()
   },
 })
@@ -25,15 +23,11 @@ describe('generateText', () => {
       ],
       role: 'assistant',
     }
-    const target = new TextEventTarget()
-    const observed: AssistantMessage[] = []
-    target.addEventListener('step.end', event => observed.push(event.detail.message))
-    const model: LanguageModel = ({ events }) => eventStream([
+    const model: LanguageModel = () => eventStream([
       { message, reason: 'stop', status: 'completed', type: 'step.end' },
-    ], events)
-    const options: LoopOptions = { events: target, input: 'hi' }
+    ])
 
-    const result: CollectResult = await generateText(model, options)
+    const result: CollectResult = await generateText(model, { input: 'hi' })
 
     expect(result).toMatchObject({
       message,
@@ -45,7 +39,6 @@ describe('generateText', () => {
       toolResults: [],
     })
     expect(result.totalUsage).toBeUndefined()
-    expect(observed).toEqual([message])
   })
 
   it('executes tools by default and returns the last step with total usage', async () => {

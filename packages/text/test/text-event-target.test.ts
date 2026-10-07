@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { TextEventTarget, toCustomEvent } from '../src'
+import { TextEventTarget, toCustomEvent, withEventTarget } from '../src'
 
 describe('text events', () => {
   it('dispatches typed custom events with normalized details', () => {
@@ -24,5 +24,37 @@ describe('text events', () => {
 
     expect(event.type).toBe('raw')
     expect(event.detail).toBe(detail)
+  })
+
+  it('observes each event passing through a stream', async () => {
+    const target = new TextEventTarget()
+    const detail = { id: 'wire_1' }
+    const sequence = [
+      { type: 'step.start' as const },
+      { delta: 'Hello', index: 0, type: 'text.delta' as const },
+      { detail, type: 'raw' as const },
+    ]
+    const observed: [string, unknown][] = []
+    for (const type of ['step.start', 'text.delta', 'raw'] as const)
+      target.addEventListener(type, (event: CustomEvent) => observed.push([event.type, event.detail]))
+
+    const stream = new ReadableStream({
+      start: (controller) => {
+        for (const event of sequence)
+          controller.enqueue(event)
+        controller.close()
+      },
+    }).pipeThrough(withEventTarget(target))
+    const forwarded = []
+    for await (const event of stream)
+      forwarded.push(event)
+
+    expect(forwarded).toEqual(sequence)
+    expect(observed).toEqual([
+      ['step.start', {}],
+      ['text.delta', { delta: 'Hello', index: 0 }],
+      ['raw', detail],
+    ])
+    expect(observed[2][1]).toBe(detail)
   })
 })

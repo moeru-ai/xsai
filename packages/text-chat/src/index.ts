@@ -31,4 +31,4 @@ export const chat = (options: HttpOptions): LanguageModel => async modelOptions 
       top_p: modelOptions.topP,
     },
     path: 'chat/completions',
-  }, options, modelOptions, new ChatEventStream(modelOptions.includeRawEvents, modelOptions.events))
+  }, options, modelOptions, new ChatEventStream(modelOptions.includeRawEvents))

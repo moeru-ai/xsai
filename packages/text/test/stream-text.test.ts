@@ -1,16 +1,14 @@
 import type { LanguageModel, TextEvent } from '@xsai/text'
 
-import { TextEventTarget, toCustomEvent, tool, XSAIError } from '@xsai/text'
+import { TextEventTarget, tool, withEventTarget, XSAIError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'
 
-const eventStream = (events: TextEvent[], target?: EventTarget): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
+const eventStream = (events: TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {
-    for (const event of events) {
-      target?.dispatchEvent(toCustomEvent(event))
+    for (const event of events)
       controller.enqueue(event)
-    }
     controller.close()
   },
 })
@@ -45,13 +43,13 @@ describe('streamText', () => {
     const target = new TextEventTarget()
     const observed: unknown[] = []
     target.addEventListener('raw', event => observed.push(event.detail))
-    const model: LanguageModel = async ({ events }) => eventStream([
+    const model: LanguageModel = async () => eventStream([
       { detail, type: 'raw' },
       { message: { content: 'Done', role: 'assistant' }, status: 'completed', type: 'step.end' },
-    ], events)
-    const run = streamText(model, { events: target, input: 'hi' })
+    ])
+    const run = streamText(model, { input: 'hi' })
 
-    await readEvents(run.stream)
+    await readEvents(run.stream.pipeThrough(withEventTarget(target)))
 
     expect(observed).toEqual([detail])
     expect(observed[0]).toBe(detail)
@@ -74,13 +72,13 @@ describe('streamText', () => {
 
   it('exposes the full stream through EventTarget events', async () => {
     const target = new TextEventTarget()
-    const model: LanguageModel = async ({ events }) => eventStream([
+    const model: LanguageModel = async () => eventStream([
       { type: 'step.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'hello', index: 0, type: 'text.delta' },
       { content: { text: 'hello', type: 'text' }, index: 0, type: 'content.end' },
       { message: { content: 'hello', role: 'assistant' }, status: 'completed', type: 'step.end' },
-    ], events)
+    ])
 
     const observed: Event[] = []
     const contentTypes: string[] = []
@@ -100,9 +98,9 @@ describe('streamText', () => {
       finalStatus = event.detail.status
       observed.push(event)
     })
-    const run = streamText(model, { events: target, input: 'hi' })
+    const run = streamText(model, { input: 'hi' })
 
-    await expect(readEvents(run.stream)).resolves.toEqual([
+    await expect(readEvents(run.stream.pipeThrough(withEventTarget(target)))).resolves.toEqual([
       { type: 'step.start' },
       { contentType: 'text', index: 0, type: 'content.start' },
       { delta: 'hello', index: 0, type: 'text.delta' },
@@ -128,20 +126,20 @@ describe('streamText', () => {
 
   it('exposes reasoning, refusal, and tool call deltas through EventTarget', async () => {
     const target = new TextEventTarget()
-    const model: LanguageModel = async ({ events }) => eventStream([
+    const model: LanguageModel = async () => eventStream([
       { delta: 'thinking', index: 0, type: 'reasoning.delta' },
       { delta: 'cannot', index: 1, type: 'refusal.delta' },
       { callId: 'call-1', delta: '{"city":', index: 2, name: 'weather', type: 'tool-call.delta' },
       { message: { content: '', role: 'assistant' }, status: 'completed', type: 'step.end' },
-    ], events)
+    ])
     const details: unknown[] = []
 
     target.addEventListener('reasoning.delta', event => details.push(event.detail))
     target.addEventListener('refusal.delta', event => details.push(event.detail))
     target.addEventListener('tool-call.delta', event => details.push(event.detail))
-    const run = streamText(model, { events: target, input: 'hi' })
+    const run = streamText(model, { input: 'hi' })
 
-    await readEvents(run.stream)
+    await readEvents(run.stream.pipeThrough(withEventTarget(target)))
 
     expect(details).toEqual([
       { delta: 'thinking', index: 0 },

@@ -3,7 +3,7 @@ import type { LanguageModel, StepResult, StopContext, TextEvent } from '../src'
 import { XSAIError } from '@xsai/shared'
 import { describe, expect, it, vi } from 'vitest'
 
-import { and, hasToolCall, loop, maxSteps, not, or, TextEventTarget, toCustomEvent, tool } from '../src'
+import { and, hasToolCall, loop, maxSteps, not, or, TextEventTarget, tool, withEventTarget } from '../src'
 
 const eventStream = (events: TextEvent | TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {
@@ -47,7 +47,7 @@ describe('loop', () => {
     for (const type of ['step.start', 'step.end', 'content.start', 'content.end'] as const)
       target.addEventListener(type, event => observed.push(event))
     let stepNumber = 0
-    const model: LanguageModel = ({ events }) => {
+    const model: LanguageModel = () => {
       const sequence: TextEvent[] = [
         { type: 'step.start' },
         stepNumber++ === 0
@@ -59,16 +59,13 @@ describe('loop', () => {
             }
           : { message: { content: 'sunny', role: 'assistant' }, status: 'completed', type: 'step.end' },
       ]
-      for (const event of sequence)
-        events?.dispatchEvent(toCustomEvent(event))
       return eventStream(sequence)
     }
 
     await readEvents(loop(model, {
-      events: target,
       input: 'weather',
       tools: [tool({ execute: () => 'sunny', inputSchema: { type: 'object' }, name: 'weather' })],
-    }))
+    }).pipeThrough(withEventTarget(target)))
 
     expect(observed.map(event => event.type)).toEqual([
       'step.start',

@@ -1,4 +1,4 @@
-import { TextEventTarget } from '@xsai/text'
+import { TextEventTarget, withEventTarget } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { messages } from '../src'
@@ -16,7 +16,7 @@ describe('messages raw events', () => {
       model: 'test-model',
     })
     const events = []
-    for await (const event of await model({ events: target, includeRawEvents: true, input: 'hi', maxOutputTokens: 10 }))
+    for await (const event of (await model({ includeRawEvents: true, input: 'hi', maxOutputTokens: 10 })).pipeThrough(withEventTarget(target)))
       events.push(event)
 
     expect(events.filter(event => event.type === 'raw')).toEqual(

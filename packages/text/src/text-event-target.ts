@@ -35,3 +35,10 @@ export const toCustomEvent = <E extends TextEvent>(event: E): TextEventTargetMap
     detail: event.type === 'raw' ? event.detail : detail,
   }) as TextEventTargetMap[E['type']]
 }
+
+export const withEventTarget = (events: EventTarget): TransformStream<TextEvent, TextEvent> => new TransformStream({
+  transform: (event, controller) => {
+    events.dispatchEvent(toCustomEvent(event))
+    controller.enqueue(event)
+  },
+})

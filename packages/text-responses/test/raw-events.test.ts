@@ -1,6 +1,6 @@
 import type { TextEvent } from '@xsai/text'
 
-import { TextEventTarget } from '@xsai/text'
+import { TextEventTarget, withEventTarget } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { responses } from '../src'
@@ -54,7 +54,7 @@ describe('responses raw events', () => {
     })
     const read = async (includeRawEvents?: boolean): Promise<TextEvent[]> => {
       const events: TextEvent[] = []
-      for await (const event of await model({ events: target, includeRawEvents, input: 'hi' }))
+      for await (const event of (await model({ includeRawEvents, input: 'hi' })).pipeThrough(withEventTarget(target)))
         events.push(event)
       return events
     }

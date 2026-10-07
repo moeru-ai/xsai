@@ -1,6 +1,6 @@
 import type { Message, TextEvent } from '@xsai/text'
 
-import { HttpError, TextEventTarget, XSAIError } from '@xsai/text'
+import { HttpError, TextEventTarget, withEventTarget, XSAIError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { chat } from '../src'
@@ -14,7 +14,6 @@ describe('manual tool loop', () => {
   it.each([
     { create: () => new TextEventTarget(), name: 'typed' },
     { create: () => new EventTarget(), name: 'native' },
-    { create: () => new EventTarget() as TextEventTarget, name: 'cast' },
   ])('observes bare model events with a $name target', async ({ create }) => {
     const events = create()
     const observed: Event[] = []
@@ -28,9 +27,8 @@ describe('manual tool loop', () => {
       model: 'test-model',
     })
 
-    const stream = await model({ events, includeRawEvents: true, input: 'hi' })
+    const stream = (await model({ includeRawEvents: true, input: 'hi' })).pipeThrough(withEventTarget(events))
     expect(stream.locked).toBe(false)
-    expect(observed.map(event => event.type)).toEqual(['step.start'])
     const sequence: TextEvent[] = []
     for await (const event of stream)
       sequence.push(event)

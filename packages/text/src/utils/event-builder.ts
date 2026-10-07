@@ -10,8 +10,6 @@ import type {
 
 import { XSAIError } from '@xsai/shared'
 
-import { toCustomEvent } from '../text-event-target'
-
 export interface EventBuilder {
   /** Appends text or tool-call identity to a part. */
   delta: (key: PartKey, text: string, extra?: PartDeltaExtra) => void
@@ -324,22 +322,22 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
 
 /** Parses wire events and enforces stream termination. @internal */
 export class WireEventStream<W> extends TransformStream<string, TextEvent> {
-  constructor(map: (wire: W, builder: EventBuilder) => void, includeRawEvents = false, events?: EventTarget) {
+  constructor(map: (wire: W, builder: EventBuilder) => void, includeRawEvents = false) {
     let builder!: EventBuilder
-    let emit!: (event: TextEvent) => void
     super({
       flush: () => {
         builder.flush()
       },
       start: (controller) => {
-        emit = (event) => {
-          events?.dispatchEvent(toCustomEvent(event))
-          controller.enqueue(event)
-          if (event.type === 'step.end' && event.status === 'failed')
-            controller.terminate()
-        }
-        builder = eventBuilder(emit, error => controller.error(error))
-        emit({ type: 'step.start' })
+        builder = eventBuilder(
+          (event) => {
+            controller.enqueue(event)
+            if (event.type === 'step.end' && event.status === 'failed')
+              controller.terminate()
+          },
+          error => controller.error(error),
+        )
+        controller.enqueue({ type: 'step.start' })
       },
       transform: (data, controller) => {
         let wire: W
@@ -353,7 +351,7 @@ export class WireEventStream<W> extends TransformStream<string, TextEvent> {
 
         try {
           if (includeRawEvents)
-            emit({ detail: wire, type: 'raw' })
+            controller.enqueue({ detail: wire, type: 'raw' })
           map(wire, builder)
         }
         catch (cause) {

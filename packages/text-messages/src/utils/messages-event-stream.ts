@@ -67,7 +67,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
   private readonly source: string
   private startUsage?: MessagesUsage
 
-  constructor(source: string, includeRawEvents = false, events?: EventTarget) {
+  constructor(source: string, includeRawEvents = false) {
     super((event, builder) => {
       switch (event.type) {
         case 'content_block_delta':
@@ -103,7 +103,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
         case 'ping':
           break
       }
-    }, includeRawEvents, events)
+    }, includeRawEvents)
     this.source = source
   }
 

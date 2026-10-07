@@ -136,7 +136,7 @@ const normalizeStatus = (response: Responses.ResponseResource): StepStatus => {
 }
 
 export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
-  constructor(source: string, includeRawEvents = false, events?: EventTarget) {
+  constructor(source: string, includeRawEvents = false) {
     const normalizeOutputItem = (item: Responses.ItemField, index: number): NormalizedOutputItem => {
       if (item.type === 'function_call_output')
         return { parts: [] }
@@ -266,6 +266,6 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
         case 'response.refusal.done':
           break
       }
-    }, includeRawEvents, events)
+    }, includeRawEvents)
   }
 }

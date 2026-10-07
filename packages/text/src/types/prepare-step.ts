@@ -13,6 +13,6 @@ export interface PrepareStepOptions {
   steps: readonly StepResult[]
 }
 
-export interface PrepareStepResult extends Partial<Omit<LanguageModelOptions, 'events' | 'signal'>> {
+export interface PrepareStepResult extends Partial<Omit<LanguageModelOptions, 'signal'>> {
   model?: LanguageModel
 }

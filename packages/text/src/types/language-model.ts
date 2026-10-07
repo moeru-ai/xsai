@@ -8,7 +8,6 @@ import type { TextEvent } from './text-event'
 export type LanguageModel = (options: LanguageModelOptions) => Promisable<ReadableStream<TextEvent>>
 
 export interface LanguageModelOptions {
-  events?: EventTarget
   includeRawEvents?: boolean
   input: Message[] | string
   instructions?: string
