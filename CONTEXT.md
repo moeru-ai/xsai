@@ -1,6 +1,6 @@
 # xsAI
 
-Glossary for the text-generation packages (`@xsai/text-*`): normalized streaming over the three dominant LLM wire protocols.
+Glossary for `@xsai/text` and the text wire adapter packages: normalized streaming over the three dominant LLM wire protocols.
 
 ## Language
 
@@ -25,7 +25,7 @@ A decoded wire event exposed alongside normalized `TextEvent`s for observation.
 _Avoid_: unknown event
 
 **Event builder**:
-The internal `eventBuilder` in `text-primitives` that owns part bookkeeping — index assignment, delta accumulation, tool-call identity fallback — and the termination invariant. Adapters feed it part-level facts; wire semantics (finish-reason mapping, usage shape) stay in the adapter.
+The internal `eventBuilder` in `text` that owns part bookkeeping — index assignment, delta accumulation, tool-call identity fallback — and the termination invariant. Adapters feed it part-level facts; wire semantics (finish-reason mapping, usage shape) stay in the adapter.
 
 **Terminal event**:
 A wire that delivers a terminal signal ends with exactly one `step.end` event. Non-failed terminal events carry a normalized `status` (`completed`, `incomplete`, or `cancelled`) and optional string `reason`; provider-declared failures carry `status: 'failed'` and an `error`. A wire stream that ends without a terminal signal is truncated — the stream rejects instead of ending.

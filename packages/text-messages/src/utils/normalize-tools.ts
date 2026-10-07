@@ -1,4 +1,4 @@
-import type { Tool, ToolChoice } from '@xsai/text-primitives'
+import type { Tool, ToolChoice } from '@xsai/text'
 
 import type { MessagesTool, MessagesToolChoice } from '../types'
 import type { MessagesProviderTool } from '../types/provider-options'

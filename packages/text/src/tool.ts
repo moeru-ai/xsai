@@ -1,9 +1,9 @@
 import type { Promisable } from '@xsai/shared'
 
-import type { InferSchemaInput, InferSchemaOutput, ResolvedSchema, UnresolvedSchema } from '../utils/schema'
 import type { ToolResultPartContent } from './types/content'
+import type { InferSchemaInput, InferSchemaOutput, ResolvedSchema, UnresolvedSchema } from './utils/schema'
 
-import { resolveSchema } from '../utils/schema'
+import { resolveSchema } from './utils/schema'
 
 export interface ExecutableTool extends Tool {
   execute: (input: unknown, options?: ToolExecuteOptions) => Promisable<string | ToolResultPartContent[]>

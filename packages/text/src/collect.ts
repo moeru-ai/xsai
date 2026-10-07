@@ -4,7 +4,7 @@ import type { Usage } from './types/usage'
 
 import { XSAIError } from '@xsai/shared'
 
-import { toStepResult } from './step-result'
+import { toStepResult } from './utils/step-result'
 
 export interface CollectResult extends StepResult {
   steps: readonly StepResult[]

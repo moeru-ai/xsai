@@ -1,4 +1,4 @@
-import type { Message, StepResult } from '../core'
+import type { Message, StepResult } from './types'
 
 export type StopCondition = (context: StopContext) => boolean
 

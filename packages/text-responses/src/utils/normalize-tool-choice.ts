@@ -1,4 +1,4 @@
-import type { ToolChoice } from '@xsai/text-primitives'
+import type { ToolChoice } from '@xsai/text'
 
 import type { ToolChoiceParam } from '../generated'
 

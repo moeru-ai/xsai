@@ -32,7 +32,6 @@
     "@xsai/text": "workspace:",
     "@xsai/text-chat": "workspace:",
     "@xsai/text-messages": "workspace:",
-    "@xsai/text-primitives": "workspace:",
     "@xsai/text-responses": "workspace:"
   }
 }

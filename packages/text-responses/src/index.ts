@@ -1,18 +1,18 @@
 import type { HttpOptions } from '@xsai/shared'
-import type { LanguageModel } from '@xsai/text-primitives'
+import type { LanguageModel } from '@xsai/text'
 
 import type { ResponsesPartMetadata } from './types/provider-metadata'
 import type { ResponsesProviderOptions } from './types/provider-options'
 
 import { requestURL } from '@xsai/shared'
-import { wireRequest } from '@xsai/text-primitives/internal'
+import { wireRequest } from '@xsai/text/internal'
 
 import { mergeTools, normalizeFormat, normalizeInput, normalizeToolChoice, ResponsesEventStream } from './utils'
 
 export type * from './types/provider-metadata'
 export type * from './types/provider-options'
 
-declare module '@xsai/text-primitives' {
+declare module '@xsai/text' {
   interface LanguageModelProviderOptions {
     responses?: ResponsesProviderOptions
   }

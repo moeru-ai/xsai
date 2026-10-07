@@ -6,11 +6,11 @@ import type {
   StepStatus,
   TextEvent,
   Usage,
-} from '../core'
+} from '../types'
 
 import { XSAIError } from '@xsai/shared'
 
-import { toCustomEvent } from '../core/text-event-target'
+import { toCustomEvent } from '../text-event-target'
 
 /** Internal adapter/event protocol boundary. */
 export interface EventBuilder {

@@ -291,35 +291,6 @@ importers:
 
   packages/text:
     dependencies:
-      '@xsai/text-primitives':
-        specifier: 'workspace:'
-        version: link:../text-primitives
-
-  packages/text-chat:
-    dependencies:
-      '@xsai/shared':
-        specifier: 'workspace:'
-        version: link:../shared
-    devDependencies:
-      '@xsai/text-primitives':
-        specifier: 'workspace:'
-        version: link:../text-primitives
-      zod:
-        specifier: catalog:schema-dev
-        version: 4.3.6
-
-  packages/text-messages:
-    dependencies:
-      '@xsai/shared':
-        specifier: 'workspace:'
-        version: link:../shared
-    devDependencies:
-      '@xsai/text-primitives':
-        specifier: 'workspace:'
-        version: link:../text-primitives
-
-  packages/text-primitives:
-    dependencies:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
@@ -331,15 +302,38 @@ importers:
         specifier: 'catalog:'
         version: 7.0.15
 
+  packages/text-chat:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+    devDependencies:
+      '@xsai/text':
+        specifier: 'workspace:'
+        version: link:../text
+      zod:
+        specifier: catalog:schema-dev
+        version: 4.3.6
+
+  packages/text-messages:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+    devDependencies:
+      '@xsai/text':
+        specifier: 'workspace:'
+        version: link:../text
+
   packages/text-responses:
     dependencies:
       '@xsai/shared':
         specifier: 'workspace:'
         version: link:../shared
     devDependencies:
-      '@xsai/text-primitives':
+      '@xsai/text':
         specifier: 'workspace:'
-        version: link:../text-primitives
+        version: link:../text
       zod:
         specifier: catalog:schema-dev
         version: 4.3.6
@@ -370,9 +364,6 @@ importers:
       '@xsai/text-messages':
         specifier: 'workspace:'
         version: link:../text-messages
-      '@xsai/text-primitives':
-        specifier: 'workspace:'
-        version: link:../text-primitives
       '@xsai/text-responses':
         specifier: 'workspace:'
         version: link:../text-responses

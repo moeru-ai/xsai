@@ -1,15 +1,15 @@
 import type { HttpOptions } from '@xsai/shared'
-import type { LanguageModel } from '@xsai/text-primitives'
+import type { LanguageModel } from '@xsai/text'
 
 import type { ChatPartMetadata } from './metadata'
 
-import { wireRequest } from '@xsai/text-primitives/internal'
+import { wireRequest } from '@xsai/text/internal'
 
 import { ChatEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, normalizeTools } from './utils'
 
 export type * from './metadata'
 
-declare module '@xsai/text-primitives' {
+declare module '@xsai/text' {
   interface PartProviderMetadata {
     chat?: ChatPartMetadata
   }

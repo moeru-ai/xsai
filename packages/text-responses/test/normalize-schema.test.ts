@@ -1,4 +1,4 @@
-import type { JSONSchema7 } from '@xsai/text-primitives/internal'
+import type { JSONSchema7 } from '@xsai/text/internal'
 
 import { describe, expect, it } from 'vitest'
 

@@ -9,7 +9,7 @@ import type {
   ToolResultPart,
   UserMessage,
   UserMessageContent,
-} from '@xsai/text-primitives'
+} from '@xsai/text'
 
 import type { ChatContentPart, ChatMessage } from '../types'
 

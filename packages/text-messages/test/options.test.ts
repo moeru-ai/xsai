@@ -1,9 +1,9 @@
-import type { JSONSchema7 } from '@xsai/text-primitives/internal'
+import type { JSONSchema7 } from '@xsai/text/internal'
 
-import { tool, XSAIError } from '@xsai/text-primitives'
+import { tool, XSAIError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
-import { captureRequests } from '../../text-primitives/test/test-utils'
+import { captureRequests } from '../../text/test/test-utils'
 import { messages } from '../src'
 
 describe('messages options', () => {

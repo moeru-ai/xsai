@@ -1,7 +1,7 @@
 import type { Promisable } from '@xsai/shared'
 
-import type { UnresolvedSchema } from '../../utils/schema'
 import type { Tool } from '../tool'
+import type { UnresolvedSchema } from '../utils/schema'
 import type { Message } from './message'
 import type { TextEvent } from './text-event'
 

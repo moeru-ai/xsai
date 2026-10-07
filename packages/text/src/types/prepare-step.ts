@@ -1,6 +1,8 @@
 import type { Promisable } from '@xsai/shared'
 
-import type { LanguageModel, LanguageModelOptions, Message, StepResult } from '../../core'
+import type { LanguageModel, LanguageModelOptions } from './language-model'
+import type { Message } from './message'
+import type { StepResult } from './step-result'
 
 export type PrepareStep = (options: PrepareStepOptions) => Promisable<PrepareStepResult | undefined>
 

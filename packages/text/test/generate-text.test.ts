@@ -1,6 +1,6 @@
-import type { AssistantMessage, CollectResult, LanguageModel, LoopOptions, TextEvent } from '@xsai/text-primitives'
+import type { AssistantMessage, CollectResult, LanguageModel, LoopOptions, TextEvent } from '@xsai/text'
 
-import { maxSteps, TextEventTarget, toCustomEvent, tool, XSAIError } from '@xsai/text-primitives'
+import { maxSteps, TextEventTarget, toCustomEvent, tool, XSAIError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { generateText } from '../src'

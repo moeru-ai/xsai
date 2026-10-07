@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest'
 
-import { languageModelE2ECases } from '../../text-primitives/test/test-utils'
+import { languageModelE2ECases } from '../../text/test/test-utils'
 import { responses } from '../src'
 
 const cases = languageModelE2ECases(responses)

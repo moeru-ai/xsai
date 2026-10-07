@@ -9,7 +9,7 @@ import type {
   ToolResultPart,
   ToolResultPartContent,
   UserMessage,
-} from '@xsai/text-primitives'
+} from '@xsai/text'
 
 import type {
   AssistantMessageItemParam,

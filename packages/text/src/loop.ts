@@ -1,14 +1,14 @@
-import type { LanguageModel, LanguageModelOptions, Message, StepEndEvent, StepResult, TextEvent } from '../core'
-import type { PostToolCall, PreToolCall } from './execute-tools'
 import type { StopCondition } from './stop-condition'
+import type { LanguageModel, LanguageModelOptions, Message, StepEndEvent, StepResult, TextEvent } from './types'
 import type { PrepareStep } from './types/prepare-step'
+import type { PostToolCall, PreToolCall } from './utils/execute-tools'
 
 import { XSAIError } from '@xsai/shared'
 
-import { toStepResult } from '../core/step-result'
-import { toCustomEvent } from '../core/text-event-target'
-import { executeTools } from './execute-tools'
 import { maxSteps } from './stop-condition'
+import { toCustomEvent } from './text-event-target'
+import { executeTools } from './utils/execute-tools'
+import { toStepResult } from './utils/step-result'
 
 export interface LoopOptions extends LanguageModelOptions {
   postToolCall?: PostToolCall

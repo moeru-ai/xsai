@@ -1,9 +1,9 @@
 import type { Promisable } from '@xsai/shared'
 
-import type { ExecutableTool, ToolExecuteOptions } from '../core/tool'
-import type { ToolCallPart, ToolResultPart } from '../core/types/content'
-import type { FinishReason } from '../core/types/finish-reason'
-import type { LanguageModelOptions } from '../core/types/language-model'
+import type { ExecutableTool, ToolExecuteOptions } from '../tool'
+import type { ToolCallPart, ToolResultPart } from '../types/content'
+import type { FinishReason } from '../types/finish-reason'
+import type { LanguageModelOptions } from '../types/language-model'
 
 export interface ExecuteToolOptions extends Pick<LanguageModelOptions, 'signal' | 'tools'> {
   postToolCall?: PostToolCall

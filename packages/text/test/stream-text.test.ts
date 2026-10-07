@@ -1,6 +1,6 @@
-import type { LanguageModel, TextEvent } from '@xsai/text-primitives'
+import type { LanguageModel, TextEvent } from '@xsai/text'
 
-import { TextEventTarget, toCustomEvent, tool, XSAIError } from '@xsai/text-primitives'
+import { TextEventTarget, toCustomEvent, tool, XSAIError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { streamText } from '../src'

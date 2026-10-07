@@ -1,10 +1,10 @@
-import type { JSONSchema7 } from '@xsai/text-primitives/internal'
+import type { JSONSchema7 } from '@xsai/text/internal'
 
-import { tool } from '@xsai/text-primitives'
+import { tool } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 
-import { captureRequests } from '../../text-primitives/test/test-utils'
+import { captureRequests } from '../../text/test/test-utils'
 import { chat } from '../src'
 
 describe('chat options', () => {

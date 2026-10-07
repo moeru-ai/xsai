@@ -4,8 +4,8 @@ import type { CombinedStandardSchema } from '../src/utils/schema'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { tool } from '../src/core/tool'
-import { executeTool } from '../src/loop/execute-tools'
+import { tool } from '../src/tool'
+import { executeTool } from '../src/utils/execute-tools'
 
 const standardSchema = <Input = unknown, Output = Input>(json: Record<string, unknown>): CombinedStandardSchema<Input, Output> => ({
   '~standard': {

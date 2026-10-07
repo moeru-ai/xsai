@@ -13,7 +13,7 @@ import type {
   ToolResultPartContent,
   UserMessage,
   UserMessageContent,
-} from '@xsai/text-primitives'
+} from '@xsai/text'
 
 import type { ContentBlock, DocumentBlock, ImageBlock, InputMessage, TextBlock, ToolResultBlock, ToolUseBlock } from '../types'
 

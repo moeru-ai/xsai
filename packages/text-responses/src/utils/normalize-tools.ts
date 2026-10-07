@@ -1,4 +1,4 @@
-import type { Tool } from '@xsai/text-primitives'
+import type { Tool } from '@xsai/text'
 
 import type { FunctionToolParam } from '../generated'
 import type { ResponsesProviderTool } from '../types/provider-options'

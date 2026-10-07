@@ -1,9 +1,9 @@
 import type { TextEvent } from '../src'
 
+import { XSAIError } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
 import { WireEventStream } from '../src/internal'
-import { XSAIError } from '../src/shared'
 import { eventBuilder } from '../src/utils/event-builder'
 
 describe('eventBuilder', () => {

@@ -1,7 +1,9 @@
-import type { CollectResult, LanguageModel, LoopOptions, StepResult, TextEvent } from '@xsai/text-primitives'
+import type { CollectResult } from './collect'
+import type { LoopOptions } from './loop'
+import type { LanguageModel, StepResult, TextEvent } from './types'
 
-import { loop } from '@xsai/text-primitives'
-import { collectEvent, collectResult } from '@xsai/text-primitives/internal'
+import { collectEvent, collectResult } from './collect'
+import { loop } from './loop'
 
 export interface StreamTextHandle {
   result: Promise<CollectResult>

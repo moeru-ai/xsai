@@ -24,12 +24,12 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "@xsai/text-primitives": "workspace:"
+    "@xsai/text": "workspace:"
   },
   "dependencies": {
     "@xsai/shared": "workspace:"
   },
   "devDependencies": {
-    "@xsai/text-primitives": "workspace:"
+    "@xsai/text": "workspace:"
   }
 }

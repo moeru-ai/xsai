@@ -1,4 +1,4 @@
-import { TextEventTarget } from '@xsai/text-primitives'
+import { TextEventTarget } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { messages } from '../src'

@@ -1,6 +1,6 @@
-import type { Message, TextEvent } from '@xsai/text-primitives'
+import type { Message, TextEvent } from '@xsai/text'
 
-import { collect, HttpError } from '@xsai/text-primitives'
+import { collect, HttpError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
 import { responses } from '../src'

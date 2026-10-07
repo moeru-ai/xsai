@@ -1,9 +1,9 @@
 import type { LanguageModel, StepResult, StopContext, TextEvent } from '../src'
 
+import { XSAIError } from '@xsai/shared'
 import { describe, expect, it, vi } from 'vitest'
 
 import { and, hasToolCall, loop, maxSteps, not, or, TextEventTarget, toCustomEvent, tool } from '../src'
-import { XSAIError } from '../src/shared'
 
 const eventStream = (events: TextEvent | TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {

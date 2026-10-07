@@ -1,6 +1,6 @@
-import type { AssistantMessage, TextPart, ToolCallPart } from './types'
-import type { StepResult } from './types/step-result'
-import type { StepEndDoneEvent } from './types/text-event'
+import type { AssistantMessage, TextPart, ToolCallPart } from '../types'
+import type { StepResult } from '../types/step-result'
+import type { StepEndDoneEvent } from '../types/text-event'
 
 const getText = (message: AssistantMessage): string =>
   typeof message.content === 'string'

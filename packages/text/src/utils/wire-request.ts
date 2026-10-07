@@ -1,6 +1,6 @@
 import type { HttpOptions } from '@xsai/shared'
 
-import type { LanguageModelOptions, TextEvent } from '../core'
+import type { LanguageModelOptions, TextEvent } from '../types'
 
 import { EventSourceParserStream, postJSON } from '@xsai/shared'
 

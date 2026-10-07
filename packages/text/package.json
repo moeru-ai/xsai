@@ -3,7 +3,10 @@
   "type": "module",
   "version": "0.5.1",
   "sideEffects": false,
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./internal": "./src/internal.ts"
+  },
   "files": [
     "dist"
   ],
@@ -13,7 +16,11 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       },
-      "./package.json": "./package.json"
+      "./package.json": "./package.json",
+      "./internal": {
+        "types": "./dist/internal.d.ts",
+        "default": "./dist/internal.js"
+      }
     },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts"
@@ -24,6 +31,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/text-primitives": "workspace:"
+    "@xsai/shared": "workspace:"
+  },
+  "devDependencies": {
+    "@standard-schema/spec": "catalog:",
+    "@types/json-schema": "catalog:"
   }
 }

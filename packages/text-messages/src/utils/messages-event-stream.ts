@@ -1,5 +1,5 @@
-import type { FinishReason, StepStatus, Usage } from '@xsai/text-primitives'
-import type { EventBuilder } from '@xsai/text-primitives/internal'
+import type { FinishReason, StepStatus, Usage } from '@xsai/text'
+import type { EventBuilder } from '@xsai/text/internal'
 
 import type {
   ContentBlockDeltaEvent,
@@ -11,7 +11,7 @@ import type {
 import type { MessagesCitation } from '../types/provider-metadata'
 
 import { XSAIError } from '@xsai/shared'
-import { WireEventStream } from '@xsai/text-primitives/internal'
+import { WireEventStream } from '@xsai/text/internal'
 
 const mapStop = (FinishReason: null | string | undefined): { reason?: FinishReason, status: Exclude<StepStatus, 'failed'> } => {
   switch (FinishReason) {

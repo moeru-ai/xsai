@@ -1,4 +1,4 @@
-import type { Message, Tool } from '@xsai/text-primitives'
+import type { Message, Tool } from '@xsai/text'
 
 import { describe, expect, it } from 'vitest'
 

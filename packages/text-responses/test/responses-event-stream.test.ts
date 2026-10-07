@@ -1,8 +1,8 @@
 import type { EventSourceMessage } from '@xsai/shared'
-import type { StepEndEvent, TextEvent } from '@xsai/text-primitives'
+import type { StepEndEvent, TextEvent } from '@xsai/text'
 
-import { XSAIError } from '@xsai/text-primitives'
-import { EventSourceDataStream } from '@xsai/text-primitives/internal'
+import { XSAIError } from '@xsai/text'
+import { EventSourceDataStream } from '@xsai/text/internal'
 import { describe, expect, it } from 'vitest'
 
 import { ResponsesEventStream } from '../src/utils/responses-event-stream'
