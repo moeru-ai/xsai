@@ -344,6 +344,39 @@ importers:
         specifier: catalog:schema-dev
         version: 4.3.6
 
+  packages/xsai:
+    dependencies:
+      '@xsai/audio':
+        specifier: 'workspace:'
+        version: link:../audio
+      '@xsai/embed':
+        specifier: 'workspace:'
+        version: link:../embed
+      '@xsai/image':
+        specifier: 'workspace:'
+        version: link:../image
+      '@xsai/model':
+        specifier: 'workspace:'
+        version: link:../model
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+      '@xsai/text':
+        specifier: 'workspace:'
+        version: link:../text
+      '@xsai/text-chat':
+        specifier: 'workspace:'
+        version: link:../text-chat
+      '@xsai/text-messages':
+        specifier: 'workspace:'
+        version: link:../text-messages
+      '@xsai/text-primitives':
+        specifier: 'workspace:'
+        version: link:../text-primitives
+      '@xsai/text-responses':
+        specifier: 'workspace:'
+        version: link:../text-responses
+
   packages/xsschema:
     devDependencies:
       '@standard-schema/spec':

@@ -1,0 +1,38 @@
+{
+  "name": "xsai",
+  "type": "module",
+  "version": "0.5.1",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "pkgroll --clean-dist"
+  },
+  "dependencies": {
+    "@xsai/audio": "workspace:",
+    "@xsai/embed": "workspace:",
+    "@xsai/image": "workspace:",
+    "@xsai/model": "workspace:",
+    "@xsai/shared": "workspace:",
+    "@xsai/text": "workspace:",
+    "@xsai/text-chat": "workspace:",
+    "@xsai/text-messages": "workspace:",
+    "@xsai/text-primitives": "workspace:",
+    "@xsai/text-responses": "workspace:"
+  }
+}
