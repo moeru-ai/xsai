@@ -1,6 +1,6 @@
 import type { HttpOptions } from '@xsai/shared'
 
-import type { AssistantMessageContent, ExecutableTool, LanguageModel, Message, StepEndEvent, TextDeltaEvent, TextEvent, ToolCallDeltaEvent, ToolCallPart } from '../src'
+import type { AssistantMessageContent, ExecutableTool, LanguageModel, LanguageModelOptions, Message, StepEndEvent, TextDeltaEvent, TextEvent, ToolCallDeltaEvent, ToolCallPart } from '../src'
 
 import { env } from 'node:process'
 
@@ -39,7 +39,10 @@ const parseWeatherInput = (input: unknown): { location: string } => {
   return { location: input.location }
 }
 
-export const languageModelE2ECases = (createModel: (options: HttpOptions) => LanguageModel) => {
+export const languageModelE2ECases = (
+  createModel: (options: HttpOptions) => LanguageModel,
+  modelOptions: Pick<LanguageModelOptions, 'maxOutputTokens'> = {},
+) => {
   const baseURL = env.XSAI_E2E_BASE_URL!
   const modelName = env.XSAI_E2E_MODEL!
 
@@ -47,6 +50,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
     const model = createModel({ baseURL, model: modelName })
     const events = await readEvents(await model({
       input: 'Reply with exactly: e2e-ok',
+      ...modelOptions,
     }))
 
     const text = events
@@ -78,7 +82,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
       role: 'user',
     }]
 
-    const firstEvents = await readEvents(await model({ input, tools: [weather] }))
+    const firstEvents = await readEvents(await model({ ...modelOptions, input, tools: [weather] }))
     const firstStepEnd = firstEvents.find((event): event is StepEndEvent => event.type === 'step.end')!
     const firstContent = firstStepEnd.message.content as readonly AssistantMessageContent[]
     const toolCallIndex = firstContent.findIndex(part => part.type === 'tool-call')
@@ -97,7 +101,7 @@ export const languageModelE2ECases = (createModel: (options: HttpOptions) => Lan
       role: 'user',
     })
 
-    const secondEvents = await readEvents(await model({ input }))
+    const secondEvents = await readEvents(await model({ ...modelOptions, input }))
     const text = secondEvents
       .filter((event): event is TextDeltaEvent => event.type === 'text.delta')
       .map(event => event.delta)
