@@ -16,7 +16,7 @@ declare module '@xsai/text' {
 }
 
 export const chat = (options: HttpOptions): LanguageModel => async modelOptions =>
-  wireRequest(options, modelOptions, {
+  wireRequest({
     body: {
       max_tokens: modelOptions.maxOutputTokens,
       messages: normalizeInput(modelOptions),
@@ -31,4 +31,4 @@ export const chat = (options: HttpOptions): LanguageModel => async modelOptions 
       top_p: modelOptions.topP,
     },
     path: 'chat/completions',
-  }, new ChatEventStream(modelOptions.includeRawEvents, modelOptions.events))
+  }, options, modelOptions, new ChatEventStream(modelOptions.includeRawEvents, modelOptions.events))

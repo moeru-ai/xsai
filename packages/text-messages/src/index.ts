@@ -34,7 +34,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
   if (typeof maxTokens !== 'number')
     throw new XSAIError('invalid-input', 'maxOutputTokens is required for the Messages API')
 
-  return wireRequest(options, modelOptions, {
+  return wireRequest({
     body: {
       max_tokens: maxTokens,
       mcp_servers: providerOptions?.mcpServers,
@@ -60,5 +60,5 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
       'x-api-key': options.apiKey ?? options.headers?.['x-api-key'],
     },
     path: source,
-  }, new MessagesEventStream(source, modelOptions.includeRawEvents, modelOptions.events))
+  }, options, modelOptions, new MessagesEventStream(source, modelOptions.includeRawEvents, modelOptions.events))
 }

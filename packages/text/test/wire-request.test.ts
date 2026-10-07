@@ -6,16 +6,16 @@ import { loop } from '../src'
 import { wireRequest } from '../src/internal'
 
 const options = { baseURL: 'https://example.com/v1', model: 'test-model' }
-const init = { body: {}, path: 'chat/completions' }
+const requestOptions = { body: {}, path: 'chat/completions' }
 
 describe('wireRequest', () => {
   it('propagates stream cancellation to the response body', async () => {
     const cancelBody = vi.fn()
     const body = new ReadableStream<Uint8Array>({ cancel: cancelBody })
     const stream = await wireRequest(
+      requestOptions,
       { ...options, fetch: async () => new Response(body) },
       { input: 'hi' },
-      init,
       new TransformStream<string, TextEvent>(),
     )
 
@@ -29,9 +29,9 @@ describe('wireRequest', () => {
     const requested = Promise.withResolvers<void>()
     const model: LanguageModel = async (modelOptions) => {
       const stream = await wireRequest(
+        requestOptions,
         { ...options, fetch: async () => new Response(new ReadableStream<Uint8Array>({ cancel: cancelBody })) },
         modelOptions,
-        init,
         new TransformStream<string, TextEvent>(),
       )
       requested.resolve()
@@ -50,9 +50,9 @@ describe('wireRequest', () => {
   it('rejects with a typed network error when fetch rejects', async () => {
     const cause = new TypeError('fetch failed')
     const request = wireRequest(
+      requestOptions,
       { ...options, fetch: async () => { throw cause } },
       { input: 'hi' },
-      init,
       new TransformStream<string, TextEvent>(),
     )
 
@@ -63,6 +63,7 @@ describe('wireRequest', () => {
     const reason = new DOMException('user aborted', 'AbortError')
     const signal = AbortSignal.abort(reason)
     const request = wireRequest(
+      requestOptions,
       {
         ...options,
         fetch: async (request) => {
@@ -70,7 +71,6 @@ describe('wireRequest', () => {
         },
       },
       { input: 'hi', signal },
-      init,
       new TransformStream<string, TextEvent>(),
     )
 
@@ -79,6 +79,7 @@ describe('wireRequest', () => {
 
   it('rejects with an http error carrying the response headers on non-2xx', async () => {
     const request = wireRequest(
+      requestOptions,
       {
         ...options,
         fetch: async () => new Response('{"error":{"message":"bad key"}}', {
@@ -87,7 +88,6 @@ describe('wireRequest', () => {
         }),
       },
       { input: 'hi' },
-      init,
       new TransformStream<string, TextEvent>(),
     )
 
@@ -104,9 +104,9 @@ describe('wireRequest', () => {
 
   it('rejects with a typed error when the response has no body', async () => {
     const request = wireRequest(
+      requestOptions,
       { ...options, fetch: async () => new Response(null) },
       { input: 'hi' },
-      init,
       new TransformStream<string, TextEvent>(),
     )
 

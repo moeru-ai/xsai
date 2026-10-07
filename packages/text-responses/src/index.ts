@@ -24,7 +24,7 @@ declare module '@xsai/text' {
 
 export const responses = (options: HttpOptions): LanguageModel => async (modelOptions) => {
   const source = requestURL('responses', options.baseURL).toString()
-  return wireRequest(options, modelOptions, {
+  return wireRequest({
     body: {
       include: modelOptions.providerOptions?.responses?.include,
       input: normalizeInput(modelOptions.input, source),
@@ -42,5 +42,5 @@ export const responses = (options: HttpOptions): LanguageModel => async (modelOp
       top_p: modelOptions.topP,
     },
     path: source,
-  }, new ResponsesEventStream(source, modelOptions.includeRawEvents, modelOptions.events))
+  }, options, modelOptions, new ResponsesEventStream(source, modelOptions.includeRawEvents, modelOptions.events))
 }
