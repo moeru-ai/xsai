@@ -7,9 +7,12 @@
   "repository": "github:moeru-ai/xsai",
   "scripts": {
     "build": "turbo build",
+    "build:docs": "pnpm -F @xsai/docs build",
     "build:packages": "turbo -F=!./docs build",
     "bump": "bumpp",
+    "dev:docs": "pnpm -F @xsai/docs dev",
     "lint": "moeru-lint .",
+    "preview:docs": "pnpm -F @xsai/docs preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",

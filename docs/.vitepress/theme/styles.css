@@ -1,0 +1,205 @@
+@import "@voidzero-dev/vitepress-theme/src/styles/index.css";
+
+@source "./**/*.vue";
+
+/* Brand color: black in light mode, white in dark mode */
+:root,
+:root[data-variant="voidzero"] {
+  --color-brand: #09090b;
+}
+
+:root.dark:not([data-theme])[data-variant="voidzero"],
+:root[data-theme="dark"][data-variant="voidzero"] {
+  --color-brand: #fafafa;
+}
+
+:root[data-theme="light"][data-variant="voidzero"] {
+  --color-brand: #09090b;
+}
+
+/* Grayscale design tokens */
+:root {
+  --color-white: #ffffff;
+  --color-primary: #09090b;
+  --color-beige: #f4f4f5;
+  --color-nickel: #27272a;
+  --color-grey: #71717a;
+  --color-stroke: #e4e4e7;
+  --color-midnight: #18181b;
+  --color-slate: #27272a;
+  --color-electric: #09090b;
+  --color-vite: #fafafa;
+  --color-space: #09090b;
+}
+
+/* VitePress grayscale mappings — light */
+:root,
+:root[data-theme="light"] {
+  --vp-c-text-1: #09090b;
+  --vp-c-text-2: #71717a;
+  --vp-c-text-3: #a1a1aa;
+
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f4f4f5;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f4f4f5;
+
+  --vp-c-border: #e4e4e7;
+  --vp-c-divider: #e4e4e7;
+  --vp-c-gutter: #e4e4e7;
+
+  --vp-c-brand-1: #09090b;
+  --vp-c-brand-2: #18181b;
+  --vp-c-brand-3: #09090b;
+  --vp-c-brand-soft: rgba(9, 9, 11, 0.08);
+
+  --vp-c-default-1: #e4e4e7;
+  --vp-c-default-2: #f4f4f5;
+  --vp-c-default-3: #ffffff;
+  --vp-c-default-soft: rgba(113, 113, 122, 0.12);
+
+  --vp-backdrop-bg-color: rgba(255, 255, 255, 0.7);
+}
+
+/* VitePress grayscale mappings — dark */
+:root.dark:not([data-theme]),
+:root[data-theme="dark"] {
+  --vp-c-text-1: #fafafa;
+  --vp-c-text-2: #a1a1aa;
+  --vp-c-text-3: #52525b;
+
+  --vp-c-bg: #09090b;
+  --vp-c-bg-alt: #18181b;
+  --vp-c-bg-elv: #18181b;
+  --vp-c-bg-soft: #27272a;
+
+  --vp-c-border: #27272a;
+  --vp-c-divider: #27272a;
+  --vp-c-gutter: #000000;
+
+  --vp-c-brand-1: #fafafa;
+  --vp-c-brand-2: #e4e4e7;
+  --vp-c-brand-3: #ffffff;
+  --vp-c-brand-soft: rgba(250, 250, 250, 0.12);
+
+  --vp-c-default-1: #3f3f46;
+  --vp-c-default-2: #27272a;
+  --vp-c-default-3: #18181b;
+  --vp-c-default-soft: rgba(161, 161, 170, 0.14);
+
+  --vp-backdrop-bg-color: rgba(9, 9, 11, 0.8);
+}
+
+/* Marketing primary button: shadcn-style neutral button with depth */
+.marketing-layout .button--primary {
+  position: relative;
+  isolation: isolate;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.625rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: oklch(0.985 0 0);
+  background:
+    linear-gradient(180deg, oklch(0.235 0 0) 0%, oklch(0.185 0 0) 100%);
+  border: 1px solid oklch(0.205 0 0);
+  border-top-color: oklch(0.28 0 0);
+  border-bottom-color: oklch(0.155 0 0);
+  box-shadow:
+    0 1px 2px 0 rgb(0 0 0 / 0.05),
+    inset 0 1px 0 0 rgb(255 255 255 / 0.08);
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+  outline: none;
+  overflow: hidden;
+}
+
+.marketing-layout .button--primary::before,
+.marketing-layout .button--primary::after {
+  content: none;
+}
+
+.marketing-layout .button--primary:hover {
+  background:
+    linear-gradient(180deg, oklch(0.26 0 0) 0%, oklch(0.205 0 0) 100%);
+  border-color: oklch(0.235 0 0);
+  border-top-color: oklch(0.3 0 0);
+  border-bottom-color: oklch(0.175 0 0);
+  box-shadow:
+    0 8px 16px -4px rgb(0 0 0 / 0.12),
+    0 4px 6px -2px rgb(0 0 0 / 0.08),
+    inset 0 1px 0 0 rgb(255 255 255 / 0.1);
+  transform: translateY(-1px) scale(1.01);
+}
+
+.marketing-layout .button--primary:active {
+  background:
+    linear-gradient(180deg, oklch(0.175 0 0) 0%, oklch(0.155 0 0) 100%);
+  border-color: oklch(0.155 0 0);
+  box-shadow:
+    0 1px 2px 0 rgb(0 0 0 / 0.05),
+    inset 0 1px 2px 0 rgb(0 0 0 / 0.15);
+  transform: translateY(0) scale(1);
+}
+
+.marketing-layout .button--primary:focus-visible {
+  outline: 2px solid oklch(0.708 0 0);
+  outline-offset: 2px;
+}
+
+.dark:not([data-theme]) .marketing-layout .button--primary,
+[data-theme="dark"] .marketing-layout .button--primary {
+  color: oklch(0.205 0 0);
+  background:
+    linear-gradient(180deg, oklch(0.95 0 0) 0%, oklch(0.9 0 0) 100%);
+  border: 1px solid oklch(0.922 0 0);
+  border-top-color: oklch(0.98 0 0);
+  border-bottom-color: oklch(0.85 0 0);
+  box-shadow:
+    0 1px 2px 0 rgb(0 0 0 / 0.2),
+    inset 0 1px 0 0 rgb(255 255 255 / 0.25);
+}
+
+.dark:not([data-theme]) .marketing-layout .button--primary:hover,
+[data-theme="dark"] .marketing-layout .button--primary:hover {
+  background:
+    linear-gradient(180deg, oklch(0.97 0 0) 0%, oklch(0.93 0 0) 100%);
+  border-color: oklch(0.95 0 0);
+  border-bottom-color: oklch(0.88 0 0);
+  box-shadow:
+    0 8px 16px -4px rgb(0 0 0 / 0.35),
+    0 4px 6px -2px rgb(0 0 0 / 0.2),
+    inset 0 1px 0 0 rgb(255 255 255 / 0.3);
+}
+
+.dark:not([data-theme]) .marketing-layout .button--primary:active,
+[data-theme="dark"] .marketing-layout .button--primary:active {
+  background:
+    linear-gradient(180deg, oklch(0.9 0 0) 0%, oklch(0.85 0 0) 100%);
+  border-color: oklch(0.85 0 0);
+  box-shadow:
+    0 1px 2px 0 rgb(0 0 0 / 0.2),
+    inset 0 1px 2px 0 rgb(0 0 0 / 0.2);
+}
+
+.dark:not([data-theme]) .marketing-layout .button--primary:focus-visible,
+[data-theme="dark"] .marketing-layout .button--primary:focus-visible {
+  outline-color: oklch(0.556 0 0);
+}
+
+/* Ensure the marketing layout has a proper background in dark mode */
+.dark:not([data-theme]) .marketing-layout,
+[data-theme="dark"] .marketing-layout {
+  background-color: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+}
+
+/* Overrides logo size */
+.flex.flex-col.items-start.justify-center.-mx-2.px-2 {
+  .h-4 {
+    height: calc(var(--spacing) * 8) !important;
+  }
+}

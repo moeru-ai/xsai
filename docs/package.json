@@ -1,0 +1,17 @@
+{
+  "name": "@xsai/docs",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "vitepress build",
+    "dev": "vitepress dev",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@shikijs/vitepress-twoslash": "catalog:",
+    "@voidzero-dev/vitepress-theme": "catalog:",
+    "vitepress": "catalog:",
+    "vitepress-plugin-llms": "catalog:",
+    "vue": "catalog:"
+  }
+}

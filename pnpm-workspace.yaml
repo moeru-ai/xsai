@@ -24,10 +24,12 @@ catalog:
   '@moeru/eslint-config': ^0.1.0-beta.20
   '@moeru/tsconfig': ^0.1.0-beta.20
   '@pnpm/find-workspace-dir': ^1000.1.5
+  '@shikijs/vitepress-twoslash': ^4.5.0
   '@standard-schema/spec': 1.1.0
   '@types/json-schema': ^7.0.15
   '@types/node': ^26.6.4
   '@vitest/coverage-v8': ^5.0.3
+  '@voidzero-dev/vitepress-theme': ^5.0.7
   automd: ^0.4.3
   bumpp: ^12.3.0
   eslint: ^10.12.0
@@ -40,7 +42,10 @@ catalog:
   tsx: ^4.23.15
   turbo: ^2.11.7
   typescript: ~6.0.3
+  vitepress: ^2.0.0-alpha.20
+  vitepress-plugin-llms: ^1.14.0
   vitest: ^5.0.3
+  vue: ^3.5.43
 
 catalogs:
   schema:
