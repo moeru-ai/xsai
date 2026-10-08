@@ -1,0 +1,27 @@
+{
+  "$schema": "https://turborepo.dev/microfrontends/schema.json",
+  "applications": {
+    "@xsai/docs": {
+      "development": {
+        "local": {
+          "port": 5173
+        }
+      }
+    },
+    "@xsai/docs-v0": {
+      "development": {
+        "local": {
+          "port": 5174
+        }
+      },
+      "routing": [
+        {
+          "paths": [
+            "/v0",
+            "/v0/:path*"
+          ]
+        }
+      ]
+    }
+  }
+}

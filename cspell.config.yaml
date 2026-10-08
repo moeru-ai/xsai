@@ -44,6 +44,7 @@ words:
   - kwaa
   - litellm
   - llms
+  - llmstxt
   - lmstudio
   - logprob
   - logprobs
@@ -82,6 +83,7 @@ words:
   - reranker
   - rhasspy
   - scule
+  - shikijs
   - siliconflow
   - slerp
   - sonarjs

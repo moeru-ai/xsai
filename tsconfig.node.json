@@ -3,5 +3,8 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
   },
-  "include": ["**/*.config.ts", "**/scripts/**/*.ts"]
+  "include": [
+    "**/*.config.ts",
+    "**/.vitepress/*.ts"
+  ]
 }

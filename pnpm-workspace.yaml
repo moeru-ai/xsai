@@ -6,6 +6,7 @@ shellEmulator: true
 
 packages:
   - docs
+  - docs-v0
   - examples/*
   - packages/*
 

@@ -7,6 +7,7 @@ import { themeContextKey, VoidZeroTheme } from '@voidzero-dev/vitepress-theme'
 
 import Home from './Home.vue'
 import Layout from './Layout.vue'
+import LegacyRedirect from './LegacyRedirect.vue'
 
 import '@shikijs/vitepress-twoslash/style.css'
 import './styles.css'
@@ -25,6 +26,7 @@ export default {
     VoidZeroTheme.enhanceApp(ctx)
 
     ctx.app.component('Home', Home)
+    ctx.app.component('LegacyRedirect', LegacyRedirect)
     ctx.app.use(TwoslashFloatingVue)
   },
   Layout: Layout as Component,

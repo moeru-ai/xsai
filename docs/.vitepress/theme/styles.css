@@ -203,3 +203,16 @@
     height: calc(var(--spacing) * 8) !important;
   }
 }
+
+/* Native search is teleported outside the theme's scoped document layout. */
+.VPLocalSearchBox {
+  --vp-local-search-bg: var(--vp-c-bg);
+  --vp-local-search-result-bg: var(--vp-c-bg-soft);
+  --vp-local-search-result-border: var(--vp-c-border);
+  --vp-local-search-result-selected-bg: var(--vp-c-brand-soft);
+  --vp-local-search-result-selected-border: var(--vp-c-brand-1);
+  --vp-local-search-highlight-bg: var(--vp-c-text-1);
+  --vp-local-search-highlight-text: var(--vp-c-bg);
+
+  color: var(--vp-c-text-1);
+}

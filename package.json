@@ -6,17 +6,19 @@
   "packageManager": "pnpm@12.3.4",
   "repository": "github:moeru-ai/xsai",
   "scripts": {
-    "build": "turbo build",
-    "build:docs": "pnpm -F @xsai/docs build",
-    "build:packages": "turbo -F=!./docs build",
+    "build": "turbo build && pnpm docs:assemble",
+    "build:docs": "turbo build --filter=@xsai/docs --filter=@xsai/docs-v0 && pnpm docs:assemble",
+    "build:packages": "turbo build --filter=./packages/*",
     "bump": "bumpp",
-    "dev:docs": "pnpm -F @xsai/docs dev",
+    "dev:docs": "turbo dev --filter=@xsai/docs --filter=@xsai/docs-v0",
+    "docs:assemble": "rm -rf docs/out && cp -R docs/.vitepress/dist docs/out && cp -R docs-v0/.vitepress/dist docs/out/v0",
+    "docs:sync": "automd --input \"README.md,packages/*/README.md\"",
     "lint": "moeru-lint .",
-    "preview:docs": "pnpm -F @xsai/docs preview",
+    "preview:docs": "pnpm --filter @xsai/docs preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "typecheck": "tsc -b tsconfig.lib.json"
+    "typecheck": "tsc -b tsconfig.lib.json tsconfig.node.json"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",

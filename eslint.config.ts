@@ -6,6 +6,9 @@ export default defineConfig()
     ignores: [
       '.scratch/**',
       'packages/text-responses/src/generated/**/*.ts',
+      // Historical code uses the frozen API and formatting.
+      'docs-v0/**/*.md/*',
+      'docs-v0/.vitepress/theme/index.ts',
     ],
   })
   .append({
