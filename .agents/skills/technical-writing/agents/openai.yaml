@@ -1,0 +1,7 @@
+interface:
+  display_name: "Technical Writing"
+  short_description: "技术方案与评审写作风格约束"
+  default_prompt: "Use $technical-writing to draft or revise an technical design note in Chinese with a calm, evidence-backed tone."
+
+policy:
+  allow_implicit_invocation: true
