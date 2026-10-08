@@ -2,18 +2,15 @@
 
 <!-- automd:file src="/skills/xsai-audio/references/quick-start.md" lines="3:" -->
 
-Use Node.js with TypeScript and `tsx`.
-
 Set `AI_BASE_URL` to the service API root, including its path prefix.
 Set `AI_MODEL` to a model ID that supports the task.
-If the service requires authentication, set `AI_API_KEY` on the server.
+If the service requires authentication, set `AI_API_KEY`.
 
 The first example requires an `audio/speech` endpoint and a speech model.
 Set `AI_VOICE` to a voice that the model accepts.
 
 ```sh
 pnpm add @xsai/audio
-pnpm add -D tsx typescript
 ```
 
 Save this code as `example.ts`:
@@ -36,7 +33,7 @@ await writeFile('speech.mp3', new Uint8Array(await audio.arrayBuffer()))
 console.log(audio.type, audio.size)
 ```
 
-Run `pnpm exec tsx example.ts`.
+Run `node example.ts`.
 The program saves `speech.mp3` and prints its media type and size.
 The speech adapter defaults to MP3 output.
 
@@ -64,7 +61,7 @@ const result = await generateTranscription(model, {
 console.log(result.text)
 ```
 
-Run `pnpm exec tsx transcribe.ts`.
+Run `node transcribe.ts`.
 The program prints the transcript.
 For streaming and timestamps, read the [audio API reference](https://xsai.js.org/audio/api).
 

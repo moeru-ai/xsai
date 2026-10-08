@@ -26,7 +26,6 @@ for await (const event of stream) {
 }
 ```
 
-Use a runtime that provides `CustomEvent` for these helpers.
 Consuming the stream causes dispatch. Creating the transform alone does not consume it.
 
 For the event contract, read the [text event reference](https://xsai.js.org/text/events).

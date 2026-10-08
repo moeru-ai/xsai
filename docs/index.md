@@ -9,7 +9,7 @@ For the previous API, read the [v0 archive](/v0/){target="_self"}.
 ## Getting Started
 
 Follow the [quick start](./text/quick-start.md) to install xsAI and generate your first response.
-It explains the runtime, endpoint, model, and credentials that you need.
+It explains the endpoint, model, and credentials that you need.
 Then [choose an adapter](./text/adapters.md) for your service's protocol.
 
 Use [individual packages or the xsai package](./guide/xsai.md) for your application.

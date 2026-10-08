@@ -1,14 +1,11 @@
 # List available models
 
-Use Node.js with TypeScript and `tsx`.
-
 Set `AI_BASE_URL` to a service API root that supports `GET models`.
-If the service requires authentication, set `AI_API_KEY` on the server.
+If the service requires authentication, set `AI_API_KEY`.
 This task does not require a model ID.
 
 ```sh
 pnpm add @xsai/model
-pnpm add -D tsx typescript
 ```
 
 Save this code as `example.ts`:
@@ -24,6 +21,6 @@ const entries = await listModels(catalog)
 console.log(entries.map(entry => entry.id))
 ```
 
-Run `pnpm exec tsx example.ts`.
+Run `node example.ts`.
 The program prints the model IDs that the service exposes.
 For retrieval and metadata, read the [model API reference](https://xsai.js.org/model/api).

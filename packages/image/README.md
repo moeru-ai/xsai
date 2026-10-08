@@ -2,17 +2,14 @@
 
 <!-- automd:file src="/skills/xsai-image/references/quick-start.md" lines="3:" -->
 
-Use Node.js with TypeScript and `tsx`.
-
 Set `AI_BASE_URL` to the service API root, including its path prefix.
 Set `AI_MODEL` to a model ID that supports the task.
-If the service requires authentication, set `AI_API_KEY` on the server.
+If the service requires authentication, set `AI_API_KEY`.
 
 The service must support base64 image data from `images/generations`.
 
 ```sh
 pnpm add @xsai/image
-pnpm add -D tsx typescript
 ```
 
 Save this code as `example.ts`:
@@ -33,9 +30,8 @@ await writeFile(`image.${extension}`, new Uint8Array(await result.image.arrayBuf
 console.log(result.image.type, result.image.size)
 ```
 
-Run `pnpm exec tsx example.ts`.
+Run `node example.ts`.
 The program saves an image and prints its media type and size in bytes.
-The generated image varies between requests.
 For formats and image counts, read the [image API reference](https://xsai.js.org/image/api).
 
 <!-- /automd -->

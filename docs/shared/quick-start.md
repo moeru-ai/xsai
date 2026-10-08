@@ -1,12 +1,9 @@
 # Handle an HTTP error
 
-Use Node.js with TypeScript and `tsx`.
-
 This example replaces `fetch` with a local response. It needs no service or API key.
 
 ```sh
 pnpm add @xsai/shared
-pnpm add -D tsx typescript
 ```
 
 Save this code as `example.ts`:
@@ -28,6 +25,6 @@ catch (error) {
 }
 ```
 
-Run `pnpm exec tsx example.ts`.
+Run `node example.ts`.
 The program prints `429 Try again later`.
 For request configuration and error codes, read the [shared API reference](https://xsai.js.org/shared/api).
