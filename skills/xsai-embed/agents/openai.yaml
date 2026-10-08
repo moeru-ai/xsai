@@ -1,4 +1,4 @@
 interface:
-  display_name: "xsAI Embeddings"
-  short_description: "Create text embeddings with xsAI"
-  default_prompt: "Use $xsai-embed to create embeddings for a batch of texts."
+  display_name: xsAI Embeddings
+  short_description: Create text embeddings with xsAI
+  default_prompt: Use $xsai-embed to create embeddings for a batch of texts.
