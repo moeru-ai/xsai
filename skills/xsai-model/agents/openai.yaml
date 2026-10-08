@@ -1,0 +1,4 @@
+interface:
+  display_name: "xsAI Models"
+  short_description: "List and retrieve service models with xsAI"
+  default_prompt: "Use $xsai-model to list the models available from my service."

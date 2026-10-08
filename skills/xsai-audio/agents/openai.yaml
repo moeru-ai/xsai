@@ -1,0 +1,4 @@
+interface:
+  display_name: "xsAI Audio"
+  short_description: "Generate speech and transcribe audio with xsAI"
+  default_prompt: "Use $xsai-audio to transcribe an audio file in this project."

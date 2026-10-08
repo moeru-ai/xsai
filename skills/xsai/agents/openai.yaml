@@ -1,0 +1,4 @@
+interface:
+  display_name: "xsAI"
+  short_description: "Choose xsAI packages for your application"
+  default_prompt: "Use $xsai to choose the packages for this AI feature."

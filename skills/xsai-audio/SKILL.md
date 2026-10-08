@@ -1,19 +1,16 @@
 ---
 name: xsai-audio
-description: Generate speech or transcribe audio with xsAI, including streamed speech, transcript events, timestamps, and speech or transcription adapter options.
+description: Generate or stream speech and transcribe recordings with xsAI's audio package.
 ---
 
 # xsAI audio
 
-Read https://xsai.js.org/audio.md before you write code. It covers speech, transcription, and the option tables.
+Read https://xsai.js.org/audio.md. Make sure that the API matches the installed xsAI version.
 
-Write code in this shape:
+- Use `@xsai/audio` or the existing `xsai` package with the project's endpoint, model, and voice configuration.
+- Create a model with `speech()`, `transcriptions()`, or `transcriptionsNonStreaming()`. Operations take the model first: `generateSpeech(model, { input, voice })`, `generateTranscription(model, { audio })`.
+- If the service does not support server-sent events (SSE), use `transcriptionsNonStreaming()`.
+- `streamSpeech` returns a `Response`. `generateSpeech` reads its body into a `Blob`.
+- For HTTP and network failures, read https://xsai.js.org/shared.md.
 
-1. Install `@xsai/audio`.
-2. Create a model with `speech()`, `transcriptions()`, or `transcriptionsNonStreaming()`.
-3. Pass the model first and the options second: `generateSpeech(model, { input, voice })`, `generateTranscription(model, { audio })`.
-4. Use `transcriptionsNonStreaming()` for services without server-sent events.
-5. Take `baseURL`, model IDs, and voice IDs from the user or the project. Ask when they are unknown.
-6. Handle failures with the types in https://xsai.js.org/shared.md.
-
-Done when the code type-checks against the installed `@xsai/audio`.
+For code changes, make sure that the installed types accept the code. Test the affected behavior with existing tests or mock responses.

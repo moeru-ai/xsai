@@ -1,11 +1,13 @@
 ---
 name: xsai-text
-description: Generate or stream text with xsAI, call tools, request structured output, continue a conversation, read text events, or pick a wire adapter for OpenAI Responses, Chat Completions, or Anthropic Messages.
+description: Generate or stream text with xsAI. Use for tool calls, structured output, conversations, or protocol adapter selection.
 ---
 
 # xsAI text
 
-Read the page for the task before you write code. Each URL returns Markdown.
+Read only the pages needed for the task. The URLs below return Markdown. Make sure that the API matches the installed xsAI version.
+
+An adapter connects a model to an HTTP protocol.
 
 | Task | Page |
 | --- | --- |
@@ -23,15 +25,13 @@ Read the page for the task before you write code. Each URL returns Markdown.
 | Custom models, typed provider options | https://xsai.js.org/advanced/custom-models.md, https://xsai.js.org/advanced/module-augmentation.md |
 | Schemas for tools without native JSON Schema support | https://xsai.js.org/xsschema.md |
 
-Write code in this shape:
+Use these API rules:
 
-1. Create a model with an adapter factory: `responses()` from `@xsai/text-responses`, `chat()` from `@xsai/text-chat`, or `messages()` from `@xsai/text-messages`.
-2. Pass the model first and the options second: `generateText(model, { input })`. Import the operations from `@xsai/text`.
-3. Pick the adapter from the protocol of the endpoint. One adapter serves every provider that speaks that protocol.
-4. Take `baseURL` and model IDs from the user or the project. Ask when they are unknown.
-5. Parse structured output from `result.text` yourself. `generateText` returns a string.
-6. Await `result` from `streamText` even when you read `stream`, because failures reject `result`.
-7. Set `maxOutputTokens` for the Messages adapter. It requires the field.
-8. Keep returned assistant messages unchanged when you build the next `input`.
+- Pick the adapter by endpoint protocol: `responses()` from `@xsai/text-responses`, `chat()` from `@xsai/text-chat`, or `messages()` from `@xsai/text-messages`. Use the project's endpoint and model configuration.
+- Operations take the model first: `generateText(model, { input })`. Import from `@xsai/text` or the existing `xsai` package.
+- `generateText` returns a result object. Before you parse `result.text`, make sure that the output is complete and contains no refusal. Then parse the JSON and make sure that it matches the schema.
+- If you consume `stream`, also handle the `result` promise from `streamText`. Failures that the provider reports reject `result`. Network errors or errors in the response data can also make the stream throw.
+- Messages requires `maxOutputTokens`.
+- Preserve the returned assistant messages and their metadata. After a tool loop, send each step's message and tool results in the next request.
 
-Done when the code type-checks against the installed `@xsai/*` packages.
+For code changes, make sure that the installed types accept the code. Test the affected behavior with existing tests or mock responses.

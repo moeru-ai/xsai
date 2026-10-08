@@ -1,0 +1,4 @@
+interface:
+  display_name: "xsAI Text"
+  short_description: "Generate text and run tools with xsAI"
+  default_prompt: "Use $xsai-text to stream a model response in this project."

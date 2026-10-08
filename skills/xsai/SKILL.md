@@ -1,11 +1,13 @@
 ---
 name: xsai
-description: Route an xsAI task that spans packages, pick packages, or use the `xsai` umbrella package. Use when the work combines text, audio, images, embeddings, or model lists, or when the owning package is unclear.
+description: Choose xsAI packages or route tasks across text, audio, images, embeddings, and model lists.
 ---
 
 # xsAI router
 
-Match the task to one skill. Use that skill when it is installed.
+Before you choose packages, read the installed xsAI version and existing imports.
+
+Use the relevant installed skill:
 
 | Task | Skill |
 | --- | --- |
@@ -15,13 +17,10 @@ Match the task to one skill. Use that skill when it is installed.
 | Image generation | `xsai-image` |
 | Model lists | `xsai-model` |
 
-For a task that spans packages, start with the skill for the main capability, then add the others.
+For a task that spans packages, start with the skill for the main capability. Then use the other skills as needed.
 
-When a skill is not installed, read the page for it instead:
+If a skill is not installed, find the relevant Markdown pages through https://xsai.js.org/llms.txt.
+Read only the pages needed for the task.
 
-1. Open https://xsai.js.org/llms.txt.
-2. Pick the pages that match the task.
-3. Fetch each page as Markdown.
-
-Packages and the `xsai` umbrella package, which re-exports every package except `xsschema`, are in https://xsai.js.org/packages.md.
-Every operation takes the model first and the options second.
+The `xsai` package re-exports every package except `xsschema`. For package details, read https://xsai.js.org/packages.md.
+Reuse the project's import style. If the project uses `xsai`, use its exports without extra package dependencies.

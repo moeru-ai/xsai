@@ -1,18 +1,14 @@
 ---
 name: xsai-image
-description: Generate images from a text prompt with xsAI, including size, count, quality, and output format options.
+description: Generate images from text prompts with xsAI's image package.
 ---
 
 # xsAI images
 
-Read https://xsai.js.org/image.md before you write code. It covers `generateImage` and the option tables.
+Read https://xsai.js.org/image.md. Make sure that the API matches the installed xsAI version.
 
-Write code in this shape:
+- Use `@xsai/image` or the existing `xsai` package with the project's endpoint and model configuration.
+- Create a model with `generations()`. Then call `generateImage(model, { input })`.
+- `result.image` is the first image as a `Blob`. `result.images` holds all images. The adapter requires base64 output and does not download image URLs.
 
-1. Install `@xsai/image`.
-2. Create a model with `generations()`.
-3. Pass the model first and the options second: `generateImage(model, { input })`.
-4. Read the first picture from `result.image`, a `Blob` with its media type in `type`.
-5. Take `baseURL` and the model ID from the user or the project. Ask when they are unknown.
-
-Done when the code type-checks against the installed `@xsai/image`.
+For code changes, make sure that the installed types accept the code. Test the affected behavior with existing tests or mock responses.
