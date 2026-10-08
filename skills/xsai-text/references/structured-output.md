@@ -7,6 +7,10 @@ The endpoint and model must support the feature that you request.
 This example requests an object with one string field:
 
 ```ts
+import type { LanguageModel } from '@xsai/text'
+
+declare const model: LanguageModel
+// ---cut---
 import { generateText } from '@xsai/text'
 
 const result = await generateText(model, {

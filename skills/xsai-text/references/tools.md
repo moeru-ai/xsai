@@ -7,6 +7,10 @@ A tool lets the model request an action by name.
 This example declares a tool that returns the current UTC time:
 
 ```ts
+import type { LanguageModel } from '@xsai/text'
+
+declare const model: LanguageModel
+// ---cut---
 import { generateText, maxSteps, tool } from '@xsai/text'
 
 const clock = tool({

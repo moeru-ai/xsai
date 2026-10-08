@@ -15,6 +15,7 @@
     "@xsai/docs#build": {
       "inputs": [
         "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/packages/*/src/**",
         "$TURBO_ROOT$/skills/**"
       ],
       "outputs": [

@@ -6,6 +6,10 @@ Create an `AbortController` before the request.
 Pass its signal to the operation:
 
 ```ts
+import type { LanguageModel } from '@xsai/text'
+
+declare const model: LanguageModel
+// ---cut---
 import { generateText } from '@xsai/text'
 
 const controller = new AbortController()

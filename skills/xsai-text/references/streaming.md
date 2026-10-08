@@ -8,6 +8,10 @@ Use the `model` from the [text quick start](https://xsai.js.org/text/quick-start
 Read each text delta:
 
 ```ts
+import type { LanguageModel } from '@xsai/text'
+
+declare const model: LanguageModel
+// ---cut---
 import { streamText } from '@xsai/text'
 
 const { result, stream } = streamText(model, { input: 'Describe a quiet forest.' })

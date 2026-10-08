@@ -89,7 +89,7 @@ export const createDocsConfig = (archive: boolean) => {
     description: archive ? 'xsAI v0 API archive from v0.5.1.' : 'Build AI applications with small, composable packages.',
     head: [['link', { href: 'https://github.com/moeru-ai.png', rel: 'icon', type: 'image/png' }]],
     markdown: {
-      codeTransformers: archive ? [] : [transformerTwoslash({ twoslashOptions: { compilerOptions: { types: ['node'] } } })],
+      codeTransformers: archive ? [] : [transformerTwoslash({ explicitTrigger: false, twoslashOptions: { compilerOptions: { types: ['node'] } } })],
       languages: ['js', 'jsx', 'ts', 'tsx', 'sh', 'bash', 'shell', 'json'],
     },
     rewrites: archive ? {} : { 'legacy/:path*.md': 'docs/:path*.md', 'legacy/index.md': 'docs/index.md' },

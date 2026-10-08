@@ -9,9 +9,22 @@
   },
   "devDependencies": {
     "@shikijs/vitepress-twoslash": "catalog:",
+    "@types/node": "catalog:",
     "@voidzero-dev/vitepress-theme": "catalog:",
+    "@xsai/audio": "workspace:",
+    "@xsai/embed": "workspace:",
+    "@xsai/image": "workspace:",
+    "@xsai/model": "workspace:",
+    "@xsai/shared": "workspace:",
+    "@xsai/text": "workspace:",
+    "@xsai/text-chat": "workspace:",
+    "@xsai/text-messages": "workspace:",
+    "@xsai/text-responses": "workspace:",
     "vitepress": "catalog:",
     "vitepress-plugin-llms": "catalog:",
-    "vue": "catalog:"
+    "vue": "catalog:",
+    "xsai": "workspace:",
+    "xsschema": "workspace:",
+    "zod": "catalog:schema-dev"
   }
 }

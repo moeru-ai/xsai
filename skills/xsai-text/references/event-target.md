@@ -11,6 +11,10 @@ For other events, `detail` contains the event fields without `type`.
 Pipe a text stream through it to dispatch events and preserve the stream values:
 
 ```ts
+import type { LanguageModel } from '@xsai/text'
+
+declare const model: LanguageModel
+// ---cut---
 import { loop, TextEventTarget, withEventTarget } from '@xsai/text'
 
 const target = new TextEventTarget()
