@@ -8,6 +8,10 @@
     "preview": "vitepress preview"
   },
   "devDependencies": {
+    "@nolebase/vitepress-plugin-git-changelog": "catalog:",
+    "@nolebase/vitepress-plugin-highlight-targeted-heading": "catalog:",
+    "@nolebase/vitepress-plugin-inline-link-preview": "catalog:",
+    "@nolebase/vitepress-plugin-meta": "catalog:",
     "@shikijs/vitepress-twoslash": "catalog:",
     "@types/node": "catalog:",
     "@voidzero-dev/vitepress-theme": "catalog:",

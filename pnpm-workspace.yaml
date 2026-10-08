@@ -24,6 +24,10 @@ catalog:
   '@hey-api/openapi-ts': ^0.99.0
   '@moeru/eslint-config': ^0.1.0-beta.20
   '@moeru/tsconfig': ^0.1.0-beta.20
+  '@nolebase/vitepress-plugin-git-changelog': ^2.18.2
+  '@nolebase/vitepress-plugin-highlight-targeted-heading': ^2.18.2
+  '@nolebase/vitepress-plugin-inline-link-preview': ^2.18.2
+  '@nolebase/vitepress-plugin-meta': ^2.18.2
   '@pnpm/find-workspace-dir': ^1000.1.5
   '@shikijs/vitepress-twoslash': ^4.5.0
   '@standard-schema/spec': 1.1.0

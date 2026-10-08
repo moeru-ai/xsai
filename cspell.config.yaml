@@ -64,6 +64,7 @@ words:
   - nemo
   - nemotron
   - netease
+  - nolebase
   - nomic
   - nomic-embed-text
   - Novita
@@ -105,6 +106,7 @@ words:
   - unspeech
   - valibot
   - vercel
+  - vitepress
   - vitest
   - voltagent
   - wizardlm

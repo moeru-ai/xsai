@@ -1,4 +1,4 @@
-import type { DefaultTheme, SiteConfig } from 'vitepress'
+import type { DefaultTheme, MarkdownRenderer, SiteConfig, TransformContext } from 'vitepress'
 
 import process from 'node:process'
 
@@ -7,6 +7,9 @@ import { resolve } from 'node:path'
 
 import llmstxt from 'vitepress-plugin-llms'
 
+import { GitChangelog, GitChangelogMarkdownSection } from '@nolebase/vitepress-plugin-git-changelog/vite'
+import { InlineLinkPreviewElementTransform } from '@nolebase/vitepress-plugin-inline-link-preview/markdown-it'
+import { transformHeadMeta } from '@nolebase/vitepress-plugin-meta/vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { extendConfig } from '@voidzero-dev/vitepress-theme/config'
 
@@ -83,6 +86,7 @@ export const createDocsConfig = (archive: boolean) => {
     head: [['link', { href: 'https://github.com/moeru-ai.png', rel: 'icon', type: 'image/png' }]],
     markdown: {
       codeTransformers: archive ? [] : [transformerTwoslash({ explicitTrigger: false, twoslashOptions: { compilerOptions: { types: ['node'] } } })],
+      config: (md: MarkdownRenderer) => md.use(InlineLinkPreviewElementTransform),
       languages: ['js', 'jsx', 'ts', 'tsx', 'sh', 'bash', 'shell', 'json'],
     },
     rewrites: archive ? {} : { 'legacy/:path*.md': 'docs/:path*.md', 'legacy/index.md': 'docs/index.md' },
@@ -118,6 +122,25 @@ export const createDocsConfig = (archive: boolean) => {
       variant: 'voidzero',
     },
     title: archive ? 'xsAI v0' : 'xsAI',
-    vite: { plugins: [llmstxt({ excludeIndexPage: false, ignoreFiles: [...srcExclude, 'legacy/**'] })], server: { port: Number.parseInt(process.env.TURBO_MFE_PORT ?? (archive ? '5174' : '5173'), 10), strictPort: true } },
+    transformHead: async (context: TransformContext) => transformHeadMeta()([...context.head], context),
+    vite: {
+      optimizeDeps: { exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client'] },
+      plugins: [
+        llmstxt({ excludeIndexPage: false, ignoreFiles: [...srcExclude, 'legacy/**'] }),
+        GitChangelog({
+          include: ['**/*.md', '!{adr,agents,legacy,out,research,snippets}/**', '!CONTRIBUTING.md'],
+          repoURL: () => 'https://github.com/moeru-ai/xsai',
+        }),
+        ...archive ? [] : [GitChangelogMarkdownSection({ exclude: id => id.includes('/legacy/') })],
+      ],
+      server: { port: Number.parseInt(process.env.TURBO_MFE_PORT ?? (archive ? '5174' : '5173'), 10), strictPort: true },
+      ssr: {
+        noExternal: [
+          '@nolebase/vitepress-plugin-git-changelog',
+          '@nolebase/vitepress-plugin-highlight-targeted-heading',
+          '@nolebase/vitepress-plugin-inline-link-preview',
+        ],
+      },
+    },
   })
 }
