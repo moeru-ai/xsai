@@ -1,7 +1,3 @@
-# @xsai/embed
-
-<!-- automd:file src="/docs/snippets/embed.md" -->
-
 ```sh
 pnpm add @xsai/embed
 ```
@@ -18,7 +14,3 @@ const model = embeddings({
 const { embedding } = await embed(model, { input: 'A quiet forest.' })
 console.log(embedding.length)
 ```
-
-<!-- /automd -->
-
-Read the [documentation](https://xsai.js.org/embed).

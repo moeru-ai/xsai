@@ -1,13 +1,17 @@
 ---
 name: xsai-model
-description: List or retrieve model IDs with xsAI. Use for model catalogs, service model metadata, or model discovery.
+description: List the models that a service offers or read one model entry with xsAI.
 ---
 
-# xsAI model catalogs
+# xsAI models
 
-Use the xsAI v1 contracts in these references.
-For a first successful task, read [quick-start.md](references/quick-start.md).
-For inputs, results, errors, and cancellation, read [api.md](references/api.md).
+Read https://xsai.js.org/model.md before you write code. It covers `listModels`, `retrieveModel`, and the entry fields.
 
-State required service access before a runnable example.
-Use the imports and call signatures in these references.
+Write code in this shape:
+
+1. Install `@xsai/model`.
+2. Create a catalog with `models({ baseURL, apiKey })`. This factory takes no `model` option.
+3. Call `listModels(catalog)` or `retrieveModel(catalog, { id })`.
+4. Take `baseURL` from the user or the project. Ask when it is unknown.
+
+Done when the code type-checks against the installed `@xsai/model`.

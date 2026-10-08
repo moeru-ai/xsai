@@ -9,5 +9,8 @@ const { site } = useData()
     <h1 class="text-center text-[var(--vp-c-text-1)]">
       {{ site.title }}
     </h1>
+    <p class="text-center">
+      <a href="/getting-started">Get started</a>
+    </p>
   </section>
 </template>

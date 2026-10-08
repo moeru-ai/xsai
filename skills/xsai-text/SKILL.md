@@ -1,30 +1,37 @@
 ---
 name: xsai-text
-description: Generate or stream text with xsAI, select a chat, messages, or responses wire adapter, add tools or structured output, and handle text events. Use for current xsAI text tasks.
+description: Generate or stream text with xsAI, call tools, request structured output, continue a conversation, read text events, or pick a wire adapter for OpenAI Responses, Chat Completions, or Anthropic Messages.
 ---
 
 # xsAI text
 
-Use the xsAI v1 API with a language model as the first argument.
-A wire adapter translates a provider protocol into the shared text contract.
-Choose the adapter that matches the endpoint, rather than the provider name.
+Read the page for the task before you write code. Each URL returns Markdown.
 
-For a first request, read [quick-start.md](references/quick-start.md).
-For Anthropic Messages, read [messages-quick-start.md](references/messages-quick-start.md).
-For OpenAI Responses, read [responses-quick-start.md](references/responses-quick-start.md).
-For the `xsai` umbrella import, read [umbrella-quick-start.md](references/umbrella-quick-start.md).
+| Task | Page |
+| --- | --- |
+| First request, install | https://xsai.js.org/getting-started.md |
+| One reply | https://xsai.js.org/text/generating.md |
+| Incremental output | https://xsai.js.org/text/streaming.md |
+| Tools, the tool loop, and its hooks | https://xsai.js.org/text/tools.md |
+| Structured output | https://xsai.js.org/text/structured-output.md |
+| Multi-turn input, images, Parts | https://xsai.js.org/text/messages.md |
+| Event types, the terminal event, event listeners | https://xsai.js.org/text/events.md |
+| Adapter choice and provider options | https://xsai.js.org/text/adapters.md |
+| Options, results, errors | https://xsai.js.org/text/api.md |
+| Cancellation | https://xsai.js.org/text/generating.md |
+| Failures | https://xsai.js.org/text/troubleshooting.md |
+| Custom models, typed provider options | https://xsai.js.org/advanced/custom-models.md, https://xsai.js.org/advanced/module-augmentation.md |
+| Schemas for tools without native JSON Schema support | https://xsai.js.org/xsschema.md |
 
-For inputs, results, loop controls, or schemas, read [api.md](references/api.md).
-For incremental output, read [streaming.md](references/streaming.md).
-For event fields and terminal status, read [events.md](references/events.md).
-For executable tools, read [tools.md](references/tools.md).
-For structured output, read [structured-output.md](references/structured-output.md).
-For cancellation, read [cancellation.md](references/cancellation.md).
-For step overrides and tool hooks, read [loop-control.md](references/loop-control.md).
-For typed event listeners, read [event-target.md](references/event-target.md).
-For a custom model, read [custom-models.md](references/custom-models.md).
-For adapter selection and provider configuration, read [adapters.md](references/adapters.md).
-For request failures or incomplete streams, read [troubleshooting.md](references/troubleshooting.md).
+Write code in this shape:
 
-Use the imports and call signatures in these references.
-State required service access before a runnable example.
+1. Create a model with an adapter factory: `responses()` from `@xsai/text-responses`, `chat()` from `@xsai/text-chat`, or `messages()` from `@xsai/text-messages`.
+2. Pass the model first and the options second: `generateText(model, { input })`. Import the operations from `@xsai/text`.
+3. Pick the adapter from the protocol of the endpoint. One adapter serves every provider that speaks that protocol.
+4. Take `baseURL` and model IDs from the user or the project. Ask when they are unknown.
+5. Parse structured output from `result.text` yourself. `generateText` returns a string.
+6. Await `result` from `streamText` even when you read `stream`, because failures reject `result`.
+7. Set `maxOutputTokens` for the Messages adapter. It requires the field.
+8. Keep returned assistant messages unchanged when you build the next `input`.
+
+Done when the code type-checks against the installed `@xsai/*` packages.

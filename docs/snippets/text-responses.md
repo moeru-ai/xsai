@@ -1,7 +1,3 @@
-# @xsai/text-responses
-
-<!-- automd:file src="/docs/snippets/text-responses.md" -->
-
 ```sh
 pnpm add @xsai/text @xsai/text-responses
 ```
@@ -19,7 +15,3 @@ const model = responses({
 const { text } = await generateText(model, { input: 'Say hello.' })
 console.log(text)
 ```
-
-<!-- /automd -->
-
-Read the [documentation](https://xsai.js.org/text/adapters).

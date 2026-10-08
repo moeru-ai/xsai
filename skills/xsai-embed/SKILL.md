@@ -1,13 +1,18 @@
 ---
 name: xsai-embed
-description: Create one or many text embeddings with xsAI. Use for embedding vectors, embedding endpoint configuration, input order, or token usage.
+description: Create text embeddings with xsAI for one string or a batch, including output dimensions and usage.
 ---
 
 # xsAI embeddings
 
-Use the xsAI v1 contracts in these references.
-For a first successful task, read [quick-start.md](references/quick-start.md).
-For inputs, results, errors, and cancellation, read [api.md](references/api.md).
+Read https://xsai.js.org/embed.md before you write code. It covers `embed`, `embedMany`, and the option table.
 
-State required service access before a runnable example.
-Use the imports and call signatures in these references.
+Write code in this shape:
+
+1. Install `@xsai/embed`.
+2. Create a model with `embeddings()`.
+3. Pass the model first and the options second: `embed(model, { input })`.
+4. Use `embedMany` for several strings, and split large batches yourself.
+5. Take `baseURL` and the model ID from the user or the project. Ask when they are unknown.
+
+Done when the code type-checks against the installed `@xsai/embed`.

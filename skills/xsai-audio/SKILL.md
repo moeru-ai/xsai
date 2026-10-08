@@ -1,13 +1,19 @@
 ---
 name: xsai-audio
-description: Generate or stream speech and transcribe audio with xsAI. Use for speech output, transcript events, audio formats, or audio endpoint configuration.
+description: Generate speech or transcribe audio with xsAI, including streamed speech, transcript events, timestamps, and speech or transcription adapter options.
 ---
 
-# xsAI speech and transcription
+# xsAI audio
 
-Use the xsAI v1 contracts in these references.
-For a first successful task, read [quick-start.md](references/quick-start.md).
-For inputs, results, errors, and cancellation, read [api.md](references/api.md).
+Read https://xsai.js.org/audio.md before you write code. It covers speech, transcription, and the option tables.
 
-State required service access before a runnable example.
-Use the imports and call signatures in these references.
+Write code in this shape:
+
+1. Install `@xsai/audio`.
+2. Create a model with `speech()`, `transcriptions()`, or `transcriptionsNonStreaming()`.
+3. Pass the model first and the options second: `generateSpeech(model, { input, voice })`, `generateTranscription(model, { audio })`.
+4. Use `transcriptionsNonStreaming()` for services without server-sent events.
+5. Take `baseURL`, model IDs, and voice IDs from the user or the project. Ask when they are unknown.
+6. Handle failures with the types in https://xsai.js.org/shared.md.
+
+Done when the code type-checks against the installed `@xsai/audio`.

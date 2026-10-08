@@ -12,42 +12,35 @@ import { extendConfig } from '@voidzero-dev/vitepress-theme/config'
 
 const currentSidebar: DefaultTheme.SidebarItem[] = [
   { items: [
-    { link: '/', text: 'Introduction' },
-    { link: '/text/quick-start', text: 'Quick start' },
-    { link: '/text/adapters', text: 'Choose an adapter' },
-    { link: '/guide/xsai', text: 'Choose packages' },
-    { link: '/guide/ai', text: 'Working with AI' },
+    { link: '/getting-started', text: 'Getting started' },
+    { link: '/packages', text: 'Choose packages' },
+    { link: '/ai', text: 'Working with AI' },
   ], text: 'Getting Started' },
   { items: [
+    { link: '/text/generating', text: 'Generate text' },
     { link: '/text/streaming', text: 'Stream text' },
     { link: '/text/tools', text: 'Call tools' },
     { link: '/text/structured-output', text: 'Generate structured output' },
-    { link: '/text/messages-quick-start', text: 'Use Anthropic Messages' },
-    { link: '/text/responses-quick-start', text: 'Use OpenAI Responses' },
-    { link: '/audio/quick-start', text: 'Speech and transcription' },
-    { link: '/embed/quick-start', text: 'Create embeddings' },
-    { link: '/image/quick-start', text: 'Generate images' },
-    { link: '/model/quick-start', text: 'List models' },
-    { link: '/xsschema/quick-start', text: 'Convert and validate schemas' },
-  ], text: 'Guides' },
+    { link: '/text/messages', text: 'Messages and Parts' },
+    { link: '/text/events', text: 'Text events' },
+    { link: '/text/adapters', text: 'Choose an adapter' },
+    { link: '/text/troubleshooting', text: 'Troubleshoot requests' },
+    { link: '/text/api', text: 'Text API reference' },
+  ], text: 'Core Concepts' },
   { items: [
-    { link: '/text/cancellation', text: 'Cancel requests' },
-    { link: '/text/loop-control', text: 'Control tool loop steps' },
-    { link: '/text/event-target', text: 'Use event listeners' },
-    { link: '/text/custom-models', text: 'Write a custom model' },
-    { link: '/shared/quick-start', text: 'Handle HTTP errors' },
-    { link: '/text/troubleshooting', text: 'Troubleshooting' },
+    { link: '/audio', text: 'Audio' },
+    { link: '/embed', text: 'Embeddings' },
+    { link: '/image', text: 'Images' },
+    { link: '/model', text: 'Models' },
+  ], text: 'More Capabilities' },
+  { items: [
+    { link: '/advanced/custom-models', text: 'Write a custom model' },
+    { link: '/advanced/module-augmentation', text: 'Module augmentation' },
   ], text: 'Advanced' },
   { items: [
-    { link: '/text/api', text: 'Text' },
-    { link: '/text/events', text: 'Text events' },
-    { link: '/audio/api', text: 'Audio' },
-    { link: '/embed/api', text: 'Embeddings' },
-    { link: '/image/api', text: 'Images' },
-    { link: '/model/api', text: 'Models' },
-    { link: '/shared/api', text: 'Shared HTTP helpers' },
-    { link: '/xsschema/api', text: 'xsschema' },
-  ], text: 'References' },
+    { link: '/shared', text: 'shared' },
+    { link: '/xsschema', text: 'xsschema' },
+  ], text: 'Extras' },
 ]
 
 const archiveSidebar: DefaultTheme.SidebarItem[] = [
@@ -81,7 +74,7 @@ const normalizeArchiveExports = async ({ outDir }: SiteConfig) => {
 }
 
 export const createDocsConfig = (archive: boolean) => {
-  const srcExclude = ['adr/**', 'agents/**', 'research/**', 'CONTRIBUTING.md', 'out/**']
+  const srcExclude = ['adr/**', 'agents/**', 'research/**', 'snippets/**', 'CONTRIBUTING.md', 'out/**']
   return extendConfig({
     base: archive ? '/v0/' : '/',
     buildEnd: archive ? normalizeArchiveExports : undefined,

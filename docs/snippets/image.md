@@ -1,7 +1,3 @@
-# @xsai/image
-
-<!-- automd:file src="/docs/snippets/image.md" -->
-
 ```sh
 pnpm add @xsai/image
 ```
@@ -20,7 +16,3 @@ const model = generations({
 const { image } = await generateImage(model, { input: 'A small cabin in a quiet forest.' })
 await writeFile('cabin.png', new Uint8Array(await image.arrayBuffer()))
 ```
-
-<!-- /automd -->
-
-Read the [documentation](https://xsai.js.org/image).

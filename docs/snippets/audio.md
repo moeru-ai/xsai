@@ -1,7 +1,3 @@
-# @xsai/audio
-
-<!-- automd:file src="/docs/snippets/audio.md" -->
-
 ```sh
 pnpm add @xsai/audio
 ```
@@ -20,7 +16,3 @@ const model = speech({
 const audio = await generateSpeech(model, { input: 'Welcome to the forest.', voice: 'alloy' })
 await writeFile('speech.mp3', new Uint8Array(await audio.arrayBuffer()))
 ```
-
-<!-- /automd -->
-
-Read the [documentation](https://xsai.js.org/audio).

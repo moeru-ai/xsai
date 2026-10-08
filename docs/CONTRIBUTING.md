@@ -7,40 +7,34 @@ The current application lives in `docs`. The v0 application lives in `docs-v0`.
 
 ## Edit current content
 
-Find the owning skill in [the ownership table](../skills/README.md#content-ownership).
-Edit its files in `references/`.
-For shared HTTP helpers, edit `docs/shared/`.
-For xsschema, edit `docs/xsschema/`.
-These two sections use the documentation as their source and have no agent skills.
-Keep `SKILL.md` focused on task selection and conditional reference pointers.
+Every page of the current site is a Markdown file in `docs`.
+There is no other source for technical content.
+The skills in `skills/` hold only an entry point and a few rules.
+They link to the pages on the site, so edit a page and the skills follow.
+
 Use the glossary in [CONTEXT.md](../CONTEXT.md) for domain terms.
+Write in plain English: short sentences, active voice, and one word for one meaning.
+Define a term the first time it appears, but only terms that xsAI introduces.
+State prerequisites once, in [Getting started](./getting-started.md), and link to them from other pages.
+Do not explain a step that a developer already knows.
 
-Use a tutorial for a first successful exercise.
-Use a how-to guide for a specific task.
-Use a reference for inputs, outputs, defaults, and failures.
-Use an explanation for concepts and tradeoffs.
-These forms follow [Diátaxis](https://diataxis.fr/).
-Write short, active sentences with the [Microsoft writing guidance](https://learn.microsoft.com/en-us/style-guide/welcome/).
-State prerequisites before commands and give an observable result after examples.
+Organize pages by the reader's goal:
 
-Organize current website navigation by the reader's goal:
+- Getting Started introduces xsAI, installation, packages, and agent skills.
+- Core Concepts covers text: the operations, messages, events, and adapters, then troubleshooting and the text API reference. Each task, such as cancelling a request, lives in the page of the concept that it extends.
+- More Capabilities covers audio, embeddings, images, and models. Each page ends with a reference section.
+- Advanced covers custom models for every package and module augmentation.
+- Extras covers the shared HTTP helpers and xsschema. Each page ends with a reference section.
 
-- Getting Started introduces xsAI, installation, adapter choice, packages, and agent skills.
-- Guides complete specific tasks, such as streaming text or calling a tool.
-- Advanced explains request control, integrations, custom models, and troubleshooting.
-- References define API contracts, event fields, defaults, and failures.
+Code samples run through twoslash during the build, so a type error fails `pnpm build:docs`.
+Use `// ---cut---` to hide setup lines such as `declare const model: LanguageModel`.
 
-Give each task its own source reference when it needs separate instructions.
-Keep detailed contracts in References and link to them from the task guide.
-Website groups do not change which skill owns the technical source.
+Short examples that also appear in package READMEs live in `docs/snippets/`.
+A page includes a snippet with `<!-- @include: ./snippets/name.md -->`.
+A README includes the same file with an `automd:file` block that starts at the repository root, such as `/docs/snippets/text-responses.md`.
+Keep snippets free of `// ---cut---` lines, because READMEs show them as written.
 
-A website wrapper includes its owning reference with VitePress include syntax.
-A README uses an `automd:file` block for its package quick start.
-Its source path starts at the repository root, such as `/skills/xsai-text/references/quick-start.md`.
-Use canonical website URLs inside shared references so their links work in every projection.
-Use relative links between skill entries and local references.
-
-After you edit a reference, synchronize the READMEs:
+After you edit a snippet, synchronize the READMEs:
 
 ```sh
 pnpm docs:sync
@@ -50,6 +44,14 @@ This command runs the automd CLI against the root README and package READMEs.
 The autofix workflow synchronizes and formats generated regions.
 CI runs the same command and rejects changes to tracked READMEs.
 A second synchronization must produce no changes.
+
+## Edit the skills
+
+Each directory in `skills/` is an independent skill, so a user can install only the packages that they use.
+Keep a skill to its description, a table of page URLs, and a short list of rules for writing code.
+Do not copy page content into a skill.
+Do not link from one skill to another skill with a relative path.
+Write skills in the way that [writing-for-agents](../.agents/skills/writing-for-agents/SKILL.md) describes.
 
 ## Edit the archive
 
@@ -114,7 +116,7 @@ Use the development proxy to inspect both versions on one origin.
 Each version has its own local search index, `llms.txt`, `llms-full.txt`, and page Markdown.
 The archive build adds `/v0/` to internal links in its Markdown exports.
 The configuration excludes agent instructions, ADRs, research, and assembled output from the published site.
-Turbo tracks skill references and shared theme files as build inputs.
+Turbo tracks package sources and shared theme files as build inputs.
 
 Run synchronization, typechecking, and lint before a pull request:
 

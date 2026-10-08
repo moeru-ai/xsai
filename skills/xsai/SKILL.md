@@ -1,25 +1,27 @@
 ---
 name: xsai
-description: Find the right xsAI skill for a current AI application task, select packages, or coordinate work across text, audio, images, embeddings, and model catalogs. Use when the task spans packages or the owning xsAI capability is unclear.
+description: Route an xsAI task that spans packages, pick packages, or use the `xsai` umbrella package. Use when the work combines text, audio, images, embeddings, or model lists, or when the owning package is unclear.
 ---
 
-# xsAI task router
+# xsAI router
 
-Use these skills for xsAI v1.
-Select the owning skill below and read its entry before its references.
+Match the task to one skill. Use that skill when it is installed.
 
-| Task | Entry |
+| Task | Skill |
 | --- | --- |
-| Text, tools, structured output, or text events | [xsai-text](../xsai-text/SKILL.md) |
-| Speech or transcription | [xsai-audio](../xsai-audio/SKILL.md) |
-| Embedding vectors | [xsai-embed](../xsai-embed/SKILL.md) |
-| Image generation | [xsai-image](../xsai-image/SKILL.md) |
-| Model discovery | [xsai-model](../xsai-model/SKILL.md) |
+| Text, tools, structured output, text events | `xsai-text` |
+| Speech and transcription | `xsai-audio` |
+| Embedding vectors | `xsai-embed` |
+| Image generation | `xsai-image` |
+| Model lists | `xsai-model` |
 
-Install this router and all five package skills as sibling directories in the host skill directory.
-If a target is absent, install that skill from this repository's `skills/` directory before you continue.
-For the umbrella package, read the text skill's [umbrella quick start](../xsai-text/references/umbrella-quick-start.md).
+For a task that spans packages, start with the skill for the main capability, then add the others.
 
-Use the owning references for technical instructions.
-For a task that spans packages, load only the entries and references required for that task.
-Use the imports and call signatures from the owning references.
+When a skill is not installed, read the page for it instead:
+
+1. Open https://xsai.js.org/llms.txt.
+2. Pick the pages that match the task.
+3. Fetch each page as Markdown.
+
+Packages and the `xsai` umbrella package, which re-exports every package except `xsschema`, are in https://xsai.js.org/packages.md.
+Every operation takes the model first and the options second.

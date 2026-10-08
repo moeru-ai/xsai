@@ -1,7 +1,3 @@
-# @xsai/shared
-
-<!-- automd:file src="/docs/snippets/shared.md" -->
-
 ```sh
 pnpm add @xsai/shared
 ```
@@ -22,7 +18,3 @@ catch (error) {
     throw error
 }
 ```
-
-<!-- /automd -->
-
-Read the [documentation](https://xsai.js.org/shared).

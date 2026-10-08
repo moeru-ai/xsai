@@ -1,7 +1,3 @@
-# xsai
-
-<!-- automd:file src="/docs/snippets/xsai.md" -->
-
 ```sh
 pnpm add xsai
 ```
@@ -18,7 +14,3 @@ const model = responses({
 const { text } = await generateText(model, { input: 'Say hello.' })
 console.log(text)
 ```
-
-<!-- /automd -->
-
-Read the [documentation](https://xsai.js.org/packages).

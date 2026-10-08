@@ -1,7 +1,3 @@
-# @xsai/text-messages
-
-<!-- automd:file src="/docs/snippets/text-messages.md" -->
-
 ```sh
 pnpm add @xsai/text @xsai/text-messages
 ```
@@ -22,7 +18,3 @@ const { text } = await generateText(model, {
 })
 console.log(text)
 ```
-
-<!-- /automd -->
-
-Read the [documentation](https://xsai.js.org/text/adapters).

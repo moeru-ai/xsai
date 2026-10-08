@@ -1,7 +1,3 @@
-# @xsai/text-chat
-
-<!-- automd:file src="/docs/snippets/text-chat.md" -->
-
 ```sh
 pnpm add @xsai/text @xsai/text-chat
 ```
@@ -19,7 +15,3 @@ const model = chat({
 const { text } = await generateText(model, { input: 'Say hello.' })
 console.log(text)
 ```
-
-<!-- /automd -->
-
-Read the [documentation](https://xsai.js.org/text/adapters).
