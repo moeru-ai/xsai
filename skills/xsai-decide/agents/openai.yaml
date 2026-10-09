@@ -1,0 +1,4 @@
+interface:
+  display_name: xsAI Decisions
+  short_description: Classify and rate inputs with xsAI
+  default_prompt: Use $xsai-decide to route a support message with typed questions.

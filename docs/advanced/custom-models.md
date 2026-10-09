@@ -9,6 +9,7 @@ Write your own to test code without a service, to wrap a protocol that has no ad
 | `@xsai/text` | `LanguageModel` | `LanguageModelOptions` | `ReadableStream<TextEvent>` | `generateText`, `streamText`, `loop` |
 | `@xsai/audio` | `SpeechModel` | `SpeechModelOptions` | `Response` with audio | `generateSpeech`, `streamSpeech` |
 | `@xsai/audio` | `TranscriptionModel` | `TranscriptionModelOptions` | `ReadableStream<TranscriptionEvent>` | `generateTranscription`, `streamTranscription` |
+| `@xsai/decide` | `DecisionModel` | `DecisionModelOptions` | `{ answers, usage }` | `decide` |
 | `@xsai/embed` | `EmbeddingModel` | `EmbeddingModelOptions` | `{ embeddings, usage? }` | `embed`, `embedMany` |
 | `@xsai/image` | `ImageModel` | `ImageModelOptions` | `{ images, providerMetadata? }` | `generateImage` |
 | `@xsai/model` | `ModelCatalog` | An object with `list` and `retrieve` | `ModelCatalogEntry` values | `listModels`, `retrieveModel` |
@@ -91,6 +92,23 @@ const model: TranscriptionModel = () => new ReadableStream<TranscriptionEvent>({
 
 const { text } = await generateTranscription(model, { audio: new Blob([]) })
 console.log(text)
+```
+
+```ts [Decisions]
+import type { DecisionModel } from '@xsai/decide'
+
+import { decide } from '@xsai/decide'
+
+const model: DecisionModel = ({ questions }) => ({
+  answers: Object.fromEntries(Object.keys(questions).map(id => [id, { probability: 0.5, type: 'boolean' as const }])),
+  usage: {},
+})
+
+const { answers } = await decide(model, {
+  input: 'A quiet forest.',
+  questions: { calm: { instructions: 'Is the text calm?', type: 'boolean' } },
+})
+console.log(answers.calm.probability)
 ```
 
 ```ts [Embeddings]

@@ -1,6 +1,6 @@
 ---
 name: xsai
-description: Choose xsAI packages or route tasks across text, audio, images, embeddings, and model lists.
+description: Choose xsAI packages or route tasks across text, audio, decisions, images, embeddings, and model lists.
 ---
 
 # xsAI router
@@ -13,6 +13,7 @@ Use the relevant installed skill:
 | --- | --- |
 | Text, tools, structured output, text events | `xsai-text` |
 | Speech and transcription | `xsai-audio` |
+| Classification, routing, rating with typed answers | `xsai-decide` |
 | Embedding vectors | `xsai-embed` |
 | Image generation | `xsai-image` |
 | Model lists | `xsai-model` |

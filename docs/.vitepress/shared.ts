@@ -32,6 +32,7 @@ const currentSidebar: DefaultTheme.SidebarItem[] = [
   ], text: 'Core Concepts' },
   { items: [
     { link: '/audio', text: 'Audio' },
+    { link: '/decide', text: 'Decisions' },
     { link: '/embed', text: 'Embeddings' },
     { link: '/image', text: 'Images' },
     { link: '/model', text: 'Models' },

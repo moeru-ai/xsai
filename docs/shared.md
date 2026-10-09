@@ -74,6 +74,7 @@ Packages add their own codes by extending `XSAIErrorCauseMap`.
 | `invalid-input` | The operation cannot accept the input. |
 | `invalid-response` | The response breaks the contract of the operation. |
 | `truncated-stream` | A required terminal event is missing. |
+| `decision-refusal` | A decision model refused a question. `@xsai/decide` adds this code. |
 | `model-error` | A text adapter reports a model failure. |
 | `protocol-error` | A text stream breaks its protocol. |
 

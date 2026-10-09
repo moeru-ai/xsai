@@ -1,7 +1,7 @@
 # Getting started
 
 xsAI is a set of small TypeScript packages for AI services.
-Each package does one job: text, audio, images, embeddings, or model lists.
+Each package does one job: text, audio, decisions, images, embeddings, or model lists.
 You create a model once, then pass it to an operation such as `generateText`.
 
 The packages run on any runtime that provides `fetch` and web streams.

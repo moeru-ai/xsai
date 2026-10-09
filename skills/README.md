@@ -7,6 +7,7 @@ Install only the ones that match the packages that you use.
 | --- | --- |
 | `xsai-text` | `@xsai/text` and the three text adapters. |
 | `xsai-audio` | `@xsai/audio`. |
+| `xsai-decide` | `@xsai/decide`. |
 | `xsai-embed` | `@xsai/embed`. |
 | `xsai-image` | `@xsai/image`. |
 | `xsai-model` | `@xsai/model`. |

@@ -130,6 +130,7 @@ throw new XSAIError('quota-exceeded', 'The daily quota is used up.', { cause: { 
 | `@xsai/audio` | `SpeechModelProviderOptions` | `providerOptions` of a speech request. |
 | `@xsai/audio` | `TranscriptionModelProviderOptions` | `providerOptions` of a transcription request. |
 | `@xsai/audio` | `TranscriptionSegmentProviderMetadata`, `TranscriptionWordProviderMetadata` | `providerMetadata` of a segment or a word. |
+| `@xsai/decide` | `DecisionModelProviderOptions` | `providerOptions` of a decision request. |
 | `@xsai/embed` | `EmbeddingModelProviderOptions` | `providerOptions` of an embedding request. |
 | `@xsai/image` | `ImageModelProviderOptions`, `ImageModelResultProviderMetadata` | `providerOptions` of a request, and `providerMetadata` of a result. |
 | `@xsai/model` | `ModelCatalogProviderOptions`, `ModelCatalogEntryProviderMetadata` | `providerOptions` of a request, and `providerMetadata` of an entry. |

@@ -10,6 +10,7 @@ Every package takes a model as its first argument, so you can mix them freely.
 | `@xsai/text-chat` | `chat()`, an adapter for Chat Completions. |
 | `@xsai/text-messages` | `messages()`, an adapter for Anthropic Messages. |
 | `@xsai/audio` | Speech generation and transcription. |
+| `@xsai/decide` | Typed answers to yes-or-no, choice, and score questions. |
 | `@xsai/embed` | Text embeddings. |
 | `@xsai/image` | Image generation. |
 | `@xsai/model` | Model lists from a service. |

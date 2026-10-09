@@ -312,6 +312,9 @@ importers:
       '@xsai/audio':
         specifier: 'workspace:'
         version: link:../packages/audio
+      '@xsai/decide':
+        specifier: 'workspace:'
+        version: link:../packages/decide
       '@xsai/embed':
         specifier: 'workspace:'
         version: link:../packages/embed

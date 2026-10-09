@@ -16,6 +16,7 @@
     "@types/node": "catalog:",
     "@voidzero-dev/vitepress-theme": "catalog:",
     "@xsai/audio": "workspace:",
+    "@xsai/decide": "workspace:",
     "@xsai/embed": "workspace:",
     "@xsai/image": "workspace:",
     "@xsai/model": "workspace:",
