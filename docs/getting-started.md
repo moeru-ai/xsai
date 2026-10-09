@@ -1,11 +1,8 @@
 # Getting started
 
-xsAI is a set of small TypeScript packages for AI services.
-Each package does one job: text, audio, decisions, images, embeddings, or model lists.
-You create a model once, then pass it to an operation such as `generateText`.
+This page installs one adapter and sends a first request.
+For what xsAI is and how its packages fit together, read the [Introduction](/introduction).
 
-The packages run on any runtime that provides `fetch` and web streams.
-A model belongs to a protocol, not to a provider.
 Pick the tab for the protocol that your service speaks.
 [Choose an adapter](/text/adapters) lists the options for each one.
 
@@ -82,7 +79,6 @@ Each example works with any service that implements the same protocol.
 
 `chat()`, `responses()`, and `messages()` create a language model that speaks one protocol.
 `generateText` sends one request, waits for the complete reply, and returns a result.
-Every xsAI operation has the same shape: the model comes first, and the request options come second.
 
 ## Next steps
 

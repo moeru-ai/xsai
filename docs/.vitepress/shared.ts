@@ -15,10 +15,11 @@ import { extendConfig } from '@voidzero-dev/vitepress-theme/config'
 
 const currentSidebar: DefaultTheme.SidebarItem[] = [
   { items: [
+    { link: '/introduction', text: 'Introduction' },
     { link: '/getting-started', text: 'Getting started' },
     { link: '/packages', text: 'Choose packages' },
     { link: '/ai', text: 'Working with AI' },
-  ], text: 'Getting Started' },
+  ], text: 'Overview' },
   { items: [
     { link: '/text/generating', text: 'Generate text' },
     { link: '/text/streaming', text: 'Stream text' },
