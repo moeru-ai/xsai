@@ -1,5 +1,5 @@
 {
-  "name": "xsai",
+  "name": "@xsai/decide",
   "type": "module",
   "version": "0.5.1",
   "sideEffects": false,
@@ -21,18 +21,12 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll --clean-dist"
+    "build": "pkgroll --clean-dist",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "@xsai/audio": "workspace:",
-    "@xsai/decide": "workspace:",
-    "@xsai/embed": "workspace:",
-    "@xsai/image": "workspace:",
-    "@xsai/model": "workspace:",
     "@xsai/shared": "workspace:",
-    "@xsai/text": "workspace:",
-    "@xsai/text-chat": "workspace:",
-    "@xsai/text-messages": "workspace:",
-    "@xsai/text-responses": "workspace:"
+    "@xsai/text": "workspace:"
   }
 }

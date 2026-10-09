@@ -391,6 +391,15 @@ importers:
         specifier: 'workspace:'
         version: link:../shared
 
+  packages/decide:
+    dependencies:
+      '@xsai/shared':
+        specifier: 'workspace:'
+        version: link:../shared
+      '@xsai/text':
+        specifier: 'workspace:'
+        version: link:../text
+
   packages/embed:
     dependencies:
       '@xsai/shared':
@@ -469,6 +478,9 @@ importers:
       '@xsai/audio':
         specifier: 'workspace:'
         version: link:../audio
+      '@xsai/decide':
+        specifier: 'workspace:'
+        version: link:../decide
       '@xsai/embed':
         specifier: 'workspace:'
         version: link:../embed

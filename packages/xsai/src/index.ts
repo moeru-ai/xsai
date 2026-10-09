@@ -1,4 +1,5 @@
 export * from '@xsai/audio'
+export * from '@xsai/decide'
 export * from '@xsai/embed'
 export * from '@xsai/image'
 export * from '@xsai/model'
