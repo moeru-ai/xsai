@@ -42,13 +42,11 @@ import { messages } from '@xsai/text-messages'
 const model = messages({
   apiKey: process.env.ANTHROPIC_API_KEY,
   baseURL: 'https://api.anthropic.com/v1/',
-  model: 'YOUR_MODEL_ID',
+  model: 'claude-haiku-5.5',
 })
 ```
 
 :::
-
-Replace `YOUR_MODEL_ID` with a model that your service offers.
 
 ## HTTP options
 
