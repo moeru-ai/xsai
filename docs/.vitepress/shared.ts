@@ -1,9 +1,11 @@
-import type { DefaultTheme, MarkdownRenderer, SiteConfig, TransformContext } from 'vitepress'
+import type { DefaultTheme, HeadConfig, MarkdownRenderer, SiteConfig, TransformContext } from 'vitepress'
+
+import type { OgCard } from './og.ts'
 
 import process from 'node:process'
 
-import { readdir, readFile, writeFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
 
 import llmstxt from 'vitepress-plugin-llms'
 
@@ -12,6 +14,8 @@ import { InlineLinkPreviewElementTransform } from '@nolebase/vitepress-plugin-in
 import { transformHeadMeta } from '@nolebase/vitepress-plugin-meta/vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { extendConfig } from '@voidzero-dev/vitepress-theme/config'
+
+import { renderOgCard } from './og.ts'
 
 const currentSidebar: DefaultTheme.SidebarItem[] = [
   { items: [
@@ -78,11 +82,68 @@ const normalizeArchiveExports = async ({ outDir }: SiteConfig) => {
   }
 }
 
+const site = 'https://xsai.js.org'
+
+// Open Graph cards, one per page: collected while rendering heads, drawn once the build ends.
+const ogCards = new Map<string, OgCard>()
+
+const decode = (html: string) => html
+  .split('<')
+  .map((part, i) => i === 0 ? part : part.slice(part.indexOf('>') + 1))
+  .join('')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"')
+  .replace(/&#39;/g, '\'')
+  .replace(/&amp;/g, '&')
+  .trim()
+
+/** The first sentence reads as a summary; a clamped paragraph would stop mid-sentence. */
+const firstSentence = (text: string) => {
+  const end = text.indexOf('. ')
+  return end === -1 ? text : text.slice(0, end + 1)
+}
+
+const ogHead = ({ content, page, pageData }: TransformContext): HeadConfig[] => {
+  if (pageData.filePath.startsWith('legacy/') || page === '404.md')
+    return []
+  const slug = page.replace(/(?:^|\/)index\.md$/, '').replace(/\.md$/, '')
+  const file = `og/${slug || 'index'}.png`
+  const home = pageData.frontmatter.layout === 'home'
+  const start = content.indexOf('<p>')
+  const paragraph = start === -1 ? undefined : content.slice(start + 3, content.indexOf('</p>', start))
+  ogCards.set(file, {
+    // VitePress sets an empty description when the page has none, so fall back to the first paragraph.
+    description: home
+      ? 'One shape for every model. Web standards, nothing else.'
+      : [pageData.frontmatter.description as string | undefined, pageData.description, paragraph == null ? undefined : firstSentence(decode(paragraph))]
+          .find(text => text != null && text !== ''),
+    path: `/${slug}`,
+    title: home ? 'AI SDK,\nextra small.' : pageData.title,
+  })
+  const image = `${site}/${file}`
+  return [
+    ['meta', { content: image, property: 'og:image' }],
+    ['meta', { content: '1200', property: 'og:image:width' }],
+    ['meta', { content: '630', property: 'og:image:height' }],
+    ['meta', { content: 'summary_large_image', name: 'twitter:card' }],
+    ['meta', { content: image, name: 'twitter:image' }],
+  ]
+}
+
+const renderOgCards = async ({ outDir }: SiteConfig) => {
+  await Promise.all([...ogCards].map(async ([file, card]) => {
+    const path = resolve(outDir, file)
+    await mkdir(dirname(path), { recursive: true })
+    await writeFile(path, await renderOgCard(card))
+  }))
+}
+
 export const createDocsConfig = (archive: boolean) => {
   const srcExclude = ['adr/**', 'agents/**', 'research/**', 'snippets/**', 'CONTRIBUTING.md', 'out/**']
   return extendConfig({
     base: archive ? '/v0/' : '/',
-    buildEnd: archive ? normalizeArchiveExports : undefined,
+    buildEnd: archive ? normalizeArchiveExports : renderOgCards,
     cleanUrls: true,
     description: archive ? 'xsAI v0 API archive from v0.5.1.' : 'Build AI applications with small, composable packages.',
     head: [['link', { href: 'https://github.com/moeru-ai.png', rel: 'icon', type: 'image/png' }]],
@@ -137,7 +198,10 @@ export const createDocsConfig = (archive: boolean) => {
       variant: 'voidzero',
     },
     title: archive ? 'xsAI v0' : 'xsAI',
-    transformHead: async (context: TransformContext) => transformHeadMeta()([...context.head], context),
+    transformHead: async (context: TransformContext) => [
+      ...await transformHeadMeta()([...context.head], context) ?? [],
+      ...archive ? [] : ogHead(context),
+    ],
     vite: {
       optimizeDeps: { exclude: ['@nolebase/vitepress-plugin-inline-link-preview/client'] },
       plugins: [
