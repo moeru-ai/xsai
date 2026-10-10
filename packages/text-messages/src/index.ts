@@ -36,6 +36,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
 
   return wireRequest({
     body: {
+      cache_control: providerOptions?.cacheControl,
       max_tokens: maxTokens,
       mcp_servers: providerOptions?.mcpServers,
       messages: inputMessages,
@@ -47,6 +48,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
       stream: true,
       system,
       temperature: modelOptions.temperature,
+      thinking: providerOptions?.thinking,
       tool_choice: normalizeToolChoice(modelOptions.toolChoice),
       tools: mergeTools(providerOptions?.tools, modelOptions.tools),
       top_p: modelOptions.topP,

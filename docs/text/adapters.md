@@ -71,7 +71,7 @@ Fields that have no shared meaning go into `providerOptions`, under the namespac
 | --- | --- |
 | `responses` | `frequencyPenalty`, `presencePenalty`, `parallelToolCalls`, `include`, `store`, and provider tools. |
 | `chat` | `frequencyPenalty`, `presencePenalty`, `parallelToolCalls`, `seed`, `stopSequences`, `topK`. |
-| `messages` | `betas`, `mcpServers`, `stopSequences`, and provider tools. |
+| `messages` | `betas`, `cacheControl`, `mcpServers`, `stopSequences`, `thinking`, and provider tools. |
 
 ```ts
 import type { LanguageModel } from '@xsai/text'
@@ -97,6 +97,21 @@ Messages requires `maxOutputTokens` and throws `invalid-input` without it.
 It sends `anthropic-version: 2023-06-01`.
 `betas` is an array of strings, joined into the `anthropic-beta` header.
 Each entry in `mcpServers` needs `name`, `type: 'url'`, and `url`, with an optional `authorization_token`.
+
+`providerOptions.messages.thinking` selects the thinking mode.
+Use `{ type: 'adaptive' }`, `{ type: 'enabled', budget_tokens: 2048 }`, `{ type: 'disabled' }`, or `{ type: 'between_tools' }`.
+For adaptive or enabled thinking, `display` accepts `'summarized'` or `'omitted'`.
+Keep reasoning depth in `reasoningEffort`, which maps to `output_config.effort`.
+Thinking modes and their compatibility with effort depend on the model.
+The adapter sends both fields independently and leaves their validation to the endpoint.
+See [Anthropic thinking configuration](https://platform.claude.com/docs/en/build-with-claude/thinking).
+
+`providerOptions.messages.cacheControl` maps to the request-level `cache_control` field.
+Use `{ type: 'ephemeral' }` for automatic caching with the endpoint's default lifetime.
+Set `ttl` to `'5m'` or `'1h'` to select the cache lifetime.
+The endpoint caches the prompt prefix through the last cacheable part.
+Cache control leaves thinking, effort, and output format unchanged.
+See [Anthropic automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching).
 
 Provider tools for Messages and Responses are plain objects with a string `type` and fields specific to the protocol.
 They are separate from the executable tools that you create with `tool()`.
