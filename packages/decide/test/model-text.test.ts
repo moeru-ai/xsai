@@ -68,6 +68,23 @@ describe('toDecisionModel', () => {
       .toMatchObject({ code: 'invalid-response' })
   })
 
+  // Ollama structured output does not enforce minimum, maximum, or enum.
+  it.each([
+    { content: '{"route":"billing","score":1,"yes":-1}', invalid: 'yes' },
+    { content: '{"route":"billing","score":1.5,"yes":0.5}', invalid: 'score' },
+    { content: '{"route":"sales","score":1,"yes":0.5}', invalid: 'route' },
+    { content: '{"route":"billing","yes":0.5}', invalid: 'score' },
+  ])('rejects the out-of-range $invalid answer in $content', async ({ content, invalid }) => {
+    const model: LanguageModel = () => stream([{ message: { content, role: 'assistant' }, status: 'completed', type: 'step.end' }])
+    await expect(toDecisionModel(model)({ input: '', questions: {
+      route: { choices: [{ value: 'billing' }, { value: 'other' }], instructions: 'Which team?', type: 'choice' },
+      score: { instructions: 'Rate', levels: [{ label: 'low' }, { label: 'high' }], type: 'score' },
+      yes: { instructions: 'Yes?', type: 'boolean' },
+    } }))
+      .rejects
+      .toMatchObject({ code: 'invalid-response', message: expect.stringContaining(`["${invalid}"]`) as unknown })
+  })
+
   it('preserves a truncated-stream error from the text collector', async () => {
     await expect(toDecisionModel(() => stream([]))({ input: '', questions: { yes: { instructions: 'Yes?', type: 'boolean' } } }))
       .rejects

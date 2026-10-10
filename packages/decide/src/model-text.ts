@@ -27,7 +27,17 @@ export const toDecisionModel = (model: LanguageModel, options: ToDecisionModelOp
   if (result.status !== 'completed' || result.toolCalls.length > 0)
     throw new XSAIError('invalid-response', 'LanguageModel did not complete a structured decision output')
 
-  const output = JSON.parse(result.text) as Record<string, number | string>
+  const output = JSON.parse(result.text) as Record<string, unknown>
+  const invalid = questions.filter(([id, question]) => {
+    const value = output[id]
+    if (question.type === 'choice')
+      return !question.choices.some(choice => choice.value === value)
+    const max = question.type === 'score' ? question.levels.length - 1 : 1
+    return typeof value !== 'number' || value < 0 || value > max
+  })
+  if (invalid.length > 0)
+    throw new XSAIError('invalid-response', `LanguageModel returned out-of-range answers: ${JSON.stringify(invalid.map(([id]) => id))}`)
+
   return {
     answers: Object.fromEntries(questions.map(([id, question]): [string, DecisionAnswer] => [id, question.type === 'choice'
       ? { choice: output[id] as string, type: 'choice' }

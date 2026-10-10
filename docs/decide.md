@@ -85,6 +85,7 @@ const { answers } = await decide(model, {
 
 The adapter makes one request with [structured output](/text/structured-output) for all questions.
 The model writes the numbers itself, so a `boolean` probability is an estimate and not a token probability.
+The adapter checks each answer against its question, because some services, such as Ollama, do not enforce the number limits in the schema.
 Choice answers and score answers have no `confidence` and no `probabilities`.
 Use `decisions()` or `systemone()` when you need those fields.
 
@@ -154,6 +155,8 @@ Every adapter takes `{ baseURL, model, apiKey?, headers?, fetch? }` and returns 
 | `systemone()` | `POST systemone` | `providerOptions.systemone.images` |
 | `toDecisionModel(model, options?)` | One request to a `LanguageModel`. | None. The adapter ignores the options of other adapters. |
 
+`systemone()` sends each score level as one string: the `label`, or `label: description` when the level has a description.
+
 `overrideInput` replaces `input` for `decisions()`.
 It takes a string, or a list of user messages that can hold `input_text` and `input_image` content.
 An empty string also replaces the input.
@@ -167,7 +170,7 @@ The content type is `image/jpeg`, `image/png`, or `image/webp`.
 | Code | Meaning |
 | --- | --- |
 | `decision-refusal` | The service refused at least one question. `questionIds` lists them. |
-| `invalid-response` | `toDecisionModel` got a generation that did not complete, or one that has tool calls. |
+| `invalid-response` | `toDecisionModel` got a generation that did not complete, one that has tool calls, or an answer outside its question: a probability outside 0 to 1, a score outside the levels, or a value that is not in `choices`. |
 | `truncated-stream` | The text stream of `toDecisionModel` ended without a terminal event. |
 
 HTTP failures throw `HttpError`, and network failures throw `network-error`.

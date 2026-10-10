@@ -4,7 +4,7 @@ import type { DecisionAnswer, DecisionModel, DecisionQuestion } from './model'
 
 import { sendRequest } from '@xsai/shared'
 
-import { toDecisionUsage } from './utils'
+import { toDecisionUsage, toText } from './utils'
 
 declare module '@xsai/decide' {
   interface DecisionModelProviderOptions {
@@ -30,7 +30,9 @@ export const systemone = (options: HttpOptions): DecisionModel => async (modelOp
       questions: Object.fromEntries(Object.entries(modelOptions.questions).map(([id, question]) => [id, {
         criteria: question.type === 'choice'
           ? Object.fromEntries(question.choices.map(choice => [choice.value, choice.description ?? null]))
-          : question.type === 'score' ? question.levels : undefined,
+          : question.type === 'score'
+            ? question.levels.map(level => level.description === undefined ? level.label : `${level.label}: ${toText(level.description)}`)
+            : undefined,
         instructions: question.instructions,
         type: question.type === 'boolean' ? 'noul' : question.type,
       }])),

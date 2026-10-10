@@ -4,7 +4,7 @@ import { decide, systemone } from '../src'
 
 describe('systemone', () => {
   // https://docs.typesafe.ai/introduction/quickstart
-  // Response copied unchanged; the example's string score criteria use IR level objects in the request.
+  // Request and response copied unchanged.
   it('maps the official Quickstart response for all three question types', async () => {
     const model = systemone({ apiKey: 'secret', baseURL: 'https://api.typesafe.ai/v1', fetch: async (request) => {
       expect(request.url).toBe('https://api.typesafe.ai/v1/systemone')
@@ -13,7 +13,7 @@ describe('systemone', () => {
         model: 'jev-latest',
         questions: {
           department: { criteria: { billing: 'Payment or subscription issues', sales: 'Pricing or account questions', technical: 'Bugs or integration problems' }, instructions: 'Which team should handle this', type: 'choice' },
-          frustration: { criteria: [{ label: 'Calm, just stating facts' }, { label: 'Frustrated but civil' }, { label: 'Very angry, strong language' }], instructions: 'How frustrated the customer appears', type: 'score' },
+          frustration: { criteria: ['Calm, just stating facts', 'Frustrated but civil', 'Very angry, strong language'], instructions: 'How frustrated the customer appears', type: 'score' },
           is_urgent: { instructions: 'The message conveys urgency or time-sensitivity', type: 'noul' },
         },
         state: 'Hi, I\'ve been trying to connect my Stripe account for 3 days and the integration keeps failing. I\'m losing sales. Please help ASAP.',
@@ -46,15 +46,15 @@ describe('systemone', () => {
     })
   })
 
-  // https://docs.typesafe.ai/primitives/score — unmodified response, score criteria adapted to IR level objects.
+  // https://docs.typesafe.ai/primitives/score — request and response copied unchanged.
   it('preserves the official fractional score example and its probability distribution', async () => {
     const model = systemone({ baseURL: 'https://api.typesafe.ai/v1', fetch: async (request) => {
       expect(await request.json()).toEqual({
         model: 'jev-latest',
         questions: { bug_severity: { criteria: [
-          { label: 'Cosmetic; no impact to functionality' },
-          { label: 'Broken or degraded feature, but workaround exists' },
-          { label: 'Blocking issue; no workaround exists' },
+          'Cosmetic; no impact to functionality',
+          'Broken or degraded feature, but workaround exists',
+          'Blocking issue; no workaround exists',
         ], instructions: 'How severe is the reported issue?', type: 'score' } },
         state: 'The export button crashes the settings page in Safari. It works in Chrome, but a few of our customers only use Safari.',
       })
@@ -116,7 +116,7 @@ describe('systemone', () => {
         model: 'system',
         questions: {
           route: { criteria: { billing: 'refund', other: null }, instructions: { task: 'route' }, type: 'choice' },
-          score: { criteria: [{ label: 'low' }, { description: { urgent: true }, label: 'high' }], instructions: 'rate', type: 'score' },
+          score: { criteria: ['low', 'high: {"urgent":true}'], instructions: 'rate', type: 'score' },
           yes: { instructions: 'yes?', type: 'noul' },
         },
         state: { text: 'hello' },
