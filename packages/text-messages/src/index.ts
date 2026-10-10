@@ -36,6 +36,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
 
   return wireRequest({
     body: {
+      cache_control: providerOptions?.cacheControl,
       max_tokens: maxTokens,
       mcp_servers: providerOptions?.mcpServers,
       messages: inputMessages,

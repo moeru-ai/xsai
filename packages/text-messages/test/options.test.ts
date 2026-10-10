@@ -1,6 +1,6 @@
 import type { JSONSchema7 } from '@xsai/text/internal'
 
-import type { MessagesThinkingConfig } from '../src'
+import type { MessagesCacheControl, MessagesThinkingConfig } from '../src'
 
 import { tool, XSAIError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
@@ -87,6 +87,7 @@ describe('messages options', () => {
     })
     expect(bodies[0]).not.toHaveProperty('effort')
     expect(bodies[0]).not.toHaveProperty('thinking')
+    expect(bodies[0]).not.toHaveProperty('cache_control')
   })
 
   it('sends adaptive thinking alongside effort and structured output', async () => {
@@ -104,6 +105,29 @@ describe('messages options', () => {
     expect(bodies[0].thinking).toEqual({ display: 'summarized', type: 'adaptive' })
     expect(bodies[0].output_config).toMatchObject({ effort: 'high', format: { type: 'json_schema' } })
     expect(bodies[0]).not.toHaveProperty('providerOptions')
+  })
+
+  it.each([
+    { type: 'ephemeral' },
+    { ttl: '5m', type: 'ephemeral' },
+    { ttl: '1h', type: 'ephemeral' },
+  ] satisfies MessagesCacheControl[])('sends cache control %j alongside thinking and effort', async (cacheControl) => {
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      maxOutputTokens: 4096,
+      outputFormat: { properties: { answer: { type: 'string' } }, required: ['answer'], type: 'object' },
+      providerOptions: { messages: { cacheControl, thinking: { type: 'adaptive' } } },
+      reasoningEffort: 'high',
+    })
+    await stream.cancel()
+
+    expect(bodies[0].cache_control).toEqual(cacheControl)
+    expect(bodies[0].thinking).toEqual({ type: 'adaptive' })
+    expect(bodies[0].output_config).toMatchObject({ effort: 'high', format: { type: 'json_schema' } })
+    expect(bodies[0]).not.toHaveProperty('providerOptions')
+    expect(bodies[0]).not.toHaveProperty('cacheControl')
   })
 
   it.each([

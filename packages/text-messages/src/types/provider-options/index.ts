@@ -1,3 +1,8 @@
+export interface MessagesCacheControl {
+  ttl?: '1h' | '5m'
+  type: 'ephemeral'
+}
+
 export interface MessagesMcpServer {
   authorization_token?: string
   name: string
@@ -7,6 +12,8 @@ export interface MessagesMcpServer {
 
 export interface MessagesProviderOptions {
   betas?: readonly string[]
+  /** Automatic caching at the last cacheable part in the request. */
+  cacheControl?: MessagesCacheControl
   mcpServers?: readonly MessagesMcpServer[]
   stopSequences?: readonly string[]
   /** Thinking mode and display. Effort stays in `reasoningEffort`. */
