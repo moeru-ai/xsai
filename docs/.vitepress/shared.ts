@@ -99,6 +99,19 @@ export const createDocsConfig = (archive: boolean) => {
         text: 'Suggest changes to this page',
       },
       nav: [
+        ...archive
+          ? []
+          : [{
+              items: [
+                { link: '/text/generating', text: 'Text' },
+                { link: '/audio', text: 'Audio' },
+                { link: '/decide', text: 'Decide' },
+                { link: '/embed', text: 'Embed' },
+                { link: '/image', text: 'Image' },
+                { link: '/model', text: 'Models' },
+              ],
+              text: 'Features',
+            }],
         {
           link: 'https://blog.moeru.ai',
           text: 'Blog',
