@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+
+import { deltaGap } from './home/fixture'
 import HeroStream from './home/HeroStream.vue'
 import InstallTabs from './home/InstallTabs.vue'
 import ProtocolSwitch from './home/ProtocolSwitch.vue'
@@ -6,6 +9,73 @@ import SizeBar from './home/SizeBar.vue'
 import { data as sizes } from './home/sizes.data'
 
 const total = `${(sizes.total / 1000).toFixed(1)} KB`
+
+// Opening sequence: the headline streams in word by word behind a cyan caret, at the demo's delta pace,
+// the caret flashes lime (done), and then the demo stream below starts.
+const hero = useTemplateRef<InstanceType<typeof HeroStream>>('hero')
+const title = useTemplateRef<HTMLElement>('title')
+const caret = useTemplateRef<HTMLElement>('caret')
+const ready = ref(false)
+let cleanup: (() => void) | undefined
+
+const startStream = () => {
+  ready.value = true
+  hero.value?.start()
+}
+
+onMounted(async () => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    return startStream()
+
+  const [{ createTimeline }, { splitText }, { stagger }] = await Promise.all([
+    import('animejs/timeline'),
+    import('animejs/text'),
+    import('animejs/utils'),
+  ])
+
+  // If the CSS fallback already showed the headline, do not hide it again.
+  if (!title.value || !caret.value || getComputedStyle(title.value).visibility === 'visible')
+    return startStream()
+
+  // Words, like the demo's text.delta events. Splitting by character would also break kerning.
+  const split = splitText(title.value, { words: true })
+  const words = split.words as HTMLElement[]
+  const box = title.value.getBoundingClientRect()
+  const stops = words.map((word) => {
+    const rect = word.getBoundingClientRect()
+    return { x: rect.right - box.left, y: rect.top - box.top + rect.height * 0.2 }
+  })
+  for (const word of words)
+    word.style.opacity = '0'
+  ready.value = true
+
+  const step = deltaGap
+  const end = words.length * step
+  const lime = getComputedStyle(caret.value).getPropertyValue('--xs-lime-fill').trim()
+  // Put the original markup back once the headline has landed.
+  const timeline = createTimeline({ onComplete: () => split.revert() })
+    .add(words, {
+      duration: 420,
+      ease: 'outExpo',
+      opacity: [0, 1],
+      y: ['0.2em', '0em'],
+    }, stagger(step))
+  stops.forEach((stop, i) => timeline.set(caret.value!, { opacity: 1, ...stop }, i * step))
+  timeline
+    .set(caret.value, { opacity: 0 }, end + 140)
+    .set(caret.value, { opacity: 1 }, end + 280)
+    .set(caret.value, { opacity: 0 }, end + 420)
+    .set(caret.value, { backgroundColor: lime, opacity: 1 }, end + 560)
+    .add(caret.value, { duration: 360, ease: 'outQuad', opacity: 0 }, end + 760)
+    .call(() => hero.value?.start(), end + 600)
+
+  cleanup = () => {
+    timeline.revert()
+    split.revert()
+  }
+})
+
+onBeforeUnmount(() => cleanup?.())
 
 // Logos come from simple-icons through CSS masks (see `.icon-*` below), so they add no JS.
 const runtimes = [
@@ -20,9 +90,12 @@ const runtimes = [
 <template>
   <main class="home wrapper border-b border-line">
     <section class="grid grid-cols-[minmax(0,1fr)] gap-8 px-5 pt-12 pb-10 md:px-8 md:pt-20 md:pb-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end lg:gap-16">
-      <h1 class="home-title">
-        AI SDK,<br>extra small.
-      </h1>
+      <div class="relative">
+        <h1 ref="title" class="home-title" :class="{ 'is-ready': ready }">
+          AI SDK,<br>extra small.
+        </h1>
+        <span ref="caret" class="home-caret" aria-hidden="true" />
+      </div>
       <div class="lg:pb-3">
         <p class="home-lede">
           One shape for every model. Web standards, nothing else.
@@ -37,7 +110,7 @@ const runtimes = [
       </div>
     </section>
 
-    <HeroStream>
+    <HeroStream ref="hero">
       <slot name="hero" />
     </HeroStream>
 
@@ -120,12 +193,40 @@ const runtimes = [
 </template>
 
 <style>
+.home .home-title,
+.home-caret {
+  font-size: clamp(3rem, 1.2rem + 7.6vw, 8.5rem);
+}
+
 .home .home-title {
   margin: 0;
-  font-size: clamp(3rem, 1.2rem + 7.6vw, 8.5rem);
   line-height: 0.92;
   letter-spacing: -0.045em;
   color: var(--vp-c-text-1);
+}
+
+.home-caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.3em;
+  height: 0.62em;
+  margin-left: 0.06em;
+  background: var(--xs-cyan-fill);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hidden until the opening sequence takes over; shown anyway after 1.5 s if the script is slow or missing. */
+@media (prefers-reduced-motion: no-preference) {
+  .home .home-title:not(.is-ready) {
+    animation: title-fallback 0s 1.5s both;
+  }
+}
+
+@keyframes title-fallback {
+  from { visibility: hidden; }
+  to { visibility: visible; }
 }
 
 .home .home-lede {

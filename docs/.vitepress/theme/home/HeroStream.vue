@@ -86,6 +86,15 @@ const scrub = (event: Event) => {
     time.value = value
 }
 
+// The page starts the stream once the headline has streamed in.
+let startRequested = false
+const start = () => {
+  startRequested = true
+  if (timer.value && !reducedMotion() && time.value === 0)
+    timer.value.play()
+}
+defineExpose({ start })
+
 onMounted(async () => {
   if (reducedMotion()) {
     time.value = heroDuration
@@ -103,7 +112,7 @@ onMounted(async () => {
   })
   if (reducedMotion())
     timer.value.seek(heroDuration)
-  else
+  else if (startRequested)
     timer.value.play()
 })
 

@@ -26,7 +26,8 @@ const deltas = [
 
 const text = deltas.join('')
 const firstDelta = 520
-const deltaGap = 110
+/** Milliseconds between `text.delta` events. */
+export const deltaGap = 110
 const lastDelta = firstDelta + (deltas.length - 1) * deltaGap
 
 /**
