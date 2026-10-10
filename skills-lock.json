@@ -121,12 +121,6 @@
       "skillPath": "skills/productivity/teach/SKILL.md",
       "computedHash": "b8a69574c7a019bed84e84313dc8bf02e1d1bf925ba43057d433217c63863206"
     },
-    "technical-writing": {
-      "source": "luoling8192/technical-writing",
-      "sourceType": "github",
-      "skillPath": "SKILL.md",
-      "computedHash": "80e478f7b87c908b870d2c810d3d6f83b41d275f19f31aa6dd483066fabd96ba"
-    },
     "to-questionnaire": {
       "source": "mattpocock/skills",
       "sourceType": "github",
