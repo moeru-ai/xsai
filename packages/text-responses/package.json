@@ -1,7 +1,7 @@
 {
   "name": "@xsai/text-responses",
   "type": "module",
-  "version": "0.5.1",
+  "version": "1.0.0-beta.1",
   "description": "extra-small AI SDK: OpenAI Responses API model for @xsai/text.",
   "author": "Moeru AI",
   "license": "MIT",

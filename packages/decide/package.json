@@ -1,7 +1,7 @@
 {
   "name": "@xsai/decide",
   "type": "module",
-  "version": "0.5.1",
+  "version": "1.0.0-beta.1",
   "description": "extra-small AI SDK: classify input by answering yes/no questions with probabilities.",
   "author": "Moeru AI",
   "license": "MIT",
