@@ -1,0 +1,4 @@
+interface:
+  display_name: xsAI Images
+  short_description: Generate images from text with xsAI
+  default_prompt: Use $xsai-image to generate an image from a text prompt.

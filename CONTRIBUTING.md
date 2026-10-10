@@ -17,20 +17,18 @@ but still, sometimes it may be much more efficient for us to directly use actual
 
 We weren't supposed to connect to OpenAI's paid APIs while testing, so we chose some local services to use for test:
 
-### embed, {generate,stream}Text, {generate,stream}Object, tool
+### embed, text, text-*
 
 It uses [Ollama](https://github.com/ollama/ollama).
 
-The model used may change as needed, currently `granite3.3:2b` (chat completion, tool calling), `qwen3:0.6b` (reasoning), and `all-minilm` (embedding).
+The model used may change as needed, currently `qwen3.5:0.8b` (text) and `qwen3-embedding:0.6b` (embedding).
 
 ```bash
-ollama pull all-minilm
-ollama pull granite4:350m-h
-ollama pull granite4:1b-h
-ollama pull qwen3:0.6b
+ollama pull qwen3.5:0.8b
+ollama pull qwen3-embedding:0.6b
 ollama serve
 ```
-
+<!--
 ### generateSpeech
 
 It uses [openai-edge-tts](https://github.com/travisvn/openai-edge-tts).
@@ -69,4 +67,4 @@ cd models
 whisper-cpp-download-ggml-model large-v3-turbo-q5_0
 cd ..
 whisper-cpp-server --host 127.0.0.1 --port 9010 -nt -m models/ggml-large-v3-turbo-q5_0.bin --request-path /audio/transcriptions --inference-path ""
-```
+``` -->

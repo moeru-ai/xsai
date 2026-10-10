@@ -1,0 +1,73 @@
+import type { PartProviderMetadata } from './metadata'
+
+export type Content = ContentMap[ContentType]
+
+export interface ContentMap {
+  'file': FilePart
+  'image': ImagePart
+  'provider': ProviderPart
+  'reasoning': ReasoningPart
+  'refusal': RefusalPart
+  'text': TextPart
+  'tool-call': ToolCallPart
+  'tool-result': ToolResultPart
+}
+
+export type ContentType = keyof ContentMap
+
+export interface FilePart {
+  data: string | URL
+  type: 'file'
+}
+
+export interface ImagePart {
+  data: string | URL
+  detail?: 'auto' | 'high' | 'low'
+  type: 'image'
+}
+
+export interface ProviderPart {
+  source: string
+  type: 'provider'
+  value: unknown
+}
+
+export interface ReasoningPart {
+  content: ReasoningPartContent[]
+  id?: string
+  providerMetadata?: PartProviderMetadata
+  type: 'reasoning'
+}
+
+export interface ReasoningPartContent {
+  text: string
+  type: 'encrypted' | 'redacted' | 'summary' | 'text'
+}
+
+export interface RefusalPart {
+  refusal: string
+  type: 'refusal'
+}
+
+export interface TextPart {
+  providerMetadata?: PartProviderMetadata
+  text: string
+  type: 'text'
+}
+
+export interface ToolCallPart {
+  arguments: string
+  callId: string
+  id: string
+  name: string
+  type: 'tool-call'
+}
+
+export interface ToolResultPart {
+  callId: string
+  isError?: boolean
+  output: string | ToolResultPartContent[]
+  type: 'tool-result'
+}
+
+export type ToolResultPartContent = ImagePart | TextPart

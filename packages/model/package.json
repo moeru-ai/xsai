@@ -2,7 +2,7 @@
   "name": "@xsai/model",
   "type": "module",
   "version": "0.5.1",
-  "description": "extra-small AI SDK.",
+  "description": "extra-small AI SDK: list and retrieve models.",
   "author": "Moeru AI",
   "license": "MIT",
   "homepage": "https://xsai.js.org",
@@ -14,11 +14,15 @@
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "keywords": [
     "xsai",
+    "ai",
     "openai",
-    "ai"
+    "model",
+    "models"
   ],
   "sideEffects": false,
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "files": [
     "dist"
   ],
@@ -34,8 +38,8 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll",
-    "test": "vitest run",
+    "build": "pkgroll --clean-dist",
+    "test": "vitest run --exclude e2e/**",
     "test:watch": "vitest"
   },
   "dependencies": {

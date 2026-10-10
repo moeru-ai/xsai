@@ -1,0 +1,7 @@
+/* nolebase layer sits between the theme's base/components layers and its utilities
+   layer: nolebase utilities (p-4, gap-*) must beat preflight resets, while theme
+   variant utilities (lg:flex, dark:block) must still win over nolebase's .hidden */
+@layer properties, base, docs, marketing, theme, components, nolebase, utilities;
+@import '@nolebase/vitepress-plugin-git-changelog/client/style.css' layer(nolebase);
+@import '@nolebase/vitepress-plugin-highlight-targeted-heading/client/style.css' layer(nolebase);
+@import '@nolebase/vitepress-plugin-inline-link-preview/client/style.css' layer(nolebase);

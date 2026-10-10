@@ -1,0 +1,49 @@
+export type XSAIErrorCause<T extends XSAIErrorCode>
+  = Exclude<XSAIErrorCauseMap[T], undefined>
+
+/**
+ * Per-code `cause` contract: `undefined` forbids a cause, `unknown` makes it
+ * optional, `NonNullable<unknown>` requires one. Packages augment this
+ * interface to register their own codes.
+ */
+export interface XSAIErrorCauseMap {
+  'http-error': undefined
+  'invalid-input': undefined
+  'invalid-response': unknown
+  'network-error': NonNullable<unknown>
+  'truncated-stream': undefined
+}
+
+export type XSAIErrorCode = keyof XSAIErrorCauseMap
+
+export type XSAIErrorOptions<T extends XSAIErrorCode> = undefined extends XSAIErrorCauseMap[T]
+  ? [options?: { cause?: XSAIErrorCause<T> }]
+  : [options: { cause: XSAIErrorCause<T> }]
+
+export class XSAIError<T extends XSAIErrorCode = XSAIErrorCode> extends Error {
+  readonly code: T
+
+  constructor(code: T, message: string, ...[options]: XSAIErrorOptions<T>) {
+    super(message, options)
+    this.code = code
+    this.name = new.target.name
+  }
+
+  static isInstance<T extends XSAIError>(this: new (...args: never[]) => T, error: unknown): error is T {
+    return error instanceof this
+  }
+}
+
+export class HttpError extends XSAIError<'http-error'> {
+  readonly body: string
+  /** The raw response headers, for debugging (e.g. `x-request-id`, `retry-after`). */
+  readonly headers: Headers
+  readonly status: number
+
+  constructor({ body, headers, status }: { body: string, headers: Headers, status: number }, ...options: XSAIErrorOptions<'http-error'>) {
+    super('http-error', `HTTP ${status}: ${body}`, ...options)
+    this.body = body
+    this.headers = headers
+    this.status = status
+  }
+}

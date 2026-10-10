@@ -1,18 +1,41 @@
-import { describe, expect, it } from 'vitest'
+import type { EmbeddingModel, EmbeddingModelOptions } from '../src'
+
+import { describe, expect, it, vi } from 'vitest'
 
 import { embedMany } from '../src'
 
-describe('@xsai/embed', () => {
-  it('embedMany', async () => {
-    const { embeddings, usage } = await embedMany({
-      baseURL: 'http://localhost:11434/v1/',
-      input: ['why is the sky blue?', 'why is the grass green?'],
-      model: 'all-minilm',
-    })
+describe('embedMany', () => {
+  it.each([false, true])('returns batch embeddings and usage from the model (async: %s)', async (isAsync) => {
+    const expected = {
+      embeddings: [[1], [2]],
+      usage: { inputTokens: 4, totalTokens: 4 },
+    }
+    const model = isAsync
+      ? vi.fn<EmbeddingModel>().mockResolvedValue(expected)
+      : vi.fn<EmbeddingModel>().mockReturnValue(expected)
+    const options = {
+      input: ['first', 'second'],
+      providerOptions: { embeddings: { dimensions: 1 } },
+      signal: new AbortController().signal,
+    } satisfies EmbeddingModelOptions
 
-    expect(embeddings).toHaveLength(2)
-    embeddings.forEach(embedding => expect(embedding).toHaveLength(384))
-    expect(usage.prompt_tokens).toBe(16)
-    expect(usage.total_tokens).toBe(16)
+    const result = await embedMany(model, options)
+
+    expect(result).toEqual(expected)
+    expect(model).toHaveBeenCalledExactlyOnceWith(options)
+  })
+
+  it('accepts a model result without usage', async () => {
+    const result = { embeddings: [[1], [2]] }
+    await expect(embedMany(() => result, { input: ['first', 'second'] })).resolves.toBe(result)
+  })
+
+  it.each([false, true])('propagates model failures (async: %s)', async (isAsync) => {
+    const error = new Error('Embedding failed')
+    const model = isAsync
+      ? vi.fn<EmbeddingModel>().mockRejectedValue(error)
+      : vi.fn<EmbeddingModel>().mockImplementation(() => { throw error })
+
+    await expect(embedMany(model, { input: ['first', 'second'] })).rejects.toBe(error)
   })
 })

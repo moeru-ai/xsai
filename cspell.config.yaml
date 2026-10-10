@@ -4,9 +4,11 @@ dictionaryDefinitions: []
 dictionaries: []
 words:
   - AAAAIGZ
+  - actioned
   - aion
   - Airi
   - all-minilm
+  - animejs
   - antfu
   - arktype
   - automd
@@ -43,12 +45,14 @@ words:
   - kwaa
   - litellm
   - llms
+  - llmstxt
   - lmstudio
   - logprob
   - logprobs
   - lucide
   - masknet
   - mastra
+  - mattpocock
   - ministral
   - minzipped
   - mistralai
@@ -61,8 +65,10 @@ words:
   - nemo
   - nemotron
   - netease
+  - nolebase
   - nomic
   - nomic-embed-text
+  - noul
   - Novita
   - nums
   - ollama
@@ -72,6 +78,7 @@ words:
   - oxlint
   - pkgroll
   - Plateforme
+  - Promisable
   - protobufjs
   - quantizations
   - qwen
@@ -79,6 +86,8 @@ words:
   - reranker
   - rhasspy
   - scule
+  - shiki
+  - shikijs
   - siliconflow
   - slerp
   - sonarjs
@@ -100,6 +109,7 @@ words:
   - unspeech
   - valibot
   - vercel
+  - vitepress
   - vitest
   - voltagent
   - wizardlm

@@ -2,7 +2,34 @@
   "$schema": "https://turborepo.com/schema.json",
   "tasks": {
     "build": {
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        ".vitepress/dist/**"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "@xsai/docs#build": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/packages/*/src/**"
+      ],
+      "outputs": [
+        ".vitepress/dist/**"
+      ]
+    },
+    "@xsai/docs-v0#build": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/docs/.vitepress/shared.ts",
+        "$TURBO_ROOT$/docs/.vitepress/theme/**"
+      ],
+      "outputs": [
+        ".vitepress/dist/**"
+      ]
     }
   }
 }

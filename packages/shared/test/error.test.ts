@@ -1,81 +1,54 @@
 import { describe, expect, it } from 'vitest'
 
-import { APICallError, InvalidResponseError, JSONParseError, responseCatch, responseJSON, XSAIError } from '../src'
+import { HttpError, XSAIError } from '../src'
 
-describe('@xsai/shared errors', () => {
-  it('aPICallError.isInstance narrows shared errors', async () => {
-    const createResponse = () => new Response('upstream failed', {
-      status: 503,
-      statusText: 'Service Unavailable',
-    })
+describe('xsaiError', () => {
+  it('carries code, message, and name', () => {
+    const error = new XSAIError('invalid-input', 'bad input')
 
-    await expect(responseCatch(createResponse())).rejects.toBeInstanceOf(APICallError)
-
-    try {
-      await responseCatch(createResponse())
-    }
-    catch (error) {
-      expect(APICallError.isInstance(error)).toBe(true)
-      expect(XSAIError.isInstance(error)).toBe(true)
-
-      if (!APICallError.isInstance(error))
-        throw error
-
-      expect(error.code).toBe('api_call_error')
-      expect(error.statusCode).toBe(503)
-      expect(error.responseBody).toBe('upstream failed')
-    }
+    expect(error).toBeInstanceOf(Error)
+    expect(error.code).toBe('invalid-input')
+    expect(error.message).toBe('bad input')
+    expect(error.name).toBe('XSAIError')
   })
 
-  it('throws InvalidResponseError when response body is missing', async () => {
-    const response = {
-      body: null,
-      ok: true,
-    } as Response
-
-    await expect(responseCatch(response)).rejects.toMatchObject({
-      code: 'invalid_response',
-      reason: 'empty_body',
-    })
+  it('narrows unknown values with isInstance', () => {
+    expect(XSAIError.isInstance(new XSAIError('invalid-input', 'x'))).toBe(true)
+    expect(XSAIError.isInstance(new Error('x'))).toBe(false)
+    expect(XSAIError.isInstance('x')).toBe(false)
   })
 
-  it('throws InvalidResponseError when response body is not a stream', async () => {
-    const response = {
-      body: {},
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      ok: true,
-    } as Response
+  it('requires a cause for codes that always wrap an underlying failure', () => {
+    const cause = new TypeError('fetch failed')
+    const error = new XSAIError('network-error', 'request failed', { cause })
 
-    await expect(responseCatch(response)).rejects.toMatchObject({
-      code: 'invalid_response',
-      contentType: 'application/json',
-      reason: 'invalid_body',
-    })
+    expect(error.cause).toBe(cause)
+    // @ts-expect-error network-error requires a cause
+    expect(() => new XSAIError('network-error', 'request failed')).not.toThrow()
   })
 
-  it('stores responseBody on InvalidResponseError when no choices are returned', () => {
-    const error = new InvalidResponseError('No choices returned', {
-      reason: 'no_choices',
-      responseBody: '{"choices":[]}',
-    })
+  it('forbids a cause for codes that are their own evidence', () => {
+    // @ts-expect-error http-error carries the response itself, not a cause
+    expect(() => new HttpError({ body: '', headers: new Headers(), status: 500 }, { cause: new Error('x') })).not.toThrow()
+  })
+})
 
-    expect(error.code).toBe('invalid_response')
-    expect(error.reason).toBe('no_choices')
-    expect(error.responseBody).toBe('{"choices":[]}')
+describe('httpError', () => {
+  it('carries status and body under the http-error code', () => {
+    const error = new HttpError({ body: '{"error":"slow down"}', headers: new Headers(), status: 429 })
+
+    expect(error).toBeInstanceOf(XSAIError)
+    expect(error.code).toBe('http-error')
+    expect(error.name).toBe('HttpError')
+    expect(error.status).toBe(429)
+    expect(error.body).toBe('{"error":"slow down"}')
+    expect(error.message).toBe('HTTP 429: {"error":"slow down"}')
   })
 
-  it('throws JSONParseError for invalid JSON responses', async () => {
-    await expect(responseJSON(new Response('not-json'))).rejects.toBeInstanceOf(JSONParseError)
+  it('narrows to HttpError with isInstance', () => {
+    const error: unknown = new HttpError({ body: 'unauthorized', headers: new Headers(), status: 401 })
 
-    try {
-      await responseJSON(new Response('not-json'))
-    }
-    catch (error) {
-      if (!JSONParseError.isInstance(error))
-        throw error
-
-      expect(error.text).toBe('not-json')
-      expect(error.cause).toBeInstanceOf(SyntaxError)
-    }
+    expect(HttpError.isInstance(error)).toBe(true)
+    expect(XSAIError.isInstance(error)).toBe(true)
   })
 })

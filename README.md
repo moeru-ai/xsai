@@ -1,4 +1,12 @@
+<div align="center">
+
+<img src="https://github.com/moeru-ai.png" width="96" height="96" alt="Moeru AI logo">
+
 # xsAI
+
+**AI SDK, extra small.**
+
+One shape for every model. Web standards, nothing else.
 
 <!-- automd:badges name="xsai" provider="badgen" color="gray" license bundlephobia packagephobia -->
 
@@ -10,207 +18,90 @@
 
 <!-- /automd -->
 
-extra-small AI SDK.
+[Documentation](https://xsai.js.org) | [Getting started](https://xsai.js.org/getting-started) | [Choose packages](https://xsai.js.org/packages)
 
-OpenAI-compatible runtime for browser, edge, and agent tooling.
+</div>
 
-## Why xsAI?
+## Quick start
 
-xsAI is built for cases where full-featured AI frameworks are too heavy, too broad, or simply unnecessary.
-
-It focuses on three things:
-- small size
-- runtime portability
-- a focused OpenAI-compatible surface
-
-That means:
-- no universal provider abstraction
-- no attempt to be a full AI application framework
-- no unnecessary runtime baggage
-
-If you want a small foundation for OpenAI-compatible apps and agents, xsAI is for you.
-
-## Install
-
-> You can also install only some of the utils of xsAI, such as `@xsai/generate-text` and `@xsai/stream-text`.
-
-<!-- automd:pm-install name="xsai" auto=false -->
+<!-- automd:file src="/docs/snippets/xsai.md" -->
 
 ```sh
-# npm
-npm install xsai
-
-# yarn
-yarn add xsai
-
-# pnpm
 pnpm add xsai
+```
 
-# bun
-bun install xsai
+```ts
+import { generateText, responses } from 'xsai'
 
-# deno
-deno install npm:xsai
+const model = responses({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: 'https://api.openai.com/v1/',
+  model: 'gpt-6-luna',
+})
+
+const { text } = await generateText(model, { input: 'Say hello.' })
+console.log(text)
 ```
 
 <!-- /automd -->
 
-## Quick Example
+Streaming uses the same model. Each event is a typed `TextEvent` in a standard `ReadableStream`:
 
 ```ts
-import { env } from 'node:process'
+import { streamText } from 'xsai'
 
-import { generateText } from 'xsai'
+const { result, stream } = streamText(model, { input: 'Describe a quiet forest.' })
 
-const { text } = await generateText({
-  apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://api.openai.com/v1/',
-  messages: [
-    {
-      content: 'You are a helpful assistant.',
-      role: 'system',
-    },
-    {
-      content: 'This is a test, so please answer \'YES\' and nothing else.',
-      role: 'user',
-    },
-  ],
-  model: 'gpt-4o',
-})
-
-// "YES"
-console.log(text)
-```
-
-## Why It's Small
-
-xsAI stays small by building directly on top of the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API), staying ESM-only, and avoiding extra dependencies unless they are strictly necessary.
-
-You can compare xsAI with [Packagephobia](https://packagephobia.com/result?p=xsai) and [Bundlephobia](https://bundlephobia.com/package/xsai):
-
-> In the following table, we used packagephobia's install size and bundlephobia's minified/gzipped size.
-
-| Package | Install size | Bundled size | Gzipped size |
-|---|---|---|---|
-| xsai@0.4.0 | 142KB | 22.7KB | 7.1KB |
-| ai@6.0.11 | 5740KB | 301.5KB | 74.3KB |
-
-xsAI reduces the install size **40x** and the bundled size **13x**.
-
-Notably, this contains dependencies introduced to support tool calls and structured output.
-
-If you only need the basic `generateText`, `@xsai/generate-text@0.4.0` is only 22.6KB install size and 4KB bundled size (1.7KB gzipped).
-
-## Runtime Support
-
-xsAI doesn't depend on Node.js Built-in Modules, it works well in Browsers, Deno, Bun and even the Edge Runtime.
-
-## More Examples
-
-###### Streaming Text
-
-```ts
-import { env } from 'node:process'
-
-import { streamText } from '@xsai/stream-text'
-
-const { textStream } = streamText({
-  apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://api.openai.com/v1/',
-  messages: [
-    {
-      content: 'You are a helpful assistant.',
-      role: 'system',
-    },
-    {
-      content: 'This is a test, so please answer \'The quick brown fox jumps over the lazy dog.\' and nothing else.',
-      role: 'user',
-    },
-  ],
-  model: 'gpt-4o',
-})
-
-const text: string[] = []
-
-for await (const textPart of textStream) {
-  text.push(textPart)
+for await (const event of stream) {
+  if (event.type === 'text.delta')
+    process.stdout.write(event.delta)
 }
 
-// "The quick brown fox jumps over the lazy dog."
-console.log(text)
+await result
 ```
 
-###### Generating Text with Tool Calling
+## Why xsAI
 
-```ts
-import { env } from 'node:process'
+- **Small parts.** Each package does one job. Every package is an ES module with no side effects, so your bundler removes the code that you do not use.
+- **A model belongs to a protocol, not to a provider.** One adapter covers every service that speaks the same protocol. Change the service, keep your code.
+- **Web standards.** `fetch`, `ReadableStream`, `AbortSignal`, and `FormData`. The source imports no Node.js module. Replace `fetch` to add a proxy, a test double, or your own retries.
+- **Typed from end to end.** Options, results, events, and tool inputs have TypeScript types. Schemas follow [Standard Schema](https://standardschema.dev), so you can keep the validation library that you already use.
 
-import { generateText } from '@xsai/generate-text'
-import { stepCountAtLeast } from '@xsai/generate-text/shared-chat'
-import { tool } from '@xsai/tool'
-import { description, object, pipe, string } from 'valibot'
+## One adapter per protocol
 
-const weather = await tool({
-  description: 'Get the weather in a location',
-  execute: ({ location }) => JSON.stringify({
-    location,
-    temperature: 42,
-  }),
-  name: 'weather',
-  parameters: object({
-    location: pipe(
-      string(),
-      description('The location to get the weather for'),
-    ),
-  }),
-})
+xsAI does not ship a package for each provider. It ships an adapter for each protocol, and many services and gateways speak at least one of them.
 
-const { text } = await generateText({
-  apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://api.openai.com/v1/',
-  messages: [
-    {
-      content: 'You are a helpful assistant.',
-      role: 'system',
-    },
-    {
-      content: 'What is the weather in San Francisco? do not answer anything else.',
-      role: 'user',
-    },
-  ],
-  model: 'gpt-4o',
-  stopWhen: stepCountAtLeast(2),
-  toolChoice: 'required',
-  tools: [weather],
-})
+| Protocol | Package | Factory |
+| --- | --- | --- |
+| OpenAI Responses | `@xsai/text-responses` | `responses()` |
+| Chat Completions | `@xsai/text-chat` | `chat()` |
+| Anthropic Messages | `@xsai/text-messages` | `messages()` |
 
-// "In San Francisco, it's currently 42°F."
-console.log(text)
-```
+Every factory returns a `LanguageModel`, so `generateText`, `streamText`, and tool calls work the same with all three. If your service speaks another protocol, you can [write a custom model](https://xsai.js.org/advanced/custom-models).
 
-## Documentation
+## Packages
 
-Read the documentation at [xsai.js.org/docs](https://xsai.js.org/docs).
+Install `xsai` for everything, or only the packages that you use.
 
-- [Overview](https://xsai.js.org/docs/packages/overview)
-- [Generating Text](https://xsai.js.org/docs/packages/generate/text)
-- [Streaming Text](https://xsai.js.org/docs/packages/stream/text)
-- [Generating Structured Data](https://xsai.js.org/docs/packages/generate/object)
-- [Streaming Structured Data](https://xsai.js.org/docs/packages/stream/object)
+| Package | Provides |
+| --- | --- |
+| [`@xsai/text`](https://xsai.js.org/text/generating) | `generateText`, `streamText`, `loop`, `collect`, and `tool` |
+| [`@xsai/audio`](https://xsai.js.org/audio) | Speech generation and transcription |
+| [`@xsai/decide`](https://xsai.js.org/decide) | Typed answers to yes-or-no, choice, and score questions |
+| [`@xsai/embed`](https://xsai.js.org/embed) | Text embeddings |
+| [`@xsai/image`](https://xsai.js.org/image) | Image generation |
+| [`@xsai/model`](https://xsai.js.org/model) | Model lists from a service |
+| [`@xsai/shared`](https://xsai.js.org/shared) | HTTP options, `sendRequest`, and error types |
+| [`xsschema`](https://xsai.js.org/xsschema) | Schema conversion and validation, as a separate package |
+| `xsai` | One package that re-exports everything above except `xsschema` |
 
-## Ecosystem
+## Runs anywhere
 
-### Agent Skills
+xsAI runs on any runtime with `fetch` and web streams: Node.js, Deno, Bun, Cloudflare Workers, and browsers.
 
-Install the [xsAI Skill](https://skills.sh) to your AI coding agent:
+## Community projects
 
-```sh
-npx skills add moeru-ai/xsai
-```
-
-## Community Projects
-
-xsAI is used in community and in-house projects including:
+xsAI is used in community and in-house projects, including:
 
 - [moeru-ai/airi](https://github.com/moeru-ai/airi)
 - [moeru-ai/arpk](https://github.com/moeru-ai/arpk)
@@ -218,6 +109,10 @@ xsAI is used in community and in-house projects including:
 - [GramSearch/telegram-search](https://github.com/GramSearch/telegram-search)
 - [yusixian/moe-copy-ai](https://github.com/yusixian/moe-copy-ai)
 - [LemonNekoGH/flow-chat](https://github.com/LemonNekoGH/flow-chat)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). To edit or build the docs, see [documentation maintenance](docs/CONTRIBUTING.md).
 
 ## License
 

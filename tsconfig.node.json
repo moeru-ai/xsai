@@ -1,4 +1,11 @@
 {
   "extends": "@moeru/tsconfig/tsconfig.node.json",
-  "include": ["**/*.config.ts", "**/scripts/**/*.ts"]
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
+  },
+  "include": [
+    "**/*.config.ts",
+    "**/.vitepress/*.ts",
+    "docs/.vitepress/theme/home/*.ts"
+  ]
 }

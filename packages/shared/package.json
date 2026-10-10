@@ -2,7 +2,7 @@
   "name": "@xsai/shared",
   "type": "module",
   "version": "0.5.1",
-  "description": "extra-small AI SDK.",
+  "description": "extra-small AI SDK: shared utilities for xsAI packages.",
   "author": "Moeru AI",
   "license": "MIT",
   "homepage": "https://xsai.js.org",
@@ -14,8 +14,10 @@
   "bugs": "https://github.com/moeru-ai/xsai/issues",
   "keywords": [
     "xsai",
+    "ai",
     "openai",
-    "ai"
+    "shared",
+    "utils"
   ],
   "sideEffects": false,
   "exports": "./src/index.ts",
@@ -34,9 +36,10 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "build": "pkgroll"
+    "build": "pkgroll --clean-dist",
+    "test": "vitest run"
   },
   "devDependencies": {
-    "@moeru/std": "catalog:"
+    "eventsource-parser": "catalog:"
   }
 }

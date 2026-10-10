@@ -1,15 +1,12 @@
 {
   "extends": "@moeru/tsconfig",
   "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.lib.tsbuildinfo",
     "types": ["node"]
   },
   "include": [
-    "examples/**/src",
     "packages/**/src",
-    "packages/**/test",
-    "packages-ext/**/src",
-    "packages-ext/**/test",
-    "packages-top/**/src",
-    "packages-top/**/test"
+    "packages/**/e2e",
+    "packages/**/test"
   ]
 }

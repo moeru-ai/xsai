@@ -1,0 +1,55 @@
+{
+  "name": "xsai",
+  "type": "module",
+  "version": "0.5.1",
+  "description": "extra-small AI SDK.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/xsai"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "openai",
+    "llm",
+    "sdk"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "pkgroll --clean-dist"
+  },
+  "dependencies": {
+    "@xsai/audio": "workspace:",
+    "@xsai/decide": "workspace:",
+    "@xsai/embed": "workspace:",
+    "@xsai/image": "workspace:",
+    "@xsai/model": "workspace:",
+    "@xsai/shared": "workspace:",
+    "@xsai/text": "workspace:",
+    "@xsai/text-chat": "workspace:",
+    "@xsai/text-messages": "workspace:",
+    "@xsai/text-responses": "workspace:"
+  }
+}

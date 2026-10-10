@@ -1,72 +1,62 @@
 # eslint-disable pnpm/yaml-no-duplicate-catalog-item
 
-minimumReleaseAgeExclude:
-  - lucide-react@1.37.0
-
-shellEmulator: true
-
+minimumReleaseAgeExcludePrune: true
 trustPolicy: no-downgrade
+shellEmulator: true
 
 packages:
   - docs
+  - docs-v0
   - examples/*
   - packages/*
-  - packages-ext/*
-  - packages-top/*
+
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+  protobufjs: false
+  sharp: false
+
+onlyBuiltDependencies:
+  - unrs-resolver
 
 catalog:
-  '@antfu/eslint-config': ^9.2.0
+  '@antfu/eslint-config': ^9.5.1
   '@hey-api/openapi-ts': ^0.99.0
   '@moeru/eslint-config': ^0.1.0-beta.20
-  '@moeru/std': ^0.1.0-beta.20
   '@moeru/tsconfig': ^0.1.0-beta.20
-  '@opentelemetry/api': ^1.9.1
-  '@opentelemetry/sdk-trace-base': ^2.10.0
-  '@opentelemetry/sdk-trace-node': ^2.10.0
-  '@orama/orama': ^3.1.18
+  '@nolebase/vitepress-plugin-git-changelog': ^2.18.2
+  '@nolebase/vitepress-plugin-highlight-targeted-heading': ^2.18.2
+  '@nolebase/vitepress-plugin-inline-link-preview': ^2.18.2
+  '@nolebase/vitepress-plugin-meta': ^2.18.2
   '@pnpm/find-workspace-dir': ^1000.1.5
+  '@shikijs/magic-move': ^4.4.3
+  '@shikijs/vitepress-twoslash': ^4.5.0
   '@standard-schema/spec': 1.1.0
-  '@tailwindcss/postcss': ^4.3.3
   '@types/json-schema': ^7.0.15
-  '@types/mdx': ^2.0.14
-  '@types/node': ^26.4.0
-  '@types/react': ^19.2.18
-  '@types/react-dom': ^19.2.5
-  '@vitest/coverage-v8': ^4.1.11
+  '@types/node': ^26.6.4
+  '@vitest/coverage-v8': ^5.0.3
+  '@voidzero-dev/vitepress-theme': ^5.0.7
+  animejs: ^4.5.0
   automd: ^0.4.3
-  best-effort-json-parser: ^1.5.1
-  bumpp: ^12.2.2
-  clsx: ^2.1.1
-  eslint: ^10.9.1
-  eslint-plugin-oxlint: ^1.80.0
-  eventsource-parser: ^3.0.6
-  fumadocs-core: ^16.7.14
-  fumadocs-mdx: ^14.2.13
-  fumadocs-twoslash: ^3.1.17
-  fumadocs-ui: ^16.7.14
-  lucide-react: ^1.37.0
-  next: ^16.2.3
-  oxlint: ^1.80.0
-  pkg-pr-new: ^0.0.88
+  bumpp: ^12.3.0
+  eslint: ^10.12.0
+  eslint-plugin-oxlint: ^1.87.0
+  eventsource-parser: ^4.1.1
+  oxlint: ^1.87.0
+  pkg-pr-new: ^0.0.90
   pkgroll: ^2.28.1
-  postcss: ^8.5.26
-  react: ^19.2.8
-  react-dom: ^19.2.8
-  recharts: ^2.15.4
-  remark: ^15.0.1
-  remark-gfm: ^4.0.1
-  remark-mdx: ^3.1.1
-  scule: ^1.3.0
-  tailwind-merge: ^3.6.0
-  tailwindcss: ^4.3.3
-  tsdown: ^0.22.14
-  tsx: ^4.23.12
-  turbo: ^2.10.12
-  tw-animate-css: ^1.4.0
-  twoslash: ^0.3.9
-  type-fest: ^5.8.0
+  rolldown: ^1.2.12
+  shiki: ^4.4.3
+  simple-icons: ^16.32.0
+  takumi-js: ^2.14.0
+  tsdown: ^0.23.0
+  tsx: ^4.23.15
+  turbo: ^2.11.7
   typescript: ~6.0.3
-  vitest: ^4.1.11
+  vitepress: ^2.0.0-alpha.20
+  vitepress-plugin-llms: ^1.14.0
+  vitest: ^5.0.3
+  vue: ^3.5.43
 
 catalogs:
   schema:
@@ -82,12 +72,3 @@ catalogs:
     effect: ^3.21.0
     sury: ^11.0.0-alpha.4
     zod: ^4.3.6
-
-onlyBuiltDependencies:
-  - unrs-resolver
-
-allowBuilds:
-  '@parcel/watcher': false
-  esbuild: false
-  protobufjs: false
-  sharp: false

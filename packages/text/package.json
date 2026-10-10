@@ -1,0 +1,60 @@
+{
+  "name": "@xsai/text",
+  "type": "module",
+  "version": "0.5.1",
+  "description": "extra-small AI SDK: provider-agnostic text generation, streaming and tool calling.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/text"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "openai",
+    "text",
+    "generate-text",
+    "stream-text",
+    "tool-calling",
+    "agent"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./internal": "./src/internal.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json",
+      "./internal": {
+        "types": "./dist/internal.d.ts",
+        "default": "./dist/internal.js"
+      }
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "pkgroll --clean-dist",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@xsai/shared": "workspace:"
+  },
+  "devDependencies": {
+    "@standard-schema/spec": "catalog:",
+    "@types/json-schema": "catalog:"
+  }
+}

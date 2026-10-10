@@ -27,6 +27,7 @@ dist
 .source
 
 # docs:test & build
+docs/.vitepress/cache
 coverage
 .next
 out
@@ -37,3 +38,11 @@ build
 .env*.local
 .vercel
 next-env.d.ts
+
+# private issue tracker docs
+.scratch
+docs/research
+
+docs-v0/.vitepress/cache
+
+**/.vitepress/.temp
