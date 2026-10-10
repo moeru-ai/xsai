@@ -168,6 +168,8 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
         break
       case 'tool_use':
         builder.start(event.index, 'tool-call', { callId: block.id, id: block.id, name: block.name })
+        if (typeof block.input === 'object' && block.input !== null && Object.keys(block.input).length > 0)
+          builder.delta(event.index, JSON.stringify(block.input))
         break
       default:
         builder.start(event.index, 'provider', { source: this.source })
