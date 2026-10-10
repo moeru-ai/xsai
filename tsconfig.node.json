@@ -5,6 +5,7 @@
   },
   "include": [
     "**/*.config.ts",
-    "**/.vitepress/*.ts"
+    "**/.vitepress/*.ts",
+    "docs/.vitepress/theme/home/*.ts"
   ]
 }

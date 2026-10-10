@@ -134,6 +134,9 @@ catalogs:
     '@pnpm/find-workspace-dir':
       specifier: ^1000.1.5
       version: 1000.1.5
+    '@shikijs/magic-move':
+      specifier: ^4.4.3
+      version: 4.5.0
     '@shikijs/vitepress-twoslash':
       specifier: ^4.5.0
       version: 4.5.0
@@ -152,6 +155,9 @@ catalogs:
     '@voidzero-dev/vitepress-theme':
       specifier: ^5.0.7
       version: 5.0.7
+    animejs:
+      specifier: ^4.5.0
+      version: 4.5.0
     automd:
       specifier: ^0.4.3
       version: 0.4.3
@@ -176,6 +182,12 @@ catalogs:
     pkgroll:
       specifier: ^2.28.1
       version: 2.28.1
+    rolldown:
+      specifier: ^1.2.12
+      version: 1.2.12
+    shiki:
+      specifier: ^4.4.3
+      version: 4.5.0
     tsdown:
       specifier: ^0.23.0
       version: 0.23.0
@@ -300,6 +312,9 @@ importers:
       '@nolebase/vitepress-plugin-meta':
         specifier: 'catalog:'
         version: 2.18.2(vitepress@2.0.0-alpha.20(@types/node@26.6.4)(change-case@5.4.4)(esbuild@0.28.2)(jiti@2.7.0)(less@4.9.1(supports-color@8.1.1))(postcss@8.5.29)(sass-embedded@1.81.0)(terser@5.36.0)(tsx@4.23.15)(typescript@6.0.3)(yaml@2.9.0))
+      '@shikijs/magic-move':
+        specifier: 'catalog:'
+        version: 4.5.0(shiki@4.5.0)(vue@3.5.43(typescript@6.0.3))
       '@shikijs/vitepress-twoslash':
         specifier: 'catalog:'
         version: 4.5.0(supports-color@8.1.1)(typescript@6.0.3)
@@ -339,6 +354,15 @@ importers:
       '@xsai/text-responses':
         specifier: 'workspace:'
         version: link:../packages/text-responses
+      animejs:
+        specifier: 'catalog:'
+        version: 4.5.0
+      rolldown:
+        specifier: 'catalog:'
+        version: 1.2.12
+      shiki:
+        specifier: 'catalog:'
+        version: 4.5.0
       vitepress:
         specifier: 'catalog:'
         version: 2.0.0-alpha.20(@types/node@26.6.4)(change-case@5.4.4)(esbuild@0.28.2)(jiti@2.7.0)(less@4.9.1(supports-color@8.1.1))(postcss@8.5.29)(sass-embedded@1.81.0)(terser@5.36.0)(tsx@4.23.15)(typescript@6.0.3)(yaml@2.9.0)
@@ -1894,6 +1918,27 @@ packages:
     resolution: {integrity: sha512-wwBTqwduXSz0X4v9Qa2EWeFaYJEw1clCncWjoRNQRbVDu3SPRTRWucnouYapKj3b8Q+sk/41Vbc4B5c8nuYzLA==}
     engines: {node: '>=20'}
 
+  '@shikijs/magic-move@4.5.0':
+    resolution: {integrity: sha512-5odJkSvOtEXb/BXg7YH0e5Cneao2iefa3Kdjg2zamAbuj63d5cdD4uqxqAKnu3it1dCEKadk8KDHGsNALjT6fA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: ^18.2.0 || ^19.0.0
+      shiki: ^4.0.0
+      solid-js: ^1.9.1
+      svelte: ^5.0.0-0
+      vue: ^3.4.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      shiki:
+        optional: true
+      solid-js:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+
   '@shikijs/primitive@4.5.0':
     resolution: {integrity: sha512-UM7ShlA8oz0OWxLLO8BmO9Ip6fVqdkt8yF0EH7nOCqHfrx1eEAzF0ZUVK7L+I8NEgeu1PEWSRlxaiPPeCb4iDg==}
     engines: {node: '>=20'}
@@ -2605,6 +2650,17 @@ packages:
   alien-signals@3.2.1:
     resolution: {integrity: sha512-I8FjmltrfnDFoZedi5CG8DghVYNhzb/Ijluz7tCSJH0xpd0484Kowhbb1XDYOxfJpU1p5wnM2X54dA+IfGyD1g==}
 
+  animejs@4.5.0:
+    resolution: {integrity: sha512-NQimYX+lz8WaXonGS9zVVoviCIAjONeJayxacUditaivYLqyXgGjFKjuyl0aUUhFKm5MriX9ty1TGovNzoJQWA==}
+    peerDependencies:
+      '@types/three': '>=0.150.0'
+      three: '>=0.150.0'
+    peerDependenciesMeta:
+      '@types/three':
+        optional: true
+      three:
+        optional: true
+
   ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
     engines: {node: '>=6'}
@@ -2944,6 +3000,9 @@ packages:
   didyoumean2@7.0.4:
     resolution: {integrity: sha512-+yW4SNY7W2DOWe2Jx5H4c2qMTFbLGM6wIyoDPkAPy66X+sD1KfYjBPAIWPVsYqMxelflaMQCloZDudELIPhLqA==}
     engines: {node: ^18.12.0 || >=20.9.0}
+
+  diff-match-patch-es@2.0.1:
+    resolution: {integrity: sha512-+Sl+/H47ArQiKPp8fA307M1RwyCwFqNhggw0mAEFherLNL/J2ZUFZsnELj65Cir91VfVPx3jlNzeKBdr+QAFTw==}
 
   diff-sequences@29.6.3:
     resolution: {integrity: sha512-EjePK1srD3P08o2j4f0ExnylqRs5B9tJjcp9t1krH2qRi8CCdsYfwe9JgSLurFBWwq4uOlipzfk5fHNvwFKr8Q==}
@@ -6289,6 +6348,14 @@ snapshots:
     dependencies:
       '@shikijs/types': 4.5.0
 
+  '@shikijs/magic-move@4.5.0(shiki@4.5.0)(vue@3.5.43(typescript@6.0.3))':
+    dependencies:
+      diff-match-patch-es: 2.0.1
+      ohash: 2.0.12
+    optionalDependencies:
+      shiki: 4.5.0
+      vue: 3.5.43(typescript@6.0.3)
+
   '@shikijs/primitive@4.5.0':
     dependencies:
       '@shikijs/types': 4.5.0
@@ -6969,6 +7036,8 @@ snapshots:
 
   alien-signals@3.2.1: {}
 
+  animejs@4.5.0: {}
+
   ansi-colors@4.1.3: {}
 
   ansi-regex@5.0.1: {}
@@ -7287,6 +7356,8 @@ snapshots:
       '@babel/runtime': 7.26.0
       fastest-levenshtein: 1.0.16
       lodash.deburr: 4.1.0
+
+  diff-match-patch-es@2.0.1: {}
 
   diff-sequences@29.6.3: {}
 

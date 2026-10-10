@@ -2,6 +2,35 @@
 
 @source "./**/*.vue";
 
+/* Signal colors: cyan means in flight, lime means done. Light mode uses darker steps for AA text contrast. */
+:root {
+  --xs-cyan: #0e7490;
+  --xs-cyan-fill: #06b6d4;
+  --xs-lime: #4d7c0f;
+  --xs-lime-fill: #84cc16;
+}
+
+:root.dark:not([data-theme]),
+:root[data-theme="dark"] {
+  --xs-cyan: #22d3ee;
+  --xs-cyan-fill: #22d3ee;
+  --xs-lime: #a3e635;
+  --xs-lime-fill: #a3e635;
+}
+
+@theme inline {
+  --color-cyan: var(--xs-cyan);
+  --color-cyan-fill: var(--xs-cyan-fill);
+  --color-lime: var(--xs-lime);
+  --color-lime-fill: var(--xs-lime-fill);
+  --color-fg: var(--vp-c-text-1);
+  --color-muted: var(--vp-c-text-2);
+  --color-faint: var(--vp-c-text-3);
+  --color-line: var(--vp-c-divider);
+  --color-bg: var(--vp-c-bg);
+  --color-bg-soft: var(--vp-c-bg-alt);
+}
+
 /* Brand color: black in light mode, white in dark mode */
 :root,
 :root[data-variant="voidzero"] {
