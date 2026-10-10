@@ -8,11 +8,10 @@
 
 One shape for every model. Web standards, nothing else.
 
-<!-- automd:badges name="xsai" provider="badgen" color="gray" license bundlephobia packagephobia -->
+<!-- automd:badges name="xsai" provider="badgen" color="gray" license packagephobia -->
 
 [![npm version](https://flat.badgen.net/npm/v/xsai?color=gray)](https://npmjs.com/package/xsai)
 [![npm downloads](https://flat.badgen.net/npm/dm/xsai?color=gray)](https://npm.chart.dev/xsai)
-[![bundle size](https://flat.badgen.net/bundlephobia/minzip/xsai?color=gray)](https://bundlephobia.com/package/xsai)
 [![install size](https://flat.badgen.net/packagephobia/install/xsai?color=gray)](https://packagephobia.com/result?p=xsai)
 [![license](https://flat.badgen.net/github/license/moeru-ai/xsai?color=gray)](https://github.com/moeru-ai/xsai/blob/main/LICENSE)
 
