@@ -47,6 +47,7 @@ export const messages = (options: HttpOptions): LanguageModel => async (modelOpt
       stream: true,
       system,
       temperature: modelOptions.temperature,
+      thinking: providerOptions?.thinking,
       tool_choice: normalizeToolChoice(modelOptions.toolChoice),
       tools: mergeTools(providerOptions?.tools, modelOptions.tools),
       top_p: modelOptions.topP,

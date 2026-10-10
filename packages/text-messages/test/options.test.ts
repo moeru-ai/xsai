@@ -1,5 +1,7 @@
 import type { JSONSchema7 } from '@xsai/text/internal'
 
+import type { MessagesThinkingConfig } from '../src'
+
 import { tool, XSAIError } from '@xsai/text'
 import { describe, expect, it } from 'vitest'
 
@@ -84,6 +86,43 @@ describe('messages options', () => {
       top_p: 0.9,
     })
     expect(bodies[0]).not.toHaveProperty('effort')
+    expect(bodies[0]).not.toHaveProperty('thinking')
+  })
+
+  it('sends adaptive thinking alongside effort and structured output', async () => {
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      maxOutputTokens: 4096,
+      outputFormat: { properties: { answer: { type: 'string' } }, required: ['answer'], type: 'object' },
+      providerOptions: { messages: { thinking: { display: 'summarized', type: 'adaptive' } } },
+      reasoningEffort: 'high',
+    })
+    await stream.cancel()
+
+    expect(bodies[0].thinking).toEqual({ display: 'summarized', type: 'adaptive' })
+    expect(bodies[0].output_config).toMatchObject({ effort: 'high', format: { type: 'json_schema' } })
+    expect(bodies[0]).not.toHaveProperty('providerOptions')
+  })
+
+  it.each([
+    { budget_tokens: 2048, display: 'omitted', type: 'enabled' },
+    { display: 'omitted', type: 'adaptive' },
+    { type: 'disabled' },
+    { type: 'between_tools' },
+  ] satisfies MessagesThinkingConfig[])('sends $type thinking without setting effort', async (thinking) => {
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      maxOutputTokens: 4096,
+      providerOptions: { messages: { thinking } },
+    })
+    await stream.cancel()
+
+    expect(bodies[0].thinking).toEqual(thinking)
+    expect(bodies[0]).not.toHaveProperty('output_config')
   })
 
   it('maps required toolChoice to any and rejects missing maxOutputTokens', async () => {
