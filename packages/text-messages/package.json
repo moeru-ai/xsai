@@ -2,6 +2,23 @@
   "name": "@xsai/text-messages",
   "type": "module",
   "version": "0.5.1",
+  "description": "extra-small AI SDK: Anthropic Messages API model for @xsai/text.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/text-messages"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "anthropic",
+    "messages",
+    "claude"
+  ],
   "sideEffects": false,
   "exports": "./src/index.ts",
   "files": [

@@ -2,6 +2,26 @@
   "name": "@xsai/text",
   "type": "module",
   "version": "0.5.1",
+  "description": "extra-small AI SDK: provider-agnostic text generation, streaming and tool calling.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/text"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "openai",
+    "text",
+    "generate-text",
+    "stream-text",
+    "tool-calling",
+    "agent"
+  ],
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",

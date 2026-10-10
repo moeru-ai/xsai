@@ -2,6 +2,26 @@
   "name": "@xsai/audio",
   "type": "module",
   "version": "0.5.1",
+  "description": "extra-small AI SDK: speech generation and transcription.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/audio"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "openai",
+    "speech",
+    "tts",
+    "transcription",
+    "stt",
+    "audio"
+  ],
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts"

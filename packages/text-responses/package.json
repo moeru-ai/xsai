@@ -2,6 +2,23 @@
   "name": "@xsai/text-responses",
   "type": "module",
   "version": "0.5.1",
+  "description": "extra-small AI SDK: OpenAI Responses API model for @xsai/text.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/text-responses"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "openai",
+    "responses",
+    "responses-api"
+  ],
   "sideEffects": false,
   "exports": "./src/index.ts",
   "files": [

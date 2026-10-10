@@ -2,6 +2,24 @@
   "name": "@xsai/decide",
   "type": "module",
   "version": "0.5.1",
+  "description": "extra-small AI SDK: classify input by answering yes/no questions with probabilities.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages/decide"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "openai",
+    "decide",
+    "classification",
+    "logprobs"
+  ],
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts"
