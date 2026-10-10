@@ -7,7 +7,14 @@ import { data as sizes } from './home/sizes.data'
 
 const total = `${(sizes.total / 1000).toFixed(1)} KB`
 
-const runtimes = ['Node.js', 'Deno', 'Bun', 'Cloudflare Workers', 'Browsers']
+// Logos come from simple-icons through CSS masks (see `.icon-*` below), so they add no JS.
+const runtimes = [
+  { icons: ['nodedotjs'], name: 'Node.js' },
+  { icons: ['deno'], name: 'Deno' },
+  { icons: ['bun'], name: 'Bun' },
+  { icons: ['cloudflareworkers'], name: 'Workers' },
+  { icons: ['googlechrome', 'firefoxbrowser', 'safari'], name: 'Browsers' },
+]
 </script>
 
 <template>
@@ -67,8 +74,11 @@ const runtimes = ['Node.js', 'Deno', 'Bun', 'Cloudflare Workers', 'Browsers']
         </p>
       </header>
       <ul class="runtimes">
-        <li v-for="runtime in runtimes" :key="runtime">
-          {{ runtime }}
+        <li v-for="runtime in runtimes" :key="runtime.name">
+          <span class="runtime-icons" aria-hidden="true">
+            <span v-for="icon in runtime.icons" :key="icon" class="runtime-icon" :class="`icon-${icon}`" />
+          </span>
+          {{ runtime.name }}
         </li>
       </ul>
     </section>
@@ -220,6 +230,29 @@ const runtimes = ['Node.js', 'Deno', 'Bun', 'Cloudflare Workers', 'Browsers']
     padding-inline: 2rem;
   }
 }
+
+.runtime-icons {
+  display: flex;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+}
+
+.runtime-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  background: currentColor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.icon-nodedotjs { mask-image: url('simple-icons/icons/nodedotjs.svg'); }
+.icon-deno { mask-image: url('simple-icons/icons/deno.svg'); }
+.icon-bun { mask-image: url('simple-icons/icons/bun.svg'); }
+.icon-cloudflareworkers { mask-image: url('simple-icons/icons/cloudflareworkers.svg'); }
+.icon-googlechrome { mask-image: url('simple-icons/icons/googlechrome.svg'); }
+.icon-firefoxbrowser { mask-image: url('simple-icons/icons/firefoxbrowser.svg'); }
+.icon-safari { mask-image: url('simple-icons/icons/safari.svg'); }
 
 .runtimes li:last-child {
   border-right: 0;

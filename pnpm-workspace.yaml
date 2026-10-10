@@ -47,6 +47,7 @@ catalog:
   pkgroll: ^2.28.1
   rolldown: ^1.2.12
   shiki: ^4.4.3
+  simple-icons: ^16.32.0
   tsdown: ^0.23.0
   tsx: ^4.23.15
   turbo: ^2.11.7

@@ -188,6 +188,9 @@ catalogs:
     shiki:
       specifier: ^4.4.3
       version: 4.5.0
+    simple-icons:
+      specifier: ^16.32.0
+      version: 16.34.0
     tsdown:
       specifier: ^0.23.0
       version: 0.23.0
@@ -363,6 +366,9 @@ importers:
       shiki:
         specifier: 'catalog:'
         version: 4.5.0
+      simple-icons:
+        specifier: 'catalog:'
+        version: 16.34.0
       vitepress:
         specifier: 'catalog:'
         version: 2.0.0-alpha.20(@types/node@26.6.4)(change-case@5.4.4)(esbuild@0.28.2)(jiti@2.7.0)(less@4.9.1(supports-color@8.1.1))(postcss@8.5.29)(sass-embedded@1.81.0)(terser@5.36.0)(tsx@4.23.15)(typescript@6.0.3)(yaml@2.9.0)
@@ -4760,6 +4766,10 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+
+  simple-icons@16.34.0:
+    resolution: {integrity: sha512-UTxKn0PVspk84B2hHF3Dqiqht1yDjJmDc/t4cO7PyCQxCMk6OjEu95pnpGjhLaGeQ4qBrGASbefTIe/+czrX7g==}
+    engines: {node: '>=0.12.18'}
 
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
@@ -9447,6 +9457,8 @@ snapshots:
       '@types/hast': 3.0.5
 
   signal-exit@4.1.0: {}
+
+  simple-icons@16.34.0: {}
 
   sisteransi@1.0.5: {}
 
