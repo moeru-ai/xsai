@@ -48,10 +48,10 @@ describe('transcription', () => {
   it.each(['english', 'en', 'custom-language', undefined])('preserves the reported language %s without conversion or an input fallback', async (language) => {
     const model = transcriptionsNonStreaming({
       baseURL: 'https://example.com/v1/',
-      fetch: async () => Response.json({ language, languages: [{ code: 'en' }, { code: 'zh' }], text: 'Hello. 你好。' }),
+      fetch: async () => Response.json({ language, languages: [{ code: 'en' }, { code: 'ja' }], text: 'Hello. こんにちは。' }),
       model: 'transcription-model',
     })
-    expect(await generateTranscription(model, { audio, language: 'zh' })).toEqual({ language, text: 'Hello. 你好。' })
+    expect(await generateTranscription(model, { audio, language: 'ja' })).toEqual({ language, text: 'Hello. こんにちは。' })
   })
 
   it('preserves sparse segment metadata in both SSE segment events and the final result', async () => {
