@@ -24,7 +24,7 @@ interface DataUrl {
   mediaType: string
 }
 
-const DATA_URL_PATTERN = /^data:([^;,]+);base64,(.*)$/s
+const DATA_URL_PATTERN = /^data:([^;,]+)(?:;[^;,]*)*;base64,(.*)$/s
 
 const parseDataUrl = (data: string): DataUrl | undefined => {
   const match = DATA_URL_PATTERN.exec(data)
@@ -56,13 +56,18 @@ const normalizeFilePart = (part: FilePart): DocumentBlock => {
   const dataUrl = parseDataUrl(data)
 
   if (dataUrl != null) {
+    if (dataUrl.mediaType === 'text/plain') {
+      const bytes = Uint8Array.fromBase64(dataUrl.data)
+      return { source: { data: new TextDecoder().decode(bytes), media_type: 'text/plain', type: 'text' }, type: 'document' }
+    }
+
     if (dataUrl.mediaType !== 'application/pdf')
       throw new XSAIError('invalid-input', `Anthropic documents only support PDF or plain text, got: ${dataUrl.mediaType}`)
 
     return { source: { data: dataUrl.data, media_type: 'application/pdf', type: 'base64' }, type: 'document' }
   }
 
-  if (URL.canParse(data))
+  if (/^https?:$/.test(URL.parse(data)?.protocol ?? ''))
     return { source: { type: 'url', url: data }, type: 'document' }
 
   return { source: { data, media_type: 'text/plain', type: 'text' }, type: 'document' }
