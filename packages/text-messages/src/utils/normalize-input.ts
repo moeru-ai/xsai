@@ -20,15 +20,27 @@ import type { ContentBlock, DocumentBlock, ImageBlock, InputMessage, TextBlock, 
 import { XSAIError } from '@xsai/shared'
 
 interface DataUrl {
+  charset?: string
   data: string
   mediaType: string
 }
 
-const DATA_URL_PATTERN = /^data:([^;,]+)(?:;[^;,]*)*;base64,(.*)$/s
-
 const parseDataUrl = (data: string): DataUrl | undefined => {
-  const match = DATA_URL_PATTERN.exec(data)
-  return match === null ? undefined : { data: match[2], mediaType: match[1] }
+  const match = /^data:([^,]+);base64,(.*)$/s.exec(data)
+  if (match == null)
+    return
+
+  const [mediaType, ...params] = match
+  if (mediaType == null)
+    return
+
+  return {
+    charset: params
+      .find(p => p.toLowerCase().startsWith('charset='))
+      ?.slice(8),
+    data: match[2],
+    mediaType,
+  }
 }
 
 const normalizeInputTextPart = (part: TextPart): TextBlock => ({
@@ -58,7 +70,7 @@ const normalizeFilePart = (part: FilePart): DocumentBlock => {
   if (dataUrl != null) {
     if (dataUrl.mediaType === 'text/plain') {
       const bytes = Uint8Array.fromBase64(dataUrl.data)
-      return { source: { data: new TextDecoder().decode(bytes), media_type: 'text/plain', type: 'text' }, type: 'document' }
+      return { source: { data: new TextDecoder(dataUrl.charset ?? 'utf-8', { fatal: true }).decode(bytes), media_type: 'text/plain', type: 'text' }, type: 'document' }
     }
 
     if (dataUrl.mediaType !== 'application/pdf')
