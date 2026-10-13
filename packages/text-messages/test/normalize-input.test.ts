@@ -127,6 +127,30 @@ describe('normalize input', () => {
     }))
   })
 
+  it('maps text/plain data URLs and non-http text to text documents', () => {
+    expect(normalizeInput({
+      input: [{
+        content: [
+          { data: 'data:text/plain;base64,aMOpbGxv', type: 'file' },
+          { data: 'data:text/plain;charset=utf-8;base64,aGk=', type: 'file' },
+          { data: 'note: buy milk', type: 'file' },
+          { data: 'https://example.com/doc.pdf', type: 'file' },
+        ],
+        role: 'user',
+      }],
+    })).toEqual({
+      messages: [{
+        content: [
+          { source: { data: 'héllo', media_type: 'text/plain', type: 'text' }, type: 'document' },
+          { source: { data: 'hi', media_type: 'text/plain', type: 'text' }, type: 'document' },
+          { source: { data: 'note: buy milk', media_type: 'text/plain', type: 'text' }, type: 'document' },
+          { source: { type: 'url', url: 'https://example.com/doc.pdf' }, type: 'document' },
+        ],
+        role: 'user',
+      }],
+    })
+  })
+
   it('rejects non-PDF document data with an invalid-input error', () => {
     const call = () => normalizeInput({
       input: [{ content: [{ data: 'data:image/png;base64,aGVsbG8=', type: 'file' }], role: 'user' }],
