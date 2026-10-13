@@ -101,6 +101,7 @@ describe('normalize input', () => {
         content: [
           { data: 'https://example.com/cat.png', type: 'image' },
           { data: 'data:image/png;base64,aGVsbG8=', type: 'image' },
+          { data: 'data:image/png;charset=utf-8;name=cat.png;base64,aGVs\nbG8=', type: 'image' },
         ],
         role: 'user',
       }],
@@ -109,6 +110,7 @@ describe('normalize input', () => {
         content: [
           { source: { type: 'url', url: 'https://example.com/cat.png' }, type: 'image' },
           { source: { data: 'aGVsbG8=', media_type: 'image/png', type: 'base64' }, type: 'image' },
+          { source: { data: 'aGVs\nbG8=', media_type: 'image/png', type: 'base64' }, type: 'image' },
         ],
         role: 'user',
       }],
@@ -134,6 +136,7 @@ describe('normalize input', () => {
           { data: 'data:text/plain;base64,aMOpbGxv', type: 'file' },
           { data: 'data:text/plain;charset=utf-8;base64,aGk=', type: 'file' },
           { data: 'note: buy milk', type: 'file' },
+          { data: 'data:text/plain,hello%20world', type: 'file' },
           { data: 'https://example.com/doc.pdf', type: 'file' },
         ],
         role: 'user',
@@ -144,7 +147,42 @@ describe('normalize input', () => {
           { source: { data: 'héllo', media_type: 'text/plain', type: 'text' }, type: 'document' },
           { source: { data: 'hi', media_type: 'text/plain', type: 'text' }, type: 'document' },
           { source: { data: 'note: buy milk', media_type: 'text/plain', type: 'text' }, type: 'document' },
+          { source: { data: 'data:text/plain,hello%20world', media_type: 'text/plain', type: 'text' }, type: 'document' },
           { source: { type: 'url', url: 'https://example.com/doc.pdf' }, type: 'document' },
+        ],
+        role: 'user',
+      }],
+    })
+  })
+
+  it.each([
+    'data:text/plain;charset=windows-1252;base64,aOlsbG8=',
+    'data:text/plain;name=note.txt; CHARSET=windows-1252;foo=bar;base64,aOls\nbG8=',
+  ])('decodes text documents using the charset in %s', (data) => {
+    expect(normalizeInput({
+      input: [{ content: [{ data, type: 'file' }], role: 'user' }],
+    })).toEqual({
+      messages: [{
+        content: [{ source: { data: 'héllo', media_type: 'text/plain', type: 'text' }, type: 'document' }],
+        role: 'user',
+      }],
+    })
+  })
+
+  it('preserves PDF data URLs as base64 documents with or without parameters', () => {
+    expect(normalizeInput({
+      input: [{
+        content: [
+          { data: 'data:application/pdf;base64,JVBERi0xLjc=', type: 'file' },
+          { data: 'data:application/pdf;name=doc.pdf;charset=utf-8;base64,JVBERi0xLjc=', type: 'file' },
+        ],
+        role: 'user',
+      }],
+    })).toEqual({
+      messages: [{
+        content: [
+          { source: { data: 'JVBERi0xLjc=', media_type: 'application/pdf', type: 'base64' }, type: 'document' },
+          { source: { data: 'JVBERi0xLjc=', media_type: 'application/pdf', type: 'base64' }, type: 'document' },
         ],
         role: 'user',
       }],

@@ -20,15 +20,23 @@ import type { ContentBlock, DocumentBlock, ImageBlock, InputMessage, TextBlock, 
 import { XSAIError } from '@xsai/shared'
 
 interface DataUrl {
+  charset?: string
   data: string
   mediaType: string
 }
 
-const DATA_URL_PATTERN = /^data:([^;,]+)(?:;[^;,]*)*;base64,(.*)$/s
+const parseDataUrl = (str: string): DataUrl | undefined => {
+  const match = /^data:([^;,]+)((?:;[^;,]*)*);base64,(.*)$/s.exec(str)
+  if (match == null)
+    return
 
-const parseDataUrl = (data: string): DataUrl | undefined => {
-  const match = DATA_URL_PATTERN.exec(data)
-  return match === null ? undefined : { data: match[2], mediaType: match[1] }
+  const [, mediaType, params, data] = match
+
+  return {
+    charset: /;\s*charset=([^;]*)/i.exec(params)?.[1],
+    data,
+    mediaType,
+  }
 }
 
 const normalizeInputTextPart = (part: TextPart): TextBlock => ({
@@ -57,8 +65,11 @@ const normalizeFilePart = (part: FilePart): DocumentBlock => {
 
   if (dataUrl != null) {
     if (dataUrl.mediaType === 'text/plain') {
-      const bytes = Uint8Array.fromBase64(dataUrl.data)
-      return { source: { data: new TextDecoder().decode(bytes), media_type: 'text/plain', type: 'text' }, type: 'document' }
+      return { source: {
+        data: new TextDecoder(dataUrl.charset ?? 'utf-8').decode(Uint8Array.fromBase64(dataUrl.data)),
+        media_type: 'text/plain',
+        type: 'text',
+      }, type: 'document' }
     }
 
     if (dataUrl.mediaType !== 'application/pdf')
