@@ -25,20 +25,16 @@ interface DataUrl {
   mediaType: string
 }
 
-const parseDataUrl = (data: string): DataUrl | undefined => {
-  const match = /^data:([^,]+);base64,(.*)$/s.exec(data)
+const parseDataUrl = (str: string): DataUrl | undefined => {
+  const match = /^data:([^;,]+)((?:;[^;,]*)*);base64,(.*)$/s.exec(str)
   if (match == null)
     return
 
-  const [mediaType, ...params] = match
-  if (mediaType == null)
-    return
+  const [, mediaType, params, data] = match
 
   return {
-    charset: params
-      .find(p => p.toLowerCase().startsWith('charset='))
-      ?.slice(8),
-    data: match[2],
+    charset: /;\s*charset=([^;]*)/i.exec(params)?.[1],
+    data,
     mediaType,
   }
 }
@@ -69,8 +65,11 @@ const normalizeFilePart = (part: FilePart): DocumentBlock => {
 
   if (dataUrl != null) {
     if (dataUrl.mediaType === 'text/plain') {
-      const bytes = Uint8Array.fromBase64(dataUrl.data)
-      return { source: { data: new TextDecoder(dataUrl.charset ?? 'utf-8', { fatal: true }).decode(bytes), media_type: 'text/plain', type: 'text' }, type: 'document' }
+      return { source: {
+        data: new TextDecoder(dataUrl.charset ?? 'utf-8').decode(Uint8Array.fromBase64(dataUrl.data)),
+        media_type: 'text/plain',
+        type: 'text',
+      }, type: 'document' }
     }
 
     if (dataUrl.mediaType !== 'application/pdf')
