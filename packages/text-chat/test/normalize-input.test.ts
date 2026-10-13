@@ -150,6 +150,24 @@ describe('normalize input', () => {
     }])
   })
 
+  it('passes image detail through to image_url blocks', () => {
+    expect(normalizeInput({
+      input: [{
+        content: [
+          { data: 'https://example.com/cat.png', detail: 'low', type: 'image' },
+          { data: 'data:image/png;base64,aGVsbG8=', detail: 'high', type: 'image' },
+        ],
+        role: 'user',
+      }],
+    })).toEqual([{
+      content: [
+        { image_url: { detail: 'low', url: 'https://example.com/cat.png' }, type: 'image_url' },
+        { image_url: { detail: 'high', url: 'data:image/png;base64,aGVsbG8=' }, type: 'image_url' },
+      ],
+      role: 'user',
+    }])
+  })
+
   it('rejects non-URL image data with an invalid-input error', () => {
     const call = () => normalizeInput({
       input: [{ content: [{ data: 'not a url', type: 'image' }], role: 'user' }],
