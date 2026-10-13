@@ -17,7 +17,7 @@ export interface ChatChunk {
 
 export type ChatContentPart
   = | { file: { file_data: string }, type: 'file' }
-    | { image_url: { url: string }, type: 'image_url' }
+    | { image_url: { detail?: 'auto' | 'high' | 'low', url: string }, type: 'image_url' }
     | { text: string, type: 'text' }
 
 export interface ChatDelta {

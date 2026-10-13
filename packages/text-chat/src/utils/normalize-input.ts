@@ -24,7 +24,7 @@ const normalizeImagePart = (part: ImagePart): ChatContentPart => {
   const data = part.data.toString()
 
   if (URL.canParse(data))
-    return { image_url: { url: data }, type: 'image_url' }
+    return { image_url: { detail: part.detail, url: data }, type: 'image_url' }
 
   throw new XSAIError('invalid-input', 'Image part data must be a URL or a base64 data: URL')
 }
