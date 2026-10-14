@@ -18,10 +18,17 @@ type ReasoningTextDoneEvent = Omit<Responses.ResponseReasoningDoneStreamingEvent
   type: 'response.reasoning_text.done'
 }
 
+// ChatGPT can end with response.done and omit the final output or status.
+interface ResponseDoneEvent {
+  response: Partial<Responses.ResponseResource>
+  type: 'response.done'
+}
+
 type ResponsesEvent
   = | OpenAIErrorStreamingEvent
     | ReasoningTextDeltaEvent
     | ReasoningTextDoneEvent
+    | ResponseDoneEvent
     | Responses.ErrorStreamingEvent
     | Responses.ResponseCompletedStreamingEvent
     | Responses.ResponseContentPartAddedStreamingEvent
@@ -106,7 +113,7 @@ interface NormalizedPart {
   key?: PartKey
 }
 
-const normalizeFinishReason = (response: Responses.ResponseResource): FinishReason | undefined => {
+const normalizeFinishReason = (response: Partial<Responses.ResponseResource>): FinishReason | undefined => {
   if (response.status !== 'incomplete')
     return undefined
 
@@ -124,8 +131,8 @@ const normalizeFinishReason = (response: Responses.ResponseResource): FinishReas
   }
 }
 
-const normalizeStatus = (response: Responses.ResponseResource): StepStatus => {
-  switch (response.status) {
+const normalizeStatus = (status: Responses.ResponseResource['status'] | undefined): StepStatus => {
+  switch (status) {
     case 'cancelled':
       return 'cancelled'
     case 'completed':
@@ -134,8 +141,9 @@ const normalizeStatus = (response: Responses.ResponseResource): StepStatus => {
       return 'failed'
     case 'incomplete':
       return 'incomplete'
+    case undefined:
     default:
-      throw new Error(`unknown response status: ${response.status}`)
+      throw new Error(`unknown response status: ${status}`)
   }
 }
 
@@ -171,6 +179,7 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
     const onItemDone = (builder: EventBuilder, item: Responses.ItemField, index: number): NormalizedOutputItem => {
       // The done item is authoritative, including parts without deltas.
       const normalized = normalizeOutputItem(item, index)
+      builder.meta({ messageId: normalized.messageId })
       for (const part of normalized.parts) {
         const key = part.key ?? index
         builder.start(key, part.content.type, part.init)
@@ -179,12 +188,12 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
       return normalized
     }
 
-    const finishResponse = (builder: EventBuilder, response: Responses.ResponseResource): void => {
-      const status = normalizeStatus(response)
+    const finishResponse = (builder: EventBuilder, response: Partial<Responses.ResponseResource>, defaultStatus?: StepStatus): void => {
+      const status = normalizeStatus(response.status ?? defaultStatus)
       if (response.usage != null)
         builder.meta({ usage: normalizeUsage(response.usage) })
-      const output = response.output.map((item, index) => onItemDone(builder, item, index))
-      const message = {
+      const output = response.output?.map((item, index) => onItemDone(builder, item, index))
+      const message = output && {
         content: output.flatMap(item => item.parts.map(part => part.content)),
         id: output.findLast(item => item.messageId != null)?.messageId,
         role: 'assistant' as const,
@@ -198,7 +207,7 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
       }
 
       const reason = normalizeFinishReason(response)
-        ?? (status === 'completed' && message.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
+        ?? (status === 'completed' && message?.content.some(part => part.type === 'refusal') ? 'refusal' : undefined)
       builder.done(status, reason, message)
     }
 
@@ -212,10 +221,11 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
           break
         }
         case 'response.completed':
+        case 'response.done':
         case 'response.failed':
         case 'response.incomplete':
           // The terminal response is authoritative and may arrive without item events.
-          finishResponse(builder, event.response)
+          finishResponse(builder, event.response, event.type === 'response.done' ? 'completed' : undefined)
           break
         case 'response.content_part.added': {
           const content = normalizeContentPart(event.part)
