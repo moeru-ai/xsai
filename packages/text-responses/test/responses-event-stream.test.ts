@@ -494,6 +494,33 @@ describe('responses event stream', () => {
     ])
   })
 
+  it.each(['server_error', null])('maps OpenAI error events with code %s to a step.end error', async (code) => {
+    const events = await readEvents([
+      message({
+        code,
+        message: 'something went wrong',
+        param: null,
+        sequence_number: 1,
+        type: 'error',
+      }),
+    ])
+
+    expect(events).toEqual([
+      { type: 'step.start' },
+      {
+        error: expect.any(XSAIError) as unknown,
+        message: { content: [], role: 'assistant' },
+        status: 'failed',
+        type: 'step.end',
+      },
+    ])
+    expect((events[1] as StepEndEvent).error).toMatchObject({
+      cause: { code, message: 'something went wrong', param: null },
+      code: 'model-error',
+      message: 'something went wrong',
+    })
+  })
+
   it('maps provider error events to a step.end error', async () => {
     const events = await readEvents([
       message({

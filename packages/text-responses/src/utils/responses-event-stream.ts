@@ -6,6 +6,9 @@ import type * as Responses from '../generated'
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text/internal'
 
+// OpenAI uses top-level error fields; the generated OpenResponses schema nests them.
+type OpenAIErrorStreamingEvent = Omit<Responses.ErrorStreamingEvent, 'error'> & Pick<Responses.ErrorPayload, 'code' | 'message' | 'param'>
+
 // The generated schema misses these official reasoning_text events.
 type ReasoningTextDeltaEvent = Omit<Responses.ResponseReasoningDeltaStreamingEvent, 'type'> & {
   type: 'response.reasoning_text.delta'
@@ -16,7 +19,8 @@ type ReasoningTextDoneEvent = Omit<Responses.ResponseReasoningDoneStreamingEvent
 }
 
 type ResponsesEvent
-  = | ReasoningTextDeltaEvent
+  = | OpenAIErrorStreamingEvent
+    | ReasoningTextDeltaEvent
     | ReasoningTextDoneEvent
     | Responses.ErrorStreamingEvent
     | Responses.ResponseCompletedStreamingEvent
@@ -200,11 +204,13 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
 
     super((event, builder) => {
       switch (event.type) {
-        case 'error':
-          builder.fail(new XSAIError('model-error', event.error.message, {
-            cause: event.error,
+        case 'error': {
+          const error = 'error' in event ? event.error : event
+          builder.fail(new XSAIError('model-error', error.message, {
+            cause: error,
           }))
           break
+        }
         case 'response.completed':
         case 'response.failed':
         case 'response.incomplete':
