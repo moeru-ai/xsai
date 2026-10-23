@@ -1,0 +1,36 @@
+# AIRI migration to xsAI 1.0
+
+Labels: wayfinder:map
+Status: open
+
+## Destination
+
+Define responsibilities, order, dependencies, and acceptance criteria for migrating AIRI to xsAI 1.0.
+Cover the whole AIRI monorepo, with Stage as the first implementation target.
+
+## Notes
+
+This effort plans the migration. It does not change product code.
+The user permits further public API changes before xsAI 1.0.
+Prioritize breaking changes in xsAI. Prioritize clean preparation in AIRI.
+AIRI can change internal behavior, but its UI and configuration must stay unchanged.
+Preserve active provider capabilities and usable history. Remove only dependencies with proven absence of runtime use.
+Read [Responsibilities for the AIRI migration to xsAI 1.0](migration-analysis.md) for the proposed division of work.
+Record facts separately from proposals. A research answer does not approve a design decision.
+The initial source revisions are xsAI `3cabb2b0` and AIRI `3b0672e36`.
+Open children live in `issues/`. Their `Blocked by` fields define the next available tickets.
+
+## Decisions so far
+
+- [What text, message, and tool contracts block AIRI migration?](issues/01-text-contract.md): Shared media types miss existing AIRI inputs and outputs. Existing raw events and model replacement already support several migration needs.
+- [Where must provider and transport responsibilities live?](issues/02-provider-boundary.md): AIRI already owns provider lifecycle and catalog policy. Its transport wrappers need an audit against complete `Request` objects.
+- [Which audio and non-Stage consumers need a separate migration path?](issues/03-audio-and-consumers.md): Live transcription differs from file transcription. Stage, Telegram, Discord, and external integrations need distinct checks.
+
+## Not yet specified
+
+The exact implementation batches depend on the public contracts and the AIRI boundaries that the decision tickets select.
+The exact upstream package actions depend on whether AIRI retains, replaces, or removes each integration.
+
+## Out of scope
+
+Implementing the migration, releasing packages, deploying AIRI, and changing AIRI UI or user configuration.
