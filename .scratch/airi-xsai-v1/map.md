@@ -25,6 +25,7 @@ Open children live in `issues/`. Their `Blocked by` fields define the next avail
 - [What text, message, and tool contracts block AIRI migration?](issues/01-text-contract.md): Shared media types miss existing AIRI inputs and outputs. Existing raw events and model replacement already support several migration needs.
 - [Where must provider and transport responsibilities live?](issues/02-provider-boundary.md): AIRI already owns provider lifecycle and catalog policy. Its transport wrappers need an audit against complete `Request` objects.
 - [Which audio and non-Stage consumers need a separate migration path?](issues/03-audio-and-consumers.md): Live transcription differs from file transcription. Stage, Telegram, Discord, and external integrations need distinct checks.
+- [Which xsAI public contracts must change before 1.0?](issues/04-xsai-public-contract.md): Select the public API additions and acceptance criteria. Keep scope policy and live transcription in AIRI.
 
 ## Not yet specified
 
