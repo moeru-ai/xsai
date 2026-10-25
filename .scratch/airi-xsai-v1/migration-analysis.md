@@ -63,29 +63,15 @@ The acceptance evidence must show request payloads, event order, replay, tool re
 
 ## AIRI preparation before the dependency upgrade
 
-Keep the current dependency versions while preparation changes ship.
-Keep provider identities, saved configuration keys, defaults, and UI controls unchanged.
-Use existing `core-agent` and `provider-inference` boundaries to reduce old SDK types in application contracts.
-A tool definition describes its name, schema, and execution behavior independently of the old SDK envelope.
-Decide whether AIRI needs that definition before replacing its public tool types.
-
-Separate conversation projection, event translation, result collection, and transport transformations where the current boundaries still mix them.
-Keep saved conversation data separate from request copies.
-Preserve the scope checks that stop provider continuation data from crossing provider or model boundaries.
-
-Preparation can also capture current behavior as regression fixtures.
-Relevant cases include provider switching between rounds, request header replacement, tool results with images, search citations, and speech cancellation.
-A fixture is a saved input and expected output for a behavior test.
-Use fixtures to make sure that an internal refactor preserves the existing user contract.
-
-Choose concrete preparation batches in [Which AIRI preparation changes can ship before the dependency upgrade?](issues/05-airi-preparation.md).
-These batches must not require an unreleased xsAI API.
-They must not add a second runtime that silently selects an old SDK implementation.
+No separate refactor is required.
+The [preparation decision](issues/05-airi-preparation.md) defines the required evidence for user data and behavior.
+Make code and data conversions within the migration batch that needs them.
+Do not introduce preparatory abstraction layers.
 
 ## The proposed cutover order
 
 The two repositories can work in parallel at first.
-xsAI settles and implements public contract changes while AIRI prepares its internal boundaries on 0.5.1.
+xsAI settles and implements public contract changes while AIRI records its current data and behavior on 0.5.1.
 AIRI starts the dependency cutover after the required xsAI contracts have test evidence.
 
 Stage first needs its generation runtime and provider inference to agree on model creation, event translation, and saved turns.
