@@ -2,7 +2,7 @@
 
 A `TextEvent` describes one change in a model response.
 Wire adapters translate each provider's stream into these events, so your code reads one format for every service.
-`streamText` and `loop` expose the events directly.
+`streamText` exposes the events directly.
 
 A response with one text answer produces this sequence:
 
@@ -53,20 +53,23 @@ import type { LanguageModel } from '@xsai/text'
 
 declare const model: LanguageModel
 // ---cut---
-import { loop, TextEventTarget, withEventTarget } from '@xsai/text'
+import { streamText, TextEventTarget, withEventTarget } from '@xsai/text'
 
 const target = new TextEventTarget()
 target.addEventListener('text.delta', event => process.stdout.write(event.detail.delta))
 target.addEventListener('step.end', event => console.log(event.detail.status))
 
-const stream = loop(model, { input: 'Hello.' }).pipeThrough(withEventTarget(target))
+const stream = streamText(model, { input: 'Hello.' }).pipeThrough(withEventTarget(target))
 for await (const _ of stream) {
   // Reading the stream dispatches the events.
 }
 ```
 
 Listeners run only while something reads the stream.
-Creating the transform does not start it.
+`withEventTarget` calls listeners synchronously.
+It does not await promises that listeners return.
+For handlers that return promises, use an async transform before `collect`.
+See [Process events and collect the result](/text/streaming#process-events-and-collect-the-result).
 
 Each listener gets a `CustomEvent`.
 For most events, `detail` holds the event fields without `type`.

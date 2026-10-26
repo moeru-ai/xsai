@@ -50,7 +50,7 @@ If the model calls it, the loop sends an error result, unless a `preToolCall` ho
 
 ## Control the loop
 
-`generateText`, `streamText`, and `loop` accept three hooks that run around each step.
+`generateText` and `streamText` accept three hooks that run around each step.
 Use them to change the request between steps, to guard tools, or to rewrite their results.
 
 ```ts

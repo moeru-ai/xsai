@@ -1,72 +1,122 @@
-import type { CollectResult } from './collect'
-import type { LoopOptions } from './loop'
-import type { LanguageModel, StepResult, TextEvent } from './types'
+import type { StopCondition } from './stop-condition'
+import type { LanguageModel, LanguageModelOptions, Message, StepEndEvent, StepResult, TextEvent } from './types'
+import type { PrepareStep } from './types/prepare-step'
+import type { PostToolCall, PreToolCall } from './utils/execute-tools'
 
-import { collectEvent, collectResult } from './collect'
-import { loop } from './loop'
+import { XSAIError } from '@xsai/shared'
 
-export interface StreamTextHandle {
-  result: Promise<CollectResult>
-  stream: ReadableStream<TextEvent>
+import { maxSteps } from './stop-condition'
+import { executeTools } from './utils/execute-tools'
+import { toStepResult } from './utils/step-result'
+
+export interface StreamTextOptions extends LanguageModelOptions {
+  postToolCall?: PostToolCall
+  prepareStep?: PrepareStep
+  preToolCall?: PreToolCall
+  /** @default `maxSteps(10)` */
+  stopWhen?: StopCondition
 }
 
-export const streamText = (model: LanguageModel, options: LoopOptions): StreamTextHandle => {
-  const result = Promise.withResolvers<CollectResult>()
-  void result.promise.catch(() => {})
+const readStep = async function* (stream: ReadableStream<TextEvent>, signal: AbortSignal): AsyncGenerator<TextEvent, StepEndEvent> {
+  const reader = stream.getReader()
+  let cancellation: Promise<void> | undefined
+  const abort = (): void => {
+    cancellation = reader.cancel(signal.reason)
+    void cancellation.catch(() => {})
+  }
+  let stepEnd: StepEndEvent | undefined
+  signal.addEventListener('abort', abort, { once: true })
+  try {
+    signal.throwIfAborted()
+    while (true) {
+      const { done, value: event } = await reader.read()
+      signal.throwIfAborted()
+      if (done)
+        break
+      if (event.type === 'step.end') {
+        if (stepEnd != null)
+          throw new XSAIError('protocol-error', 'model stream produced more than one step.end event')
+        stepEnd = event
+      }
+      yield event
+    }
+    if (stepEnd == null)
+      throw new XSAIError('truncated-stream', 'model stream ended without a step.end event')
+    return stepEnd
+  }
+  finally {
+    signal.removeEventListener('abort', abort)
+    await (cancellation ?? reader.cancel(signal.reason)).finally(() => reader.releaseLock())
+  }
+}
+
+export const streamText = (model: LanguageModel, { postToolCall, prepareStep, preToolCall, stopWhen: stopWhenOption, ...options }: StreamTextOptions): ReadableStream<TextEvent> => {
+  const stopWhen = stopWhenOption ?? maxSteps(10)
+  const input: Message[] = [...(Array.isArray(options.input) ? options.input : [{ content: options.input, role: 'user' } satisfies Message])]
   const steps: StepResult[] = []
-  let sourceReader: ReadableStreamDefaultReader<TextEvent> | undefined
-  let cancelled = false
+  const controller = new AbortController()
+  const signal = options.signal == null
+    ? controller.signal
+    : AbortSignal.any([options.signal, controller.signal])
 
-  const stream = new ReadableStream<TextEvent>({
+  const generate = async function* (): AsyncGenerator<TextEvent, void> {
+    while (true) {
+      signal.throwIfAborted()
+      const { model: preparedModel = model, ...preparedOptions } = await prepareStep?.({ input, signal, stepNumber: steps.length, steps }) ?? {}
+      signal.throwIfAborted()
+      const modelOptions: LanguageModelOptions = {
+        ...options,
+        ...preparedOptions,
+        input: preparedOptions?.input ?? input,
+        signal,
+      }
+
+      const stepEnd = yield* readStep(await preparedModel(modelOptions), signal)
+      if (stepEnd.status === 'failed' || stepEnd.status === 'cancelled')
+        return
+
+      const step = toStepResult(stepEnd)
+      steps.push(step)
+      input.push(step.message)
+
+      const stop = stopWhen({ input, step, steps })
+      if (stop || (step.toolCalls.length === 0 && step.reason !== 'pause_turn'))
+        return
+
+      signal.throwIfAborted()
+      if (step.toolCalls.length === 0)
+        continue
+
+      const results = await executeTools({
+        ...modelOptions,
+        postToolCall,
+        preToolCall,
+        reason: step.reason,
+        toolCalls: step.toolCalls,
+      })
+      signal.throwIfAborted()
+
+      step.toolResults.push(...results)
+      input.push({ content: results, role: 'user' })
+      for (const [index, content] of results.entries()) {
+        yield { contentType: 'tool-result', index, type: 'content.start' }
+        yield { content, index, type: 'content.end' }
+      }
+    }
+  }
+
+  const source = generate()
+  return new ReadableStream<TextEvent>({
     cancel: async (reason) => {
-      cancelled = true
-      result.reject(reason === undefined ? new DOMException('The operation was aborted.', 'AbortError') : reason)
-      await sourceReader?.cancel(reason)
+      controller.abort(reason)
+      await source.return(undefined)
     },
-    start: (controller) => {
-      const reader = loop(model, options).getReader()
-      sourceReader = reader
-
-      void (async () => {
-        let failedError: unknown
-        try {
-          while (true) {
-            const { done, value } = await reader.read()
-            if (done)
-              break
-            if (cancelled)
-              return
-
-            failedError ??= collectEvent(steps, value)
-            controller.enqueue(value)
-          }
-
-          if (cancelled)
-            return
-
-          if (failedError != null) {
-            result.reject(failedError)
-            controller.close()
-            return
-          }
-
-          result.resolve(collectResult(steps))
-          controller.close()
-        }
-        catch (error) {
-          if (cancelled)
-            return
-
-          result.reject(error)
-          controller.error(error)
-        }
-        finally {
-          sourceReader = undefined
-          reader.releaseLock()
-        }
-      })()
+    pull: async (output) => {
+      const next = await source.next()
+      if (next.done)
+        output.close()
+      else
+        output.enqueue(next.value)
     },
-  })
-
-  return { result: result.promise, stream }
+  }, { highWaterMark: 0 })
 }

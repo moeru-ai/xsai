@@ -3,7 +3,7 @@ import type { LanguageModel, TextEvent } from '../src'
 import { XSAIError } from '@xsai/shared'
 import { describe, expect, it } from 'vitest'
 
-import { collect, loop, tool } from '../src'
+import { collect, streamText, tool } from '../src'
 
 const eventStream = (events: TextEvent[]): ReadableStream<TextEvent> => new ReadableStream<TextEvent>({
   start: (controller) => {
@@ -138,7 +138,7 @@ describe('collect', () => {
             usage: { inputTokens: 4, outputTokens: 1, totalTokens: 5 },
           }])
     }
-    const result = await collect(loop(model, {
+    const result = await collect(streamText(model, {
       input: 'weather',
       tools: [tool({ execute: () => 'sunny', inputSchema: { type: 'object' }, name: 'weather' })],
     }))

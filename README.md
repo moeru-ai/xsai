@@ -49,14 +49,14 @@ Streaming uses the same model. Each event is a typed `TextEvent` in a standard `
 ```ts
 import { streamText } from 'xsai'
 
-const { result, stream } = streamText(model, { input: 'Describe a quiet forest.' })
+const stream = streamText(model, { input: 'Describe a quiet forest.' })
 
 for await (const event of stream) {
   if (event.type === 'text.delta')
     process.stdout.write(event.delta)
+  if (event.type === 'step.end' && event.status === 'failed')
+    throw event.error
 }
-
-await result
 ```
 
 ## Why xsAI
@@ -84,7 +84,7 @@ Install `xsai` for everything, or only the packages that you use.
 
 | Package | Provides |
 | --- | --- |
-| [`@xsai/text`](https://xsai.js.org/text/generating) | `generateText`, `streamText`, `loop`, `collect`, and `tool` |
+| [`@xsai/text`](https://xsai.js.org/text/generating) | `generateText`, `streamText`, `collect`, and `tool` |
 | [`@xsai/audio`](https://xsai.js.org/audio) | Speech generation and transcription |
 | [`@xsai/decide`](https://xsai.js.org/decide) | Typed answers to yes-or-no, choice, and score questions |
 | [`@xsai/embed`](https://xsai.js.org/embed) | Text embeddings |

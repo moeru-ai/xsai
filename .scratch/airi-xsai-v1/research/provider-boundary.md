@@ -1,5 +1,7 @@
 # Provider boundary findings
 
+> `streamText` returns a stream that advances as AIRI reads it. AIRI must pass events through its async handlers before `collect` consumes them. AIRI must await `collect(...)` before it persists a turn. See [Stream text](../../../docs/text/streaming.md).
+
 This note compares xsAI `1.0.0-beta.3` at `3cabb2b0` with AIRI `0.12.0` at `3b0672e36`. It covers text transport, model discovery, authentication, custom fetch functions, and request changes.
 
 ## Supported xsAI facts

@@ -1,7 +1,6 @@
 export { collect } from './collect'
 export type { CollectResult } from './collect'
 export * from './generate-text'
-export * from './loop'
 export * from './stop-condition'
 export * from './stream-text'
 export { TextEventTarget, toCustomEvent, withEventTarget } from './text-event-target'

@@ -11,7 +11,7 @@ Many providers and gateways accept the same protocol, so one adapter often cover
 | Anthropic Messages | `@xsai/text-messages` | `messages()` | `messages` |
 
 Each factory returns a `LanguageModel`.
-Pass it to `generateText`, `streamText`, or `loop`.
+Pass it to `generateText` or `streamText`.
 Adapters always request a streamed response, and `generateText` collects it for you.
 
 ::: code-group

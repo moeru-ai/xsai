@@ -5,7 +5,7 @@ Every package takes a model as its first argument, so you can mix them freely.
 
 | Package | Provides |
 | --- | --- |
-| `@xsai/text` | `generateText`, `streamText`, `loop`, `collect`, and `tool`. |
+| `@xsai/text` | `generateText`, `streamText`, `collect`, and `tool`. |
 | `@xsai/text-responses` | `responses()`, an adapter for OpenAI Responses. |
 | `@xsai/text-chat` | `chat()`, an adapter for Chat Completions. |
 | `@xsai/text-messages` | `messages()`, an adapter for Anthropic Messages. |
