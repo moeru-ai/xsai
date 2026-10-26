@@ -1,0 +1,7 @@
+interface:
+  display_name: "kwaa TypeScript Best Practices"
+  short_description: "kwaa's TypeScript best practices"
+  default_prompt: "Use $kwaa-typescript-best-practices to write, refactor, or review this TypeScript code."
+
+policy:
+  allow_implicit_invocation: true
