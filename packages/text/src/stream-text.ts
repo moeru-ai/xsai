@@ -83,6 +83,7 @@ export const streamText = (model: LanguageModel, { postToolCall, prepareStep, pr
       if (stop || (step.toolCalls.length === 0 && step.reason !== 'pause_turn'))
         return
 
+      signal.throwIfAborted()
       if (step.toolCalls.length === 0)
         continue
 
