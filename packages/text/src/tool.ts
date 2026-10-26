@@ -56,8 +56,14 @@ export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | Unresol
     return {
       ...tool,
       execute: async (input: unknown, executeOptions?: ToolExecuteOptions) => {
-        const result = await options.execute!(input, executeOptions)
-        if (outputSchema) // Output validation is intentionally deferred.
+        let result = await options.execute!(input, executeOptions)
+        if (outputSchema?.validate != null) {
+          const validation = await outputSchema.validate(result)
+          if (validation.issues)
+            throw new Error(`Tool output validation failed for "${options.name}".`)
+          result = validation.value
+        }
+        if (outputSchema)
           return JSON.stringify(result)
         else
           return result as string | ToolResultPartContent[]

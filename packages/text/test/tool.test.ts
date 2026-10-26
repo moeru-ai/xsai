@@ -1,3 +1,4 @@
+import type { Promisable } from '@xsai/shared'
 import type { JSONSchema7 } from 'json-schema'
 
 import type { CombinedStandardSchema } from '../src/utils/schema'
@@ -158,6 +159,26 @@ describe('tool', () => {
     })
 
     await expect(weather.execute({ city: 'Taipei' })).resolves.toBe('input was {"city":"Taipei"}')
+  })
+
+  it.each([false, true])('serializes validated output (async: %s)', async (isAsync) => {
+    const outputSchema: CombinedStandardSchema<string, { city: string }> = {
+      '~standard': {
+        ...standardSchema<string, { city: string }>({ type: 'string' })['~standard'],
+        validate: (input): Promisable<{ value: { city: string } }> => {
+          const result = { value: { city: (input as string).trim() } }
+          return isAsync ? Promise.resolve(result) : result
+        },
+      },
+    }
+    const weather = tool({
+      execute: () => ' Taipei ',
+      inputSchema: { type: 'object' },
+      name: 'get_weather',
+      outputSchema,
+    })
+
+    await expect(weather.execute({})).resolves.toBe('{"city":"Taipei"}')
   })
 })
 

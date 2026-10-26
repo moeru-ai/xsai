@@ -116,8 +116,8 @@ With `execute`, it returns an `ExecutableTool` that the loop can run.
 
 `execute(input, { signal })` receives validated input when the schema has a validator.
 Without `outputSchema`, it returns a string or an array of tool-result content.
-With `outputSchema`, it returns a value of that schema's type, which the tool serializes as JSON.
-xsAI does not validate the output at runtime.
+With `outputSchema`, the handler returns the schema's input type.
+The tool runs the schema's validator, if available, and converts the result to JSON.
 
 ## Events
 
