@@ -1,5 +1,7 @@
 # Text contract research
 
+> `streamText` returns a stream that advances as AIRI reads it. AIRI must pass events through its async handlers before `collect` consumes them. AIRI must await `collect(...)` before it persists a turn. See [Stream text](../../../docs/text/streaming.md).
+
 Source revisions:
 
 - xsAI: `3cabb2b045481b95b7ccde9a09080f23e2eb4ff5` (`1.0.0-beta.3`)

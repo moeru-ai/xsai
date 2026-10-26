@@ -6,7 +6,7 @@ Write your own to test code without a service, to wrap a protocol that has no ad
 
 | Package | Model type | Receives | Returns | Used by |
 | --- | --- | --- | --- | --- |
-| `@xsai/text` | `LanguageModel` | `LanguageModelOptions` | `ReadableStream<TextEvent>` | `generateText`, `streamText`, `loop` |
+| `@xsai/text` | `LanguageModel` | `LanguageModelOptions` | `ReadableStream<TextEvent>` | `generateText`, `streamText` |
 | `@xsai/audio` | `SpeechModel` | `SpeechModelOptions` | `Response` with audio | `generateSpeech`, `streamSpeech` |
 | `@xsai/audio` | `TranscriptionModel` | `TranscriptionModelOptions` | `ReadableStream<TranscriptionEvent>` | `generateTranscription`, `streamTranscription` |
 | `@xsai/decide` | `DecisionModel` | `DecisionModelOptions` | `{ answers, usage }` | `decide` |

@@ -6,21 +6,21 @@ Create a language model with a [wire adapter](/text/adapters).
 ## Operations
 
 ```ts:no-twoslash
-generateText(model: LanguageModel, options: LoopOptions): Promise<CollectResult>
-streamText(model: LanguageModel, options: LoopOptions): { result: Promise<CollectResult>, stream: ReadableStream<TextEvent> }
-loop(model: LanguageModel, options: LoopOptions): ReadableStream<TextEvent>
+generateText(model: LanguageModel, options: StreamTextOptions): Promise<CollectResult>
+streamText(model: LanguageModel, options: StreamTextOptions): ReadableStream<TextEvent>
 collect(stream: ReadableStream<TextEvent>): Promise<CollectResult>
 ```
 
-`loop` runs model requests and executable tools until a stop condition applies.
-`generateText` is `collect(loop(...))`.
-`streamText` also consumes the model stream when you do not read `stream`, and you must handle a rejection of `result`.
-`collect` rejects when a step fails or when the stream contains no `step.end`.
+`streamText` runs model requests and executable tools as the consumer reads.
+It stops when a stop condition applies.
+Without a consumer, it does not start the model.
+`generateText` is `collect(streamText(...))`.
+`collect` consumes the entire stream and rejects when a step fails or the stream is truncated.
 
 ## Options
 
-All operations take `LanguageModelOptions`.
-The loop operations also take [loop options](#loop-options).
+`streamText` and `generateText` take `StreamTextOptions`, which extends `LanguageModelOptions` with [tool loop options](#tool-loop-options).
+`collect` takes only a stream.
 
 | Field | Description |
 | --- | --- |
@@ -44,7 +44,7 @@ If it also exposes `~standard.validate`, the loop uses it to validate tool input
 A raw JSON Schema has no validator.
 A Standard Schema without JSON Schema support must go through [xsschema](/xsschema) first.
 
-## Loop options
+## Tool loop options
 
 | Field | Description |
 | --- | --- |
@@ -136,8 +136,9 @@ See [Text events](/text/events) for the event types.
 | `model-error` | The adapter reports a model failure. |
 | `protocol-error` | One request emitted several terminal events. |
 
-A `failed` `step.end` rejects `generateText` and the `result` of `streamText`.
-The event stream can still close normally.
-A thrown stream error rejects `result` and errors the output stream.
-Cancelling the output stream rejects `result`.
+A `failed` `step.end` rejects `collect` and `generateText`.
+The event stream can close normally after a failed event.
+If you read events directly, inspect the status of each `step.end`.
+A thrown stream error also rejects `collect` and `generateText`.
+Cancel the output stream to stop the run.
 A `cancelled` step from the provider is a status and does not throw.

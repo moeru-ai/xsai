@@ -27,8 +27,9 @@ Read `reason`.
 If it is `length`, raise `maxOutputTokens` when the service allows it.
 
 A `failed` step carries an `error`.
-`generateText` and the `result` of `streamText` reject with it.
-When you read a stream, also await `result`, because the stream itself ends without throwing.
+`collect` and `generateText` reject with it.
+When you read a stream directly, inspect the status of each `step.end`.
+A failed step can end the stream without throwing.
 
 ## Truncated stream
 

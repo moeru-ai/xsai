@@ -30,23 +30,31 @@ const totalUsage = (steps: readonly StepResult[]): undefined | Usage => {
   }
 }
 
-/** @internal */
-export const collectEvent = (steps: StepResult[], event: TextEvent): unknown => {
-  if (event.type === 'step.end') {
-    if (event.status === 'failed')
-      return event.error
-    steps.push(toStepResult(event))
-  }
-  else if (event.type === 'content.end' && event.content.type === 'tool-result') {
+export const collect = async (stream: ReadableStream<TextEvent>): Promise<CollectResult> => {
+  const steps: StepResult[] = []
+  let failedError: unknown
+
+  for await (const event of stream) {
+    if (failedError != null)
+      continue
+    if (event.type === 'step.end') {
+      if (event.status === 'failed')
+        failedError = event.error
+      else
+        steps.push(toStepResult(event))
+      continue
+    }
+    if (event.type !== 'content.end' || event.content.type !== 'tool-result')
+      continue
     const step = steps.at(-1)
     if (step == null)
       throw new XSAIError('protocol-error', 'tool result arrived before a step.end event')
     step.toolResults.push(event.content)
   }
-}
 
-/** @internal */
-export const collectResult = (steps: StepResult[]): CollectResult => {
+  if (failedError != null)
+    throw failedError
+
   const finalStep = steps.at(-1)
   if (finalStep == null)
     throw new XSAIError('truncated-stream', 'model stream ended without a step.end event')
@@ -56,17 +64,4 @@ export const collectResult = (steps: StepResult[]): CollectResult => {
     steps,
     totalUsage: totalUsage(steps),
   }
-}
-
-export const collect = async (stream: ReadableStream<TextEvent>): Promise<CollectResult> => {
-  const steps: StepResult[] = []
-  let failedError: unknown
-
-  for await (const event of stream)
-    failedError ??= collectEvent(steps, event)
-
-  if (failedError != null)
-    throw failedError
-
-  return collectResult(steps)
 }

@@ -1,5 +1,7 @@
 # Which xsAI public contracts must change before 1.0?
 
+> `streamText` returns a stream that advances as AIRI reads it. AIRI must pass events through its async handlers before `collect` consumes them. AIRI must await `collect(...)` before it persists a turn. See [Stream text](../../../docs/text/streaming.md).
+
 Parent: ../map.md
 Type: grilling
 Labels: wayfinder:grilling

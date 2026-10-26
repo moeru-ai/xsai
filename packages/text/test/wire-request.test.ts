@@ -2,7 +2,7 @@ import type { LanguageModel, TextEvent } from '../src'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { loop } from '../src'
+import { streamText } from '../src'
 import { wireRequest } from '../src/internal'
 
 const options = { baseURL: 'https://example.com/v1', model: 'test-model' }
@@ -37,7 +37,7 @@ describe('wireRequest', () => {
       requested.resolve()
       return stream
     }
-    const reader = loop(model, { input: 'hi' }).getReader()
+    const reader = streamText(model, { input: 'hi' }).getReader()
     void reader.read()
 
     await requested.promise

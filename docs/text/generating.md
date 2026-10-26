@@ -48,7 +48,7 @@ It means that the service did not report usage.
 
 ## Cancel a request
 
-Pass an `AbortSignal` as `signal` to any text operation.
+Pass an `AbortSignal` as `signal` to `generateText` or `streamText`.
 The adapter forwards it to the HTTP request, and an aborted request rejects with the abort reason.
 
 ```ts
@@ -82,8 +82,9 @@ The loop passes the same signal to `execute`, so a tool can stop its own work.
 
 ### Streams
 
-Cancelling the output stream of `streamText` cancels its reader and rejects `result`.
-Pass `signal` as well to cancel the underlying HTTP request.
+Cancel the output stream of `streamText` to stop the request.
+If you hold a reader, call `reader.cancel(reason)`.
+See [Stop early](/text/streaming#stop-early) for cancellation during a pause or an early exit from iteration.
 
 A step that the provider reports as `cancelled` is a result status.
 It does not throw.

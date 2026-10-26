@@ -14,7 +14,7 @@ const model = responses({
   model: 'gpt-6-luna',
 })
 
-const { stream } = streamText(model, {
+const stream = streamText(model, {
   input: 'Write a haiku about small things.',
 })
 
