@@ -114,7 +114,9 @@ tool({ name, inputSchema, description?, outputSchema?, execute? })
 Without `execute`, `tool()` returns a declaration.
 With `execute`, it returns an `ExecutableTool` that the loop can run.
 
-`execute(input, { signal })` receives validated input when the schema has a validator.
+`execute(input, { callId, signal })` receives validated input when the schema has a validator.
+`callId` identifies the tool invocation and matches its result.
+The loop always supplies the context. Direct calls can omit it.
 Without `outputSchema`, it returns a string or an array of tool-result content.
 With `outputSchema`, the handler returns the schema's input type.
 The tool runs the schema's validator, if available, and converts the result to JSON.

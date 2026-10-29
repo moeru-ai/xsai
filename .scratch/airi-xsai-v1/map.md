@@ -10,7 +10,7 @@ Cover the whole AIRI monorepo, with Stage as the first implementation target.
 
 ## Notes
 
-This effort plans the migration. It does not change product code.
+Issues 01–06 define the migration plan. Follow-up task issues track approved xsAI implementation batches.
 The user permits further public API changes before xsAI 1.0.
 Prioritize breaking changes in xsAI. Migrate AIRI directly without preparatory abstraction layers.
 Limit AIRI preparation to evidence that user data and behavior survive the upgrade.
@@ -31,6 +31,7 @@ Open children live in `issues/`. Their `Blocked by` fields define the next avail
 - [Which xsAI public contracts must change before 1.0?](issues/04-xsai-public-contract.md): Select the public API additions and acceptance criteria. Keep scope policy and live transcription in AIRI.
 - [Which AIRI preparation changes can ship before the dependency upgrade?](issues/05-airi-preparation.md): Require no separate refactor. Preserve user data and behavior through direct migration.
 - [What evidence permits each AIRI migration batch to ship?](issues/06-cutover-order.md): Set the Stage-first order, automatic data conversion, package updates, and automated acceptance tests. Exclude reverse migration.
+- [Export Fetch and pass stable tool call IDs](issues/07-fetch-and-tool-call-id.md): Implemented the shared fetch type and tool execution context. Public export checks, reverse-completion tests, type checks, and lint pass.
 
 ## Not yet specified
 
@@ -38,4 +39,4 @@ None.
 
 ## Out of scope
 
-Implementing the migration, releasing packages, deploying AIRI, and changing AIRI UI or user configuration.
+Implementing the AIRI migration, releasing packages, deploying AIRI, and changing AIRI UI or user configuration.

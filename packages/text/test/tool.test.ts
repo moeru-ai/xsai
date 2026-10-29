@@ -1,12 +1,15 @@
 import type { Promisable } from '@xsai/shared'
 import type { JSONSchema7 } from 'json-schema'
 
+import type { ToolExecuteOptions as PublicToolExecuteOptions } from '../../xsai/src'
+import type { ToolExecuteOptions } from '../src/tool'
+import type { ToolResultPart } from '../src/types'
 import type { CombinedStandardSchema } from '../src/utils/schema'
 
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, expectTypeOf, it, vi } from 'vitest'
 
 import { tool } from '../src/tool'
-import { executeTool } from '../src/utils/execute-tools'
+import { executeTool, executeTools } from '../src/utils/execute-tools'
 
 const standardSchema = <Input = unknown, Output = Input>(json: Record<string, unknown>): CombinedStandardSchema<Input, Output> => ({
   '~standard': {
@@ -20,6 +23,66 @@ const standardSchema = <Input = unknown, Output = Input>(json: Record<string, un
 })
 
 describe('tool', () => {
+  it('exports the execution context through xsai', () => {
+    expectTypeOf<PublicToolExecuteOptions>().toEqualTypeOf<ToolExecuteOptions>()
+    expectTypeOf<ToolExecuteOptions>().toEqualTypeOf<{ callId: string, signal?: AbortSignal }>()
+  })
+
+  it('preserves call IDs and signals when parallel calls finish in reverse order', async () => {
+    const first = Promise.withResolvers<string>()
+    const secondFinished = Promise.withResolvers<void>()
+    const signal = new AbortController().signal
+    const completed: string[] = []
+    const contexts: ToolExecuteOptions[] = []
+    const weather = tool({
+      execute: async (_input, options) => {
+        if (options == null)
+          throw new Error('Missing tool context')
+        contexts.push(options)
+        const result = options.callId === 'call-1' ? await first.promise : 'second'
+        completed.push(options.callId)
+        return result
+      },
+      inputSchema: { type: 'object' },
+      name: 'get_weather',
+    })
+    const preToolCall = vi.fn()
+    const postToolCall = vi.fn((_result: ToolResultPart, options: ToolExecuteOptions) => {
+      if (options.callId !== 'call-2')
+        return
+      secondFinished.resolve()
+    })
+
+    const pending = executeTools({
+      postToolCall,
+      preToolCall,
+      signal,
+      toolCalls: ['call-1', 'call-2'].map(callId => ({
+        arguments: '{}',
+        callId,
+        id: `item-${callId}`,
+        name: 'get_weather',
+        type: 'tool-call',
+      })),
+      tools: [weather],
+    })
+
+    await secondFinished.promise
+    expect(completed).toEqual(['call-2'])
+    first.resolve('first')
+
+    await expect(pending).resolves.toEqual([
+      { callId: 'call-1', output: 'first', type: 'tool-result' },
+      { callId: 'call-2', output: 'second', type: 'tool-result' },
+    ])
+    expect(completed).toEqual(['call-2', 'call-1'])
+    expect(contexts).toEqual([{ callId: 'call-1', signal }, { callId: 'call-2', signal }])
+    for (const callId of ['call-1', 'call-2']) {
+      expect(preToolCall).toHaveBeenCalledWith(expect.objectContaining({ callId }), { callId, signal })
+      expect(postToolCall).toHaveBeenCalledWith(expect.objectContaining({ callId }), { callId, signal })
+    }
+  })
+
   it('accepts a raw JSON schema as inputSchema without wire normalization', () => {
     const inputSchema: JSONSchema7 = {
       properties: { city: { type: 'string' } },
@@ -86,7 +149,7 @@ describe('tool', () => {
 
     expect(result.output).toBe('weather in Taipei')
     expect(validate).toHaveBeenCalledWith({ location: 'Taipei' })
-    expect(execute).toHaveBeenCalledWith({ city: 'Taipei' }, { signal: undefined })
+    expect(execute).toHaveBeenCalledWith({ city: 'Taipei' }, { callId: 'call-1', signal: undefined })
   })
 
   it('does not execute when input validation fails', async () => {
@@ -201,7 +264,7 @@ describe('tool call hooks', () => {
       tools: [weather],
     })
 
-    expect(execute).toHaveBeenCalledWith({ city: 'Hong Kong' }, { signal: undefined })
+    expect(execute).toHaveBeenCalledWith({ city: 'Hong Kong' }, { callId: 'call-1', signal: undefined })
     expect(result).toEqual({ callId: 'call-1', output: 'patched weather', type: 'tool-result' })
   })
 

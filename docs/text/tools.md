@@ -41,6 +41,8 @@ The default is `maxSteps(10)`.
 `hasToolCall(name?)` stops after a matching call, and `and`, `or`, and `not` combine conditions.
 
 Tool calls from one step run at the same time.
+Each executor receives `{ callId, signal }` as its second argument.
+`callId` stays with that invocation through both tool hooks and its result, regardless of completion order.
 A missing tool, invalid JSON arguments, failed validation, or a thrown error becomes a tool result with `isError: true`, and the loop continues, so the model can retry or explain.
 If the step stopped because of `length`, the calls are incomplete, so the loop sends error results instead of running them.
 An abort still rejects the whole operation.
@@ -75,10 +77,10 @@ await generateText(model, {
 It receives `stepNumber`, `steps`, the current `input`, and `signal`.
 Return request fields to override for that step, such as `toolChoice` or `input`, or return a different `model`.
 
-`preToolCall(call, { signal })` runs before a tool.
+`preToolCall(call, { callId, signal })` runs before a tool.
 Return a replacement call to change the input, a tool result to skip execution, or nothing to continue.
 
-`postToolCall(result, { signal })` runs after a tool.
+`postToolCall(result, { callId, signal })` runs after a tool.
 Return a replacement result, or nothing to keep the original.
 It does not run when `preToolCall` returns a result, or when the tool is missing, not executable, or given invalid input.
 

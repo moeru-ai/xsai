@@ -746,7 +746,7 @@ describe('streamText', () => {
     }))
 
     expect(loopSignal).toBeInstanceOf(AbortSignal)
-    expect(execute).toHaveBeenCalledWith({ city: 'Taipei' }, { signal: loopSignal })
+    expect(execute).toHaveBeenCalledWith({ city: 'Taipei' }, { callId: 'call-1', signal: loopSignal })
   })
 
   it('runs preToolCall and postToolCall around tool execution', async () => {
@@ -799,7 +799,7 @@ describe('streamText', () => {
     }))
 
     expect(loopSignal).toBeInstanceOf(AbortSignal)
-    expect(execute).toHaveBeenCalledWith({ city: 'Hong Kong' }, { signal: loopSignal })
+    expect(execute).toHaveBeenCalledWith({ city: 'Hong Kong' }, { callId: 'call-1', signal: loopSignal })
     expect(hooks).toEqual([
       ['pre', expect.objectContaining({ arguments: '{}', callId: 'call-1' }), loopSignal],
       ['post', expect.objectContaining({ callId: 'call-1', output: 'weather in Hong Kong' }), loopSignal],

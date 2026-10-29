@@ -17,6 +17,7 @@ export interface Tool {
 }
 
 export interface ToolExecuteOptions {
+  callId: string
   signal?: AbortSignal
 }
 

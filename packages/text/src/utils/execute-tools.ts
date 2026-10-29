@@ -46,7 +46,7 @@ export const executeTool = async (
   call: ToolCallPart,
   { postToolCall, preToolCall, signal, tools }: ExecuteToolOptions,
 ): Promise<ToolResultPart> => {
-  const executeOptions: ToolExecuteOptions = { signal }
+  const executeOptions: ToolExecuteOptions = { callId: call.callId, signal }
   const preToolCallResult = await catchToolError(call, signal, async () => preToolCall?.(call, executeOptions))
   if (preToolCallResult != null) {
     assertSameCallId(call.callId, preToolCallResult.callId)
@@ -87,7 +87,7 @@ export const executeTool = async (
     shouldPostToolCall = true
     return {
       callId: call.callId,
-      output: await executableTool.execute(validatedInput, { signal }),
+      output: await executableTool.execute(validatedInput, executeOptions),
       type: 'tool-result' as const,
     }
   })
