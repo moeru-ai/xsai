@@ -1,8 +1,15 @@
 import type { PartProviderMetadata } from './metadata'
 
+export interface AudioPart {
+  data: string
+  format: 'mp3' | 'wav'
+  type: 'audio'
+}
+
 export type Content = ContentMap[ContentType]
 
 export interface ContentMap {
+  'audio': AudioPart
   'file': FilePart
   'image': ImagePart
   'provider': ProviderPart

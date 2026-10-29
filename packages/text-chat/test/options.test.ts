@@ -8,6 +8,32 @@ import { captureRequests } from '../../text/test/test-utils'
 import { chat } from '../src'
 
 describe('chat options', () => {
+  it.each(['mp3', 'wav'] as const)('preserves %s audio and its position in mixed user content', async (format) => {
+    const { bodies, fetch } = captureRequests()
+    const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
+    const data = Uint8Array.from([0, 255, 128, 1, 2]).toBase64()
+    const stream = await model({
+      input: [{
+        content: [
+          { text: 'Listen to this:', type: 'text' },
+          { data, format, type: 'audio' },
+          { text: 'What did you hear?', type: 'text' },
+        ],
+        role: 'user',
+      }],
+    })
+    await stream.cancel()
+
+    expect(bodies[0].messages).toEqual([{
+      content: [
+        { text: 'Listen to this:', type: 'text' },
+        { input_audio: { data, format }, type: 'input_audio' },
+        { text: 'What did you hear?', type: 'text' },
+      ],
+      role: 'user',
+    }])
+  })
+
   it('maps compatible Chat provider options to request fields', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })

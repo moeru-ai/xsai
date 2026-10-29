@@ -115,6 +115,8 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage | und
 
 const normalizeUserPart = (part: Exclude<UserMessageContent, ToolResultPart>): ChatContentPart => {
   switch (part.type) {
+    case 'audio':
+      return { input_audio: { data: part.data, format: part.format }, type: 'input_audio' }
     case 'file':
       return normalizeFilePart(part)
     case 'image':

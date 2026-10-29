@@ -134,6 +134,8 @@ const normalizeToolCallPart = (part: ToolCallPart): ToolUseBlock => ({
 
 const normalizeUserPart = (part: UserMessageContent): ContentBlock => {
   switch (part.type) {
+    case 'audio':
+      throw new XSAIError('invalid-input', 'Audio parts are not supported on the Messages API')
     case 'file':
       return normalizeFilePart(part)
     case 'image':

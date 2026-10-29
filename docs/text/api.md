@@ -97,6 +97,7 @@ An assistant message can also have an `id` and `providerMetadata`.
 | Part | Fields |
 | --- | --- |
 | `text` | `text`, optional `providerMetadata`. |
+| `audio` | `data: string`, raw base64 audio. `format: 'wav' \| 'mp3'`. User input only. |
 | `image` | `data: string \| URL`, optional `detail: 'auto' \| 'high' \| 'low'`. |
 | `file` | `data: string \| URL`. |
 | `tool-call` | `arguments: string`, `callId`, `id`, `name`. |

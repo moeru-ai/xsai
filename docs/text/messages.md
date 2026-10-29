@@ -50,11 +50,34 @@ const message: Message = {
 `data` is a URL or a string, such as a base64 data URL.
 The adapter decides which Parts the service accepts.
 
+## Send audio
+
+Chat accepts audio in user messages as raw base64 data:
+
+```ts
+import type { Message } from '@xsai/text'
+
+declare const audioBytes: Uint8Array
+// ---cut---
+const message: Message = {
+  content: [
+    { text: 'What does the speaker say?', type: 'text' },
+    { data: audioBytes.toBase64(), format: 'wav', type: 'audio' },
+  ],
+  role: 'user',
+}
+```
+
+`format` is `wav` or `mp3`.
+Use raw base64 without a `data:` URL prefix.
+Audio Parts do not accept URLs, `Blob` values, or live streams.
+Messages and Responses reject audio Parts with `invalid-input` before sending a request.
+
 ## Parts by role
 
 | Role | Allowed Parts |
 | --- | --- |
-| `user` | `text`, `image`, `file`, `tool-result` |
+| `user` | `text`, `image`, `file`, `audio`, `tool-result` |
 | `assistant` | `text`, `reasoning`, `refusal`, `tool-call`, `provider` |
 | `system`, `developer` | `text` |
 

@@ -1,4 +1,4 @@
-import type { FilePart, ImagePart, ProviderPart, ReasoningPart, RefusalPart, TextPart, ToolCallPart, ToolResultPart } from './content'
+import type { AudioPart, FilePart, ImagePart, ProviderPart, ReasoningPart, RefusalPart, TextPart, ToolCallPart, ToolResultPart } from './content'
 import type { MessageProviderMetadata } from './metadata'
 
 export interface AssistantMessage {
@@ -40,4 +40,4 @@ export interface UserMessage {
   role: 'user'
 }
 
-export type UserMessageContent = FilePart | ImagePart | TextPart | ToolResultPart
+export type UserMessageContent = AudioPart | FilePart | ImagePart | TextPart | ToolResultPart

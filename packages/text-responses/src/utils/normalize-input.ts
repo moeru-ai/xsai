@@ -28,6 +28,8 @@ import type {
   UserMessageItemParam,
 } from '../generated'
 
+import { XSAIError } from '@xsai/shared'
+
 type InputMessageContent = InputFileContentParam | InputImageContentParamAutoParam | InputTextContentParam
 type ReplayItem = ItemParam | Record<string, unknown>
 
@@ -184,6 +186,8 @@ const normalizeUserMessage = (message: UserMessage): ItemParam[] => {
 
   for (const part of message.content) {
     switch (part.type) {
+      case 'audio':
+        throw new XSAIError('invalid-input', 'Audio parts are not supported on the Responses API')
       case 'file':
         content.push(normalizeFilePart(part))
         break

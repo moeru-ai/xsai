@@ -18,6 +18,7 @@ export interface ChatChunk {
 export type ChatContentPart
   = | { file: { file_data: string }, type: 'file' }
     | { image_url: { detail?: 'auto' | 'high' | 'low', url: string }, type: 'image_url' }
+    | { input_audio: { data: string, format: 'mp3' | 'wav' }, type: 'input_audio' }
     | { text: string, type: 'text' }
 
 export interface ChatDelta {

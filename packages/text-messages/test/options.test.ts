@@ -3,12 +3,26 @@ import type { JSONSchema7 } from '@xsai/text/internal'
 import type { MessagesCacheControl, MessagesThinkingConfig } from '../src'
 
 import { tool, XSAIError } from '@xsai/text'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { captureRequests } from '../../text/test/test-utils'
 import { messages } from '../src'
 
 describe('messages options', () => {
+  it.each(['mp3', 'wav'] as const)('rejects %s audio before fetch', async (format) => {
+    const fetch = vi.fn()
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+
+    await expect(model({
+      input: [{ content: [{ data: 'AP+A', format, type: 'audio' }], role: 'user' }],
+      maxOutputTokens: 10,
+    })).rejects.toMatchObject({
+      code: 'invalid-input',
+      message: 'Audio parts are not supported on the Messages API',
+    })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
   it('maps Messages stop sequences to the request', async () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })

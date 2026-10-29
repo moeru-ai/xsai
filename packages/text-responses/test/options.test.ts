@@ -1,12 +1,25 @@
 import type { JSONSchema7 } from '@xsai/text/internal'
 
 import { tool } from '@xsai/text'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { captureRequests } from '../../text/test/test-utils'
 import { responses } from '../src'
 
 describe('responses options', () => {
+  it.each(['mp3', 'wav'] as const)('rejects %s audio before fetch', async (format) => {
+    const fetch = vi.fn()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+
+    await expect(model({
+      input: [{ content: [{ data: 'AP+A', format, type: 'audio' }], role: 'user' }],
+    })).rejects.toMatchObject({
+      code: 'invalid-input',
+      message: 'Audio parts are not supported on the Responses API',
+    })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
   it('does not store responses by default', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })

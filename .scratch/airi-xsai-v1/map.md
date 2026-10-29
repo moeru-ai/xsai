@@ -32,6 +32,7 @@ Open children live in `issues/`. Their `Blocked by` fields define the next avail
 - [Which AIRI preparation changes can ship before the dependency upgrade?](issues/05-airi-preparation.md): Require no separate refactor. Preserve user data and behavior through direct migration.
 - [What evidence permits each AIRI migration batch to ship?](issues/06-cutover-order.md): Set the Stage-first order, automatic data conversion, package updates, and automated acceptance tests. Exclude reverse migration.
 - [Export Fetch and pass stable tool call IDs](issues/07-fetch-and-tool-call-id.md): Implemented the shared fetch type and tool execution context. Public export checks, reverse-completion tests, type checks, and lint pass.
+- [Add audio input Parts](issues/08-audio-part.md): Implemented user audio input, Chat mapping, and rejection before fetch on unsupported wires. Request tests and type checks pass.
 
 ## Not yet specified
 
