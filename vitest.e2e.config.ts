@@ -8,6 +8,7 @@ export default defineConfig({
       XSAI_E2E_MODEL_DECISION: 'tev1:0.8b',
       XSAI_E2E_MODEL_EMBED: 'qwen3-embedding:0.6b',
     },
+    fileParallelism: false,
     include: ['packages/**/e2e/**/*.test.ts'],
     testTimeout: 120_000,
   },
