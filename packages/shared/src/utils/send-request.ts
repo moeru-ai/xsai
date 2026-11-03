@@ -19,7 +19,7 @@ export const sendRequest = async (options: SendRequestOptions, httpOptions: Omit
   const url = requestURL(options.path, httpOptions.baseURL)
   const headers = options.headers ?? {
     ...httpOptions.headers,
-    'Authorization': httpOptions.apiKey == null ? httpOptions.headers?.Authorization : `Bearer ${httpOptions.apiKey}`,
+    'Authorization': httpOptions.apiKey != null && httpOptions.apiKey !== '' ? `Bearer ${httpOptions.apiKey}` : httpOptions.headers?.Authorization,
     'Content-Type': options.body instanceof FormData ? undefined : options.body == null ? httpOptions.headers?.['Content-Type'] : 'application/json',
   }
 
