@@ -52,6 +52,7 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
         return
       }
 
+      builder.meta({ model: chunk.model })
       if (chunk.usage != null)
         builder.meta({ usage: normalizeUsage(chunk.usage) })
 

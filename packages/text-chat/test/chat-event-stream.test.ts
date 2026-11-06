@@ -492,4 +492,12 @@ describe('chat event stream', () => {
       message: 'Internal server error',
     })
   })
+
+  it('reports the model that answered', async () => {
+    const events = await readEvents([
+      message({ choices: [{ delta: { content: 'Hi' }, finish_reason: 'stop', index: 0 }], id: 'chatcmpl_1', model: 'served-model' }),
+    ])
+
+    expect(events.at(-1)).toMatchObject({ model: 'served-model', type: 'step.end' })
+  })
 })

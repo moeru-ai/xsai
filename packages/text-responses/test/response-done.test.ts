@@ -94,4 +94,10 @@ describe('chatGPT response.done', () => {
       { item, output_index: 0, type: 'response.output_item.done' },
     ])).rejects.toMatchObject({ code: 'truncated-stream' })
   })
+
+  it('reports the model that answered', async () => {
+    const events = await readEvents([{ response: { model: 'served-model', output: [item], status: 'completed' }, type: 'response.done' }])
+
+    expect(events.at(-1)).toMatchObject({ model: 'served-model', type: 'step.end' })
+  })
 })

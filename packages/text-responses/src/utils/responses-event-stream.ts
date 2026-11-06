@@ -190,6 +190,7 @@ export class ResponsesEventStream extends WireEventStream<ResponsesEvent> {
 
     const finishResponse = (builder: EventBuilder, response: Partial<Responses.ResponseResource>, defaultStatus?: StepStatus): void => {
       const status = normalizeStatus(response.status ?? defaultStatus)
+      builder.meta({ model: response.model })
       if (response.usage != null)
         builder.meta({ usage: normalizeUsage(response.usage) })
       const output = response.output?.map((item, index) => onItemDone(builder, item, index))

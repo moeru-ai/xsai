@@ -38,6 +38,8 @@ export interface RefusalDeltaEvent {
 export interface StepEndDoneEvent {
   error?: never
   message: AssistantMessage
+  /** The model that the provider says answered, if it says. */
+  model?: string
   reason?: FinishReason
   status: Exclude<StepStatus, 'failed'>
   type: 'step.end'
@@ -50,6 +52,8 @@ export type StepEndEvent = StepEndDoneEvent | StepEndFailEvent
 export interface StepEndFailEvent {
   error: XSAIError
   message: AssistantMessage
+  /** The model that the provider says answered, if it says. */
+  model?: string
   reason?: never
   status: 'failed'
   type: 'step.end'
