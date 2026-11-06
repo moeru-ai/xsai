@@ -1,4 +1,4 @@
-import type { LanguageModel, PrepareStepOptions, StepResult, StopContext, TextEvent } from '../src'
+import type { LanguageModel, PrepareStepOptions, StepResult, StopContext, TextEvent, ToolExecuteOptions, ToolResultPart } from '../src'
 
 import { XSAIError } from '@xsai/shared'
 import { describe, expect, it, vi } from 'vitest'
@@ -398,6 +398,72 @@ describe('streamText', () => {
       { content: [{ source: 'https://example.com/v1/messages', type: 'provider', value: { id: 'srvtoolu_01', input: { query: 'xsai' }, name: 'web_search', type: 'server_tool_use' } }], role: 'assistant' },
     ])
     expect(toolsByTurn).toEqual([[search], [search], [search]])
+  })
+
+  it('runs parallel calls at once and keeps results in call order when they finish in reverse', async () => {
+    const first = Promise.withResolvers<string>()
+    const secondFinished = Promise.withResolvers<void>()
+    const completed: string[] = []
+    const contexts: ToolExecuteOptions[] = []
+    const weather = tool({
+      execute: async (_input, options) => {
+        if (options == null)
+          throw new Error('Missing tool context')
+        contexts.push(options)
+        const result = options.callId === 'call-1' ? await first.promise : 'second'
+        completed.push(options.callId)
+        return result
+      },
+      inputSchema: { type: 'object' },
+      name: 'get_weather',
+    })
+    const preToolCall = vi.fn()
+    const postToolCall = vi.fn((_result: ToolResultPart, options: ToolExecuteOptions) => {
+      if (options.callId !== 'call-2')
+        return
+      secondFinished.resolve()
+    })
+    const model: LanguageModel = vi.fn<LanguageModel>()
+      .mockReturnValueOnce(eventStream({
+        message: {
+          content: ['call-1', 'call-2'].map(callId => ({
+            arguments: '{}',
+            callId,
+            id: `item-${callId}`,
+            name: 'get_weather',
+            type: 'tool-call' as const,
+          })),
+          role: 'assistant',
+        },
+        reason: 'tool_calls',
+        status: 'completed',
+        type: 'step.end',
+      }))
+      .mockReturnValueOnce(eventStream({
+        message: { content: 'done', role: 'assistant' },
+        reason: 'stop',
+        status: 'completed',
+        type: 'step.end',
+      }))
+
+    const pending = readEvents(streamText(model, { input: 'hi', postToolCall, preToolCall, tools: [weather] }))
+
+    await secondFinished.promise
+    expect(completed).toEqual(['call-2'])
+    first.resolve('first')
+
+    const events = await pending
+    expect(events.flatMap(event => event.type === 'content.end' ? [event.content] : [])).toEqual([
+      { callId: 'call-1', output: 'first', type: 'tool-result' },
+      { callId: 'call-2', output: 'second', type: 'tool-result' },
+    ])
+    expect(completed).toEqual(['call-2', 'call-1'])
+    const signal = expect.any(AbortSignal) as AbortSignal
+    expect(contexts).toEqual([{ callId: 'call-1', signal }, { callId: 'call-2', signal }])
+    for (const callId of ['call-1', 'call-2']) {
+      expect(preToolCall).toHaveBeenCalledWith(expect.objectContaining({ callId }), { callId, signal })
+      expect(postToolCall).toHaveBeenCalledWith(expect.objectContaining({ callId }), { callId, signal })
+    }
   })
 
   it('posts the failed result without running a tool cut off by the output token limit', async () => {
