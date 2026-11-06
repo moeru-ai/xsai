@@ -12,6 +12,7 @@ export type AssistantMessageContent = ProviderPart | ReasoningPart | RefusalPart
 
 export interface DeveloperMessage {
   content: readonly DeveloperMessageContent[] | string
+  providerMetadata?: MessageProviderMetadata
   role: 'developer'
 }
 
@@ -30,6 +31,7 @@ export type MessageType = keyof MessageMap
 
 export interface SystemMessage {
   content: readonly SystemMessageContent[] | string
+  providerMetadata?: MessageProviderMetadata
   role: 'system'
 }
 

@@ -5,6 +5,11 @@ export interface MessagesCitation {
   type: string
 }
 
+export interface MessagesMessageMetadata {
+  /** Clears a mid-conversation system message after one turn. Needs its beta in `betas`. */
+  clearAt?: 'next_user_message'
+}
+
 export interface MessagesPartMetadata {
   /** Places a cache breakpoint at the end of this text part. */
   cacheControl?: MessagesCacheControl

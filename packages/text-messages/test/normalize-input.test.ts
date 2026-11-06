@@ -6,12 +6,12 @@ import { normalizeInput as normalizeWireInput } from '../src/utils/normalize-inp
 const normalizeInput = (input: Parameters<typeof normalizeWireInput>[0]) => normalizeWireInput(input, 'https://example.com/v1/messages')
 
 describe('normalize input', () => {
-  it('hoists instructions and system/developer messages into the system param', () => {
+  it('hoists instructions and leading system/developer messages into the system param', () => {
     expect(normalizeInput({
       input: [
         { content: 'be brief', role: 'system' },
-        { content: 'hi', role: 'user' },
         { content: [{ text: 'dev note', type: 'text' }], role: 'developer' },
+        { content: 'hi', role: 'user' },
       ],
       instructions: 'instructions',
     })).toEqual({
@@ -20,6 +20,22 @@ describe('normalize input', () => {
         { text: 'instructions', type: 'text' },
         { text: 'be brief', type: 'text' },
         { text: 'dev note', type: 'text' },
+      ],
+    })
+  })
+
+  it('keeps later system/developer messages in place', () => {
+    expect(normalizeInput({
+      input: [
+        { content: 'hi', role: 'user' },
+        { content: 'terse', providerMetadata: { messages: { clearAt: 'next_user_message' } }, role: 'system' },
+        { content: [{ text: 'dev note', type: 'text' }], role: 'developer' },
+      ],
+    })).toEqual({
+      messages: [
+        { content: [{ text: 'hi', type: 'text' }], role: 'user' },
+        { clear_at: 'next_user_message', content: [{ text: 'terse', type: 'text' }], role: 'system' },
+        { content: [{ text: 'dev note', type: 'text' }], role: 'system' },
       ],
     })
   })

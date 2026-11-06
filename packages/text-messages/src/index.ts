@@ -1,7 +1,7 @@
 import type { HttpOptions } from '@xsai/shared'
 import type { LanguageModel } from '@xsai/text'
 
-import type { MessagesPartMetadata } from './types/provider-metadata'
+import type { MessagesMessageMetadata, MessagesPartMetadata } from './types/provider-metadata'
 import type { MessagesProviderOptions } from './types/provider-options'
 
 import { requestURL, XSAIError } from '@xsai/shared'
@@ -15,6 +15,10 @@ export type * from './types/provider-options'
 declare module '@xsai/text' {
   interface LanguageModelProviderOptions {
     messages?: MessagesProviderOptions
+  }
+
+  interface MessageProviderMetadata {
+    messages?: MessagesMessageMetadata
   }
 
   interface PartProviderMetadata {

@@ -54,8 +54,9 @@ export type ImageSource
     | { type: 'url', url: string }
 
 export interface InputMessage {
+  clear_at?: 'next_user_message'
   content: ContentBlock[] | string
-  role: 'assistant' | 'user'
+  role: 'assistant' | 'system' | 'user'
 }
 
 export interface MessageDeltaEvent {
