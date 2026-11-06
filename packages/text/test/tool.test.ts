@@ -179,6 +179,51 @@ describe('tool', () => {
     expect(execute).not.toHaveBeenCalled()
   })
 
+  it('names the path of each validation issue', async () => {
+    const schema = standardSchema<unknown>({ type: 'object' })
+    const inputSchema = {
+      '~standard': {
+        ...schema['~standard'],
+        validate: () => ({
+          issues: [
+            { message: 'Required', path: ['city'] },
+            { message: 'Too low', path: ['days', 0, { key: 'high' }] },
+            { message: 'Bad input', path: [] },
+            { message: 'Also bad' },
+          ],
+        }),
+      },
+    }
+    const weather = tool({ execute: () => 'sunny', inputSchema, name: 'get_weather' })
+
+    const result = await executeTool({
+      arguments: '{}',
+      callId: 'call-1',
+      id: 'tool-1',
+      name: 'get_weather',
+      type: 'tool-call',
+    }, { tools: [weather] })
+
+    expect(result.output).toBe('Tool "get_weather" execution failed: Tool input validation failed for "get_weather": city: Required; days.0.high: Too low; Bad input; Also bad')
+  })
+
+  it('names the path of an output validation issue', async () => {
+    const schema = standardSchema<unknown>({ type: 'object' })
+    const weather = tool({
+      execute: () => ({}),
+      inputSchema: { type: 'object' },
+      name: 'get_weather',
+      outputSchema: {
+        '~standard': {
+          ...schema['~standard'],
+          validate: () => ({ issues: [{ message: 'Required', path: ['city'] }] }),
+        },
+      },
+    })
+
+    await expect(weather.execute({})).rejects.toThrow('Tool output validation failed for "get_weather": city: Required')
+  })
+
   it('leaves direct execution input untouched', async () => {
     const validate = vi.fn(() => ({ value: { city: 'Validated Taipei' } }))
     const schema = {

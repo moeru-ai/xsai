@@ -3,7 +3,7 @@ import type { Promisable } from '@xsai/shared'
 import type { ToolResultPartContent } from './types/content'
 import type { InferSchemaInput, InferSchemaOutput, ResolvedSchema, UnresolvedSchema } from './utils/schema'
 
-import { resolveSchema } from './utils/schema'
+import { formatIssues, resolveSchema } from './utils/schema'
 
 export interface ExecutableTool extends Tool {
   execute: (input: unknown, options?: ToolExecuteOptions) => Promisable<string | ToolResultPartContent[]>
@@ -61,7 +61,7 @@ export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | Unresol
         if (outputSchema?.validate != null) {
           const validation = await outputSchema.validate(result)
           if (validation.issues)
-            throw new Error(`Tool output validation failed for "${options.name}": ${validation.issues.map(issue => issue.message).join('; ')}`)
+            throw new Error(`Tool output validation failed for "${options.name}": ${formatIssues(validation.issues)}`)
           result = validation.value
         }
         if (outputSchema)
