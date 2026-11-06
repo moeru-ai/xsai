@@ -82,7 +82,10 @@ Return a replacement call to change the input, a tool result to skip execution, 
 
 `postToolCall(result, { callId, signal })` runs after a tool.
 Return a replacement result, or nothing to keep the original.
-It does not run when `preToolCall` returns a result, or when the tool is missing, not executable, or given invalid input.
+It also runs when the tool is missing, not executable, given invalid input, or throws, so it sees every result.
+It does not run when `preToolCall` returns a result.
 
 Both tool hooks must keep the original `callId`.
 A different ID throws an error.
+
+`executeTool(call, { tools, signal, preToolCall, postToolCall })` runs one call through these steps, for code that writes its own loop.
