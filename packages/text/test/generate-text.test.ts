@@ -29,7 +29,7 @@ describe('generateText', () => {
     const failure: ToolResultPart = {
       callId: 'call-1',
       isError: true,
-      output: 'Tool "weather" execution failed: Tool output validation failed for "weather".',
+      output: 'Tool "weather" execution failed: Tool output validation failed for "weather": Expected a string',
       type: 'tool-result',
     }
     const posted: ToolResultPart[] = []

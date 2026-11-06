@@ -61,7 +61,7 @@ export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | Unresol
         if (outputSchema?.validate != null) {
           const validation = await outputSchema.validate(result)
           if (validation.issues)
-            throw new Error(`Tool output validation failed for "${options.name}".`)
+            throw new Error(`Tool output validation failed for "${options.name}": ${validation.issues.map(issue => issue.message).join('; ')}`)
           result = validation.value
         }
         if (outputSchema)
