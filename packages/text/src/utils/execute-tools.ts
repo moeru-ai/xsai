@@ -68,7 +68,12 @@ const runTool = async (call: ToolCallPart, tools: ExecuteToolOptions['tools'], o
     input = validation.value
   }
 
-  return { callId: call.callId, output: await tool.execute(input, options), type: 'tool-result' }
+  const result = await tool.execute(input, options)
+  return {
+    ...(typeof result === 'string' || Array.isArray(result) ? { output: result } : result),
+    callId: call.callId,
+    type: 'tool-result',
+  }
 }
 
 export const executeTool = async (

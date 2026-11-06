@@ -1,12 +1,12 @@
 import type { Promisable } from '@xsai/shared'
 
-import type { ToolResultPartContent } from './types/content'
+import type { ToolResultPart, ToolResultPartContent } from './types/content'
 import type { InferSchemaInput, InferSchemaOutput, ResolvedSchema, UnresolvedSchema } from './utils/schema'
 
 import { resolveSchema } from './utils/schema'
 
 export interface ExecutableTool extends Tool {
-  execute: (input: unknown, options?: ToolExecuteOptions) => Promisable<string | ToolResultPartContent[]>
+  execute: (input: unknown, options?: ToolExecuteOptions) => Promisable<ToolExecuteResult>
 }
 
 export interface Tool {
@@ -21,11 +21,13 @@ export interface ToolExecuteOptions {
   signal?: AbortSignal
 }
 
+export type ToolExecuteResult = Pick<ToolResultPart, 'isError' | 'metadata' | 'output'> | string | ToolResultPartContent[]
+
 export interface ToolOptions<TInput extends UnresolvedSchema, TOutput extends undefined | UnresolvedSchema = undefined> {
   description?: string
   execute?: (input: InferSchemaOutput<TInput>, options?: ToolExecuteOptions) => TOutput extends UnresolvedSchema
     ? Promisable<InferSchemaInput<TOutput>>
-    : Promisable<string | ToolResultPartContent[]>
+    : Promisable<ToolExecuteResult>
   inputSchema: TInput
   name: string
   outputSchema?: TOutput
@@ -67,7 +69,7 @@ export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | Unresol
         if (outputSchema)
           return JSON.stringify(result)
         else
-          return result as string | ToolResultPartContent[]
+          return result as ToolExecuteResult
       },
     }
   }

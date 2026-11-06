@@ -73,6 +73,8 @@ export interface ToolCallPart {
 export interface ToolResultPart {
   callId: string
   isError?: boolean
+  /** Kept with the result for the caller, and never sent to the model. */
+  metadata?: Record<string, unknown>
   output: string | ToolResultPartContent[]
   type: 'tool-result'
 }

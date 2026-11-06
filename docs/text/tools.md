@@ -47,6 +47,10 @@ A missing tool, invalid JSON arguments, failed validation, or a thrown error bec
 If the step stopped because of `length`, the calls are incomplete, so the loop sends error results instead of running them.
 An abort still rejects the whole operation.
 
+An executor can return a string, an array of Parts, or `{ output, isError, metadata }`.
+Use `isError` to report a failure with your own wording, without the prefix that a thrown error gets.
+`metadata` stays on the tool result for your code, and adapters never send it to the model.
+
 A tool without `execute` only describes itself to the model.
 If the model calls it, the loop sends an error result, unless a `preToolCall` hook returns a result for that call.
 

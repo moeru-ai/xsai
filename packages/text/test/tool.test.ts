@@ -321,6 +321,22 @@ describe('tool call hooks', () => {
     expect(rejected.output).toContain('city is required')
   })
 
+  it('keeps an error flag and metadata from the executor', async () => {
+    const weather = tool({
+      execute: () => ({ isError: true, metadata: { seen: ['1'] }, output: 'no such city' }),
+      inputSchema: { type: 'object' },
+      name: 'get_weather',
+    })
+
+    await expect(executeTool(call, { tools: [weather] })).resolves.toEqual({
+      callId: 'call-1',
+      isError: true,
+      metadata: { seen: ['1'] },
+      output: 'no such city',
+      type: 'tool-result',
+    })
+  })
+
   it('requires hooks to preserve the tool call id', async () => {
     const weather = tool({ execute: () => 'sunny', inputSchema: { type: 'object' }, name: 'get_weather' })
 

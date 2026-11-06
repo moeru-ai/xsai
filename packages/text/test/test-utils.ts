@@ -97,7 +97,7 @@ export const languageModelE2ECases = (
     expect(toolCall.name).toBe(weather.name)
 
     input.push(firstStepEnd.message, {
-      content: [{ callId: toolCall.callId, output: result, type: 'tool-result' }],
+      content: [{ callId: toolCall.callId, output: result as string, type: 'tool-result' }],
       role: 'user',
     })
 
