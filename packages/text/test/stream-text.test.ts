@@ -1,4 +1,4 @@
-import type { LanguageModel, StepResult, StopContext, TextEvent } from '../src'
+import type { LanguageModel, PrepareStepOptions, StepResult, StopContext, TextEvent } from '../src'
 
 import { XSAIError } from '@xsai/shared'
 import { describe, expect, it, vi } from 'vitest'
@@ -491,6 +491,41 @@ describe('streamText', () => {
       toolCalls: [],
       toolResults: [],
     })
+  })
+
+  it('gives prepareStep the original model, instructions, and tools on each step', async () => {
+    const weather = tool({ execute: () => 'sunny', inputSchema: { type: 'object' }, name: 'weather' })
+    const model: LanguageModel = () => eventStream({
+      message: { content: 'paused', role: 'assistant' },
+      reason: 'pause_turn',
+      status: 'completed',
+      type: 'step.end',
+    })
+    const other: LanguageModel = () => eventStream({
+      message: { content: 'done', role: 'assistant' },
+      status: 'completed',
+      type: 'step.end',
+    })
+    const seen: PrepareStepOptions[] = []
+
+    await readEvents(streamText(model, {
+      input: 'hi',
+      instructions: 'default',
+      prepareStep: (options) => {
+        seen.push(options)
+        return options.stepNumber === 0
+          ? { instructions: 'prepared', tools: [] }
+          : { model: other }
+      },
+      tools: [weather],
+    }))
+
+    expect(seen).toHaveLength(2)
+    for (const options of seen) {
+      expect(options.instructions).toBe('default')
+      expect(options.model).toBe(model)
+      expect(options.tools).toEqual([weather])
+    }
   })
 
   it('uses the prepared model for each step and falls back to the original model', async () => {

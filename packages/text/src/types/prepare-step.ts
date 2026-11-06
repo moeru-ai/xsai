@@ -6,8 +6,9 @@ import type { StepResult } from './step-result'
 
 export type PrepareStep = (options: PrepareStepOptions) => Promisable<PrepareStepResult | undefined>
 
-export interface PrepareStepOptions {
+export interface PrepareStepOptions extends Pick<LanguageModelOptions, 'instructions' | 'tools'> {
   input: readonly Message[]
+  model: LanguageModel
   signal: AbortSignal
   stepNumber: number
   steps: readonly StepResult[]

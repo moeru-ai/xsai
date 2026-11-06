@@ -28,7 +28,7 @@ export const streamText = (model: LanguageModel, { postToolCall, prepareStep, pr
   const generate = async function* (): AsyncGenerator<TextEvent, void> {
     while (true) {
       signal.throwIfAborted()
-      const { model: preparedModel = model, ...preparedOptions } = await prepareStep?.({ input, signal, stepNumber: steps.length, steps }) ?? {}
+      const { model: preparedModel = model, ...preparedOptions } = await prepareStep?.({ input, instructions: options.instructions, model, signal, stepNumber: steps.length, steps, tools: options.tools }) ?? {}
       signal.throwIfAborted()
       const modelOptions: LanguageModelOptions = {
         ...options,
