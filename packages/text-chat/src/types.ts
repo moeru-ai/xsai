@@ -12,6 +12,7 @@ export interface ChatChunk {
     type?: string
   }
   id?: string
+  model?: string
   usage?: ChatUsage | null
 }
 

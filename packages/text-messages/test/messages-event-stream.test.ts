@@ -254,4 +254,13 @@ describe('messages event stream', () => {
       message: 'Overloaded',
     })
   })
+
+  it('reports the model that answered', async () => {
+    const events = await readEvents([
+      message({ message: { id: 'msg_1', model: 'served-model', usage: { input_tokens: 1, output_tokens: 1 } }, type: 'message_start' }),
+      message({ type: 'message_stop' }),
+    ])
+
+    expect(events.at(-1)).toMatchObject({ model: 'served-model', type: 'step.end' })
+  })
 })

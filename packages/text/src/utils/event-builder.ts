@@ -26,6 +26,7 @@ export interface EventBuilder {
 
 export interface FinishMeta {
   messageId?: string
+  model?: string
   usage?: Usage
 }
 
@@ -104,6 +105,7 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
   let terminalEmitted = false
   let messageId: string | undefined
   let terminal: TerminalState | undefined
+  let model: string | undefined
   let usage: undefined | Usage
 
   const updateReasoning = (state: PartState, text: string): void => {
@@ -242,6 +244,7 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
       message: message.id == null && messageId != null
         ? { ...message, id: messageId }
         : message,
+      model,
       type: 'step.end' as const,
       usage,
     }
@@ -297,6 +300,8 @@ export const eventBuilder = (emit: (event: TextEvent) => void, fail: (error: XSA
     meta: (meta) => {
       if (meta.messageId != null)
         messageId = meta.messageId
+      if (meta.model != null)
+        model = meta.model
       if (meta.usage != null)
         usage = meta.usage
     },

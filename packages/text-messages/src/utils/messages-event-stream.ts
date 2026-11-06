@@ -89,7 +89,7 @@ export class MessagesEventStream extends WireEventStream<MessagesEvent> {
           this.deltaUsage = event.usage
           break
         case 'message_start':
-          builder.meta({ messageId: event.message.id })
+          builder.meta({ messageId: event.message.id, model: event.message.model })
           this.startUsage = event.message.usage
           break
         case 'message_stop': {

@@ -92,6 +92,7 @@ export interface MessagesOutputFormat {
 export interface MessageStartEvent {
   message: {
     id: string
+    model?: string
     usage: MessagesUsage
   }
   type: 'message_start'
