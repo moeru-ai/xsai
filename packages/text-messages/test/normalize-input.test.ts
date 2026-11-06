@@ -24,6 +24,19 @@ describe('normalize input', () => {
     })
   })
 
+  it('places cache breakpoints on text parts', () => {
+    const cacheControl = { type: 'ephemeral' } as const
+    expect(normalizeInput({
+      input: [
+        { content: [{ providerMetadata: { messages: { cacheControl } }, text: 'stable', type: 'text' }], role: 'system' },
+        { content: [{ providerMetadata: { messages: { cacheControl } }, text: 'hi', type: 'text' }], role: 'user' },
+      ],
+    })).toEqual({
+      messages: [{ content: [{ cache_control: cacheControl, text: 'hi', type: 'text' }], role: 'user' }],
+      system: [{ cache_control: cacheControl, text: 'stable', type: 'text' }],
+    })
+  })
+
   it('maps tool calls and results to tool_use/tool_result blocks', () => {
     expect(normalizeInput({
       input: [

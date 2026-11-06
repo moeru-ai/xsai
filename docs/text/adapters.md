@@ -107,6 +107,8 @@ The adapter sends both fields independently and leaves their validation to the e
 See [Anthropic thinking configuration](https://platform.claude.com/docs/en/build-with-claude/thinking).
 
 `providerOptions.messages.cacheControl` maps to the request-level `cache_control` field.
+
+To place a breakpoint yourself, set `providerMetadata.messages.cacheControl` on a `text` Part. `instructions` is a plain string, so use a leading `system` message to mark a system prompt. This combines with the request-level field, which is useful when a prompt ends in content that changes on every request.
 Use `{ type: 'ephemeral' }` for automatic caching with the endpoint's default lifetime.
 Set `ttl` to `'5m'` or `'1h'` to select the cache lifetime.
 The endpoint caches the prompt prefix through the last cacheable part.

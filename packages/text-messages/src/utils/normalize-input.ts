@@ -40,6 +40,7 @@ const parseDataUrl = (str: string): DataUrl | undefined => {
 }
 
 const normalizeInputTextPart = (part: TextPart): TextBlock => ({
+  cache_control: part.providerMetadata?.messages?.cacheControl,
   // TODO: Move citations to a first-class TextPart field.
   citations: part.providerMetadata?.messages?.citations,
   text: part.text,
