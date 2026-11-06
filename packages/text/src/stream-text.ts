@@ -4,7 +4,7 @@ import type { PrepareStep } from './types/prepare-step'
 import type { PostToolCall, PreToolCall } from './utils/execute-tools'
 
 import { maxSteps } from './stop-condition'
-import { executeTools } from './utils/execute-tools'
+import { executeTool, finishTool, toolError } from './utils/execute-tools'
 import { readStep } from './utils/read-step'
 import { toStepResult } from './utils/step-result'
 
@@ -53,13 +53,10 @@ export const streamText = (model: LanguageModel, { postToolCall, prepareStep, pr
       if (step.toolCalls.length === 0)
         continue
 
-      const results = await executeTools({
-        ...modelOptions,
-        postToolCall,
-        preToolCall,
-        reason: step.reason,
-        toolCalls: step.toolCalls,
-      })
+      const toolOptions = { ...modelOptions, postToolCall, preToolCall }
+      const results = await Promise.all(step.toolCalls.map(async call => step.reason === 'length'
+        ? finishTool(call, toolError(call, 'The response reached the output token limit before the tool call was complete.'), toolOptions)
+        : executeTool(call, toolOptions)))
       signal.throwIfAborted()
 
       step.toolResults.push(...results)

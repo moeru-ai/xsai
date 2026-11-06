@@ -2,7 +2,6 @@ import type { Promisable } from '@xsai/shared'
 
 import type { ExecutableTool, ToolExecuteOptions } from '../tool'
 import type { ToolCallPart, ToolResultPart } from '../types/content'
-import type { FinishReason } from '../types/finish-reason'
 import type { LanguageModelOptions } from '../types/language-model'
 
 import { formatIssues } from './schema'
@@ -12,17 +11,11 @@ export interface ExecuteToolOptions extends Pick<LanguageModelOptions, 'signal' 
   preToolCall?: PreToolCall
 }
 
-export interface ExecuteToolsOptions extends ExecuteToolOptions {
-  /** Finish reason of the step that produced the tool calls. */
-  reason?: FinishReason
-  toolCalls: ToolCallPart[]
-}
-
 export type PostToolCall = (toolResult: ToolResultPart, options: ToolExecuteOptions) => Promisable<ToolResultPart | void>
 
 export type PreToolCall = (toolCall: ToolCallPart, options: ToolExecuteOptions) => Promisable<ToolCallPart | ToolResultPart | void>
 
-const toolError = (call: ToolCallPart, detail: string): ToolResultPart => ({
+export const toolError = (call: ToolCallPart, detail: string): ToolResultPart => ({
   callId: call.callId,
   isError: true,
   output: `Tool "${call.name}" execution failed: ${detail}`,
@@ -73,6 +66,14 @@ const runTool = async (call: ToolCallPart, tools: ExecuteToolOptions['tools'], o
   return { callId: call.callId, output: await tool.execute(input, options), type: 'tool-result' }
 }
 
+export const finishTool = async (call: ToolCallPart, result: ToolResultPart, { postToolCall, signal }: ExecuteToolOptions): Promise<ToolResultPart> => {
+  const posted = await attempt(call, signal, async () => postToolCall?.(result, { callId: call.callId, signal }))
+  if (posted == null)
+    return result
+  assertSameCallId(result.callId, posted.callId)
+  return posted
+}
+
 export const executeTool = async (
   call: ToolCallPart,
   { postToolCall, preToolCall, signal, tools }: ExecuteToolOptions,
@@ -89,14 +90,5 @@ export const executeTool = async (
 
   const result = await attempt(call, signal, async () => runTool(call, tools, options))
 
-  const posted = await attempt(call, signal, async () => postToolCall?.(result, options))
-  if (posted == null)
-    return result
-  assertSameCallId(result.callId, posted.callId)
-  return posted
+  return finishTool(call, result, { postToolCall, signal })
 }
-
-export const executeTools = async ({ reason, toolCalls, ...options }: ExecuteToolsOptions): Promise<ToolResultPart[]> =>
-  reason === 'length'
-    ? toolCalls.map(call => toolError(call, 'The response reached the output token limit before the tool call was complete.'))
-    : Promise.all(toolCalls.map(async call => executeTool(call, options)))

@@ -83,7 +83,7 @@ Return a replacement call to change the input, a tool result to skip execution, 
 
 `postToolCall(result, { callId, signal })` runs after a tool.
 Return a replacement result, or nothing to keep the original.
-It also runs when the tool is missing, not executable, given invalid input, or throws, so it sees every result.
+It also runs when the tool is missing, not executable, given invalid input, or throws, and when `streamText` rejects a call because the output token limit cut the response short, so it sees every result.
 It does not run when `preToolCall` returns a result.
 
 Both tool hooks must keep the original `callId`.
