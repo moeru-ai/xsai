@@ -1,4 +1,5 @@
 import type { MessagesCitation } from './provider-metadata'
+import type { MessagesCacheControl } from './provider-options'
 
 export type ContentBlock
   = | DocumentBlock
@@ -131,6 +132,7 @@ export interface RedactedThinkingBlock {
 }
 
 export interface TextBlock {
+  cache_control?: MessagesCacheControl
   citations?: MessagesCitation[]
   text: string
   type: 'text'
