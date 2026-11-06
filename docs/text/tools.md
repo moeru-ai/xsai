@@ -74,8 +74,9 @@ await generateText(model, {
 ```
 
 `prepareStep` runs before each request.
-It receives `stepNumber`, `steps`, the current `input`, and `signal`.
+It receives `stepNumber`, `steps`, the current `input`, `model`, `instructions`, `tools`, and `signal`.
 Return request fields to override for that step, such as `toolChoice` or `input`, or return a different `model`.
+An override applies to one step, so the next step receives the original `model`, `instructions`, and `tools` again.
 
 `preToolCall(call, { callId, signal })` runs before a tool.
 Return a replacement call to change the input, a tool result to skip execution, or nothing to continue.
