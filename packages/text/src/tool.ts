@@ -50,25 +50,23 @@ export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | Unresol
     outputSchema,
   }
 
-  if (options.execute == null) {
+  if (options.execute == null)
     return tool
-  }
-  else {
-    return {
-      ...tool,
-      execute: async (input: unknown, executeOptions?: ToolExecuteOptions) => {
-        let result = await options.execute!(input, executeOptions)
-        if (outputSchema?.validate != null) {
-          const validation = await outputSchema.validate(result)
-          if (validation.issues)
-            throw new Error(`Tool output validation failed for "${options.name}": ${formatIssues(validation.issues)}`)
-          result = validation.value
-        }
-        if (outputSchema)
-          return JSON.stringify(result)
-        else
-          return result as string | ToolResultPartContent[]
-      },
-    }
+
+  return {
+    ...tool,
+    execute: async (input: unknown, executeOptions?: ToolExecuteOptions) => {
+      let result = await options.execute!(input, executeOptions)
+      if (outputSchema?.validate != null) {
+        const validation = await outputSchema.validate(result)
+        if (validation.issues)
+          throw new Error(`Tool output validation failed for "${options.name}": ${formatIssues(validation.issues)}`)
+        result = validation.value
+      }
+      if (outputSchema)
+        return JSON.stringify(result)
+      else
+        return result as string | ToolResultPartContent[]
+    },
   }
 }) as ToolFactory
