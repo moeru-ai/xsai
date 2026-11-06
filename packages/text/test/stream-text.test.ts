@@ -400,6 +400,34 @@ describe('streamText', () => {
     expect(toolsByTurn).toEqual([[search], [search], [search]])
   })
 
+  it('posts the failed result without running a tool cut off by the output token limit', async () => {
+    const execute = vi.fn(() => 'sunny')
+    const weather = tool({ execute, inputSchema: { type: 'object' }, name: 'weather' })
+    const preToolCall = vi.fn()
+    const postToolCall = vi.fn()
+    const model: LanguageModel = vi.fn<LanguageModel>()
+      .mockReturnValueOnce(eventStream({
+        message: { content: [{ arguments: '{"city":', callId: 'call_1', id: 'call_1', name: 'weather', type: 'tool-call' }], role: 'assistant' },
+        reason: 'length',
+        status: 'incomplete',
+        type: 'step.end',
+      }))
+      .mockReturnValueOnce(eventStream({
+        message: { content: 'done', role: 'assistant' },
+        reason: 'stop',
+        status: 'completed',
+        type: 'step.end',
+      }))
+
+    await readEvents(streamText(model, { input: 'hi', postToolCall, preToolCall, tools: [weather] }))
+
+    expect(execute).not.toHaveBeenCalled()
+    expect(preToolCall).not.toHaveBeenCalled()
+    expect(postToolCall).toHaveBeenCalledOnce()
+    expect(postToolCall.mock.calls[0][0]).toMatchObject({ callId: 'call_1', isError: true, type: 'tool-result' })
+    expect(postToolCall.mock.calls[0][1]).toMatchObject({ callId: 'call_1' })
+  })
+
   it('executes only local calls in a mixed provider and local turn', async () => {
     const execute = vi.fn(() => 'sunny')
     const weather = tool({ execute, inputSchema: { type: 'object' }, name: 'weather' })

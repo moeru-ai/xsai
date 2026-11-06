@@ -73,6 +73,14 @@ const runTool = async (call: ToolCallPart, tools: ExecuteToolOptions['tools'], o
   return { callId: call.callId, output: await tool.execute(input, options), type: 'tool-result' }
 }
 
+const finishTool = async (call: ToolCallPart, result: ToolResultPart, { postToolCall, signal }: ExecuteToolOptions): Promise<ToolResultPart> => {
+  const posted = await attempt(call, signal, async () => postToolCall?.(result, { callId: call.callId, signal }))
+  if (posted == null)
+    return result
+  assertSameCallId(result.callId, posted.callId)
+  return posted
+}
+
 export const executeTool = async (
   call: ToolCallPart,
   { postToolCall, preToolCall, signal, tools }: ExecuteToolOptions,
@@ -89,14 +97,10 @@ export const executeTool = async (
 
   const result = await attempt(call, signal, async () => runTool(call, tools, options))
 
-  const posted = await attempt(call, signal, async () => postToolCall?.(result, options))
-  if (posted == null)
-    return result
-  assertSameCallId(result.callId, posted.callId)
-  return posted
+  return finishTool(call, result, { postToolCall, signal })
 }
 
 export const executeTools = async ({ reason, toolCalls, ...options }: ExecuteToolsOptions): Promise<ToolResultPart[]> =>
-  reason === 'length'
-    ? toolCalls.map(call => toolError(call, 'The response reached the output token limit before the tool call was complete.'))
-    : Promise.all(toolCalls.map(async call => executeTool(call, options)))
+  Promise.all(toolCalls.map(async call => reason === 'length'
+    ? finishTool(call, toolError(call, 'The response reached the output token limit before the tool call was complete.'), options)
+    : executeTool(call, options)))
