@@ -1,12 +1,11 @@
 import type { StopCondition } from './stop-condition'
-import type { LanguageModel, LanguageModelOptions, Message, StepEndEvent, StepResult, TextEvent } from './types'
+import type { LanguageModel, LanguageModelOptions, Message, StepResult, TextEvent } from './types'
 import type { PrepareStep } from './types/prepare-step'
 import type { PostToolCall, PreToolCall } from './utils/execute-tools'
 
-import { XSAIError } from '@xsai/shared'
-
 import { maxSteps } from './stop-condition'
 import { executeTools } from './utils/execute-tools'
+import { readStep } from './utils/read-step'
 import { toStepResult } from './utils/step-result'
 
 export interface StreamTextOptions extends LanguageModelOptions {
@@ -15,39 +14,6 @@ export interface StreamTextOptions extends LanguageModelOptions {
   preToolCall?: PreToolCall
   /** @default `maxSteps(10)` */
   stopWhen?: StopCondition
-}
-
-const readStep = async function* (stream: ReadableStream<TextEvent>, signal: AbortSignal): AsyncGenerator<TextEvent, StepEndEvent> {
-  const reader = stream.getReader()
-  let cancellation: Promise<void> | undefined
-  const abort = (): void => {
-    cancellation = reader.cancel(signal.reason)
-    void cancellation.catch(() => {})
-  }
-  let stepEnd: StepEndEvent | undefined
-  signal.addEventListener('abort', abort, { once: true })
-  try {
-    signal.throwIfAborted()
-    while (true) {
-      const { done, value: event } = await reader.read()
-      signal.throwIfAborted()
-      if (done)
-        break
-      if (event.type === 'step.end') {
-        if (stepEnd != null)
-          throw new XSAIError('protocol-error', 'model stream produced more than one step.end event')
-        stepEnd = event
-      }
-      yield event
-    }
-    if (stepEnd == null)
-      throw new XSAIError('truncated-stream', 'model stream ended without a step.end event')
-    return stepEnd
-  }
-  finally {
-    signal.removeEventListener('abort', abort)
-    await (cancellation ?? reader.cancel(signal.reason)).finally(() => reader.releaseLock())
-  }
 }
 
 export const streamText = (model: LanguageModel, { postToolCall, prepareStep, preToolCall, stopWhen: stopWhenOption, ...options }: StreamTextOptions): ReadableStream<TextEvent> => {

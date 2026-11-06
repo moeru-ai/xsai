@@ -1,5 +1,6 @@
 export { WireEventStream } from './utils/event-builder'
 export type * from './utils/event-builder'
 export { EventSourceDataStream } from './utils/event-source-stream'
+export { readEvents, readStep } from './utils/read-step'
 export * from './utils/schema'
 export { wireRequest } from './utils/wire-request'

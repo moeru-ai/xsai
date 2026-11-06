@@ -32,7 +32,7 @@ const assertSameCallId = (source: string, next: string): void => {
     throw new Error(`Tool call hooks must preserve callId "${source}".`)
 }
 
-const catchToolError = async <T>(call: ToolCallPart, signal: AbortSignal | undefined, callback: () => Promisable<T>): Promise<T | ToolResultPart> => {
+const attempt = async <T>(call: ToolCallPart, signal: AbortSignal | undefined, callback: () => Promisable<T>): Promise<T | ToolResultPart> => {
   try {
     return await callback()
   }
@@ -42,65 +42,56 @@ const catchToolError = async <T>(call: ToolCallPart, signal: AbortSignal | undef
   }
 }
 
+const parseInput = (args: string): unknown => {
+  try {
+    return JSON.parse(args.trim() || '{}')
+  }
+  catch {
+    throw new Error('Failed to parse tool input.')
+  }
+}
+
+const runTool = async (call: ToolCallPart, tools: ExecuteToolOptions['tools'], options: ToolExecuteOptions): Promise<ToolResultPart> => {
+  const tool = tools?.find(candidate => candidate.name === call.name) as ExecutableTool | undefined
+  if (tool == null) {
+    const available = tools?.map(candidate => candidate.name).join(', ')
+    throw new Error(`Model tried to call unavailable tool "${call.name}", ${available == null || available === '' ? 'No tools are available' : `Available tools: ${available}`}.`)
+  }
+  if (tool.execute == null)
+    throw new Error(`Tool "${call.name}" is not executable.`)
+
+  let input = parseInput(call.arguments)
+  if (tool.inputSchema.validate != null) {
+    const validation = await tool.inputSchema.validate(input)
+    if (validation.issues)
+      throw new Error(`Tool input validation failed for "${call.name}": ${validation.issues.map(issue => issue.message).join('; ')}`)
+    input = validation.value
+  }
+
+  return { callId: call.callId, output: await tool.execute(input, options), type: 'tool-result' }
+}
+
 export const executeTool = async (
   call: ToolCallPart,
   { postToolCall, preToolCall, signal, tools }: ExecuteToolOptions,
 ): Promise<ToolResultPart> => {
-  const executeOptions: ToolExecuteOptions = { callId: call.callId, signal }
-  const preToolCallResult = await catchToolError(call, signal, async () => preToolCall?.(call, executeOptions))
-  if (preToolCallResult != null) {
-    assertSameCallId(call.callId, preToolCallResult.callId)
-    if (preToolCallResult.type === 'tool-result')
-      return preToolCallResult
+  const options: ToolExecuteOptions = { callId: call.callId, signal }
 
-    call = preToolCallResult
+  const prepared = await attempt(call, signal, async () => preToolCall?.(call, options))
+  if (prepared != null) {
+    assertSameCallId(call.callId, prepared.callId)
+    if (prepared.type === 'tool-result')
+      return prepared
+    call = prepared
   }
 
-  let shouldPostToolCall = false
-  const toolResult = await catchToolError(call, signal, async () => {
-    const tool = tools?.find(candidate => candidate.name === call.name)
-    const executableTool = tool as ExecutableTool | undefined
+  const result = await attempt(call, signal, async () => runTool(call, tools, options))
 
-    if (executableTool == null || executableTool.execute == null) {
-      const available = tools?.map(candidate => candidate.name).join(', ')
-      return toolError(call, tool == null
-        ? `Model tried to call unavailable tool "${call.name}", ${available == null || available === '' ? 'No tools are available' : `Available tools: ${available}`}.`
-        : `Tool "${call.name}" is not executable.`)
-    }
-
-    let toolInput: unknown
-    try {
-      toolInput = JSON.parse(call.arguments.trim() || '{}') as unknown
-    }
-    catch {
-      return toolError(call, 'Failed to parse tool input.')
-    }
-
-    let validatedInput = toolInput
-    if (executableTool.inputSchema.validate != null) {
-      const validation = await executableTool.inputSchema.validate(toolInput)
-      if (validation.issues)
-        return toolError(call, `Tool input validation failed for "${call.name}".`)
-      validatedInput = validation.value
-    }
-
-    shouldPostToolCall = true
-    return {
-      callId: call.callId,
-      output: await executableTool.execute(validatedInput, executeOptions),
-      type: 'tool-result' as const,
-    }
-  })
-
-  if (!shouldPostToolCall || postToolCall == null)
-    return toolResult
-
-  const postToolCallResult = await catchToolError(call, signal, async () => postToolCall(toolResult, executeOptions))
-  if (postToolCallResult == null)
-    return toolResult
-
-  assertSameCallId(toolResult.callId, postToolCallResult.callId)
-  return postToolCallResult
+  const posted = await attempt(call, signal, async () => postToolCall?.(result, options))
+  if (posted == null)
+    return result
+  assertSameCallId(result.callId, posted.callId)
+  return posted
 }
 
 export const executeTools = async ({ reason, toolCalls, ...options }: ExecuteToolsOptions): Promise<ToolResultPart[]> =>

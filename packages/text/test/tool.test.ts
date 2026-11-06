@@ -175,7 +175,7 @@ describe('tool', () => {
       type: 'tool-call',
     }, { tools: [weather] })
 
-    expect(result.output).toBe('Tool "get_weather" execution failed: Tool input validation failed for "get_weather".')
+    expect(result.output).toBe('Tool "get_weather" execution failed: Tool input validation failed for "get_weather": city is required')
     expect(execute).not.toHaveBeenCalled()
   })
 
@@ -302,6 +302,23 @@ describe('tool call hooks', () => {
     expect(postResult.output).toBe('Tool "get_weather" execution failed: post boom')
     expect(preResult.output).toBe('Tool "get_weather" execution failed: pre boom')
     expect(postToolCall).toHaveBeenCalledOnce()
+  })
+
+  it('runs postToolCall for tools that could not run', async () => {
+    const schema = standardSchema<{ city: string }>({ type: 'object' })
+    const weather = tool({
+      execute: () => 'sunny',
+      inputSchema: { '~standard': { ...schema['~standard'], validate: () => ({ issues: [{ message: 'city is required' }] }) } },
+      name: 'get_weather',
+    })
+    const postToolCall = vi.fn()
+
+    const missing = await executeTool(call, { postToolCall, tools: [] })
+    const unparsable = await executeTool({ ...call, arguments: '{' }, { postToolCall, tools: [weather] })
+    const rejected = await executeTool(call, { postToolCall, tools: [weather] })
+
+    expect(postToolCall.mock.calls.map(([result]) => result as ToolResultPart)).toEqual([missing, unparsable, rejected])
+    expect(rejected.output).toContain('city is required')
   })
 
   it('requires hooks to preserve the tool call id', async () => {
