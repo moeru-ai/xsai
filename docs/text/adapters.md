@@ -107,15 +107,15 @@ The adapter sends both fields independently and leaves their validation to the e
 See [Anthropic thinking configuration](https://platform.claude.com/docs/en/build-with-claude/thinking).
 
 `providerOptions.messages.cacheControl` maps to the request-level `cache_control` field.
-
-To place a breakpoint yourself, set `providerMetadata.messages.cacheControl` on a `text` Part. `instructions` is a plain string, so use a leading `system` message to mark a system prompt. This combines with the request-level field, which is useful when a prompt ends in content that changes on every request.
-
-A `system` or `developer` message at the start of `input` goes into the top-level `system` field. A later one stays in place as a mid-conversation system message, which keeps the cached prefix. Not every model accepts these, and Anthropic's rules for where they can go apply. To clear one after a turn, set `providerMetadata.messages.clearAt` to `'next_user_message'` and add its beta to `betas`.
 Use `{ type: 'ephemeral' }` for automatic caching with the endpoint's default lifetime.
 Set `ttl` to `'5m'` or `'1h'` to select the cache lifetime.
 The endpoint caches the prompt prefix through the last cacheable part.
 Cache control leaves thinking, effort, and output format unchanged.
 See [Anthropic automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching).
+
+To place a breakpoint yourself, set `providerMetadata.messages.cacheControl` on a `text` Part. `instructions` is a plain string, so use a leading `system` message to mark a system prompt. This combines with the request-level field, which is useful when a prompt ends in content that changes on every request.
+
+A `system` or `developer` message at the start of `input` goes into the top-level `system` field. A later one stays in place as a mid-conversation system message, which keeps the cached prefix. Not every model accepts these, and Anthropic's rules for where they can go apply. To clear one after a turn, set `providerMetadata.messages.clearAt` to `'next_user_message'` and add its beta to `betas`.
 
 Provider tools for Messages and Responses are plain objects with a string `type` and fields specific to the protocol.
 They are separate from the executable tools that you create with `tool()`.
