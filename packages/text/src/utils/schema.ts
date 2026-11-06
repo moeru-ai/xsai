@@ -23,6 +23,12 @@ export interface ResolvedSchema<Input = unknown, Output = Input> {
 export type UnresolvedSchema<Input = unknown, Output = Input>
   = CombinedStandardSchema<Input, Output> | JSONSchema7
 
+export const formatIssues = (issues: readonly StandardSchemaV1.Issue[]): string =>
+  issues.map(({ message, path }) => {
+    const location = path?.map(segment => String(typeof segment === 'object' ? segment.key : segment)).join('.')
+    return location == null || location === '' ? message : `${location}: ${message}`
+  }).join('; ')
+
 export const resolveSchema = <Input = unknown, Output = Input>(schema: UnresolvedSchema<Input, Output>): ResolvedSchema<Input, Output> =>
   '~standard' in schema
     ? {

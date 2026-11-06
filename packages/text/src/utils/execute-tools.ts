@@ -5,6 +5,8 @@ import type { ToolCallPart, ToolResultPart } from '../types/content'
 import type { FinishReason } from '../types/finish-reason'
 import type { LanguageModelOptions } from '../types/language-model'
 
+import { formatIssues } from './schema'
+
 export interface ExecuteToolOptions extends Pick<LanguageModelOptions, 'signal' | 'tools'> {
   postToolCall?: PostToolCall
   preToolCall?: PreToolCall
@@ -64,7 +66,7 @@ const runTool = async (call: ToolCallPart, tools: ExecuteToolOptions['tools'], o
   if (tool.inputSchema.validate != null) {
     const validation = await tool.inputSchema.validate(input)
     if (validation.issues)
-      throw new Error(`Tool input validation failed for "${call.name}": ${validation.issues.map(issue => issue.message).join('; ')}`)
+      throw new Error(`Tool input validation failed for "${call.name}": ${formatIssues(validation.issues)}`)
     input = validation.value
   }
 
