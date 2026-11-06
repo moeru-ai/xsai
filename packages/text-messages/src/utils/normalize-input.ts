@@ -207,7 +207,11 @@ export const normalizeInput = (options: LanguageModelOptions, source: string): N
         break
       case 'developer':
       case 'system':
-        system.push(...systemText(message.content))
+        // Only leading messages can move: moving a later one would change the cached prefix.
+        if (messages.length === 0)
+          system.push(...systemText(message.content))
+        else
+          messages.push({ clear_at: message.providerMetadata?.messages?.clearAt, content: systemText(message.content), role: 'system' })
         break
       case 'user':
         messages.push(normalizeUserMessage(message))
