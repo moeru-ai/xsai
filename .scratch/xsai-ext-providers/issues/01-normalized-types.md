@@ -110,3 +110,8 @@ interface Route {
 - `route()` returns `{ protocol, baseURL, model }`, structurally compatible with `HttpOptions`.
 - Data subpaths depend on no `@xsai/*` package, including types.
 - Not kept: custom (freeform) tools, `system_updates`, `effort_updates`, `prompt_cache_key`, `service_tier`, `store`, and `stream_usage`. Add them when xsAI uses them.
+
+### Amendment (2026-11-08)
+
+Add `serviceTiers?: string[]` to `ModelCapabilities`, from v2 `capabilities.service_tier` (values such as `flex`, `priority`, `fast`, `standby`, `ultrafast`).
+Reason: 284 models list service tiers, and tier multipliers change prices by up to 2x (OpenAI `gpt-5`: priority 2x, flex 0.5x). Issue 02 needs the tier to estimate cost, and issue 08 adds tier selection to xsAI.

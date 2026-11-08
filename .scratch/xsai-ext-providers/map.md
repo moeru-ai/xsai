@@ -24,7 +24,8 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - `route()` is pure data and returns `HttpOptions`-compatible fields plus the protocol.
 - Protocol helpers live in one subpath per xsAI package (`/text-chat`, `/text-messages`, `/text-responses`, `/embed`, `/image`, `/audio`, `/decide`). Each imports only its own package, declared as an optional peer dependency. Helpers take a provider data object, not an ID string. A model without a route for that protocol throws before fetch.
 - Peer ranges pin the current xsAI beta until 1.0, then widen to `^1.0.0`.
-- [Define the normalized types](issues/01-normalized-types.md): Include model types with an xsAI package. Protocol names equal xsAI factory names. Routes live on each model; capabilities split into model and route levels. Unknown values stay `undefined`. Data subpaths have no `@xsai/*` dependency.
+- [Define the normalized types](issues/01-normalized-types.md): Include model types with an xsAI package. Protocol names equal xsAI factory names. Routes live on each model; capabilities split into model and route levels. Unknown values stay `undefined`. Data subpaths have no `@xsai/*` dependency. Amended to add `serviceTiers` to model capabilities.
+- `Usage` gets disjoint token buckets and no cost field ([07](issues/07-usage-disjoint-buckets.md)). Text adapters get service tier selection ([08](issues/08-service-tier.md)). Both are xsAI core changes before 1.0.
 
 ## Not yet specified
 
