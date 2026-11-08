@@ -47,6 +47,15 @@ The root entry has types only. `route()` and `accepts()` are left to issue 05.
 
 Amended by issue 05 amendment 2: the data modules moved to `src/models/<id>.ts` (`/models/*`); `src/providers/<id>.ts` now holds client modules with routes only.
 
+Amendment 2026-11-08 (PR #350 review, generated data size):
+
+- Generated data leaves out models with no route, after corrections: 273 models served only through APIs that xsAI has no package for, mainly `converse` (154 Bedrock models) and `workers-ai-run` (71 Cloudflare models), plus `generate-content`, `realtime`, `interactions`, and others (48). `/fetch` still returns them, with empty `routes`. AIRI does not read this metadata: its Bedrock provider lists models from the AWS API and calls Converse through its own `fetch`, its Workers AI provider uses the OpenAI-compatible endpoints, and its code names none of the other 48 models.
+- `renderModels` stores `capabilities`, `cost`, `limit`, `modalities`, and `routes` values that repeat within a provider as constants. Types do not change. Constants are per file, so importing one provider does not load another provider's data. One shared module was larger in total and added 174 KB to every import.
+- Constants are numbered in order of first use. Content-hash names keep other models' lines stable, but made the tarball 9% larger than before deduplication, so we accept renumbering in sync diffs.
+- Models stay when `deprecated` or old. The `deprecated` flag includes models in use (`whisper-1`, `tts-1`), and models.dev has no usage data.
+- Result: JS in `dist` went from 6.98 MB to 3.86 MB; the largest model module from 473 KB to 189 KB. The gzipped `dist` went from 555 KB to 541 KB, because gzip already removed most repetition.
+- `renderObject` now uses a replacer function. A string replacement turned `$$` in model names into `$`.
+
 Validation:
 
 - Acceptance, checked against a packed tarball: importing `/deepseek` bundles 5.8 KB with only DeepSeek models (rolldown). `dist/index.js` is empty. Node and TypeScript (`nodenext`) resolve `/full` to `dist/full.*` and `/wafer.ai` through the pattern.
