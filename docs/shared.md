@@ -25,8 +25,8 @@ The adapters use them, and you need them when you write an adapter or customize 
 ### HTTP options
 
 `HttpOptions` requires `baseURL: string | URL` and `model: string`.
-It has the optional fields `apiKey`, `headers`, `fetch`, and `path`.
-`sendRequest` uses `Omit<HttpOptions, 'model'>`, and model catalogs use `Omit<HttpOptions, 'model' | 'path'>`.
+It has the optional fields `apiKey`, `headers`, `fetch`, `path`, and `extraBody`.
+`sendRequest` uses `Omit<HttpOptions, 'model'>`, and model catalogs use `Omit<HttpOptions, 'extraBody' | 'model' | 'path'>`.
 
 `apiKey` becomes a bearer token in `sendRequest`, and an adapter can use another header instead.
 `headers` is a record of strings, and undefined values are left out.
@@ -36,6 +36,12 @@ It receives a complete `Request`.
 `path` replaces the adapter's default request path, such as `chat/completions`.
 Use it when a service serves a wire at another path.
 A model catalog sends two paths, so its options leave out `path`.
+
+`extraBody` adds fields to a JSON request body, for parameters that an adapter does not map, such as `{ thinking: { type: 'enabled' } }`.
+`sendRequest` merges it over the body that the adapter builds, one level deep, so a field in `extraBody` replaces the same field in the body, and a field set to `undefined` is removed.
+Field names are sent as written, so use the names that the service expects.
+A request with no body or a `FormData` body ignores `extraBody`.
+A model catalog sends no body, so its options leave out `extraBody`.
 
 `requestURL(path, baseURL)` adds a trailing slash to the root and then resolves the path.
 Absolute paths and absolute URLs follow the normal URL rules.

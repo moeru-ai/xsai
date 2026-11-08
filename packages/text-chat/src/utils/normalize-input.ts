@@ -76,6 +76,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage | und
 
   const content: ChatContentPart[] = []
   const reasoning: string[] = []
+  const reasoningDetails: NonNullable<ChatMessage['reasoning_details']> = []
   let reasoningField: 'reasoning' | 'reasoning_content' = 'reasoning_content'
   const refusal: string[] = []
   const toolCalls: NonNullable<ChatMessage['tool_calls']> = []
@@ -86,6 +87,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage | und
         break
       case 'reasoning':
         reasoning.push(reasoningText(part))
+        reasoningDetails.push(...part.providerMetadata?.chat?.reasoning_details ?? [])
         reasoningField = part.providerMetadata?.chat?.reasoning_field ?? reasoningField
         break
       case 'refusal':
@@ -106,6 +108,7 @@ const normalizeAssistantMessage = (message: AssistantMessage): ChatMessage | und
   return {
     // Some gateways reject `content: null` even when tool_calls is set.
     content: content.length === 0 ? '' : content,
+    reasoning_details: reasoningDetails.length === 0 ? undefined : reasoningDetails,
     [reasoningField]: reasoning.length === 0 ? undefined : reasoning.join(''),
     refusal: refusal.length === 0 ? undefined : refusal.join(''),
     role: 'assistant',

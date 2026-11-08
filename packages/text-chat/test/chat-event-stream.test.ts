@@ -173,6 +173,44 @@ describe('chat event stream', () => {
     ])
   })
 
+  it('merges streamed reasoning_details fragments for replay', async () => {
+    const delta = (reasoning: string, ...reasoning_details: unknown[]) =>
+      message({ choices: [{ delta: { reasoning, reasoning_details }, finish_reason: null, index: 0 }] })
+    const events = await readEvents([
+      delta('Let ', { format: 'anthropic-claude-v1', index: 0, text: 'Let ', type: 'reasoning.text' }),
+      delta('me', { index: 0, text: 'me', type: 'reasoning.text' }),
+      delta('', { index: 0, signature: 'sig_1', text: '', type: 'reasoning.text' }),
+      delta('Next', { index: 1, text: 'Next', type: 'reasoning.text' }),
+      delta('Sum', { index: 0, summary: 'Sum', type: 'reasoning.summary' }),
+      delta('mary', { index: 0, summary: 'mary', type: 'reasoning.summary' }),
+      delta('', { data: 'enc_1', id: 'rs_1', type: 'reasoning.encrypted' }, { data: 'enc_2', id: 'rs_2', type: 'reasoning.encrypted' }),
+      message({ choices: [{ delta: {}, finish_reason: 'stop', index: 0 }] }),
+      { data: '[DONE]' },
+    ])
+
+    const reasoning = events.find(event => event.type === 'content.end')
+    expect(reasoning).toEqual({
+      content: {
+        content: [{ text: 'Let meNextSummary', type: 'text' }],
+        providerMetadata: {
+          chat: {
+            reasoning_details: [
+              { format: 'anthropic-claude-v1', index: 0, signature: 'sig_1', text: 'Let me', type: 'reasoning.text' },
+              { index: 1, text: 'Next', type: 'reasoning.text' },
+              { index: 0, summary: 'Summary', type: 'reasoning.summary' },
+              { data: 'enc_1', id: 'rs_1', type: 'reasoning.encrypted' },
+              { data: 'enc_2', id: 'rs_2', type: 'reasoning.encrypted' },
+            ],
+            reasoning_field: 'reasoning',
+          },
+        },
+        type: 'reasoning',
+      },
+      index: 0,
+      type: 'content.end',
+    })
+  })
+
   it('maps reasoning deltas to reasoning events and records the field used', async () => {
     await expect(readEvents([
       message({

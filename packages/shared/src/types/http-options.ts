@@ -4,6 +4,7 @@ export interface HttpOptions {
   apiKey?: string
   /** @example `https://api.openai.com/v1/` */
   baseURL: string | URL
+  extraBody?: Record<string, unknown>
   fetch?: Fetch
   headers?: Record<string, string | undefined>
   model: string
