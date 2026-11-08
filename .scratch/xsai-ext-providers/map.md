@@ -22,14 +22,14 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - The root entry exports types and `route()` only. It never exports all provider data. All providers live at `/full`.
 - Each provider is a subpath (`@xsai-ext/providers/deepseek`) through one `"./*"` export pattern. Exact keys (`./costs`, `./capabilities`, `./fetch`, `./full`, helper subpaths) take precedence. Codegen fails when a provider ID matches a reserved subpath.
 - `route()` is pure data and returns `HttpOptions`-compatible fields plus the protocol.
-- Protocol helpers live in one subpath per protocol (`/text-chat`, `/text-messages`, `/text-responses`, `/embed`, `/audio`, `/image`). Each imports one adapter, declared as an optional peer dependency. Helpers take a provider data object, not an ID string. A model without a route for that protocol throws before fetch.
+- Protocol helpers live in one subpath per xsAI package (`/text-chat`, `/text-messages`, `/text-responses`, `/embed`, `/image`, `/audio`, `/decide`). Each imports only its own package, declared as an optional peer dependency. Helpers take a provider data object, not an ID string. A model without a route for that protocol throws before fetch.
 - Peer ranges pin the current xsAI beta until 1.0, then widen to `^1.0.0`.
+- [Define the normalized types](issues/01-normalized-types.md): Include model types with an xsAI package. Protocol names equal xsAI factory names. Routes live on each model; capabilities split into model and route levels. Unknown values stay `undefined`. Data subpaths have no `@xsai/*` dependency.
 
 ## Not yet specified
 
-- Normalized types: provider, model, route, capabilities, cost.
-- Cost semantics, including whether `Usage.inputTokens` includes cached tokens on each wire.
-- Whether `route()` may fall back to a provider-level base URL.
+- Cost type and semantics, including whether `Usage.inputTokens` includes cached tokens on each wire.
+- Whether `route()` may fall back to a provider-level base URL, and how route `path` meets adapter paths.
 - How local corrections and extra providers (Ollama, LiteLLM, and so on) are authored.
 - Runtime fetch: source URL, cache, snapshot size, and refresh policy.
 - AIRI acceptance for replacing `model-bank` and the 0.x imports.
