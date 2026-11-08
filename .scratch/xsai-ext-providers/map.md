@@ -20,16 +20,16 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - One package, `@xsai-ext/providers`, with subpaths. Not named `models` because `@xsai/model` exists. The name is reused at 1.0; the 0.x API is not kept.
 - Both delivery modes: build-time generated data and a runtime `/fetch` with a bundled snapshot fallback.
 - The root entry exports types and `route()` only. It never exports all provider data. All providers live at `/full`.
-- Each provider is a subpath (`@xsai-ext/providers/deepseek`) through one `"./*"` export pattern. Exact keys (`./costs`, `./capabilities`, `./fetch`, `./full`, helper subpaths) take precedence. Codegen fails when a provider ID matches a reserved subpath.
+- Each provider is a subpath (`@xsai-ext/providers/deepseek`) through one `"./*"` export pattern. Exact keys (`./capabilities`, `./fetch`, `./full`, helper subpaths) take precedence. Codegen fails when a provider ID matches a reserved subpath.
 - `route()` is pure data and returns `HttpOptions`-compatible fields plus the protocol.
 - Protocol helpers live in one subpath per xsAI package (`/text-chat`, `/text-messages`, `/text-responses`, `/embed`, `/image`, `/audio`, `/decide`). Each imports only its own package, declared as an optional peer dependency. Helpers take a provider data object, not an ID string. A model without a route for that protocol throws before fetch.
 - Peer ranges pin the current xsAI beta until 1.0, then widen to `^1.0.0`.
 - [Define the normalized types](issues/01-normalized-types.md): Include model types with an xsAI package. Protocol names equal xsAI factory names. Routes live on each model; capabilities split into model and route levels. Unknown values stay `undefined`. Data subpaths have no `@xsai/*` dependency. Amended to add `serviceTiers` to model capabilities.
-- `Usage` gets disjoint token buckets and no cost field ([07](issues/07-usage-disjoint-buckets.md)). Text adapters get service tier selection ([08](issues/08-service-tier.md)). Both are xsAI core changes before 1.0.
+- [Define cost semantics](issues/02-cost-semantics.md): Price data only. `Model.cost` holds text token prices per million tokens. No `cost()` function and no `/costs` subpath.
+- Messages `Usage.inputTokens` will include cache tokens to match Chat and Responses ([07](issues/07-messages-usage-input.md)). Service tier selection is tracked outside this map in `../text-service-tier/`.
 
 ## Not yet specified
 
-- Cost type and semantics, including whether `Usage.inputTokens` includes cached tokens on each wire.
 - Whether `route()` may fall back to a provider-level base URL, and how route `path` meets adapter paths.
 - How local corrections and extra providers (Ollama, LiteLLM, and so on) are authored.
 - Runtime fetch: source URL, cache, snapshot size, and refresh policy.

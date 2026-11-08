@@ -1,6 +1,6 @@
 # Add service tier selection to text adapters
 
-Parent: ../map.md
+Parent: none
 Type: task
 Labels: needs-triage
 Status: open
@@ -13,7 +13,7 @@ Check whether Anthropic Messages has an equivalent parameter, and add it only if
 
 ## Open points
 
-- The applied tier can differ from the requested tier (for example `auto`). The response reports the applied `service_tier`. Decide whether `step.end` exposes it. Until then, callers pass the requested tier to `cost()`.
+- The applied tier can differ from the requested tier (for example `auto`). The response reports the applied `service_tier`. Decide whether `step.end` exposes it.
 
 ## Acceptance
 
