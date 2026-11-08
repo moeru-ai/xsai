@@ -41,7 +41,7 @@ export const sendRequest = async (options: SendRequestOptions, httpOptions: Omit
   }
 
   const request = new Request(url, {
-    body: options.body == null ? undefined : options.body instanceof FormData ? options.body : JSON.stringify(options.body),
+    body: options.body == null ? undefined : options.body instanceof FormData ? options.body : JSON.stringify({ ...options.body, ...httpOptions.extraBody }),
     headers: Object.fromEntries(Object.entries(headers).filter(([name, value]) =>
       value !== undefined && (!(options.body instanceof FormData) || name.toLowerCase() !== 'content-type'),
     )) as Record<string, string>,

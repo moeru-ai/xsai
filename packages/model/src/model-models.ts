@@ -24,7 +24,7 @@ const modelEntry = (model: OpenAIModel) => ({
   providerMetadata: { models: { created: model.created, ownedBy: model.owned_by } },
 })
 
-export const models = (options: Omit<HttpOptions, 'model' | 'path'>): ModelCatalog => ({
+export const models = (options: Omit<HttpOptions, 'extraBody' | 'model' | 'path'>): ModelCatalog => ({
   list: async (catalogOptions = {}) => {
     const response = await sendRequest({ method: 'GET', path: 'models', signal: catalogOptions.signal }, options)
     const json = await response.json() as { data: OpenAIModel[] }
