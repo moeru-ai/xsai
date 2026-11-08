@@ -3,7 +3,7 @@
 Parent: ../map.md
 Type: task
 Labels: needs-triage
-Status: open
+Status: resolved
 Blocked by: none
 
 ## Scope
@@ -22,3 +22,16 @@ This is a breaking change for Messages callers that read `inputTokens`.
 - `inputTokens + outputTokens === totalTokens` on all three wires.
 - Messages tests cover cache read and cache creation counts.
 - Docs state the subset rules.
+
+## Answer
+
+Implemented on 2026-11-08 in `7b88c299` on branch `fix/messages-usage-input`.
+
+- Messages adds `cache_read_input_tokens` and `cache_creation_input_tokens` to `inputTokens`. `totalTokens` is `inputTokens + outputTokens`.
+- `Usage` field comments state the subset rules. `docs/text/api.md` states them too.
+
+Validation:
+
+- `vitest run` for text, text-chat, text-messages, and text-responses: 31 files, 248 tests.
+- `pnpm typecheck`.
+- ESLint on changed files: no errors; 1 existing TODO warning.
