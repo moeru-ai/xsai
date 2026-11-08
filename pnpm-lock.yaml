@@ -424,6 +424,30 @@ importers:
         specifier: 'catalog:'
         version: 3.5.43(typescript@6.0.3)
 
+  packages-ext/providers:
+    devDependencies:
+      '@xsai/audio':
+        specifier: 'workspace:'
+        version: link:../../packages/audio
+      '@xsai/decide':
+        specifier: 'workspace:'
+        version: link:../../packages/decide
+      '@xsai/embed':
+        specifier: 'workspace:'
+        version: link:../../packages/embed
+      '@xsai/image':
+        specifier: 'workspace:'
+        version: link:../../packages/image
+      '@xsai/text-chat':
+        specifier: 'workspace:'
+        version: link:../../packages/text-chat
+      '@xsai/text-messages':
+        specifier: 'workspace:'
+        version: link:../../packages/text-messages
+      '@xsai/text-responses':
+        specifier: 'workspace:'
+        version: link:../../packages/text-responses
+
   packages/audio:
     dependencies:
       '@xsai/shared':

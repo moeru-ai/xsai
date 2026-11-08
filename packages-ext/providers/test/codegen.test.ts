@@ -71,7 +71,7 @@ describe('buildProviders', () => {
 
   it.each([
     [catalog('full'), {}, [], 'Provider ID matches a reserved subpath: full'],
-    [catalog('text-chat'), {}, [], 'Provider ID matches a reserved subpath: text-chat'],
+    [catalog('text'), {}, [], 'Provider ID matches a reserved subpath: text'],
     [catalog('a-b', 'a.b'), {}, [], 'Providers a-b and a.b share the export name aB'],
     [catalog('local'), {}, [extraProvider], 'Extra provider clashes with models.dev: local'],
     [catalog('alpha'), { beta: {} }, [], 'Override for unknown provider: beta'],

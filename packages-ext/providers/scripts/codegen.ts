@@ -15,9 +15,7 @@ export const RESERVED_SUBPATHS = [
   'image',
   'index',
   'package.json',
-  'text-chat',
-  'text-messages',
-  'text-responses',
+  'text',
   'types',
 ]
 

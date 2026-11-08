@@ -39,6 +39,14 @@ export interface ModelModalities {
   output: string[]
 }
 
+export interface ModelOptions<TProtocol extends Protocol = Protocol> {
+  apiKey?: string
+  fetch?: (request: Request) => Promise<Response>
+  headers?: Record<string, string | undefined>
+  protocol?: TProtocol
+  variables?: Record<string, string>
+}
+
 export type ModelStatus = 'alpha' | 'beta' | 'deprecated'
 
 export type ModelType = 'chat' | 'decision' | 'embedding' | 'image' | 'speech' | 'transcription'
@@ -81,4 +89,15 @@ export interface RouteCompatibility {
   maxTokensField?: string
   mediaInput?: string
   reasoningField?: string
+}
+
+export interface RouteOptions {
+  variables?: Record<string, string>
+}
+
+export interface RouteTarget {
+  baseURL: string
+  model: string
+  path?: string
+  protocol: Protocol
 }

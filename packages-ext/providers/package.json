@@ -22,6 +22,11 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
+    "./text": "./src/text.ts",
+    "./embed": "./src/embed.ts",
+    "./image": "./src/image.ts",
+    "./audio": "./src/audio.ts",
+    "./decide": "./src/decide.ts",
     "./full": "./src/full.ts",
     "./*": "./src/providers/*.ts"
   },
@@ -38,6 +43,26 @@
         "default": "./dist/index.js"
       },
       "./package.json": "./package.json",
+      "./text": {
+        "types": "./dist/text.d.ts",
+        "default": "./dist/text.js"
+      },
+      "./embed": {
+        "types": "./dist/embed.d.ts",
+        "default": "./dist/embed.js"
+      },
+      "./image": {
+        "types": "./dist/image.d.ts",
+        "default": "./dist/image.js"
+      },
+      "./audio": {
+        "types": "./dist/audio.d.ts",
+        "default": "./dist/audio.js"
+      },
+      "./decide": {
+        "types": "./dist/decide.d.ts",
+        "default": "./dist/decide.js"
+      },
       "./full": {
         "types": "./dist/full.d.ts",
         "default": "./dist/full.js"
@@ -54,5 +79,46 @@
     "build": "pkgroll --clean-dist",
     "sync": "tsx scripts/sync.ts",
     "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@xsai/audio": "workspace:",
+    "@xsai/decide": "workspace:",
+    "@xsai/embed": "workspace:",
+    "@xsai/image": "workspace:",
+    "@xsai/text-chat": "workspace:",
+    "@xsai/text-messages": "workspace:",
+    "@xsai/text-responses": "workspace:"
+  },
+  "peerDependenciesMeta": {
+    "@xsai/audio": {
+      "optional": true
+    },
+    "@xsai/decide": {
+      "optional": true
+    },
+    "@xsai/embed": {
+      "optional": true
+    },
+    "@xsai/image": {
+      "optional": true
+    },
+    "@xsai/text-chat": {
+      "optional": true
+    },
+    "@xsai/text-messages": {
+      "optional": true
+    },
+    "@xsai/text-responses": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@xsai/audio": "workspace:",
+    "@xsai/decide": "workspace:",
+    "@xsai/embed": "workspace:",
+    "@xsai/image": "workspace:",
+    "@xsai/text-chat": "workspace:",
+    "@xsai/text-messages": "workspace:",
+    "@xsai/text-responses": "workspace:"
   }
 }
