@@ -4,7 +4,7 @@ Parent: ../map.md
 Type: task
 Labels: needs-triage
 Status: open
-Blocked by: 01, 03
+Blocked by: 01, 03, 09
 
 ## Scope
 
@@ -18,3 +18,10 @@ Decide whether `route()` falls back to a provider-level base URL.
 - A model without a route for the helper's protocol throws before fetch.
 - Each helper subpath bundles only its own adapter.
 - Caller options override nothing in the route except auth, headers, and fetch.
+
+## Comments
+
+2026-11-08 decisions:
+
+- `route()` uses the model's route when the model is known. For an unknown model ID it uses `provider.defaults[protocol]`. Without either it throws.
+- Route `path` is passed to the adapter through the new `HttpOptions.path` (issue 09).

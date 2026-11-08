@@ -119,3 +119,7 @@ Reason: 284 models list service tiers, and tier multipliers change prices by up 
 ### Amendment 2 (2026-11-08)
 
 Generated provider modules keep no `description`. Runtime data from `/fetch` includes `description` (issue 06: AIRI model pickers render and search it). Issue 04 defines how the runtime model type extends `Model`.
+
+### Amendment 3 (2026-11-08)
+
+Add `defaults?: Partial<Record<Protocol, { baseURL: string }>>` to `Provider`, computed by codegen (issue 03). `route()` uses it for model IDs that are not in the catalog.
