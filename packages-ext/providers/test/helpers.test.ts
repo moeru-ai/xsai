@@ -1,12 +1,10 @@
 /* eslint-disable no-template-curly-in-string -- models.dev base URLs contain ${VAR} templates. */
 import type { Model, Provider, Route } from '../src/types'
 
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { accepts, route } from '../src'
-import { decisionModel } from '../src/decide'
-import { embeddingModel } from '../src/embed'
-import { languageModel } from '../src/text'
+import { createProvider } from '../src/create'
 
 const model = (id: string, routes: Route[], input = ['text']): Model => ({
   capabilities: { reasoning: { supported: false }, tools: { supported: true } },
@@ -19,6 +17,7 @@ const model = (id: string, routes: Route[], input = ['text']): Model => ({
 })
 
 const provider: Provider<'all' | 'chat-only' | 'decider' | 'regional'> = {
+  apiKeyEnv: ['EXAMPLE_API_KEY'],
   defaults: { chat: { baseURL: 'https://default.example.com/v1' } },
   doc: 'https://example.com',
   env: ['EXAMPLE_API_KEY'],
@@ -75,12 +74,15 @@ describe('accepts', () => {
   })
 })
 
-describe('helpers', () => {
+describe('createProvider', () => {
+  afterEach(() => vi.unstubAllEnvs())
+
   it('prefers Responses, then Messages, then Chat Completions', async () => {
     const { fetch, requests } = capture()
-    await expect(languageModel(provider, 'all', { fetch })({ input: 'hi' })).rejects.toThrow()
-    await expect(languageModel(provider, 'all', { fetch, protocol: 'messages' })({ input: 'hi', maxOutputTokens: 5 })).rejects.toThrow()
-    await expect(languageModel(provider, 'chat-only', { fetch })({ input: 'hi' })).rejects.toThrow()
+    const client = createProvider(provider, { fetch })
+    await expect(client.text('all')({ input: 'hi' })).rejects.toThrow()
+    await expect(client.text('all', { protocol: 'messages' })({ input: 'hi', maxOutputTokens: 5 })).rejects.toThrow()
+    await expect(client.text('chat-only')({ input: 'hi' })).rejects.toThrow()
 
     expect(requests.map(r => r.url)).toEqual([
       'https://api.example.com/v1/responses',
@@ -91,7 +93,7 @@ describe('helpers', () => {
 
   it('passes auth, headers, and the route path to the adapter', async () => {
     const { fetch, requests } = capture()
-    await expect(decisionModel(provider, 'decider', { apiKey: 'key', fetch, headers: { 'x-extra': '1' } })({
+    await expect(createProvider(provider, { apiKey: 'key', fetch, headers: { 'x-extra': '1' } }).decision('decider')({
       input: 'hi',
       questions: { ok: { instructions: 'Is it ok?', type: 'boolean' } },
     })).rejects.toThrow()
@@ -101,10 +103,25 @@ describe('helpers', () => {
     expect(requests[0].headers.get('x-extra')).toBe('1')
   })
 
-  it('throws before fetch when the model has no route for the helper', () => {
+  it('reads the API key and variables from the environment unless given', async () => {
+    vi.stubEnv('EXAMPLE_API_KEY', 'env-key')
+    vi.stubEnv('REGION', 'us')
+    const { fetch, requests } = capture()
+    await expect(createProvider(provider, { fetch }).text('regional')({ input: 'hi' })).rejects.toThrow()
+    await expect(createProvider(provider, { apiKey: 'key', fetch, variables: { REGION: 'eu' } }).text('regional')({ input: 'hi' })).rejects.toThrow()
+
+    expect(requests.map(r => [r.url, r.headers.get('authorization')])).toEqual([
+      ['https://us.example.com/v1/chat/completions', 'Bearer env-key'],
+      ['https://eu.example.com/v1/chat/completions', 'Bearer key'],
+    ])
+  })
+
+  it('throws before fetch when the model has no route for the method', () => {
     const { fetch } = capture()
-    expect(() => embeddingModel(provider, 'all', { fetch })).toThrow('No embeddings route for model all on provider example')
-    expect(() => languageModel(provider, 'chat-only', { fetch, protocol: 'responses' })).toThrow('No responses route')
+    const client = createProvider(provider, { fetch })
+    expect(() => client.embedding('all')).toThrow('No embeddings route for model all on provider example')
+    expect(() => client.text('chat-only', { protocol: 'responses' })).toThrow('No responses route')
+    expect(() => client.text('regional')).toThrow('Missing variable REGION for provider example')
     expect(fetch).not.toHaveBeenCalled()
   })
 })

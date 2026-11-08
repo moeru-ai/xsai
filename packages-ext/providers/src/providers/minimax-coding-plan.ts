@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const minimaxCodingPlan: Provider<"MiniMax-M2" | "MiniMax-M2.1" | "MiniMax-M2.5" | "MiniMax-M2.5-highspeed" | "MiniMax-M2.7" | "MiniMax-M2.7-highspeed" | "MiniMax-M3" | "MiniMax-M3.1-Flash" | "MiniMax-M3.1-Flash-Preview"> = {
+  "apiKeyEnv": [
+    "MINIMAX_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.minimax.io/v1"

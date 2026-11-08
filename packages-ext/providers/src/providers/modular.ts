@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const modular: Provider<"deepseek/deepseek-v4.1-flash-1017" | "google/gemma-4-31b-it" | "minimax/minimax-m3" | "MiniMaxAI/MiniMax-M3.1-Flash"> = {
+  "apiKeyEnv": [
+    "MODULAR_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.modular.com/v1"

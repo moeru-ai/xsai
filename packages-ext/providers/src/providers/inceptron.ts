@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const inceptron: Provider<"deepseek-ai/DeepSeek-V4-Flash-0731" | "moonshotai/Kimi-K2.6" | "moonshotai/Kimi-K2.7-Code" | "zai-org/GLM-5.2" | "zai-org/GLM-5.3" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "INCEPTRON_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.inceptron.io/v1"

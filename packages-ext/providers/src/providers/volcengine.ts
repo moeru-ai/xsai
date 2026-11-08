@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const volcengine: Provider<"deepseek-v4-flash-ga-260731" | "deepseek-v4-pro-ga-260813" | "doubao-seed-1-6-251015" | "doubao-seed-1-6-flash-250828" | "doubao-seed-1-6-vision-250815" | "doubao-seed-1-8-251228" | "doubao-seed-2-0-code-preview-260215" | "doubao-seed-2-0-lite-260428" | "doubao-seed-2-0-mini-260428" | "doubao-seed-2-0-pro-260215" | "doubao-seed-2-1-pro-260628" | "doubao-seed-2-1-turbo-260628" | "doubao-seed-character-260628" | "doubao-seed-evolving" | "glm-5-2-260617" | "glm-5-3-flash-260828"> = {
+  "apiKeyEnv": [
+    "ARK_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://ark.cn-beijing.volces.com/api/v3"

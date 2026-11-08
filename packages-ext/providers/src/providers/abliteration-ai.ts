@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const abliterationAi: Provider<"abliterated-model" | "abliterated-model-large" | "abliterated-model-large-v2"> = {
+  "apiKeyEnv": [
+    "ABLIT_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.abliteration.ai/v1"

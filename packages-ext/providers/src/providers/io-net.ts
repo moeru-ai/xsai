@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const ioNet: Provider<"deepseek-ai/DeepSeek-R1-0528" | "Intel/Qwen3-Coder-480B-A35B-Instruct-int4-mixed-ar" | "meta-llama/Llama-3.2-90B-Vision-Instruct" | "meta-llama/Llama-3.3-70B-Instruct" | "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8" | "mistralai/Devstral-Small-2505" | "mistralai/Magistral-Small-2506" | "mistralai/Mistral-Large-Instruct-2411" | "mistralai/Mistral-Nemo-Instruct-2407" | "moonshotai/Kimi-K2-Instruct-0905" | "moonshotai/Kimi-K2-Thinking" | "openai/gpt-oss-120b" | "openai/gpt-oss-20b" | "Qwen/Qwen2.5-VL-32B-Instruct" | "Qwen/Qwen3-235B-A22B-Thinking-2507" | "Qwen/Qwen3-Next-80B-A3B-Instruct" | "zai-org/GLM-4.6"> = {
+  "apiKeyEnv": [
+    "IOINTELLIGENCE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.intelligence.io.solutions/api/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const clinePass: Provider<"cline-pass/deepseek-v4-flash" | "cline-pass/deepseek-v4-pro" | "cline-pass/deepseek-v4.1-flash" | "cline-pass/glm-5.2" | "cline-pass/glm-5.3" | "cline-pass/glm-5.3-flash" | "cline-pass/kimi-k2.6" | "cline-pass/kimi-k2.7-code" | "cline-pass/kimi-k3" | "cline-pass/mimo-v2.5" | "cline-pass/mimo-v2.5-pro" | "cline-pass/mimo-v2.6-flash" | "cline-pass/mimo-v2.6-pro" | "cline-pass/minimax-m3" | "cline-pass/muse-spark-1.3-contributor" | "cline-pass/qwen3.7-max" | "cline-pass/qwen3.7-plus" | "cline-pass/qwen3.8-max"> = {
+  "apiKeyEnv": [
+    "CLINE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.cline.bot/api/v1"

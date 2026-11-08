@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const clarifai: Provider<"arcee_ai/AFM/models/trinity-mini" | "clarifai/main/models/mm-poly-8b" | "deepseek-ai/deepseek-ocr/models/DeepSeek-OCR" | "minimaxai/chat-completion/models/MiniMax-M2_5-high-throughput" | "mistralai/completion/models/Ministral-3-14B-Reasoning-2512" | "mistralai/completion/models/Ministral-3-3B-Reasoning-2512" | "moonshotai/chat-completion/models/Kimi-K2_6" | "openai/chat-completion/models/gpt-oss-120b-high-throughput" | "openai/chat-completion/models/gpt-oss-20b" | "qwen/qwenCoder/models/Qwen3-Coder-30B-A3B-Instruct" | "qwen/qwenLM/models/Qwen3-30B-A3B-Instruct-2507" | "qwen/qwenLM/models/Qwen3-30B-A3B-Thinking-2507"> = {
+  "apiKeyEnv": [
+    "CLARIFAI_PAT"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.clarifai.com/v2/ext/openai/v1"

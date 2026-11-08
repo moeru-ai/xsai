@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const stackit: Provider<"cortecs/Llama-3.3-70B-Instruct-FP8-Dynamic" | "google/gemma-3-27b-it" | "intfloat/e5-mistral-7b-instruct" | "openai/gpt-oss-120b" | "openai/gpt-oss-20b" | "Qwen/Qwen3-VL-235B-A22B-Instruct-FP8" | "Qwen/Qwen3-VL-Embedding-8B" | "Qwen/Qwen3.6-27B"> = {
+  "apiKeyEnv": [
+    "STACKIT_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.openai-compat.model-serving.eu01.onstackit.cloud/v1"

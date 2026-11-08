@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const vispark: Provider<"vispark/vision-large" | "vispark/vision-medium" | "vispark/vision-small"> = {
+  "apiKeyEnv": [
+    "VISPARK_LAB_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.lab.vispark.in/v1"

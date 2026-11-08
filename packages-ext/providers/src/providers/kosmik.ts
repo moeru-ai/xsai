@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const kosmik: Provider<"qwen/qwen3.8-27b"> = {
+  "apiKeyEnv": [
+    "KOSMIK_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.koscompute.com/v1"

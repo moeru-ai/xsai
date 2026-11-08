@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const xiaomiTokenPlanCn: Provider<"mimo-v2.5" | "mimo-v2.5-asr" | "mimo-v2.5-pro" | "mimo-v2.5-tts" | "mimo-v2.5-tts-voiceclone" | "mimo-v2.5-tts-voicedesign" | "mimo-v2.6-flash" | "mimo-v2.6-pro"> = {
+  "apiKeyEnv": [
+    "XIAOMI_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://token-plan-cn.xiaomimimo.com/v1"

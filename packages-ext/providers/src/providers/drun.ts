@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const drun: Provider<"public/deepseek-r1" | "public/deepseek-v3" | "public/minimax-m25"> = {
+  "apiKeyEnv": [
+    "DRUN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://chat.d.run/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const xpersona: Provider<"claude-fable-5" | "claude-haiku-4-5" | "claude-opus-4-8" | "claude-sonnet-4-6" | "gemini-3.5-flash" | "gpt-5.4" | "gpt-5.4-mini" | "gpt-5.5" | "gpt-5.6" | "gpt-5.6-sol" | "gpt-5.6-terra" | "xpersona-frieren-coder" | "xpersona-gpt-5.5"> = {
+  "apiKeyEnv": [
+    "XPERSONA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://www.xpersona.co/v1"

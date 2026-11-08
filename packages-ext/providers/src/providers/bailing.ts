@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const bailing: Provider<"Ling-1T" | "Ring-1T"> = {
+  "apiKeyEnv": [
+    "BAILING_API_TOKEN"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.tbox.cn/api/llm/v1"

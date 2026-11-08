@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const synthetic: Provider<"hf:deepseek-ai/DeepSeek-V4.1-Flash" | "hf:deepseek-ai/DeepSeek-V4.1-Flash-1017" | "hf:MiniMaxAI/MiniMax-M3" | "hf:moonshotai/Kimi-K2.7-Code" | "hf:moonshotai/Kimi-K3" | "hf:nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4" | "hf:openai/gpt-oss-120b" | "hf:Qwen/Qwen3.6-27B" | "hf:zai-org/GLM-4.7-Flash" | "hf:zai-org/GLM-5.2" | "hf:zai-org/GLM-5.3" | "hf:zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "SYNTHETIC_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.synthetic.new/openai/v1"

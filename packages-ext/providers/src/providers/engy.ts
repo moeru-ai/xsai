@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const engy: Provider<"deepseek-v4-flash-0731" | "deepseek-v4.1-flash" | "deepseek-v4.1-flash-1017" | "glm-5.2" | "glm-5.3" | "glm-5.3-flash" | "kimi-k3" | "qwen3.6-35b-a3b" | "qwen3.8-27b"> = {
+  "apiKeyEnv": [
+    "ENGY_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.engy.ai/v1"

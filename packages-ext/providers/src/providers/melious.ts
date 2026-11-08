@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const melious: Provider<"clef" | "clef-flash" | "deepseek-v4-flash-0731" | "deepseek-v4.1-flash" | "deepseek-v4.1-flash-1017" | "glm-5.3" | "glm-5.3-flash" | "kimi-k2.6" | "kimi-k2.7-code" | "kimi-k3"> = {
+  "apiKeyEnv": [
+    "MELIOUS_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.melious.ai/v1"

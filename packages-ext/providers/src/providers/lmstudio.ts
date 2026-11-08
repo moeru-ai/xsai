@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const lmstudio: Provider<"openai/gpt-oss-20b" | "qwen/qwen3-30b-a3b-2507" | "qwen/qwen3-coder-30b"> = {
+  "apiKeyEnv": [
+    "LMSTUDIO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "http://127.0.0.1:1234/v1"

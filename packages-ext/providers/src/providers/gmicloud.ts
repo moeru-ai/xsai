@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const gmicloud: Provider<"anthropic/claude-opus-4.6" | "anthropic/claude-opus-4.7" | "anthropic/claude-opus-4.8" | "anthropic/claude-sonnet-4.6" | "deepseek-ai/DeepSeek-V4-Flash" | "deepseek-ai/DeepSeek-V4-Pro" | "MiniMaxAI/MiniMax-M2.7" | "MiniMaxAI/MiniMax-M3" | "moonshotai/Kimi-K2.6" | "moonshotai/kimi-k2.7-code-highspeed" | "openai/gpt-5.5" | "Qwen/Qwen3.7-Max" | "Qwen/Qwen3.8-Flash" | "Qwen/Qwen3.8-Max" | "zai-org/GLM-5-FP8" | "zai-org/GLM-5.1-FP8" | "zai-org/GLM-5.2-FP8"> = {
+  "apiKeyEnv": [
+    "GMICLOUD_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.gmi-serving.com/v1"

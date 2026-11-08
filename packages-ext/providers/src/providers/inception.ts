@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const inception: Provider<"mercury-2" | "mercury-2.5" | "mercury-3" | "mercury-decide" | "mercury-edit-2"> = {
+  "apiKeyEnv": [
+    "INCEPTION_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.inceptionlabs.ai/v1"

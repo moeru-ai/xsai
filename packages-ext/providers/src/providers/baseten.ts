@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const baseten: Provider<"decision-models/baseten-elephant-9b-latest" | "decision-models/baseten-mammoth-27b-latest" | "deepseek-ai/DeepSeek-V4-Flash-0731" | "deepseek-ai/DeepSeek-V4-Pro-0813" | "deepseek-ai/DeepSeek-V4.1-Flash" | "deepseek-ai/DeepSeek-V4.1-Flash-1017" | "deepseek-ai/DeepSeek-V4.1-Flash-1017-Fast" | "deepseek-ai/DeepSeek-V4.1-Flash-Fast" | "moonshotai/Kimi-K3" | "moonshotai/Kimi-K3.1-Pro" | "nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B" | "openai/gpt-oss-120b" | "zai-org/GLM-5.2" | "zai-org/GLM-5.2-Fast" | "zai-org/GLM-5.3" | "zai-org/GLM-5.3-Fast" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "BASETEN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.baseten.co/v1"

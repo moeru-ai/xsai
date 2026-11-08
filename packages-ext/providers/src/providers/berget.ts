@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const berget: Provider<"google/gemma-4-31B-it" | "mistralai/Mistral-Small-3.2-24B-Instruct-2506" | "moonshotai/Kimi-K3" | "Qwen/Qwen3.8-27B-FP8" | "zai-org/GLM-5.2" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "BERGET_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.berget.ai/v1"

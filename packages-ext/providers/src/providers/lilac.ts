@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const lilac: Provider<"google/gemma-4-31b-it" | "minimaxai/minimax-m3" | "moonshotai/kimi-k2.6" | "zai-org/glm-5.2"> = {
+  "apiKeyEnv": [
+    "LILAC_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.getlilac.com/v1"

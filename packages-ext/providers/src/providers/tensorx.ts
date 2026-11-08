@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const tensorx: Provider<"deepseek/deepseek-r1-0528" | "deepseek/deepseek-v3.2" | "deepseek/deepseek-v4-flash-0731" | "deepseek/deepseek-v4-pro" | "deepseek/deepseek-v4-pro-0813" | "deepseek/deepseek-v4.1-flash" | "minimax/minimax-m2.5" | "minimax/minimax-m3" | "moonshotai/kimi-k2.5" | "moonshotai/kimi-k2.6" | "moonshotai/kimi-k2.7-code" | "moonshotai/kimi-k3" | "qwen/qwen3-235b-a22b-2507" | "qwen/qwen3.5-122b-a10b" | "qwen/qwen3.5-9b" | "qwen/qwen3.8-2.4t-a95b" | "qwen/qwen3.8-27b" | "qwen/qwen3.8-flash-next" | "z-ai/glm-5" | "z-ai/glm-5-turbo" | "z-ai/glm-5.1" | "z-ai/glm-5.2" | "z-ai/glm-5.3" | "z-ai/glm-5.3-flash" | "z-ai/glm-5v-turbo"> = {
+  "apiKeyEnv": [
+    "TENSORX_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.tensorx.ai/v1"

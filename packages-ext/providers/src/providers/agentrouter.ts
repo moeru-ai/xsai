@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const agentrouter: Provider<"claude-opus-4-8" | "claude-opus-5" | "deepseek-v4-flash" | "glm-5.3" | "gpt-5.6-sol"> = {
+  "apiKeyEnv": [
+    "AGENTROUTER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://agentrouter.org/v1"

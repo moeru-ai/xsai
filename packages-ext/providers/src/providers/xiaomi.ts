@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const xiaomi: Provider<"mimo-v2.5" | "mimo-v2.5-asr" | "mimo-v2.5-pro" | "mimo-v2.5-pro-ultraspeed" | "mimo-v2.5-tts" | "mimo-v2.5-tts-voiceclone" | "mimo-v2.5-tts-voicedesign" | "mimo-v2.6-flash" | "mimo-v2.6-pro" | "mimo-v2.6-pro-ultraspeed"> = {
+  "apiKeyEnv": [
+    "XIAOMI_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.xiaomimimo.com/v1"

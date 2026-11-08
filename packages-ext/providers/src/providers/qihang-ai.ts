@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const qihangAi: Provider<"claude-haiku-4-5-20251001" | "claude-opus-4-5-20251101" | "claude-sonnet-4-5-20250929" | "gemini-2.5-flash" | "gemini-3-flash-preview" | "gemini-3-pro-preview" | "gpt-5-mini" | "gpt-5.2" | "gpt-5.2-codex"> = {
+  "apiKeyEnv": [
+    "QIHANG_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.qhaigc.net/v1"

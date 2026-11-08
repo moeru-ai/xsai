@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const vancine: Provider<"deepseek-v4.1-flash" | "glm-5.3" | "glm-5.3-flash" | "hy4-preview" | "kimi-k3" | "MiniMax-M3" | "qwen3.8-flash" | "qwen3.8-max"> = {
+  "apiKeyEnv": [
+    "VANCINE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://vancine.com/v1"

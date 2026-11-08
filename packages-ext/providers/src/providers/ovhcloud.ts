@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const ovhcloud: Provider<"gpt-oss-120b" | "gpt-oss-20b" | "meta-llama-3_3-70b-instruct" | "mistral-small-3.2-24b-instruct-2506" | "qwen2.5-vl-72b-instruct" | "qwen3.5-397b-a17b" | "qwen3.5-9b" | "qwen3.6-27b" | "qwen3.8-27b" | "qwen3guard-gen-0.6b" | "qwen3guard-gen-8b"> = {
+  "apiKeyEnv": [
+    "OVHCLOUD_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1"

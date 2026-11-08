@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const alibabaTokenPlan: Provider<"deepseek-v3.2" | "deepseek-v4-flash" | "deepseek-v4-flash-0731" | "deepseek-v4-pro" | "deepseek-v4-pro-0813" | "deepseek-v4.1-flash" | "deepseek-v4.1-flash-1017" | "glm-5" | "glm-5.1" | "glm-5.2" | "glm-5.3" | "kimi-k2.5" | "kimi-k2.6" | "kimi-k2.7-code" | "MiniMax-M2.5" | "qwen-audio-3.0-asr-flash" | "qwen-image-2.0" | "qwen-image-2.0-pro" | "qwen-image-3.0-pro" | "qwen3.6-flash" | "qwen3.6-plus" | "qwen3.7-max" | "qwen3.7-plus" | "qwen3.8-flash" | "qwen3.8-max" | "qwen3.8-max-preview" | "wan2.7-image" | "wan2.7-image-pro"> = {
+  "apiKeyEnv": [
+    "ALIBABA_TOKEN_PLAN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"

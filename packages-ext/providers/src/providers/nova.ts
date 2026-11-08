@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const nova: Provider<"nova-2-lite-v1" | "nova-2-pro-v1"> = {
+  "apiKeyEnv": [
+    "NOVA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.nova.amazon.com/v1"

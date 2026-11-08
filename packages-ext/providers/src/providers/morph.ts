@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const morph: Provider<"auto" | "morph-dsv41flash" | "morph-dsv41flash-1017" | "morph-dsv4flash" | "morph-glm52-744b" | "morph-glm53-744b" | "morph-glm53flash" | "morph-kimik3" | "morph-kimik3-fast" | "morph-kimik31" | "morph-v3-fast" | "morph-v3-large" | "reflex"> = {
+  "apiKeyEnv": [
+    "MORPH_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.morphllm.com/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const meganova: Provider<"deepseek-ai/DeepSeek-R1-0528" | "deepseek-ai/DeepSeek-V3-0324" | "deepseek-ai/DeepSeek-V3.1" | "deepseek-ai/DeepSeek-V3.2" | "deepseek-ai/DeepSeek-V3.2-Exp" | "meta-llama/Llama-3.3-70B-Instruct" | "MiniMaxAI/MiniMax-M2.1" | "MiniMaxAI/MiniMax-M2.5" | "mistralai/Mistral-Nemo-Instruct-2407" | "mistralai/Mistral-Small-3.2-24B-Instruct-2506" | "moonshotai/Kimi-K2-Thinking" | "moonshotai/Kimi-K2.5" | "Qwen/Qwen2.5-VL-32B-Instruct" | "Qwen/Qwen3-235B-A22B-Instruct-2507" | "Qwen/Qwen3.5-Plus" | "XiaomiMiMo/MiMo-V2-Flash" | "zai-org/GLM-4.6" | "zai-org/GLM-4.7" | "zai-org/GLM-5"> = {
+  "apiKeyEnv": [
+    "MEGANOVA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.meganova.ai/v1"

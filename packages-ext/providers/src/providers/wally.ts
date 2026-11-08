@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const wally: Provider<"deepseek-v4-flash-0731" | "deepseek-v4-pro-fast" | "deepseek-v4.1-flash" | "deepseek-v4.1-flash-fast" | "glm-5.3-fast" | "glm-5.3-flash" | "kimi-k3" | "minimax-m3"> = {
+  "apiKeyEnv": [
+    "WALLY_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.runanywhere.ai/v1"

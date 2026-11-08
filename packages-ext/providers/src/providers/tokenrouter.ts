@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const tokenrouter: Provider<"z-ai/glm-5.3-free"> = {
+  "apiKeyEnv": [
+    "TOKENROUTER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.tokenrouter.com/v1"

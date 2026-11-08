@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const tencentTokenPlan: Provider<"hy3" | "hy4" | "hy4-preview"> = {
+  "apiKeyEnv": [
+    "TENCENT_TOKEN_PLAN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.lkeap.cloud.tencent.com/plan/v3"

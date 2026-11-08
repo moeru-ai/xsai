@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const wallaby: Provider<"moonshotai/kimi-k3"> = {
+  "apiKeyEnv": [
+    "WALLABY_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.wallabytoken.com/v1"

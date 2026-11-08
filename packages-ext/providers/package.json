@@ -22,11 +22,7 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
-    "./text": "./src/text.ts",
-    "./embed": "./src/embed.ts",
-    "./image": "./src/image.ts",
-    "./audio": "./src/audio.ts",
-    "./decide": "./src/decide.ts",
+    "./create": "./src/create.ts",
     "./full": "./src/full.ts",
     "./*": "./src/providers/*.ts"
   },
@@ -43,25 +39,9 @@
         "default": "./dist/index.js"
       },
       "./package.json": "./package.json",
-      "./text": {
-        "types": "./dist/text.d.ts",
-        "default": "./dist/text.js"
-      },
-      "./embed": {
-        "types": "./dist/embed.d.ts",
-        "default": "./dist/embed.js"
-      },
-      "./image": {
-        "types": "./dist/image.d.ts",
-        "default": "./dist/image.js"
-      },
-      "./audio": {
-        "types": "./dist/audio.d.ts",
-        "default": "./dist/audio.js"
-      },
-      "./decide": {
-        "types": "./dist/decide.d.ts",
-        "default": "./dist/decide.js"
+      "./create": {
+        "types": "./dist/create.d.ts",
+        "default": "./dist/create.js"
       },
       "./full": {
         "types": "./dist/full.d.ts",

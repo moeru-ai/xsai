@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const moark: Provider<"DeepSeek-V4-Flash" | "deepseek-v4-flash-0731" | "DeepSeek-V4-Pro" | "GLM-4.7" | "GLM-5.3" | "Kimi-K2.6" | "kimi-k3" | "MiniMax-M2.1" | "MiniMax-M2.7" | "Qwen3.6-Flash"> = {
+  "apiKeyEnv": [
+    "MOARK_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://moark.com/v1"

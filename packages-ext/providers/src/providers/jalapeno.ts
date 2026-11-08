@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const jalapeno: Provider<"DeepSeek-V4-Flash" | "DeepSeek-V4-Pro" | "GLM-5.1" | "GLM-5.2" | "Hy3" | "Kimi-K2.5" | "Kimi-K2.7-Code" | "Kimi-K3" | "MiniMax-M3" | "Qwen3-Next-80B-A3B-Instruct" | "Qwen3-Next-80B-A3B-Thinking" | "Qwen3-VL-235B-A22B-Instruct" | "Qwen3-VL-235B-A22B-Thinking" | "Qwen3.5-122B-A10B" | "Qwen3.5-27B" | "Qwen3.5-35B-A3B" | "Qwen3.5-397B-A17B"> = {
+  "apiKeyEnv": [
+    "JALAPENO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.jalapeno-cloud.ai/v1"

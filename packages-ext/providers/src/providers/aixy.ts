@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const aixy: Provider<"anthropic/claude-fable-5-1" | "anthropic/claude-haiku-5-5" | "anthropic/claude-opus-5-5" | "anthropic/claude-sonnet-5-5" | "gemini/gemini-3.8-flash" | "gemini/gemini-4-argon" | "openai/gpt-5.6-luna" | "openai/gpt-5.6-sol" | "openai/gpt-5.6-terra" | "openai/gpt-6-astra" | "openai/gpt-6-luna" | "openai/gpt-6-sol" | "openai/gpt-6.1-sol"> = {
+  "apiKeyEnv": [
+    "AIXY_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.aixy-gateway.com/v1"

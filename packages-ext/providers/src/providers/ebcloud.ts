@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const ebcloud: Provider<"DeepSeek-V4-Flash" | "DeepSeek-V4-Pro" | "GLM-5.1" | "Kimi-K2.6"> = {
+  "apiKeyEnv": [
+    "EBCLOUD_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://maas-api.ebcloud.com/v1"

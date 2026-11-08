@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const iteracompute: Provider<"deepseek/deepseek-v4-flash-0731" | "deepseek/deepseek-v4-pro-0813" | "deepseek/deepseek-v4.1-flash" | "minimax/minimax-m3" | "moonshotai/kimi-k2.7-code" | "moonshotai/kimi-k3" | "qwen/qwen3.8-2.4t-a95b" | "qwen/qwen3.8-27b" | "z-ai/glm-5.3" | "z-ai/glm-5.3-flash"> = {
+  "apiKeyEnv": [
+    "ITERACOMPUTE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.iteracompute.com/v1"

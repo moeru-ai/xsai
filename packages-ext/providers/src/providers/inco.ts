@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const inco: Provider<"deepseek-v4.1-flash:fast" | "glm-5.3" | "glm-5.3-flash:fast" | "glm-5.3:fast" | "kimi-k3:fast" | "minimax-m3" | "minimax-m3:fast"> = {
+  "apiKeyEnv": [
+    "INCO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.inco.ai/v1"

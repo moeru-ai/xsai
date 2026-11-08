@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const perplexity: Provider<"sonar" | "sonar-deep-research" | "sonar-pro" | "sonar-reasoning-pro"> = {
+  "apiKeyEnv": [
+    "PERPLEXITY_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.perplexity.ai"

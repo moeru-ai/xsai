@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const empiriolabs: Provider<"deepseek-v4-1-flash-1017" | "deepseek-v4-flash-0731" | "deepseek-v4-pro" | "deepseek-v4-pro-0813" | "fugu-max" | "fugu-ultra-v1-0" | "fugu-ultra-v1-1" | "fugu-ultra-v2-0" | "gemma-3-27b" | "gemma-4-26b-a4b" | "glm-4-5-flash" | "glm-4-6v-flash" | "glm-4-7-flash" | "glm-4-7-flashx" | "glm-5-1" | "glm-5-2" | "glm-5-3" | "glm-5-3-flash" | "kimi-k2-6" | "kimi-k2-7-code" | "kimi-k2-7-code-highspeed" | "kimi-k3" | "kimi-k3-1-pro" | "mimo-v2-6-flash" | "mimo-v2-6-pro" | "mimo-v2-6-pro-ultraspeed" | "minimax-m2-7" | "minimax-m2-7-highspeed" | "minimax-m3" | "minimax-m3-1-flash" | "mistral-small-4" | "muse-glimmer-30b" | "muse-spark-1-1" | "muse-spark-1-2" | "muse-spark-1-3" | "qwen3-5-122b-a10b" | "qwen3-5-27b" | "qwen3-5-35b-a3b" | "qwen3-5-397b-a17b" | "qwen3-5-4b" | "qwen3-5-9b" | "qwen3-5-flash" | "qwen3-5-plus" | "qwen3-6-27b" | "qwen3-6-35b-a3b" | "qwen3-6-flash" | "qwen3-6-plus" | "qwen3-7-flash" | "qwen3-7-max" | "qwen3-7-plus" | "qwen3-8-27b" | "qwen3-8-flash" | "qwen3-8-max" | "qwen3-8-max-0902" | "qwen3-8-omni-flash" | "seed-2-0-code" | "seed-2-0-lite" | "seed-2-0-mini" | "seed-2-0-pro" | "seed-2-1-turbo" | "step-3-5-flash" | "step-3-5-flash-2603" | "step-3-7-flash" | "step-5-preview"> = {
+  "apiKeyEnv": [
+    "EMPIRIOLABS_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.empiriolabs.ai/v1"

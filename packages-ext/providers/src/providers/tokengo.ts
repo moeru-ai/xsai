@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const tokengo: Provider<"deepseek/deepseek-v3.1" | "deepseek/deepseek-v3.2" | "deepseek/deepseek-v4-flash" | "deepseek/deepseek-v4-pro" | "minimax/minimax-m2.5" | "moonshotai/kimi-k2.6" | "moonshotai/kimi-k3" | "qwen/qwen3.5-397b-a17b" | "z-ai/glm-5" | "z-ai/glm-5.1" | "z-ai/glm-5.2" | "z-ai/glm-5.3" | "z-ai/glm-5.3-flash"> = {
+  "apiKeyEnv": [
+    "TOKENGO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.tokengo.com/v1"

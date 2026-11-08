@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const cloudferroSherlock: Provider<"meta-llama/Llama-3.3-70B-Instruct" | "MiniMaxAI/MiniMax-M2.5" | "openai/gpt-oss-120b" | "speakleash/Bielik-11B-v3.0-Instruct" | "zai-org/GLM-5.3"> = {
+  "apiKeyEnv": [
+    "CLOUDFERRO_SHERLOCK_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api-sherlock.cloudferro.com/openai/v1"

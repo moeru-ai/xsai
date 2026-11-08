@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const infer: Provider<"infer/gpt-5.6-sol:official" | "infer/gpt-6-astra:official"> = {
+  "apiKeyEnv": [
+    "INFER_API_KEY"
+  ],
   "defaults": {
     "responses": {
       "baseURL": "https://infer.flow7.org/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const liquid: Provider<"liquid.auto"> = {
+  "apiKeyEnv": [
+    "LIQUID_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://router.inference.ai.exchange/v1"

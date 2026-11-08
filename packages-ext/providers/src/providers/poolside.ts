@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const poolside: Provider<"poolside/laguna-m.1" | "poolside/laguna-s-2.1" | "poolside/laguna-xs-2.1"> = {
+  "apiKeyEnv": [
+    "POOLSIDE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.poolside.ai/v1"

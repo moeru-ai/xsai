@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const nan: Provider<"deepseek-v4-flash" | "gemma4" | "glm5.3" | "glm5.3-flash" | "mimo-v2.6-flash" | "qwen-image-2.1" | "qwen3.6" | "qwen3.8-flash"> = {
+  "apiKeyEnv": [
+    "NAN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.nan.builders/v1"

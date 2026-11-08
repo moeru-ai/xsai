@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const crusoe: Provider<"deepseek-ai/DeepSeek-V3-0324" | "google/gemma-4-31b-it" | "meta-llama/Llama-3.3-70B-Instruct" | "moonshotai/Kimi-K2.6" | "nvidia/Nemotron-3-Nano-Omni-Reasoning-30B-A3B" | "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B" | "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B" | "openai/gpt-oss-120b" | "Qwen/Qwen3-235B-A22B-Instruct-2507" | "zai/GLM-5.1" | "zai/GLM-5.2"> = {
+  "apiKeyEnv": [
+    "CRUSOE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.inference.crusoecloud.com/v1"

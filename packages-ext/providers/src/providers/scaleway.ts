@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const scaleway: Provider<"bge-multilingual-gemma2" | "deepseek-v4-flash-0731" | "deepseek-v4.1-flash-1017" | "gemma-4-26b-a4b-it" | "glm-5.2" | "glm-5.3" | "gpt-oss-120b" | "lightonocr-3-0.8b" | "llama-3.3-70b-instruct" | "mistral-medium-3.5-128b" | "mistral-small-3.2-24b-instruct-2506" | "qwen3-235b-a22b-instruct-2507" | "qwen3-embedding-8b" | "qwen3.5-397b-a17b" | "qwen3.6-35b-a3b" | "qwen3.8-27b" | "whisper-large-v3"> = {
+  "apiKeyEnv": [
+    "SCALEWAY_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.scaleway.ai/v1"

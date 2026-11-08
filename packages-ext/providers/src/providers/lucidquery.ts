@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const lucidquery: Provider<"lucidnova-rf1-100b" | "lucidquery-agi-01-frontier" | "lucidquery-agi-01-swift" | "lucidquery-nexus-coder"> = {
+  "apiKeyEnv": [
+    "LUCIDQUERY_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.lucidquery.com/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const watsonx: Provider<"ibm/granite-4-h-small" | "meta-llama/llama-3-3-70b-instruct" | "meta-llama/llama-4-maverick-17b-128e-instruct-fp8" | "mistralai/mistral-small-3-1-24b-instruct-2503" | "openai/gpt-oss-120b"> = {
+  "apiKeyEnv": [
+    "WATSONX_AI_APIKEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://${WATSONX_REGION}.ml.cloud.ibm.com"

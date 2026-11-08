@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const reflection: Provider<"Beam-1.0-501B-A23B"> = {
+  "apiKeyEnv": [
+    "REFLECTION_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.reflection.ai/openai/v1"

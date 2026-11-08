@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const echo: Provider<"echo"> = {
+  "apiKeyEnv": [
+    "ECHO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://echo.tracerml.ai/v1"

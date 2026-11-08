@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const above: Provider<"deepseek-v4-flash" | "deepseek-v4-pro" | "deepseek-v4.1-flash" | "glm-5.2" | "glm-5.2-fast" | "glm-5.3-flash" | "mimo-v2.6-flash" | "mimo-v2.6-pro" | "mimo-v2.6-pro-ultraspeed" | "qwen3.8-max"> = {
+  "apiKeyEnv": [
+    "ABOVE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.above.dev/v1"

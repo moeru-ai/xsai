@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const alibaba: Provider<"deepseek-v4-flash-0731" | "deepseek-v4-pro" | "deepseek-v4-pro-0813" | "deepseek-v4.1-flash" | "deepseek-v4.1-flash-1017" | "glm-5.1" | "glm-5.2" | "glm-5.3" | "kimi-k2.7-code" | "kimi-k3" | "qvq-max" | "qwen-flash" | "qwen-image-2.0" | "qwen-image-2.0-pro" | "qwen-max" | "qwen-mt-plus" | "qwen-mt-turbo" | "qwen-omni-turbo" | "qwen-plus" | "qwen-plus-character-ja" | "qwen-turbo" | "qwen-vl-max" | "qwen-vl-ocr" | "qwen-vl-plus" | "qwen2-5-omni-7b" | "qwen3-14b" | "qwen3-235b-a22b" | "qwen3-32b" | "qwen3-8b" | "qwen3-asr-flash" | "qwen3-coder-30b-a3b-instruct" | "qwen3-coder-480b-a35b-instruct" | "qwen3-coder-flash" | "qwen3-coder-plus" | "qwen3-max" | "qwen3-next-80b-a3b-instruct" | "qwen3-next-80b-a3b-thinking" | "qwen3-omni-flash" | "qwen3-vl-235b-a22b" | "qwen3-vl-30b-a3b" | "qwen3-vl-plus" | "qwen3.5-122b-a10b" | "qwen3.5-27b" | "qwen3.5-35b-a3b" | "qwen3.5-397b-a17b" | "qwen3.5-flash" | "qwen3.5-plus" | "qwen3.6-27b" | "qwen3.6-35b-a3b" | "qwen3.6-flash" | "qwen3.6-max-preview" | "qwen3.6-plus" | "qwen3.7-flash" | "qwen3.7-max" | "qwen3.7-plus" | "qwen3.8-2.4t-a95b" | "qwen3.8-27b" | "qwen3.8-flash" | "qwen3.8-max" | "qwen3.8-max-0902" | "qwen3.8-omni-flash" | "qwq-plus" | "wan2.7-image" | "wan2.7-image-pro"> = {
+  "apiKeyEnv": [
+    "DASHSCOPE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"

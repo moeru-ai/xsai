@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const aiand: Provider<"deepseek-ai/deepseek-v4-pro" | "deepseek-ai/deepseek-v4.1-flash-1017" | "google/gemma-4-31b-it" | "meta/muse-spark-open" | "moonshotai/kimi-k3" | "moonshotai/kimi-k3.1-pro" | "motif-technologies/motif-3" | "openai/gpt-oss-120b" | "qwen/qwen3.6-27b" | "qwen/qwen3.8-27b" | "zai-org/glm-5.3" | "zai-org/glm-5.3-flash"> = {
+  "apiKeyEnv": [
+    "AIAND_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.aiand.com/v1"

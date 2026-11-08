@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const regoloAi: Provider<"apertus-70b" | "brick-complexity-pro" | "brick-v1-beta" | "deepseek-ocr-2" | "faster-whisper-large-v3" | "gemma4-31b" | "glm5.2" | "gpt-oss-120b" | "gpt-oss-20b" | "llama-3.3-70b-instruct" | "mistral-small-4-119b" | "qwen-image" | "qwen3-coder-next" | "qwen3-embedding-8b" | "qwen3.5-122b" | "qwen3.5-9b" | "qwen3.8-27b"> = {
+  "apiKeyEnv": [
+    "REGOLO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.regolo.ai/v1"

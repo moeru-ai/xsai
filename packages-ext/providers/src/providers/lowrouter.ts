@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const lowrouter: Provider<"auto/mistralai/codestral-2508" | "auto/mistralai/ministral-14b-2512" | "auto/mistralai/ministral-3b-2512" | "auto/mistralai/ministral-8b-2512" | "auto/mistralai/mistral-large-2512" | "auto/mistralai/mistral-large-4" | "auto/mistralai/mistral-medium-3.5" | "auto/mistralai/mistral-small-2603" | "auto/openai/gpt-4.1" | "auto/openai/gpt-4.1-mini" | "auto/openai/gpt-4o" | "auto/openai/gpt-4o-mini" | "auto/openai/gpt-5" | "auto/openai/gpt-5-mini" | "auto/openai/gpt-5-nano" | "auto/openai/gpt-5.2" | "auto/openai/gpt-5.4" | "auto/openai/gpt-5.4-mini" | "auto/openai/gpt-5.5" | "auto/openai/gpt-5.6-luna" | "auto/openai/gpt-5.6-sol" | "auto/openai/gpt-5.6-terra" | "auto/openai/gpt-6-astra" | "auto/openai/gpt-6-luna" | "auto/openai/gpt-6-sol" | "auto/openai/gpt-6.1-sol" | "auto/openai/gpt-6.1-terra" | "auto/openai/gpt-oss-120b" | "auto/openai/gpt-oss-20b" | "auto/openai/gpt-oss-safeguard-120b" | "auto/openai/gpt-oss-safeguard-20b" | "auto/openai/o3"> = {
+  "apiKeyEnv": [
+    "LOWROUTER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.lowrouter.ai/v1"

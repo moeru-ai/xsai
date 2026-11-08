@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const akiIo: Provider<"deepseek-v4.1-flash-552b" | "gemma4-26b" | "glm5.3-754b" | "gpt-oss-120b" | "mistral4-119b" | "qwen3.6-35b" | "qwen3.8-27b"> = {
+  "apiKeyEnv": [
+    "AKI_IO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://aki.io/v1"

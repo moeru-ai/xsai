@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const thinkingmachines: Provider<"deepseek-ai/DeepSeek-V3.1" | "deepseek-ai/DeepSeek-V4.1-Flash-1017:peft:262144" | "deepseek-ai/DeepSeek-V4.1-Flash:peft:262144" | "moonshotai/Kimi-K2.6" | "moonshotai/Kimi-K2.6:peft:131072" | "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16" | "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16" | "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16:peft:262144" | "nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B-BF16" | "nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B-BF16:peft:262144" | "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16" | "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16:peft:262144" | "nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16" | "nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16:peft:262144" | "openai/gpt-oss-120b" | "openai/gpt-oss-120b:peft:131072" | "openai/gpt-oss-20b" | "Qwen/Qwen3-8B" | "Qwen/Qwen3.5-35B-A3B-Base" | "Qwen/Qwen3.5-397B-A17B" | "Qwen/Qwen3.5-397B-A17B:peft:262144" | "Qwen/Qwen3.5-4B" | "Qwen/Qwen3.5-4B:peft:262144" | "Qwen/Qwen3.5-9B" | "Qwen/Qwen3.5-9B-Base" | "Qwen/Qwen3.6-27B" | "Qwen/Qwen3.6-35B-A3B" | "Qwen/Qwen3.6-35B-A3B:peft:262144" | "Qwen/Qwen3.8-27B" | "Qwen/Qwen3.8-27B:peft:262144" | "thinkingmachines/Inkling" | "thinkingmachines/Inkling-Small" | "thinkingmachines/Inkling-Small:peft:262144" | "thinkingmachines/Inkling-Small:peft:262144:sampling-nvfp4" | "thinkingmachines/Inkling:peft:262144" | "thinkingmachines/Inkling:peft:262144:sampling-nvfp4" | "zai-org/GLM-5.3-Flash:peft:262144" | "zai-org/GLM-5.3:peft:262144"> = {
+  "apiKeyEnv": [
+    "TINKER_API_KEY"
+  ],
   "defaults": {
     "messages": {
       "baseURL": "https://tinker.thinkingmachines.dev/services/tinker-prod/anthropic/api/v1"

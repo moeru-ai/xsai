@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const neon: Provider<"bge-large-en" | "claude-fable-5" | "claude-fable-5-1" | "claude-haiku-4-5" | "claude-haiku-5-5" | "claude-opus-4-1" | "claude-opus-4-5" | "claude-opus-4-6" | "claude-opus-4-7" | "claude-opus-4-8" | "claude-opus-5" | "claude-opus-5-5" | "claude-sonnet-4-5" | "claude-sonnet-4-6" | "claude-sonnet-5" | "claude-sonnet-5-5" | "deepseek-v4-1-flash" | "gemini-3-1-flash-lite" | "gemini-3-1-pro" | "gemini-3-5-flash" | "gemini-3-5-flash-lite" | "gemini-3-6-flash" | "gemini-3-7-flash" | "gemini-3-8-flash" | "gemini-3-flash" | "gemini-4-argon" | "gemma-3-12b" | "glm-5-2" | "glm-5-3" | "glm-5-3-flash" | "gpt-5" | "gpt-5-1" | "gpt-5-2" | "gpt-5-3-codex" | "gpt-5-4" | "gpt-5-4-mini" | "gpt-5-4-nano" | "gpt-5-5" | "gpt-5-5-pro" | "gpt-5-6-luna" | "gpt-5-6-sol" | "gpt-5-6-terra" | "gpt-5-mini" | "gpt-5-nano" | "gpt-6-1-sol" | "gpt-6-astra" | "gpt-6-luna" | "gpt-6-sol" | "gpt-oss-120b" | "gpt-oss-20b" | "grok-4-6" | "grok-4-7" | "gte-large-en" | "inkling" | "kimi-k3" | "llama-4-maverick" | "meta-llama-3-1-8b-instruct" | "meta-llama-3-3-70b-instruct" | "qwen3-embedding-0-6b" | "qwen3-next-80b-a3b-instruct" | "qwen35-122b-a10b"> = {
+  "apiKeyEnv": [
+    "NEON_AI_GATEWAY_TOKEN"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "${NEON_AI_GATEWAY_BASE_URL}/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const theGridAi: Provider<"agent-max" | "agent-prime" | "agent-standard" | "bytedance-pro-latest" | "claude-opus-latest" | "code-max" | "code-prime" | "code-standard" | "deepseek-pro-latest" | "gemini-pro-latest" | "glm-latest" | "gpt-sol-latest" | "kimi-latest" | "minimax-latest" | "text-max" | "text-prime" | "text-standard"> = {
+  "apiKeyEnv": [
+    "THEGRID_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.thegrid.ai/v1"

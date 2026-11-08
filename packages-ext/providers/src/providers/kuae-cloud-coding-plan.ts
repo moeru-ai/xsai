@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const kuaeCloudCodingPlan: Provider<"GLM-4.7"> = {
+  "apiKeyEnv": [
+    "KUAE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://coding-plan-endpoint.kuaecloud.net/v1"

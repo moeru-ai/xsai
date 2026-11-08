@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const nvidia: Provider<"black-forest-labs/flux_1-kontext-dev" | "black-forest-labs/flux_1-schnell" | "black-forest-labs/flux_2-klein-4b" | "black-forest-labs/flux.1-dev" | "deepseek-ai/deepseek-v4.1-flash" | "google/diffusiongemma-26b-a4b-it" | "google/gemma-3-12b-it" | "google/gemma-3-4b-it" | "google/gemma-4-31b-it" | "google/google-paligemma" | "meta/llama-3.2-11b-vision-instruct" | "meta/llama-3.2-90b-vision-instruct" | "meta/llama-guard-4-12b" | "meta/muse-glimmer-30b" | "minimaxai/minimax-m3.1-flash" | "mistralai/magistral-small-2506" | "mistralai/mistral-7b-instruct-v0.3" | "mistralai/mistral-medium-3-instruct" | "moonshotai/kimi-k2.6" | "moonshotai/kimi-k3" | "nvidia/active-speaker-detection" | "nvidia/bevformer" | "nvidia/cosmos-reason2-8b" | "nvidia/llama-3.1-nemotron-70b-instruct" | "nvidia/llama-3.1-nemotron-safety-guard-8b-v3" | "nvidia/llama-3.1-nemotron-ultra-253b-v1" | "nvidia/llama-nemotron-embed-vl-1b-v2" | "nvidia/magpie-tts-zeroshot" | "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning" | "nvidia/nemotron-3-ultra-550b-a55b" | "nvidia/nemotron-3.5-content-safety" | "nvidia/nemotron-3.5-lightning-30b-a3b" | "nvidia/nemotron-3.5-super-vl-120b-a12b" | "nvidia/nemotron-voicechat" | "nvidia/riva-translate-4b-instruct-v1.1" | "nvidia/sparsedrive" | "nvidia/streampetr" | "nvidia/studiovoice" | "nvidia/synthetic-video-detector" | "nvidia/usdcode" | "nvidia/usdvalidate" | "openai/gpt-oss-20b" | "openai/whisper-large-v3" | "poolside/laguna-xs-2.1" | "qwen/qwen-image" | "qwen/qwen-image-edit" | "stepfun-ai/step-5-preview" | "z-ai/glm-5.3" | "z-ai/glm-5.3-flash"> = {
+  "apiKeyEnv": [
+    "NVIDIA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://integrate.api.nvidia.com/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const chutes: Provider<"deepseek-ai/DeepSeek-V3.2-TEE" | "deepseek-ai/DeepSeek-V4-Flash-0731-TEE" | "deepseek-ai/DeepSeek-V4-Pro-0813" | "deepseek-ai/DeepSeek-V4.1-Flash-1017" | "google/gemma-4-31B-turbo-TEE" | "moonshotai/Kimi-K2.6-TEE" | "moonshotai/Kimi-K2.7-Code" | "moonshotai/Kimi-K3-TEE" | "Qwen/Qwen3.5-397B-A17B-TEE" | "Qwen/Qwen3.6-27B-TEE" | "Qwen/Qwen3.8-2.4T-A95B" | "Qwen/Qwen3.8-27B-TEE" | "Qwen/Qwen3.8-Max-0902" | "tencent/Hy4" | "zai-org/GLM-5.1-TEE" | "zai-org/GLM-5.2-Fast" | "zai-org/GLM-5.2-TEE" | "zai-org/GLM-5.3"> = {
+  "apiKeyEnv": [
+    "CHUTES_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://llm.chutes.ai/v1"

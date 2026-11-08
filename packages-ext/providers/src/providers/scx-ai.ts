@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const scxAi: Provider<"GLM-5.2" | "gpt-oss-120b" | "MiniMax-M2.7" | "Qwen3.8-Max"> = {
+  "apiKeyEnv": [
+    "SCX_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.scx.ai/v1"

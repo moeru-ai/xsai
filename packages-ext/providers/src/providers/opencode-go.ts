@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const opencodeGo: Provider<"beam-free" | "cat-jam-free" | "claude-haiku-5-5" | "crouton-alpha-free" | "deepseek-v4-pro" | "deepseek-v4.1-flash" | "gemini-4-argon" | "gemini-4-argon-contributor" | "glm-5.2" | "glm-5.3" | "glm-5.3-flash" | "gpt-5.6-luna" | "gpt-6-luna" | "grok-4.7" | "hy3" | "hy4" | "hy4-preview" | "iceman-contributor-free" | "kimi-k2.7-code" | "kimi-k3" | "kimi-k3.1-pro" | "longcat-2.0" | "longcat-2.5-preview-free" | "mimo-v2.5" | "mimo-v2.5-pro" | "mimo-v2.6-flash" | "mimo-v2.6-pro" | "minimax-m2.7" | "minimax-m3" | "minimax-m3.1-flash" | "minimax-m3.1-flash-free" | "muse-spark-1.2-contributor" | "muse-spark-1.3-contributor" | "qwen3.7-plus" | "qwen3.8-flash" | "qwen3.8-max" | "space-bunny" | "step-5-preview" | "step-5-preview-free"> = {
+  "apiKeyEnv": [
+    "OPENCODE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://opencode.ai/inference/go/openai/v1"

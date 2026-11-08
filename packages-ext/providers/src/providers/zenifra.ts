@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const zenifra: Provider<"alibaba/qwen3.6-35b-a3b"> = {
+  "apiKeyEnv": [
+    "ZENIFRA_AI_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://ai.zenifra.com/v1"

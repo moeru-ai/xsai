@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const vivgrid: Provider<"claude-fable-5" | "claude-fable-5-1" | "claude-haiku-5-5" | "claude-opus-5" | "claude-opus-5-5" | "claude-sonnet-5" | "claude-sonnet-5-5" | "deepseek-v3.2" | "deepseek-v4-flash" | "deepseek-v4-pro" | "deepseek-v4-pro-0813" | "deepseek-v4.1-flash" | "gemini-3.1-flash-lite-preview" | "gemini-3.1-pro-preview" | "gemini-3.7-flash" | "gemini-3.8-flash" | "glm-5.2" | "glm-5.3" | "glm-5.3-flash" | "gpt-5-mini" | "gpt-5.1-codex" | "gpt-5.1-codex-max" | "gpt-5.2-codex" | "gpt-5.3-codex" | "gpt-5.4" | "gpt-5.4-mini" | "gpt-5.4-nano" | "gpt-5.5" | "gpt-5.6-luna" | "gpt-5.6-sol" | "gpt-5.6-terra" | "gpt-6-astra" | "gpt-6-luna" | "gpt-6-sol" | "gpt-6.1-sol" | "gpt-6.1-terra" | "jev" | "kimi-k3" | "viv-fast"> = {
+  "apiKeyEnv": [
+    "VIVGRID_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.vivgrid.com/v1"

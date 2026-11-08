@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const hetzner: Provider<"Qwen/Qwen3.6-35B-A3B-FP8" | "Qwen3.8-27B"> = {
+  "apiKeyEnv": [
+    "HETZNER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.hetzner.com/api/v1"

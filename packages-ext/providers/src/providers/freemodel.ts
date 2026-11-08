@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const freemodel: Provider<"claude-fable-5" | "claude-haiku-4-5-20251001" | "claude-opus-4-6" | "claude-opus-4-7" | "claude-opus-4-8" | "claude-sonnet-4-6" | "gpt-5.3-codex" | "gpt-5.4" | "gpt-5.4-mini" | "gpt-5.5"> = {
+  "apiKeyEnv": [
+    "FREEMODEL_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.freemodel.dev/v1"

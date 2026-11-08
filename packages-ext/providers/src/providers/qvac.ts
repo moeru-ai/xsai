@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const qvac: Provider<"gemma4-31b" | "gpt-oss-120b" | "gpt-oss-20b" | "qwen3.5-0.8b" | "qwen3.5-2b" | "qwen3.5-4b" | "qwen3.5-9b" | "qwen3.6-27b" | "qwen3.6-35b-a3b"> = {
+  "apiKeyEnv": [
+    "QVAC_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "http://127.0.0.1:11434/v1"

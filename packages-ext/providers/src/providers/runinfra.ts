@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const runinfra: Provider<"deepseek-ai/DeepSeek-V4-Flash-0731" | "deepseek-ai/DeepSeek-V4-Pro-0813" | "Inferact/Qwen3.8-2.4T-A95B-NVFP4" | "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16" | "ornith-ai/Ornith-1.5-35B-A3B" | "Qwen/Qwen3.8-27B" | "zai-org/GLM-5.3" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "RUNINFRA_GATEWAY_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.runinfra.ai/v1"

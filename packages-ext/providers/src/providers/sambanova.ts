@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const sambanova: Provider<"DeepSeek-V3.1" | "DeepSeek-V3.2" | "gemma-4-31B-it" | "gpt-oss-120b" | "Meta-Llama-3.3-70B-Instruct" | "MiniMax-M3"> = {
+  "apiKeyEnv": [
+    "SAMBANOVA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.sambanova.ai/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const bothub: Provider<"deepseek-v4-flash-0731" | "deepseek-v4-pro-0813" | "gemma-4-31b-it:free" | "glm-5.3" | "glm-5.3-flash" | "gpt-5.6-luna" | "muse-spark-1.3-contributor" | "nemotron-3-ultra-550b-a55b:free"> = {
+  "apiKeyEnv": [
+    "BOTHUB_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://openai.bothub.ru/v1"

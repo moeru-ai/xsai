@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const ai21: Provider<"jamba-large" | "jamba-mini"> = {
+  "apiKeyEnv": [
+    "AI21_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.ai21.com/studio/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const coralbricks: Provider<"deepseek-v4.1-flash-fast"> = {
+  "apiKeyEnv": [
+    "CORAL_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.coralbricks.ai/v1"

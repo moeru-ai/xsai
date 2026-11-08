@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const evroc: Provider<"evroc/roc" | "google/gemma-4-26B-A4B-it" | "intfloat/multilingual-e5-large-instruct" | "KBLab/kb-whisper-large" | "mistralai/Mistral-Medium-3.5-128B" | "mistralai/Voxtral-Small-24B-2507" | "moonshotai/Kimi-K2.6" | "nvidia/Llama-3.3-70B-Instruct-FP8" | "openai/gpt-oss-120b" | "openai/whisper-large-v3" | "openai/whisper-large-v3-turbo" | "Qwen/Qwen3-Embedding-8B" | "Qwen/Qwen3.6-35B-A3B" | "Qwen/Qwen3.8-27B" | "zai-org/GLM-5.2"> = {
+  "apiKeyEnv": [
+    "EVROC_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://models.think.evroc.com/v1"

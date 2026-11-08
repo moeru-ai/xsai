@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const deepseek: Provider<"deepseek-flash" | "deepseek-v4-flash" | "deepseek-v4-flash-vision-exp" | "deepseek-v4-pro"> = {
+  "apiKeyEnv": [
+    "DEEPSEEK_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.deepseek.com"

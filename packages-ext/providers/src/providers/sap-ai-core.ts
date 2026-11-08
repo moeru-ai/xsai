@@ -3,6 +3,7 @@
 import type { Provider } from '../types'
 
 export const sapAiCore: Provider<"amazon--nova-lite" | "amazon--nova-micro" | "amazon--nova-pro" | "amazon--titan-embed-text" | "anthropic--claude-3-haiku" | "anthropic--claude-4-opus" | "anthropic--claude-4-sonnet" | "anthropic--claude-4.5-haiku" | "anthropic--claude-4.5-opus" | "anthropic--claude-4.5-sonnet" | "anthropic--claude-4.6-opus" | "anthropic--claude-4.6-sonnet" | "anthropic--claude-4.7-opus" | "anthropic--claude-4.8-opus" | "cohere--command-a-reasoning" | "gemini-2.5-flash" | "gemini-2.5-flash-lite" | "gemini-2.5-pro" | "gemini-3.1-flash-lite" | "gemini-3.5-flash" | "gemini-3.5-flash-lite" | "gemini-3.6-flash" | "gemini-3.8-flash" | "gemini-embedding" | "gemini-embedding-2" | "gpt-4.1" | "gpt-4.1-mini" | "gpt-4.1-nano" | "gpt-5" | "gpt-5-mini" | "gpt-5-nano" | "gpt-5.2" | "gpt-5.4" | "gpt-5.5" | "gpt-5.6-luna" | "gpt-5.6-sol" | "gpt-5.6-terra" | "gpt-6-astra" | "gpt-6-luna" | "gpt-6.1-sol" | "mistralai--mistral-medium" | "mistralai--mistral-medium-instruct" | "mistralai--mistral-small" | "nvidia--llama-3.2-nv-embedqa-1b" | "nvidia--llama-nemotron-embed-1b" | "sap-abap-1" | "sonar" | "sonar-deep-research" | "sonar-pro" | "text-embedding-3-large" | "text-embedding-3-small"> = {
+  "apiKeyEnv": [],
   "defaults": {
     "chat": {
       "baseURL": "${AICORE_DEPLOYMENT_URL}"

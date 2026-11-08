@@ -1,21 +1,17 @@
 import type { Provider } from '../src/types'
 import type { DeepPartial } from './merge'
 
-import { computeDefaults, normalizeCatalog } from '../src/normalize'
+import { computeApiKeyEnv, computeDefaults, normalizeCatalog } from '../src/normalize'
 import { merge } from './merge'
 
 /** Exact subpaths of the package. They take precedence over provider subpaths. */
 export const RESERVED_SUBPATHS = [
-  'audio',
   'capabilities',
-  'decide',
-  'embed',
+  'create',
   'fetch',
   'full',
-  'image',
   'index',
   'package.json',
-  'text',
   'types',
 ]
 
@@ -58,7 +54,11 @@ export const buildProviders = (catalog: unknown, { extra, overrides }: BuildOpti
         return provider
       const { defaults, ...patch } = overrides[provider.id]
       const merged = merge<Provider>(provider, patch)
-      return { ...merged, defaults: defaults === undefined ? computeDefaults(merged.models) : { ...computeDefaults(merged.models), ...defaults } }
+      return {
+        ...merged,
+        apiKeyEnv: 'apiKeyEnv' in patch ? merged.apiKeyEnv : computeApiKeyEnv(merged.env, merged.models),
+        defaults: defaults === undefined ? computeDefaults(merged.models) : { ...computeDefaults(merged.models), ...defaults },
+      }
     }),
     ...extra,
   ].toSorted((a, b) => a.id.localeCompare(b.id))

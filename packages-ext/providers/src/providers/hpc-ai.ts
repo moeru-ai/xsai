@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const hpcAi: Provider<"anthropic/claude-opus-4.7" | "deepseek/deepseek-v4-flash" | "deepseek/deepseek-v4-pro" | "minimax/minimax-m2.5" | "moonshotai/kimi-k2.5" | "moonshotai/kimi-k2.7-code" | "openai/gpt-5.5" | "zai-org/glm-5.1" | "zai-org/glm-5.2"> = {
+  "apiKeyEnv": [
+    "HPC_AI_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.hpc-ai.com/inference/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const vultr: Provider<"deepseek-v4-flash-0731" | "deepseek-v4.1-flash" | "glm-5.2" | "glm-5.3" | "glm-5.3-flash" | "glm-5.x-menthol" | "laguna-s-2.1" | "mimo-v2.6-flash-rl" | "mimo-v2.6-pro-rl" | "minimax-m3" | "muse-glimmer-30b" | "nemotron-3-nano-omni-30b-a3b-reasoning" | "nemotron-3.5-content-safety" | "qwen3.8-27b" | "qwen3.8-flash-next"> = {
+  "apiKeyEnv": [
+    "VULTR_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.vultrinference.com/v1"

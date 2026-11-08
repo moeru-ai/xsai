@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const bee: Provider<"bee-brood" | "bee-buzz" | "bee-cell" | "bee-comb" | "bee-hive" | "bee-swarm"> = {
+  "apiKeyEnv": [
+    "BEE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.bee.heossi.com/bee"

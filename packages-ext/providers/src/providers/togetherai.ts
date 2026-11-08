@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const togetherai: Provider<"deepseek-ai/DeepSeek-R1" | "deepseek-ai/DeepSeek-V3" | "deepseek-ai/DeepSeek-V3-1" | "deepseek-ai/DeepSeek-V4-Flash-0731" | "deepseek-ai/DeepSeek-V4-Pro-0813" | "deepseek-ai/DeepSeek-V4.1-Flash" | "essentialai/Rnj-1-Instruct" | "LiquidAI/LFM2-24B-A2B" | "meta-llama/Llama-3.3-70B-Instruct-Turbo" | "meta-models/Muse-Spark-Open-816B-A42B" | "MiniMaxAI/MiniMax-M2.5" | "MiniMaxAI/MiniMax-M2.7" | "MiniMaxAI/MiniMax-M3" | "moonshotai/Kimi-K3" | "moonshotai/Kimi-K3.1-Pro" | "nvidia/nemotron-3-ultra-550b-a55b" | "nvidia/NVIDIA-Nemotron-3.5-Super-VL" | "openai/gpt-oss-120b" | "Qwen/Qwen2.5-7B-Instruct-Turbo" | "Qwen/Qwen3-235B-A22B-Instruct-2507-tput" | "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8" | "Qwen/Qwen3-Coder-Next-FP8" | "Qwen/Qwen3.5-397B-A17B" | "Qwen/Qwen3.5-9B" | "Qwen/Qwen3.6-Plus" | "Qwen/Qwen3.7-Max" | "reflection/Beam-1.0-501B-A23B" | "thinkingmachines/Inkling" | "zai-org/GLM-5" | "zai-org/GLM-5.1" | "zai-org/GLM-5.2" | "zai-org/GLM-5.3" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "TOGETHER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.together.xyz/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const pioneer: Provider<"claude-fable-5" | "claude-haiku-4-5" | "claude-opus-5" | "claude-opus-5-fast" | "claude-sonnet-5" | "deepseek-ai/DeepSeek-V4-Flash" | "fastino/gliguard-LLMGuardrails-300M" | "fastino/gliguard-PII-multi" | "fastino/GLiNER-2.5-Decide" | "fastino/gliner2-base-v1" | "fastino/gliner2-large-v1" | "fastino/gliner2-multi-large-v1" | "fastino/gliner2-multi-v1" | "fastino/gliner2-privacy-filter-PII-multi" | "fastino/gliner2.5-base-v1" | "fastino/gliner2.5-multi-v1" | "gpt-5.5" | "gpt-5.6-luna" | "gpt-5.6-sol" | "gpt-5.6-terra" | "moonshotai/Kimi-K3" | "moonshotai/Kimi-K3-Fast" | "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-BF16" | "nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4" | "zai-org/GLM-5.2"> = {
+  "apiKeyEnv": [
+    "PIONEER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.fastino.ai/v1"

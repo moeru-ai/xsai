@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const ainetcafe: Provider<"Kimi-K3"> = {
+  "apiKeyEnv": [
+    "AINETCAFE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://microquickjs.com/v1"

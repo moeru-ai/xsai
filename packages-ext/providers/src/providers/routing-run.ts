@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const routingRun: Provider<"claude-opus-4-8" | "claude-sonnet-4-6" | "deepseek-v4-flash" | "deepseek-v4-pro" | "glm-5.2" | "glm-5.2-nitro" | "gpt-5.6-luna" | "gpt-5.6-sol" | "gpt-5.6-terra" | "kimi-k2.6" | "kimi-k2.6-nitro" | "kimi-k2.7-code" | "kimi-k2.7-code-nitro" | "nemotron-3-ultra" | "qwen3.5-9b"> = {
+  "apiKeyEnv": [
+    "ROUTING_RUN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.routing.run/v1"

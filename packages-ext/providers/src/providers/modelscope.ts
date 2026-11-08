@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const modelscope: Provider<"Qwen/Qwen3-235B-A22B-Instruct-2507" | "Qwen/Qwen3-235B-A22B-Thinking-2507" | "Qwen/Qwen3-30B-A3B-Instruct-2507" | "Qwen/Qwen3-30B-A3B-Thinking-2507" | "Qwen/Qwen3-Coder-30B-A3B-Instruct" | "ZhipuAI/GLM-4.5" | "ZhipuAI/GLM-4.6"> = {
+  "apiKeyEnv": [
+    "MODELSCOPE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api-inference.modelscope.cn/v1"

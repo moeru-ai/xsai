@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const pareto: Provider<"z-ai/glm-5.3-flash"> = {
+  "apiKeyEnv": [
+    "PARETO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.paretoinference.com/v1"

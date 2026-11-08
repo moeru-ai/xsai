@@ -39,14 +39,6 @@ export interface ModelModalities {
   output: string[]
 }
 
-export interface ModelOptions<TProtocol extends Protocol = Protocol> {
-  apiKey?: string
-  fetch?: (request: Request) => Promise<Response>
-  headers?: Record<string, string | undefined>
-  protocol?: TProtocol
-  variables?: Record<string, string>
-}
-
 export type ModelStatus = 'alpha' | 'beta' | 'deprecated'
 
 export type ModelType = 'chat' | 'decision' | 'embedding' | 'image' | 'speech' | 'transcription'
@@ -54,12 +46,20 @@ export type ModelType = 'chat' | 'decision' | 'embedding' | 'image' | 'speech' |
 export type Protocol = 'chat' | 'decisions' | 'embeddings' | 'generations' | 'messages' | 'responses' | 'speech' | 'systemone' | 'transcriptions'
 
 export interface Provider<TModel extends string = string> {
+  apiKeyEnv?: string[]
   defaults?: Partial<Record<Protocol, { baseURL: string }>>
   doc: string
   env: string[]
   id: string
   models: Record<TModel, Model>
   name: string
+}
+
+export interface ProviderOptions {
+  apiKey?: string
+  fetch?: (request: Request) => Promise<Response>
+  headers?: Record<string, string | undefined>
+  variables?: Record<string, string>
 }
 
 export interface ReasoningCapabilities {

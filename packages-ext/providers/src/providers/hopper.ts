@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const hopper: Provider<"deepseek-v4.1-flash-1017" | "deepseek-v4.1-flash-1017-abliterated"> = {
+  "apiKeyEnv": [
+    "HOPPER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.withhopper.com/v1"

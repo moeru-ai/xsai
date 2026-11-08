@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const tencentCodingPlan: Provider<"glm-5" | "hunyuan-2.0-instruct" | "hunyuan-2.0-thinking" | "hunyuan-t1" | "hunyuan-turbos" | "kimi-k2.5" | "minimax-m2.5" | "tc-code-latest"> = {
+  "apiKeyEnv": [
+    "TENCENT_CODING_PLAN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.lkeap.cloud.tencent.com/coding/v3"

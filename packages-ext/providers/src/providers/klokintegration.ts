@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const klokintegration: Provider<"Kloker" | "Kloker-Integration-Architect" | "Kloker-Integration-Developer"> = {
+  "apiKeyEnv": [
+    "KLOKINTEGRATION_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api-gw.klok.ipaas.se/proxy/kloker-key/v1"

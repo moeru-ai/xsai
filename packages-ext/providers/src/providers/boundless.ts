@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const boundless: Provider<"claude-fable-5.1" | "claude-opus-5" | "claude-opus-5.5" | "deepseek-v4-pro-0813" | "deepseek-v4.1-flash" | "dsv4" | "glm-5.2" | "glm-5.3" | "glm-5.3-flash" | "gpt-5.6-luna" | "gpt-5.6-sol" | "gpt-6-luna" | "gpt-6-sol" | "kimi-k3" | "mimo-v2.6-flash" | "mimo-v2.6-pro" | "minimax-m3" | "nemotron3-super" | "qwen3.6" | "qwen3.8-flash"> = {
+  "apiKeyEnv": [
+    "BOUNDLESS_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.inference.boundless.network/v1"

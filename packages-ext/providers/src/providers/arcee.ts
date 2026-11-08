@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const arcee: Provider<"deepseek/deepseek-v4-flash-latest" | "deepseek/deepseek-v4-pro" | "deepseek/deepseek-v4-pro-0813" | "deepseek/deepseek-v4.1-flash" | "deepseek/deepseek-v4.1-flash-1017" | "moonshotai/kimi-k3" | "thinkingmachines/inkling-small" | "trinity-large-thinking" | "zai-org/glm-5.2" | "zai-org/glm-5.3" | "zai-org/glm-5.3-flash"> = {
+  "apiKeyEnv": [
+    "ARCEE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.arcee.ai/api/v1"

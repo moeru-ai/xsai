@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const sensenova: Provider<"deepseek-v4-flash" | "deepseek-v4-pro" | "deepseek-v4.1-flash" | "glm-5.2" | "kimi-k3" | "sensenova-6.8-flash-lite"> = {
+  "apiKeyEnv": [
+    "SENSENOVA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://token.sensenova.cn/v1"

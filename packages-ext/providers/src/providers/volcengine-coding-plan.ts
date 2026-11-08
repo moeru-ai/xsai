@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const volcengineCodingPlan: Provider<"deepseek-v4-flash" | "deepseek-v4-pro" | "doubao-seed-2.0-lite" | "doubao-seed-2.1-turbo" | "doubao-seed-evolving" | "glm-5.3" | "glm-5.3-flash" | "kimi-k2.7-code" | "kimi-k3" | "minimax-m3"> = {
+  "apiKeyEnv": [
+    "ARK_CODING_PLAN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://ark.cn-beijing.volces.com/api/coding/v3"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const llmtr: Provider<"gemma-4" | "google/gemini-2.5-flash-lite" | "magibu-11b-v8" | "medgemma-4b" | "meta/muse-spark-1.2-contributor" | "mimo/mimo-v2.5" | "mimo/mimo-v2.5-pro" | "mistral/voxtral-small-latest" | "muse-glimmer-30b-tr" | "perplexity/sonar-deep-research" | "poolside/laguna-xs-2.1" | "publicai/apertus-70b-instruct" | "publicai/apertus-8b-instruct" | "qwen/qwen-flash" | "qwen/qwen-plus" | "qwen/qwen3-coder-flash" | "qwen/qwen3-coder-plus" | "qwen/qwen3-max" | "qwen/qwen3-vl-plus" | "qwen/qwen3.5-397b-a17b" | "qwen/qwen3.5-plus" | "qwen/qwen3.6-flash" | "qwen/qwen3.6-plus" | "qwen/qwen3.7-plus" | "qwen3-6-35b" | "sakana/fugu-ultra" | "thinkingmachines/inkling" | "thinkingmachines/inkling-small" | "trendyol-asure-12b" | "upstage/solar-pro2" | "upstage/solar-pro3" | "upstage/solar-pro4"> = {
+  "apiKeyEnv": [
+    "LLMTR_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://llmtr.com/v1"

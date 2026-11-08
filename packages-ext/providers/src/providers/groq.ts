@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const groq: Provider<"allam-2-7b" | "canopylabs/orpheus-arabic-saudi" | "canopylabs/orpheus-v1-english" | "llama-3.1-8b-instant" | "llama-3.3-70b-versatile" | "meta-llama/llama-prompt-guard-2-22m" | "meta-llama/llama-prompt-guard-2-86m" | "openai/gpt-oss-120b" | "openai/gpt-oss-20b" | "openai/gpt-oss-safeguard-20b" | "qwen/qwen3.6-27b" | "qwen/qwen3.8-27b" | "whisper-large-v3" | "whisper-large-v3-turbo"> = {
+  "apiKeyEnv": [
+    "GROQ_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.groq.com/openai/v1"

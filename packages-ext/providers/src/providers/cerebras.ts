@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const cerebras: Provider<"gpt-oss-120b" | "qwen-3.8-27b"> = {
+  "apiKeyEnv": [
+    "CEREBRAS_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.cerebras.ai/v1"

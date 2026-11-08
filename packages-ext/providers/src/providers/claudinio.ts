@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const claudinio: Provider<"claudinio" | "claudius"> = {
+  "apiKeyEnv": [
+    "CLAUDINIO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.claudin.io/v1"

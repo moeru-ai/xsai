@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const llmtech: Provider<"nvidia/Qwen3.8-27B-NVFP4"> = {
+  "apiKeyEnv": [
+    "LLMTECH_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.llmtech.eu/v1"

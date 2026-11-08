@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const ambient: Provider<"ambient/large" | "ambient/small" | "minimax/minimax-m3" | "qwen/qwen3-30b-a3b-instruct-2507" | "qwen/qwen3.6-27b" | "qwen/qwen3.6-35b-a3b" | "qwen/qwen3.8-27b" | "unsloth/qwen3.8-27b-gguf" | "z-ai/glm-5.2" | "zai-org/GLM-5.2-FP8"> = {
+  "apiKeyEnv": [
+    "AMBIENT_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.ambient.xyz/v1"

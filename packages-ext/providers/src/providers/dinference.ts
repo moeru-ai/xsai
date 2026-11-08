@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const dinference: Provider<"glm-4.7" | "glm-5" | "glm-5.1" | "glm-5.2" | "gpt-oss-120b" | "minimax-m2.5"> = {
+  "apiKeyEnv": [
+    "DINFERENCE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.dinference.com/v1"

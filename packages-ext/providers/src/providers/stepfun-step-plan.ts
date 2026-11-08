@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const stepfunStepPlan: Provider<"step-3.5-flash" | "step-3.5-flash-2603" | "step-3.7-flash" | "step-5-preview" | "step-router-v1"> = {
+  "apiKeyEnv": [
+    "STEPFUN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.stepfun.com/step_plan/v1"

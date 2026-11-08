@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const atomicChat: Provider<"gemma-4-E4B-it-IQ4_XS" | "gemma-4-E4B-it-MLX-4bit" | "Meta-Llama-3_1-8B-Instruct-GGUF" | "Qwen3_5-9B-MLX-4bit" | "Qwen3_5-9B-Q4_K_M"> = {
+  "apiKeyEnv": [
+    "ATOMIC_CHAT_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "http://127.0.0.1:1337/v1"

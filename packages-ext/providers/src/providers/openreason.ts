@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const openreason: Provider<"deepseek-ai/deepseek-v4-flash-0731" | "moonshotai/kimi-k2.7-code" | "openai/gpt-oss-120b"> = {
+  "apiKeyEnv": [
+    "OPENREASON_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.openreason.app/v1"

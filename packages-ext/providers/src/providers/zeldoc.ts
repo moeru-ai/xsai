@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const zeldoc: Provider<"zdev"> = {
+  "apiKeyEnv": [
+    "ZELDOC_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.zeldoc.ai/v1"

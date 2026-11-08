@@ -233,6 +233,17 @@ export const computeDefaults = (models: Record<string, Model>): Provider['defaul
   return Object.keys(defaults).length === 0 ? undefined : defaults
 }
 
+/**
+ * Picks the environment variables that hold an API key: all of `env` except template variables,
+ * filtered by name when more than one is left.
+ */
+export const computeApiKeyEnv = (env: string[], models: Record<string, Model>): string[] | undefined => {
+  const variables = new Set(Object.values(models).flatMap(model => Object.values(model.routes).flatMap(route => route.variables ?? [])))
+  const candidates = env.filter(name => !variables.has(name))
+  const keys = candidates.length === 1 ? candidates : candidates.filter(name => /API_?KEY|TOKEN/.test(name) || name.endsWith('_PAT'))
+  return keys.length === 0 ? undefined : keys
+}
+
 const decodeProvider = (value: unknown, path: string, options: NormalizeOptions): Provider => {
   const provider = record(value, path)
   const models: Record<string, NormalizedModel> = {}
@@ -244,10 +255,12 @@ const decodeProvider = (value: unknown, path: string, options: NormalizeOptions)
       models[decoded.id] = decoded
   }
 
+  const env = strings(provider.env, `${path}.env`)
   return {
+    apiKeyEnv: computeApiKeyEnv(env, models),
     defaults: computeDefaults(models),
     doc: string(provider.doc, `${path}.doc`),
-    env: strings(provider.env, `${path}.env`),
+    env,
     id: string(provider.id, `${path}.id`),
     models,
     name: string(provider.name, `${path}.name`),

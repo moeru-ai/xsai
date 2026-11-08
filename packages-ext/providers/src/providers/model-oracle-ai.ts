@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const modelOracleAi: Provider<"auto" | "claude-fable-5" | "claude-haiku-4.5" | "claude-opus-4.8" | "claude-sonnet-5" | "deepseek-v4-pro" | "glm-5.2" | "gpt-4.1" | "gpt-4.1-mini" | "gpt-5" | "gpt-5.4" | "gpt-5.4-mini" | "gpt-5.4-nano" | "gpt-5.5" | "o4-mini"> = {
+  "apiKeyEnv": [
+    "MODEL_ORACLE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.modeloracle.com/api/v1"

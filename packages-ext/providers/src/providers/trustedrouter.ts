@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const trustedrouter: Provider<"trustedrouter/auto" | "trustedrouter/cheap" | "trustedrouter/e2e" | "trustedrouter/fast" | "trustedrouter/synth" | "trustedrouter/synth-code" | "trustedrouter/zdr"> = {
+  "apiKeyEnv": [
+    "TRUSTEDROUTER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.trustedrouter.com/v1"

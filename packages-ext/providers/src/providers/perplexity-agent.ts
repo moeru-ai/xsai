@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const perplexityAgent: Provider<"anthropic/claude-fable-5" | "anthropic/claude-fable-5-1" | "anthropic/claude-haiku-4-5" | "anthropic/claude-haiku-5-5" | "anthropic/claude-opus-4-5" | "anthropic/claude-opus-4-6" | "anthropic/claude-opus-4-7" | "anthropic/claude-opus-5" | "anthropic/claude-opus-5-5" | "anthropic/claude-sonnet-4-5" | "anthropic/claude-sonnet-4-6" | "anthropic/claude-sonnet-5" | "anthropic/claude-sonnet-5-5" | "deepseek/deepseek-v4-flash-0731" | "google/gemini-3-flash-preview" | "google/gemini-3.1-pro-preview" | "google/gemini-3.6-flash" | "google/gemini-3.7-flash" | "google/gemini-3.8-flash" | "google/gemini-4-argon" | "moonshot-ai/kimi-k2.7-code" | "moonshot-ai/kimi-k3" | "nvidia/nemotron-3-super-120b-a12b" | "openai/gpt-5-mini" | "openai/gpt-5.1" | "openai/gpt-5.2" | "openai/gpt-5.4" | "openai/gpt-5.5" | "openai/gpt-5.6-luna" | "openai/gpt-5.6-sol" | "openai/gpt-5.6-terra" | "openai/gpt-6-astra" | "openai/gpt-6-luna" | "openai/gpt-6-sol" | "openai/gpt-6.1-sol" | "perplexity/deepseek-v4-pro-0813" | "perplexity/glm-5.3" | "perplexity/glm-5.3-flash" | "perplexity/kimi-k3" | "perplexity/nemotron-3.5-super-120b-a12b" | "perplexity/sonar" | "pplx-decider-flash-v1.2" | "pplx-decider-v1.2" | "pplx-embed-context-v1-0.6b" | "pplx-embed-context-v1-4b" | "pplx-embed-v1-0.6b" | "pplx-embed-v1-4b" | "xai/grok-4-1-fast-non-reasoning" | "xai/grok-4.5" | "xai/grok-4.6" | "xai/grok-4.7"> = {
+  "apiKeyEnv": [
+    "PERPLEXITY_API_KEY"
+  ],
   "defaults": {
     "embeddings": {
       "baseURL": "https://api.perplexity.ai/v1"

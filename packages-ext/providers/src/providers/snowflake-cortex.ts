@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const snowflakeCortex: Provider<"claude-fable-5" | "claude-haiku-4-5" | "claude-opus-4-5" | "claude-opus-4-6" | "claude-opus-4-7" | "claude-opus-4-8" | "claude-opus-5" | "claude-sonnet-4-5" | "claude-sonnet-4-6" | "claude-sonnet-5" | "deepseek-r1" | "gemini-3.1-pro" | "mistral-large2" | "openai-gpt-4.1" | "openai-gpt-5" | "openai-gpt-5-mini" | "openai-gpt-5-nano" | "openai-gpt-5.1" | "openai-gpt-5.2" | "openai-gpt-5.4" | "openai-gpt-5.5" | "openai-gpt-5.6-luna" | "openai-gpt-5.6-sol" | "openai-gpt-5.6-terra" | "snowflake-llama3.3-70b"> = {
+  "apiKeyEnv": [
+    "SNOWFLAKE_CORTEX_PAT"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://${SNOWFLAKE_ACCOUNT}.snowflakecomputing.com/api/v2/cortex/v1"

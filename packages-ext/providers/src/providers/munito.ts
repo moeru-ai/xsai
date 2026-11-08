@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const munito: Provider<"aleph-alpha/kolibri-1" | "deepseek-ai/deepseek-v4-flash" | "deepseek-ai/deepseek-v4.1-flash-1017" | "qwen/qwen3.8-27b" | "zai-org/glm-5.3-flash"> = {
+  "apiKeyEnv": [
+    "MUNITO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.munito.ai/inference/v1"

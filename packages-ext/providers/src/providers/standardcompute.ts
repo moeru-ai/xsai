@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const standardcompute: Provider<"anthropic/claude-fable-5" | "anthropic/claude-fable-5.1" | "anthropic/claude-haiku-5.5" | "anthropic/claude-opus-5" | "anthropic/claude-opus-5.5" | "anthropic/claude-sonnet-5" | "anthropic/claude-sonnet-5.5" | "deepseek/deepseek-v4-flash" | "deepseek/deepseek-v4-flash-0731" | "deepseek/deepseek-v4-pro" | "deepseek/deepseek-v4-pro-0813" | "deepseek/deepseek-v4.1-flash" | "google/gemini-2.5-flash" | "google/gemini-2.5-pro" | "google/gemini-3.1-pro-preview" | "google/gemini-3.5-flash-lite" | "google/gemini-3.8-flash" | "minimax/minimax-m3" | "mistralai/mistral-large-4-0" | "moonshotai/kimi-k3" | "openai/gpt-5.6-luna" | "openai/gpt-5.6-sol" | "openai/gpt-5.6-terra" | "openai/gpt-6-astra" | "openai/gpt-6-luna" | "qwen/qwen3.7-flash" | "qwen/qwen3.7-max" | "qwen/qwen3.7-plus" | "qwen/qwen3.8-27b" | "qwen/qwen3.8-flash" | "qwen/qwen3.8-max-0902" | "standardcompute" | "x-ai/grok-4.3" | "xiaomi/mimo-v2.5" | "xiaomi/mimo-v2.5-pro" | "xiaomi/mimo-v2.6-flash" | "xiaomi/mimo-v2.6-pro" | "z-ai/glm-5.2" | "z-ai/glm-5.3" | "z-ai/glm-5.3-flash"> = {
+  "apiKeyEnv": [
+    "STANDARDCOMPUTE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.stdcmpt.com/v1"

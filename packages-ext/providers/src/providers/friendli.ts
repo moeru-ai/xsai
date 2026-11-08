@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const friendli: Provider<"google/gemma-4-31B-it" | "zai-org/GLM-5.1" | "zai-org/GLM-5.2" | "zai-org/GLM-5.3" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "FRIENDLI_TOKEN"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.friendli.ai/serverless/v1"

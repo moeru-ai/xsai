@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const saladCloud: Provider<"qwen3.6-35b-a3b"> = {
+  "apiKeyEnv": [
+    "SALAD_CLOUD_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://ai.salad.cloud/v1"

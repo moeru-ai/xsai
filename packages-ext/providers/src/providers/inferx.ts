@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const inferx: Provider<"Agents-A1" | "deepseek-v4-flash" | "Devstral-2-123B-Instruct-2512-int4-AutoRound" | "gemma-4-31B-it-fp8" | "mimo-v25" | "Ornith-1.0-35B-FP8" | "Qwen3-Coder-Next-FP8" | "Qwen3-Coder-Next-FP8-no-thinking" | "Qwen3-Embedding-8B" | "Qwen3.6-27B-FP8" | "Qwen3.6-35B-A3B-FP8" | "Qwen3.6-35B-A3B-fp8-no-thinking"> = {
+  "apiKeyEnv": [
+    "INFERX_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://model.inferx.net/endpoints/v1"

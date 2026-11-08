@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const subconscious: Provider<"subconscious/deepseek-v4.1-flash-marathon" | "subconscious/glm-5.3-marathon"> = {
+  "apiKeyEnv": [
+    "SUBCONSCIOUS_API_KEY"
+  ],
   "defaults": {
     "messages": {
       "baseURL": "https://api.subconscious.dev/v1"

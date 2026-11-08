@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const moonshotai: Provider<"kimi-k2.6" | "kimi-k2.7-code" | "kimi-k2.7-code-highspeed" | "kimi-k3" | "kimi-k3.1-pro" | "kimi-k3.1-pro-highspeed"> = {
+  "apiKeyEnv": [
+    "MOONSHOT_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.moonshot.ai/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const longcat: Provider<"LongCat-2.0" | "LongCat-2.5-Preview"> = {
+  "apiKeyEnv": [
+    "LONGCAT_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.longcat.chat/openai"

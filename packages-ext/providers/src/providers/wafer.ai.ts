@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const waferAi: Provider<"GLM-5.1" | "GLM-5.2" | "glm5.2-fast" | "Kimi-K2.6" | "MiniMax-M3"> = {
+  "apiKeyEnv": [
+    "WAFER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://pass.wafer.ai/v1"

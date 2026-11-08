@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const mixlayer: Provider<"qwen/qwen3.5-122b-a10b" | "qwen/qwen3.5-27b" | "qwen/qwen3.5-35b-a3b" | "qwen/qwen3.5-397b-a17b" | "qwen/qwen3.5-9b"> = {
+  "apiKeyEnv": [
+    "MIXLAYER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://models.mixlayer.ai/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const auriko: Provider<"claude-opus-4-6" | "claude-opus-4-7" | "claude-sonnet-4-6" | "deepseek-v4-flash" | "deepseek-v4-pro" | "gemini-2.5-flash" | "gemini-2.5-pro" | "gemini-3.1-pro-preview" | "glm-5.1" | "grok-4.3" | "kimi-k2.5" | "kimi-k2.6" | "minimax-m2-7" | "minimax-m2-7-highspeed" | "qwen-3.6-plus"> = {
+  "apiKeyEnv": [
+    "AURIKO_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.auriko.ai/v1"

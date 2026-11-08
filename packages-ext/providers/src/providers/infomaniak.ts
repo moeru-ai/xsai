@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const infomaniak: Provider<"bge_multilingual_gemma2" | "google/gemma-4-31B-it" | "mini_lm_l12_v2" | "mistralai/Ministral-3-14B-Instruct-2512" | "mistralai/Mistral-Small-4-119B-2603" | "moonshotai/Kimi-K2.6" | "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-FP8" | "Qwen/Qwen3.5-122B-A10B-FP8" | "Qwen/Qwen3.5-397B-A17B-FP8" | "swiss-ai/Apertus-v1.5-70B"> = {
+  "apiKeyEnv": [
+    "INFOMANIAK_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.infomaniak.com/2/ai/${INFOMANIAK_PRODUCT_ID}/openai/v1"

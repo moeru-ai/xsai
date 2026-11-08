@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const nebius: Provider<"deepseek-ai/DeepSeek-V4-Flash-0731" | "deepseek-ai/DeepSeek-V4-Pro" | "deepseek-ai/DeepSeek-V4-Pro-0813" | "deepseek-ai/DeepSeek-V4.1-Flash" | "deepseek-ai/DeepSeek-V4.1-Flash-1017" | "google/gemma-3-27b-it" | "meta-models/muse-spark-open" | "MiniMaxAI/MiniMax-M3" | "MiniMaxAI/MiniMax-M3.1-Flash" | "moonshotai/Kimi-K2.7-Code" | "moonshotai/Kimi-K3" | "NousResearch/Hermes-4-405B" | "nvidia/Nemotron-3_5-Lightning" | "nvidia/nemotron-3-super-120b-a12b" | "nvidia/Nemotron-3-Ultra-550b-a55b" | "nvidia/Nemotron-3.5-Super-VL" | "openai/gpt-oss-120b" | "Qwen/Qwen3-235B-A22B-Instruct-2507" | "Qwen/Qwen3-30B-A3B-Instruct-2507" | "Qwen/Qwen3-Embedding-8B" | "Qwen/Qwen3.5-397B-A17B" | "Qwen/Qwen3.8-27B" | "reflection/beam" | "zai-org/GLM-5.2" | "zai-org/GLM-5.3" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "NEBIUS_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.tokenfactory.nebius.com/v1"

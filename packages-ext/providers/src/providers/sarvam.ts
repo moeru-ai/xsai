@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const sarvam: Provider<"sarvam-105b" | "sarvam-30b"> = {
+  "apiKeyEnv": [
+    "SARVAM_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.sarvam.ai/v1"

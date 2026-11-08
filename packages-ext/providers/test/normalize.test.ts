@@ -61,6 +61,7 @@ describe('normalizeCatalog', () => {
     const { example } = normalizeCatalog(catalog({ m1: model() }))
 
     expect(example).toStrictEqual({
+      apiKeyEnv: ['EXAMPLE_API_KEY'],
       defaults: {
         chat: { baseURL: 'https://api.example.com/v1' },
         responses: { baseURL: 'https://api.example.com/v1' },
@@ -177,6 +178,17 @@ describe('normalizeCatalog', () => {
     expect(Object.keys(example.models)).toEqual(['m1'])
     expect(Object.keys(example.models.m1.routes)).toEqual(['responses'])
     expect(() => normalizeCatalog(input, { strict: true })).toThrow('example.models.bad.limit: expected an object')
+  })
+
+  it.each([
+    [['EXAMPLE_KEY'], ['EXAMPLE_KEY']],
+    [['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'REGION', 'AWS_BEARER_TOKEN_BEDROCK'], ['AWS_BEARER_TOKEN_BEDROCK']],
+    [['REGION', 'EXAMPLE_API_KEY', 'EXAMPLE_PROJECT_ID'], ['EXAMPLE_API_KEY']],
+    [['REGION'], undefined],
+  ])('picks API key variables from %j', (env, apiKeyEnv) => {
+    const input = catalog({ m1: model({ api: { 'chat-completions': { base_url: 'https://${REGION}.example.com' } } }) })
+    input.example.env = env
+    expect(normalizeCatalog(input).example.apiKeyEnv).toEqual(apiKeyEnv)
   })
 
   it('throws when no provider survives', () => {

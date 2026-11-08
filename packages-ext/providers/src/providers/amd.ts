@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const amd: Provider<"Clef" | "d3" | "d3-flash" | "DeepSeek-V4-Flash" | "DeepSeek-V4-Flash-Vision-Exp" | "DeepSeek-V4.1-Flash" | "Gemma-4-31B-IT" | "GLM-5.3-Flash" | "MiMo-V2.6-Flash" | "MiniCPM-V-4.7-1B" | "MiniCPM-V-4.7-35B-A3B" | "MiniCPM5-2B" | "OmniVoice" | "Qwen3.8-27B" | "Qwen3.8-Flash-Next"> = {
+  "apiKeyEnv": [
+    "AMD_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://developer.amd.com.cn/radeon/api/v1"

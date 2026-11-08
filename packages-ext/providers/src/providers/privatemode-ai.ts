@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const privatemodeAi: Provider<"deepseek-ocr-2" | "glm-5.3" | "glm-5.3-flash" | "glm-flash-latest" | "glm-latest" | "gpt-oss-120b" | "kimi-k2.6" | "kimi-latest" | "qwen3-embedding-4b" | "voxtral-mini-3b" | "whisper-large-v3"> = {
+  "apiKeyEnv": [
+    "PRIVATEMODE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "http://localhost:8080/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const wandb: Provider<"deepseek-ai/DeepSeek-V3.1" | "deepseek-ai/DeepSeek-V4-Flash-0731" | "deepseek-ai/DeepSeek-V4-Pro-0813" | "deepseek-ai/DeepSeek-V4.1-Flash" | "deepseek-ai/DeepSeek-V4.1-Flash-1017" | "google/gemma-4-26B-A4B-it" | "google/gemma-4-31B-it" | "ibm-granite/granite-4.2-8b" | "meta-llama/Llama-3.1-8B-Instruct" | "meta-llama/Llama-3.3-70B-Instruct" | "MiniMaxAI/MiniMax-M3" | "moonshotai/Kimi-K2.6" | "moonshotai/Kimi-K2.7-Code" | "nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B" | "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B" | "nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B" | "openai/gpt-oss-120b" | "openai/gpt-oss-20b" | "Qwen/Qwen3.6-35B-A3B" | "Qwen/Qwen3.8-27B" | "reflection/Beam-1.0-501B-A23B" | "zai-org/GLM-5.2" | "zai-org/GLM-5.3" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "WANDB_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.inference.wandb.ai/v1"

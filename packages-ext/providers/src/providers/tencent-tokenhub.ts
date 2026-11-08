@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const tencentTokenhub: Provider<"hy3" | "hy3-preview" | "hy4" | "hy4-preview"> = {
+  "apiKeyEnv": [
+    "TENCENT_TOKENHUB_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://tokenhub.tencentmaas.com/v1"

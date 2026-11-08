@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const daoxe: Provider<"claude-haiku-4-5-20251001" | "claude-opus-4-8" | "claude-sonnet-4-6" | "gemini-3.1-pro-preview" | "gpt-5.4" | "gpt-5.5" | "grok-4.3" | "grok-4.5" | "kimi-k2.5"> = {
+  "apiKeyEnv": [
+    "DAOXE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://daoxe.com/v1"

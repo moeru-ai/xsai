@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const greenpt: Provider<"deepseek-v4-flash-0731" | "deepseek-v4.1-flash" | "deepseek-v4.1-flash-1017" | "devstral-2-123b-instruct-2512" | "gemma-3-27b-it" | "gemma4" | "glm-5.1" | "glm-5.2" | "glm-5.2-caveman" | "glm-5.2-caveman-lite" | "glm-5.2-caveman-ultra" | "glm-5.2-honey" | "glm-5.2-honey-lite" | "glm-5.2-honey-ultra" | "glm-5.2-ponytail" | "glm-5.2-ponytail-lite" | "glm-5.2-ponytail-ultra" | "glm-5.3" | "glm-5.3-flash" | "gpt-oss-120b" | "green-l" | "green-l-raw" | "green-r" | "green-r-raw" | "green-s" | "green-s-pro" | "holo2-30b-a3b" | "kimi-k2.6" | "kimi-k2.6-fast" | "kimi-k2.7-code" | "kimi-k3" | "llama-3.3-70b-instruct" | "metis" | "minimax-m2.5" | "mistral-medium-3.5-128b" | "mistral-small-3.2-24b-instruct-2506" | "pixtral-12b-2409" | "qwen3-235b-a22b-instruct-2507" | "qwen3-coder-30b-a3b-instruct" | "qwen3.5-397b-a17b" | "qwen3.6-35b-a3b" | "voxtral-small-24b-2507"> = {
+  "apiKeyEnv": [
+    "GREENPT_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.greenpt.ai/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const umansAi: Provider<"umans-coder" | "umans-deepseek-v4-flash-0731" | "umans-deepseek-v4.1-flash" | "umans-deepseek-v4.1-flash-1017" | "umans-flash" | "umans-glm-5.3" | "umans-glm-5.3-flash" | "umans-kimi-k3"> = {
+  "apiKeyEnv": [
+    "UMANS_AI_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.code.umans.ai/v1"

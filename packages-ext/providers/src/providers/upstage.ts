@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const upstage: Provider<"solar-mini" | "solar-mini4" | "solar-pro2" | "solar-pro3" | "solar-pro4"> = {
+  "apiKeyEnv": [
+    "UPSTAGE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.upstage.ai/v1/solar"

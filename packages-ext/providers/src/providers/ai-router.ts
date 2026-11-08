@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const aiRouter: Provider<"gpt-5.4" | "gpt-5.5" | "gpt-5.6-luna" | "gpt-5.6-sol" | "gpt-5.6-terra"> = {
+  "apiKeyEnv": [
+    "AI_ROUTER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.ai-router.dev/v1"

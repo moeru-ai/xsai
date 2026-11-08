@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const oci: Provider<"meta.llama-3.3-70b-instruct" | "meta.llama-4-maverick-17b-128e-instruct-fp8" | "meta.llama-4-scout-17b-16e-instruct" | "openai.gpt-oss-120b" | "openai.gpt-oss-20b" | "xai.grok-4.20-non-reasoning" | "xai.grok-4.20-reasoning" | "xai.grok-4.3" | "xai.grok-4.6"> = {
+  "apiKeyEnv": [
+    "OCI_GENAI_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/openai/v1"

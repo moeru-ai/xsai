@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const umansAiCodingPlan: Provider<"umans-coder" | "umans-deepseek-v4-flash-0731" | "umans-deepseek-v4.1-flash" | "umans-deepseek-v4.1-flash-1017" | "umans-flash" | "umans-glm-5.3" | "umans-glm-5.3-flash" | "umans-kimi-k3" | "umans-qwen3.6-35b-a3b"> = {
+  "apiKeyEnv": [
+    "UMANS_AI_CODING_PLAN_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.code.umans.ai/v1"

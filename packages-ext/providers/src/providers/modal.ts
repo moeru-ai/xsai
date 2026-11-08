@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const modal: Provider<"deepseek-ai/DeepSeek-V4.1-Flash" | "meta-models/Muse-Spark-Open-816B-A42B" | "moonshotai/Kimi-K3" | "nvidia/GLM-5.3-Flash-NVFP4" | "Qwen/Qwen3.8-2.4T-A95B" | "thinkingmachines/Inkling-NVFP4" | "zai-org/GLM-5.3" | "zai-org/GLM-5.3-Flash"> = {
+  "apiKeyEnv": [
+    "MODAL_PROXY_TOKEN"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.us-west.modal.direct/v1"

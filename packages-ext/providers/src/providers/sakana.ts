@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const sakana: Provider<"fugu" | "fugu-ultra" | "fugu-ultra-20260615" | "sakana-namazu"> = {
+  "apiKeyEnv": [
+    "SAKANA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.sakana.ai/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const neosmith: Provider<"neosmith.intelligent-basic" | "neosmith.intelligent-maestro" | "neosmith.intelligent-pro" | "neosmith.neolite"> = {
+  "apiKeyEnv": [
+    "NEOSMITH_API_KEY"
+  ],
   "defaults": {
     "responses": {
       "baseURL": "https://router.neosmith.ai/v1"

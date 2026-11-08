@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const neuralwatt: Provider<"deepseek-v4-flash" | "deepseek-v4-flash-flex" | "deepseek-v4-flash-speed" | "deepseek-v4.1-flash" | "deepseek-v4.1-flash-flex" | "gemma-4-31b" | "glm-5.3" | "glm-5.3-flash" | "glm-5.3-flash-flex" | "glm-5.3-flex" | "kimi-k2.7-code" | "kimi-k2.7-code-fast" | "kimi-k2.7-code-flex" | "kimi-k3" | "kimi-k3-fast" | "kimi-k3-flex" | "mimo-v2.6-pro" | "mimo-v2.6-pro-flex" | "qwen-3.8-27b" | "qwen-3.8-27b-flex" | "qwen3.6-35b" | "qwen3.6-35b-fast" | "qwen3.6-35b-flex"> = {
+  "apiKeyEnv": [
+    "NEURALWATT_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.neuralwatt.com/v1"

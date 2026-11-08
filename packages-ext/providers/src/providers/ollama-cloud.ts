@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const ollamaCloud: Provider<"beam" | "clef:27b" | "deepseek-v4-pro" | "deepseek-v4-pro:0813" | "deepseek-v4.1-flash" | "deepseek-v4.1-flash:1017" | "gemma4:31b" | "glm-5.2" | "glm-5.3" | "glm-5.3-flash" | "gpt-oss:120b" | "gpt-oss:20b" | "kimi-k2.6" | "kimi-k2.7-code" | "kimi-k3" | "kimi-k3.1-pro" | "mimo-v2.6-flash" | "mimo-v2.6-pro" | "minimax-m2.7" | "minimax-m3" | "minimax-m3.1-flash" | "mistral-large-3:675b" | "mistral-large-4" | "muse-spark-open" | "nemotron-3-nano:30b" | "nemotron-3-super" | "nemotron-3-ultra"> = {
+  "apiKeyEnv": [
+    "OLLAMA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://ollama.com/v1"

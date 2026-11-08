@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const agnes: Provider<"agnes-2.0-flash" | "agnes-2.5-flash" | "agnes-2.5-pro-alpha" | "agnes-3.0-flash"> = {
+  "apiKeyEnv": [
+    "AGNES_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://apihub.agnes-ai.com/v1"

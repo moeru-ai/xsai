@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const lynkr: Provider<"lynkr-auto"> = {
+  "apiKeyEnv": [
+    "LYNKR_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "http://127.0.0.1:8081/v1"

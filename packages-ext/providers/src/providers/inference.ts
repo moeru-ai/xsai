@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const inference: Provider<"google/gemma-3" | "meta/llama-3.1-8b-instruct" | "meta/llama-3.2-11b-vision-instruct" | "meta/llama-3.2-1b-instruct" | "meta/llama-3.2-3b-instruct" | "mistral/mistral-nemo-12b-instruct" | "osmosis/osmosis-structure-0.6b" | "qwen/qwen-2.5-7b-vision-instruct" | "qwen/qwen3-embedding-4b"> = {
+  "apiKeyEnv": [
+    "INFERENCE_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.net/v1"

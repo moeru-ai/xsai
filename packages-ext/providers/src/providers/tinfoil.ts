@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const tinfoil: Provider<"deepseek-v4-1-flash" | "gemma4-31b" | "glm-5-3" | "gpt-oss-120b" | "gpt-oss-safeguard-120b" | "kimi-k3" | "kimi-k3-1-pro" | "llama3-3-70b" | "nomic-embed-text"> = {
+  "apiKeyEnv": [
+    "TINFOIL_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://inference.tinfoil.sh/v1"

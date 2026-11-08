@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const xai: Provider<"grok-4.20-0309-non-reasoning" | "grok-4.20-0309-reasoning" | "grok-4.20-multi-agent-0309" | "grok-4.3" | "grok-4.5" | "grok-4.6" | "grok-4.7" | "grok-build-0.1" | "grok-imagine-image" | "grok-imagine-image-2.0" | "grok-tts" | "grok-voice-transcribe-2.0"> = {
+  "apiKeyEnv": [
+    "XAI_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.x.ai/v1"

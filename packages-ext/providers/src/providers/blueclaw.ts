@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const blueclaw: Provider<"Qwen3.8-27B"> = {
+  "apiKeyEnv": [
+    "BLUECLAW_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://openai.blueclaw.network/v1"

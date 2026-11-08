@@ -55,6 +55,7 @@ describe('buildProviders', () => {
       extra: [],
       overrides: {
         alpha: {
+          apiKeyEnv: [],
           defaults: { responses: { baseURL: 'https://alpha.example.com/v2' } },
           models: { m1: { routes: { chat: { baseURL: 'https://fixed.example.com/v1' } } } },
         },
@@ -63,6 +64,7 @@ describe('buildProviders', () => {
 
     expect(alpha.models.m1.routes.chat).toMatchObject({ baseURL: 'https://fixed.example.com/v1', protocol: 'chat' })
     expect(alpha.models.m1.name).toBe('Model 1')
+    expect(alpha.apiKeyEnv).toEqual([])
     expect(alpha.defaults).toEqual({
       chat: { baseURL: 'https://fixed.example.com/v1' },
       responses: { baseURL: 'https://alpha.example.com/v2' },
@@ -71,7 +73,7 @@ describe('buildProviders', () => {
 
   it.each([
     [catalog('full'), {}, [], 'Provider ID matches a reserved subpath: full'],
-    [catalog('text'), {}, [], 'Provider ID matches a reserved subpath: text'],
+    [catalog('create'), {}, [], 'Provider ID matches a reserved subpath: create'],
     [catalog('a-b', 'a.b'), {}, [], 'Providers a-b and a.b share the export name aB'],
     [catalog('local'), {}, [extraProvider], 'Extra provider clashes with models.dev: local'],
     [catalog('alpha'), { beta: {} }, [], 'Override for unknown provider: beta'],

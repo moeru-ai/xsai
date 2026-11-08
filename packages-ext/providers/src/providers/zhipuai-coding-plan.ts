@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const zhipuaiCodingPlan: Provider<"glm-4.6v" | "glm-5.3" | "glm-5.3-flash" | "glm-5.3-highspeed"> = {
+  "apiKeyEnv": [
+    "ZHIPU_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://open.bigmodel.cn/api/coding/paas/v4"

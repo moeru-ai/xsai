@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const databricks: Provider<"databricks-claude-haiku-4-5" | "databricks-claude-opus-4-1" | "databricks-claude-opus-4-5" | "databricks-claude-opus-4-6" | "databricks-claude-opus-4-7" | "databricks-claude-sonnet-4" | "databricks-claude-sonnet-4-5" | "databricks-claude-sonnet-4-6" | "databricks-gemini-2-5-flash" | "databricks-gemini-2-5-pro" | "databricks-gemini-3-1-flash-lite" | "databricks-gemini-3-1-pro" | "databricks-gemini-3-5-flash" | "databricks-gemini-3-flash" | "databricks-gemini-3-pro" | "databricks-glm-5-2" | "databricks-gpt-5" | "databricks-gpt-5-1" | "databricks-gpt-5-2" | "databricks-gpt-5-4" | "databricks-gpt-5-4-mini" | "databricks-gpt-5-4-nano" | "databricks-gpt-5-5" | "databricks-gpt-5-6-luna" | "databricks-gpt-5-6-sol" | "databricks-gpt-5-6-terra" | "databricks-gpt-5-mini" | "databricks-gpt-5-nano" | "databricks-gpt-oss-120b" | "databricks-gpt-oss-20b" | "databricks-kimi-k2-7-code"> = {
+  "apiKeyEnv": [
+    "DATABRICKS_TOKEN"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://${DATABRICKS_HOST}/ai-gateway/mlflow/v1"

@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const hyper: Provider<"deepseek-v4-pro-0813" | "deepseek-v4.1-flash-1017" | "gemma-4-26b-a4b-it" | "glm-5.3" | "glm-5.3-flash" | "gpt-oss-120b" | "inkling" | "kimi-k3" | "kimi-k3.1-pro" | "minimax-m3" | "muse-spark-open" | "prism" | "prism-core" | "prism-flash" | "qwen3.8-2.4t-a95b" | "qwen3.8-27b" | "qwen3.8-flash" | "qwen3.8-max"> = {
+  "apiKeyEnv": [
+    "HYPER_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://hyper.charm.land/v1"

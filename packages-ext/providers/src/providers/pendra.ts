@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const pendra: Provider<"deepseek-v4-flash" | "glm-4.7-flash" | "gpt-oss:120b" | "llama3.3:70b" | "qwen3-coder:30b" | "qwen3.6:27b"> = {
+  "apiKeyEnv": [
+    "PENDRA_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://api.pendra.ai/api/v1"

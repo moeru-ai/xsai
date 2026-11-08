@@ -3,6 +3,9 @@
 import type { Provider } from '../types'
 
 export const modelis: Provider<"claude-fable-5" | "claude-opus-4-8" | "claude-sonnet-4-6" | "deepseek-v4-flash" | "deepseek-v4-pro" | "gemini-2.5-flash" | "gemini-2.5-pro" | "qwen/qwen3.7-max" | "qwen/qwen3.7-plus"> = {
+  "apiKeyEnv": [
+    "MODELIS_API_KEY"
+  ],
   "defaults": {
     "chat": {
       "baseURL": "https://modelishub.com/v1"
