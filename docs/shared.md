@@ -25,16 +25,21 @@ The adapters use them, and you need them when you write an adapter or customize 
 ### HTTP options
 
 `HttpOptions` requires `baseURL: string | URL` and `model: string`.
-It has the optional fields `apiKey`, `headers`, and `fetch`.
-Model catalogs and `sendRequest` use `Omit<HttpOptions, 'model'>`.
+It has the optional fields `apiKey`, `headers`, `fetch`, and `path`.
+`sendRequest` uses `Omit<HttpOptions, 'model'>`, and model catalogs use `Omit<HttpOptions, 'model' | 'path'>`.
 
 `apiKey` becomes a bearer token in `sendRequest`, and an adapter can use another header instead.
 `headers` is a record of strings, and undefined values are left out.
 `fetch` has the type `(request: Request) => Promise<Response>`.
 It receives a complete `Request`.
 
+`path` replaces the adapter's default request path, such as `chat/completions`.
+Use it when a service serves a wire at another path.
+A model catalog sends two paths, so its options leave out `path`.
+
 `requestURL(path, baseURL)` adds a trailing slash to the root and then resolves the path.
 Absolute paths and absolute URLs follow the normal URL rules.
+A path that starts with `/` resolves from the origin, so `/decisions` on `https://example.com/v1` becomes `https://example.com/decisions`.
 
 ### sendRequest
 
@@ -43,7 +48,7 @@ It does not retry.
 
 | Field | Description |
 | --- | --- |
-| `path` | Required. A path or URL. |
+| `path` | Required. A path or URL. `httpOptions.path` replaces it when set. |
 | `method` | `GET` or `POST`. Defaults to `POST`. |
 | `body` | `FormData` or an object. Objects are sent as JSON. |
 | `headers` | Replaces all headers that the helper builds. |

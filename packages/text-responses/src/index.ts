@@ -23,7 +23,7 @@ declare module '@xsai/text' {
 }
 
 export const responses = (options: HttpOptions): LanguageModel => async (modelOptions) => {
-  const source = requestURL('responses', options.baseURL).toString()
+  const source = requestURL(options.path ?? 'responses', options.baseURL).toString()
   const providerOptions = modelOptions.providerOptions?.responses
   return wireRequest({
     body: {

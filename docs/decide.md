@@ -147,7 +147,7 @@ A field is absent when the service reports no value.
 
 ### Adapters
 
-Every adapter takes `{ baseURL, model, apiKey?, headers?, fetch? }` and returns a `DecisionModel`.
+Every adapter takes `{ baseURL, model, apiKey?, headers?, fetch?, path? }` and returns a `DecisionModel`.
 
 | Adapter | Request | Provider options |
 | --- | --- | --- |

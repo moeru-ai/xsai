@@ -7,4 +7,6 @@ export interface HttpOptions {
   fetch?: Fetch
   headers?: Record<string, string | undefined>
   model: string
+  /** Replaces the adapter's default request path. Resolved against `baseURL` like the default path. */
+  path?: string
 }

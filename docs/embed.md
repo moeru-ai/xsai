@@ -31,7 +31,7 @@ It does not split large batches or retry, so batch the input yourself when the s
 | `providerOptions.embeddings.dimensions` | The number of output dimensions. The endpoint decides the support and the limits. |
 | `signal` | An `AbortSignal`. |
 
-`embeddings({ baseURL, model, apiKey?, headers?, fetch? })` sends `POST embeddings`.
+`embeddings({ baseURL, model, apiKey?, headers?, fetch?, path? })` sends `POST embeddings`.
 The adapter sorts response entries by `index` before it returns the vectors.
 `usage` has `inputTokens` and `totalTokens`, and it is absent when the service reports none.
 `embed` throws `invalid-response` if the model returns no embeddings.

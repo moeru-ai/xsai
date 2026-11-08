@@ -16,7 +16,7 @@ export const requestURL = (path: string, baseURL: string | URL) => {
 }
 
 export const sendRequest = async (options: SendRequestOptions, httpOptions: Omit<HttpOptions, 'model'>): Promise<Response & { body: NonNullable<Response['body']> }> => {
-  const url = requestURL(options.path, httpOptions.baseURL)
+  const url = requestURL(httpOptions.path ?? options.path, httpOptions.baseURL)
   const headers = options.headers ?? {
     ...httpOptions.headers,
     'Authorization': httpOptions.apiKey != null && httpOptions.apiKey !== '' ? `Bearer ${httpOptions.apiKey}` : httpOptions.headers?.Authorization,

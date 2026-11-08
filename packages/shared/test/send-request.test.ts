@@ -34,3 +34,24 @@ describe('sendRequest authorization', () => {
     expect(authorization).toBe('Basic custom')
   })
 })
+
+describe('sendRequest path', () => {
+  it.each([
+    { baseURL: 'https://example.com/v1', expected: 'https://example.com/v1/chat/completions', path: undefined },
+    { baseURL: 'https://example.com/v1', expected: 'https://example.com/v1/decisions', path: 'decisions' },
+    { baseURL: 'https://example.com/v1/', expected: 'https://example.com/v1/decisions', path: 'decisions' },
+    { baseURL: 'https://example.com/v1', expected: 'https://example.com/decisions', path: '/decisions' },
+    { baseURL: 'https://example.com/v1', expected: 'https://other.test/run', path: 'https://other.test/run' },
+  ])('resolves $path against $baseURL', async ({ baseURL, expected, path }) => {
+    let url: string | undefined
+    await sendRequest({ path: 'chat/completions' }, {
+      baseURL,
+      fetch: async (request) => {
+        url = request.url
+        return new Response('ok')
+      },
+      path,
+    })
+    expect(url).toBe(expected)
+  })
+})
