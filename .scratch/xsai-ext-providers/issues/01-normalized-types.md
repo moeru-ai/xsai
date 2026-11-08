@@ -137,3 +137,20 @@ From review comments on PR #350, implemented in `3f3f1bb5`:
 - Tool calling was not missing: it is `capabilities.tools.supported` on every model. AIRI learns tool support from failures today and could seed it from this field.
 - Reasoning during tool calls: no source models interleaved thinking. The practical need is sending reasoning back on tool-call turns; `@xsai/text-chat` already sends every reasoning part back in the field it arrived in (`reasoning_content` or `reasoning`). `reasoning_details` (92 routes) is not read by the adapter; that is an adapter gap, outside this package.
 - Cache: undecided. Floway and LobeHub model cache only through prices (Floway prices 1-hour writes separately); models.dev also has `ttl`, `max_breakpoints`, `min_tokens`, and `targets`.
+
+### Amendment 6 (2026-11-08): cache capabilities
+
+From the PR #350 review, implemented in `d5bff7d0`. models.dev v2 (`packages/core/src/schema-v2.ts`) defines `cache` as `false` or an object that lists at least one kind; `implicit` and `explicit` are each `true` or a details table, and its `AGENTS.md` says a kind that is not listed is not supported. Only a missing `cache` is unknown.
+
+```ts
+interface ModelCache {
+  explicit: ExplicitCache | false
+  implicit: false | ImplicitCache
+}
+interface ExplicitCache { maxBreakpoints?: number, minTokens?: number, targets?: string[], ttl?: string[] }
+interface ImplicitCache { minTokens?: number, ttl?: string[] }
+```
+
+- `true` becomes `{}`, so `if (cache?.explicit)` still works.
+- This fixes the earlier mapping, which treated an unlisted kind as unknown.
+- `targets` stays `string[]` so a new upstream value does not fail codegen.

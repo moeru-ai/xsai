@@ -42,3 +42,21 @@ interface Cost {
 - AIRI uses model pricing for display, which this data covers.
 - Superseded by this answer: the `cost()`, `cacheTTL`, and `serviceTier` notes in the comments above.
 - Issue 07 is reduced to a minimal Usage fix. Service tier selection moved to `../../text-service-tier/`.
+
+### Amendment (2026-11-08): cache prices
+
+From the PR #350 review, implemented in `d5bff7d0`. Supersedes "the first listed TTL price".
+
+```ts
+interface CachePrices {
+  cacheRead?: number
+  cacheWrite?: number | Record<string, number> // per TTL, such as { '5m': 3.75, '1h': 6 }
+}
+interface Cost extends CachePrices {
+  explicit?: CachePrices // when explicit caching is priced differently
+  input?: number
+  output?: number
+}
+```
+
+Mirrors models.dev `cost.text.input.cache`. `storage` (47 models) is still dropped.
