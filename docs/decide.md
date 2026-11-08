@@ -89,7 +89,7 @@ The adapter checks each answer against its question, because some services, such
 Choice answers and score answers have no `confidence` and no `probabilities`.
 Use `decisions()` or `systemone()` when you need those fields.
 
-`toDecisionModel(model, options?)` passes `maxOutputTokens`, `providerOptions`, `reasoningEffort`, `temperature`, and `topP` to the language model.
+`toDecisionModel(model, options?)` passes `maxOutputTokens`, `providerOptions`, `reasoningEffort`, `serviceTier`, `temperature`, and `topP` to the language model.
 
 ## Handle a refusal
 

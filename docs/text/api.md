@@ -29,6 +29,7 @@ Without a consumer, it does not start the model.
 | `maxOutputTokens` | The output token limit. The provider defines the range. |
 | `temperature`, `topP` | Sampling controls. The provider defines the range and the support. |
 | `reasoningEffort` | A string. Common values are `none`, `low`, `medium`, `high`, `xhigh`, and `max`. |
+| `serviceTier` | A string, sent unchanged as `service_tier`. Common values are `auto`, `default`, `flex`, `priority`, and `standard_only`. The endpoint defines which values it accepts. |
 | `tools` | An array of tools from `tool()`. |
 | `toolChoice` | `auto`, `none`, `required`, or `{ name: string }`. |
 | `outputFormat` | A strict schema for [structured output](/text/structured-output). |

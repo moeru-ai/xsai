@@ -63,6 +63,16 @@ describe('chat options', () => {
     expect(bodies[0]).not.toHaveProperty('providerOptions')
   })
 
+  it('sends serviceTier unchanged and omits it when unset', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
+    await (await model({ input: 'hi', serviceTier: 'flex' })).cancel()
+    await (await model({ input: 'hi' })).cancel()
+
+    expect(bodies[0].service_tier).toBe('flex')
+    expect(bodies[1]).not.toHaveProperty('service_tier')
+  })
+
   it('maps model options to Chat Completions fields', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })

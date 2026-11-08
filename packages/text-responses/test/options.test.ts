@@ -61,6 +61,16 @@ describe('responses options', () => {
     expect(bodies[0]).not.toHaveProperty('providerOptions')
   })
 
+  it('sends serviceTier unchanged and omits it when unset', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    await (await model({ input: 'hi', serviceTier: 'priority' })).cancel()
+    await (await model({ input: 'hi' })).cancel()
+
+    expect(bodies[0].service_tier).toBe('priority')
+    expect(bodies[1]).not.toHaveProperty('service_tier')
+  })
+
   it('merges Responses tools with local function tools', async () => {
     const { bodies, fetch } = captureRequests()
     const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })

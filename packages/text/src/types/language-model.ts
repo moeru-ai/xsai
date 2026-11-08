@@ -17,6 +17,7 @@ export interface LanguageModelOptions {
   providerOptions?: LanguageModelProviderOptions
   /** Qualitative reasoning effort; provider-specific knobs stay in `providerOptions`. */
   reasoningEffort?: 'high' | 'low' | 'max' | 'medium' | 'none' | 'xhigh' | (string & {})
+  serviceTier?: 'auto' | 'default' | 'flex' | 'priority' | 'standard_only' | (string & {})
   signal?: AbortSignal
   temperature?: number
   toolChoice?: ToolChoice

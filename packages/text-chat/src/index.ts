@@ -34,6 +34,7 @@ export const chat = (options: HttpOptions): LanguageModel => async (modelOptions
       reasoning_effort: modelOptions.reasoningEffort,
       response_format: normalizeFormat(modelOptions.outputFormat),
       seed: providerOptions?.seed,
+      service_tier: modelOptions.serviceTier,
       stop: providerOptions?.stopSequences,
       stream: true,
       stream_options: { include_usage: true },

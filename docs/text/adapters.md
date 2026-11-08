@@ -86,7 +86,7 @@ await generateText(model, {
 })
 ```
 
-Shared fields such as `maxOutputTokens` and `reasoningEffort` stay outside `providerOptions`.
+Shared fields such as `maxOutputTokens`, `reasoningEffort`, and `serviceTier` stay outside `providerOptions`.
 Support by an adapter does not mean that every compatible endpoint accepts every field.
 
 ## Adapter differences
