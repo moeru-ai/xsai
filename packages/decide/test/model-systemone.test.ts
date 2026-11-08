@@ -146,4 +146,13 @@ describe('systemone', () => {
     }, usage: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } })
     expect(fetch).toHaveBeenCalledTimes(1)
   })
+
+  it('sends to the path override', async () => {
+    const fetch = vi.fn(async (request: Request) => {
+      expect(request.url).toBe('https://api.inceptionlabs.ai/v1/decisions')
+      return Response.json({ answers: {}, usage: { input_tokens: 1, output_tokens: 0 } })
+    })
+    await systemone({ baseURL: 'https://api.inceptionlabs.ai/v1', fetch, model: 'mercury-decide', path: 'decisions' })({ input: 'x', questions: {} })
+    expect(fetch).toHaveBeenCalledOnce()
+  })
 })

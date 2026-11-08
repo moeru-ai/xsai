@@ -29,7 +29,7 @@ declare module '@xsai/text' {
 const ANTHROPIC_VERSION = '2023-06-01'
 
 export const messages = (options: HttpOptions): LanguageModel => async (modelOptions) => {
-  const source = requestURL('messages', options.baseURL).toString()
+  const source = requestURL(options.path ?? 'messages', options.baseURL).toString()
   const { messages: inputMessages, system } = normalizeInput(modelOptions, source)
   const maxTokens = modelOptions.maxOutputTokens
   const outputFormat = normalizeFormat(modelOptions.outputFormat)

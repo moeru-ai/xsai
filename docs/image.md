@@ -26,7 +26,7 @@ The adapter reads PNG, JPEG, GIF, WebP, and AVIF.
 | `outputFormat` | `jpeg`, `png`, or `webp`. |
 | `quality` | `auto`, `high`, `low`, `max`, `medium`, or `xhigh`. |
 
-`generations({ baseURL, model, apiKey?, headers?, fetch? })` sends `POST images/generations`.
+`generations({ baseURL, model, apiKey?, headers?, fetch?, path? })` sends `POST images/generations`.
 The adapter does not download image URLs from a response.
 If the service returns revised prompts, they are in `providerMetadata.generations.images`, in the order of the images.
 

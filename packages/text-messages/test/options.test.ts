@@ -23,6 +23,24 @@ describe('messages options', () => {
     expect(fetch).not.toHaveBeenCalled()
   })
 
+  it('sends to the path override', async () => {
+    const urls: string[] = []
+    const { fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({
+      baseURL: 'https://example.com/v1',
+      fetch: async (request) => {
+        urls.push(request.url)
+        return fetch(request)
+      },
+      model: 'm',
+      path: 'custom/messages',
+    })
+    const stream = await model({ input: 'hi', maxOutputTokens: 10 })
+    await stream.cancel()
+
+    expect(urls).toStrictEqual(['https://example.com/v1/custom/messages'])
+  })
+
   it('maps Messages stop sequences to the request', async () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
