@@ -29,6 +29,7 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - Messages `Usage.inputTokens` will include cache tokens to match Chat and Responses ([07](issues/07-messages-usage-input.md)). Service tier selection moved to `LanguageModelOptions.serviceTier` ([text-service-tier](../text-service-tier/issues/01-service-tier.md), PR #349).
 - [Define AIRI acceptance](issues/06-airi-acceptance.md): Existing fields cover AIRI's model-bank reads. `description` comes only from `/fetch`. Hosted search support, provider ID mapping, and reasoning `mandatory` stay in AIRI. 0.x imports move to xsAI 1.0 factories in the AIRI migration.
 - [Define runtime fetch](issues/04-runtime-fetch.md): Fetch models.dev v2 with ETag revalidation. No bundled snapshot and no persistent cache; the caller owns fallback and storage. Runtime decoding skips invalid entries; codegen is strict.
+- [Generate per-provider modules and the export map](issues/03-codegen-and-exports.md): `packages-ext/providers` with a shared models.dev normalizer and `pnpm sync`. Modules export `<name>: Provider<'ids'>`; `/full` exports `providers`. Codegen fails on reserved, invalid, or clashing IDs.
 - Providers get computed `defaults` per protocol, so `route()` works for model IDs missing from the catalog. Corrections live in `scripts/overrides.ts`, extra providers (`ollama`, `litellm`) in `scripts/extra.ts`. Route `path` reaches adapters through a new `HttpOptions.path` ([09](issues/09-http-options-path.md)).
 
 ## Not yet specified
