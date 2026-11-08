@@ -42,10 +42,11 @@ const mergeUsage = (start: MessagesUsage | undefined, delta: MessagesUsage | und
   if (inputTokens == null && outputTokens == null)
     return undefined
 
-  const input = inputTokens ?? 0
-  const output = outputTokens ?? 0
   const cacheRead = start?.cache_read_input_tokens ?? delta?.cache_read_input_tokens
   const cacheCreation = start?.cache_creation_input_tokens ?? delta?.cache_creation_input_tokens
+  // Anthropic counts cache buckets separately from input_tokens. Usage counts them as input.
+  const input = (inputTokens ?? 0) + (cacheRead ?? 0) + (cacheCreation ?? 0)
+  const output = outputTokens ?? 0
 
   return {
     cacheCreationInputTokens: cacheCreation,
@@ -53,8 +54,7 @@ const mergeUsage = (start: MessagesUsage | undefined, delta: MessagesUsage | und
     inputTokens: input,
     outputTokens: output,
     reasoningTokens: delta?.output_tokens_details?.thinking_tokens,
-    // Anthropic reports no total and counts cache buckets separately from input_tokens.
-    totalTokens: input + output + (cacheRead ?? 0) + (cacheCreation ?? 0),
+    totalTokens: input + output,
   }
 }
 
