@@ -120,5 +120,6 @@ Validation: `vitest run` 59 files, 481 tests; `pnpm typecheck`; ESLint clean. Wi
 From nekomeowww's PR #350 review (format, stream, and transport info for audio).
 
 - `transcription()` uses `transcriptionsNonStreaming` by default. `transcriptions` sends `stream: true` and requires an SSE response, and models.dev has no data on which models support it (OpenAI `whisper-1` does not). `transcription(model, { stream: true })` selects `transcriptions`.
+- No per-provider or per-model streaming default, like the text protocol preference: models.dev has no streaming data, and hand-kept lists would drift.
 - Upload format (FormData with a `Blob`) and transport (HTTP) follow from the protocol, so they get no fields.
 - The root entry no longer exports `accepts()` (see issue 01, amendment 7).
