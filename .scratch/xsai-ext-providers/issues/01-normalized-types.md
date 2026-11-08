@@ -154,3 +154,8 @@ interface ImplicitCache { minTokens?: number, ttl?: string[] }
 - `true` becomes `{}`, so `if (cache?.explicit)` still works.
 - This fixes the earlier mapping, which treated an unlisted kind as unknown.
 - `targets` stays `string[]` so a new upstream value does not fail codegen.
+
+### Amendment 7 (2026-11-08): no `accepts()`
+
+`accepts()` is removed. It only read `modalities`, and callers can check the MIME list in one line. Matching rules, such as whether a bare `image` (no formats listed) covers `image/webp`, are the caller's choice. The README documents what a bare type means.
+

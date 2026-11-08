@@ -114,3 +114,11 @@ Findings and decisions:
 Not changed: data size for metadata users, and model ID completion listing every model type for every method.
 
 Validation: `vitest run` 59 files, 481 tests; `pnpm typecheck`; ESLint clean. With only API key variables set, requests went to OpenAI Responses (and Chat with `protocol`), Anthropic Messages, DeepSeek and OpenRouter Chat Completions, and a custom Ollama host.
+
+### Amendment 3 (2026-11-08): transcription streaming
+
+From nekomeowww's PR #350 review (format, stream, and transport info for audio).
+
+- `transcription()` uses `transcriptionsNonStreaming` by default. `transcriptions` sends `stream: true` and requires an SSE response, and models.dev has no data on which models support it (OpenAI `whisper-1` does not). `transcription(model, { stream: true })` selects `transcriptions`.
+- Upload format (FormData with a `Blob`) and transport (HTTP) follow from the protocol, so they get no fields.
+- The root entry no longer exports `accepts()` (see issue 01, amendment 7).

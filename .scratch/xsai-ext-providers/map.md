@@ -32,6 +32,7 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - [Generate per-provider modules and the export map](issues/03-codegen-and-exports.md): `packages-ext/providers` with a shared models.dev normalizer and `pnpm sync`. Modules export `<name>: Provider<'ids'>`; `/full` exports `providers`. Codegen fails on reserved, invalid, or clashing IDs.
 - Providers get computed `defaults` per protocol, so `route()` works for model IDs missing from the catalog. Corrections and extra providers (`ollama`, `litellm`) live in `src/corrections/`, shared by codegen and `/fetch`. Route `path` reaches adapters through a new `HttpOptions.path` ([09](issues/09-http-options-path.md)).
 - [Add per-protocol helper subpaths](issues/05-protocol-helpers.md): Reworked three times after usability reviews. Provider subpaths export clients (`openai.text('gpt-5')`, `createOpenai({ apiKey, baseURL })`) with routes only; full data lives at `/models/*`. Protocol order comes from data: Chat Completions first, provider preferences for OpenAI, Azure, xAI (Responses) and Anthropic, GitHub Copilot (Messages). One optional peer: `xsai`.
+- Audio (PR #350 review): `transcription()` streams only with `stream: true` ([05](issues/05-protocol-helpers.md)). Formats stay in `modalities` with no helpers; `accepts()` is removed ([06](issues/06-airi-acceptance.md)).
 - [Add the runtime /fetch subpath](issues/10-runtime-fetch-subpath.md): `fetchProviders()` with ETag revalidation returns the generated data plus descriptions. Runtime applies the same overrides and extra providers, now in `src/corrections/`.
 
 ## Not yet specified
@@ -41,3 +42,5 @@ None.
 ## Out of scope
 
 Provider lifecycle, credential storage, availability state, and provider-specific request rewrites (Azure, official AIRI endpoints).
+
+Protocols without an xsAI package (Realtime, Live, `bidi-generate-content`) and providers outside models.dev with custom transports (aliyun-nls). Their routes stay dropped.

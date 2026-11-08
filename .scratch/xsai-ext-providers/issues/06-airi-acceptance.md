@@ -39,7 +39,7 @@ Researched on 2026-11-08 against AIRI `ea7b3fe8a`.
 | `contextLength` | `model.limit.context` | Covered |
 | `metadata.maxOutput` | `model.limit.output` | Covered |
 | `metadata.pricing` | `model.cost` | Covered, no current reader |
-| `metadata.abilities.vision` | `accepts(model, 'image/*')` | Covered |
+| `metadata.abilities.vision` | `model.modalities.input` (`image` or `image/*`) | Covered |
 | OpenAI reasoning effort support | `model.capabilities.reasoning.efforts` | Covered |
 | `inputModalities` | `model.modalities.input` (MIME) | AIRI maps MIME to its kinds |
 | `description` | Dropped by issue 01 | Gap |
@@ -69,3 +69,12 @@ These are request-option builders and provider types. xsAI 1.0 replaces them wit
 
 - `description`: generated data keeps no description. Runtime data from `/fetch` includes it. Issue 04 defines the runtime model type.
 - `abilities.search`: not provided. AIRI server keeps its own list of OpenAI models with hosted search until models.dev has a capability field.
+
+### Amendment (2026-11-08): formats and codecs
+
+nekomeowww asked for format and codec support (webp, Opus for audio).
+
+- Formats are already per model in `modalities` as MIME types. 4614 of 5109 image-capable chat models list `image/webp`. 340 models list a bare `image`, which means formats are not listed.
+- No helpers: AIRI reads `modalities.input` and `modalities.output` directly. `accepts()` is removed (issue 01, amendment 7).
+- Realtime, Live, and other protocols without an xsAI package stay out of scope, so GPT Live Opus support is not covered.
+
