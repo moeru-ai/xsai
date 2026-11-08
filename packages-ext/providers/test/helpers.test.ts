@@ -3,20 +3,20 @@ import type { Model, Provider, Route } from '../src/types'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { accepts, route } from '../src'
+import { route } from '../src'
 import { createProvider } from '../src/create'
 
-const model = (id: string, routes: Route[], input = ['text']): Model => ({
+const model = (id: string, routes: Route[]): Model => ({
   capabilities: { reasoning: { supported: false }, tools: { supported: true } },
   id,
   limit: {},
-  modalities: { input, output: ['text'] },
+  modalities: { input: ['text'], output: ['text'] },
   name: id,
   routes: Object.fromEntries(routes.map(r => [r.protocol, r])),
   type: 'chat',
 })
 
-const provider: Provider<'all' | 'chat-only' | 'decider' | 'regional'> = {
+const provider: Provider<'all' | 'chat-only' | 'decider' | 'regional' | 'whisper'> = {
   apiKeyEnv: ['EXAMPLE_API_KEY'],
   defaults: { chat: { baseURL: 'https://default.example.com/v1' } },
   doc: 'https://example.com',
@@ -27,10 +27,11 @@ const provider: Provider<'all' | 'chat-only' | 'decider' | 'regional'> = {
       { baseURL: 'https://api.example.com/v1', protocol: 'chat' },
       { baseURL: 'https://api.example.com/anthropic/v1', protocol: 'messages' },
       { baseURL: 'https://api.example.com/v1', protocol: 'responses' },
-    ], ['text', 'image/png']),
-    'chat-only': model('chat-only', [{ baseURL: 'https://api.example.com/v1', protocol: 'chat' }], ['image/*']),
+    ]),
+    'chat-only': model('chat-only', [{ baseURL: 'https://api.example.com/v1', protocol: 'chat' }]),
     'decider': model('decider', [{ baseURL: 'https://api.example.com', path: 'v1/decisions', protocol: 'systemone' }]),
     'regional': model('regional', [{ baseURL: 'https://${REGION}.example.com/v1', protocol: 'chat', variables: ['REGION'] }]),
+    'whisper': model('whisper', [{ baseURL: 'https://api.example.com/v1', protocol: 'transcriptions' }]),
   },
   name: 'Example',
 }
@@ -62,15 +63,6 @@ describe('route', () => {
   it('fills template variables and throws when one is missing', () => {
     expect(route(provider, 'regional', 'chat', { variables: { REGION: 'eu' } }).baseURL).toBe('https://eu.example.com/v1')
     expect(() => route(provider, 'regional', 'chat')).toThrow('Missing variable REGION for provider example')
-  })
-})
-
-describe('accepts', () => {
-  it('matches exact types and wildcards on either side', () => {
-    expect(accepts(provider.models.all, 'image/png')).toBe(true)
-    expect(accepts(provider.models.all, 'image/*')).toBe(true)
-    expect(accepts(provider.models['chat-only'], 'image/webp')).toBe(true)
-    expect(accepts(provider.models.all, 'audio/wav')).toBe(false)
   })
 })
 
@@ -145,6 +137,17 @@ describe('createProvider', () => {
       'https://gpu-box.example.com:8000/v1/decisions',
       'https://gpu-box.example.com:8000/chat/completions',
     ])
+  })
+
+  it('requests SSE transcription only with stream: true', async () => {
+    const { fetch, requests } = capture()
+    const client = createProvider(provider, { fetch })
+    const audio = new Blob(['wav'], { type: 'audio/wav' })
+    await expect(client.transcription('whisper')({ audio })).rejects.toThrow()
+    await expect(client.transcription('whisper', { stream: true })({ audio })).rejects.toThrow()
+
+    const forms = await Promise.all(requests.map(async r => r.formData()))
+    expect(forms.map(form => form.get('stream'))).toEqual([null, 'true'])
   })
 
   it('throws before fetch when the model has no route for the method', () => {

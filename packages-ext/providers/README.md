@@ -53,6 +53,12 @@ Factory options:
 - `variables` fills templates in base URLs, such as `{ AWS_REGION: 'us-east-1' }`.
 - When `process.env` exists, an unset `apiKey` comes from the variables in `apiKeyEnv`, and unset template variables come from variables of the same name. They are read when a model is created.
 
+`transcription` does not stream by default, because not every model supports Server-Sent Events (SSE). Pass `stream: true` to request SSE:
+
+```ts
+const model = openai.transcription('gpt-4o-transcribe', { stream: true })
+```
+
 A model ID that is not in the catalog uses the provider's default base URL for the protocol.
 A method throws an `XSAIError` with code `invalid-input` before any request when the model has no route for its protocols, or when a variable is missing.
 
@@ -61,12 +67,14 @@ A method throws an `XSAIError` with code `invalid-input` before any request when
 `@xsai-ext/providers/models/<id>` exports all data of a provider, with no xsAI dependency: names, limits, modalities, capabilities, prices, and routes.
 
 ```ts
-import { accepts } from '@xsai-ext/providers'
 import { openai } from '@xsai-ext/providers/models/openai'
 
 const model = openai.models['gpt-5']
-console.log(model.limit.context, model.cost?.input, accepts(model, 'image/*'))
+console.log(model.limit.context, model.cost?.input, model.modalities.input)
 ```
+
+`modalities` lists input and output types as MIME types, such as `image/webp` or `audio/opus`.
+A bare type such as `image` means the model takes that type but its formats are not listed.
 
 `@xsai-ext/providers/full` exports all providers as `providers`, keyed by provider ID.
 `createProvider(provider, options)` from `/create` creates a client from provider data, such as a `fetchProviders()` result.

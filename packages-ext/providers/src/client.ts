@@ -1,6 +1,6 @@
 import type { Protocol, Provider, ProviderOptions } from './types'
 
-import { chat, decisions, embeddings, generations, messages, responses, speech, systemone, transcriptions, XSAIError } from 'xsai'
+import { chat, decisions, embeddings, generations, messages, responses, speech, systemone, transcriptions, transcriptionsNonStreaming, XSAIError } from 'xsai'
 
 /** `protocol` selects one protocol; other fields are defaults for every call. */
 export type ModelDefaults<TModel extends (options: never) => unknown, TProtocol extends Protocol>
@@ -15,7 +15,8 @@ export interface ProviderClient<TModel extends string = string> {
   image: Method<TModel, typeof generations, 'generations'>
   speech: Method<TModel, typeof speech, 'speech'>
   text: Method<TModel, typeof chat, 'chat' | 'messages' | 'responses'>
-  transcription: Method<TModel, typeof transcriptions, 'transcriptions'>
+  /** `stream: true` requests SSE, which not every model supports. */
+  transcription: Method<TModel, typeof transcriptions, 'transcriptions', { stream?: boolean }>
 }
 
 export interface ProviderRoutes<TModel extends string = string> {
@@ -32,8 +33,8 @@ type CallableModel = (options: never) => unknown
 
 type CallOptions<T> = T extends (options: infer O) => unknown ? O : never
 
-type Method<TModel extends string, TAdapter extends Adapter, TProtocol extends Protocol>
-  = (model: (string & {}) | TModel, options?: ModelDefaults<ReturnType<TAdapter>, TProtocol>) => ReturnType<TAdapter>
+type Method<TModel extends string, TAdapter extends Adapter, TProtocol extends Protocol, TOptions = unknown>
+  = (model: (string & {}) | TModel, options?: ModelDefaults<ReturnType<TAdapter>, TProtocol> & TOptions) => ReturnType<TAdapter>
 
 /** Protocol order when neither the model nor the provider sets one. */
 const DEFAULT_ORDER: Protocol[] = ['chat', 'responses', 'messages', 'decisions', 'systemone', 'embeddings', 'generations', 'speech', 'transcriptions']
@@ -122,6 +123,7 @@ export const createClient = <TModel extends string>(routes: ProviderRoutes<TMode
     image: connect({ generations }),
     speech: connect({ speech }),
     text: connect({ chat, messages, responses }),
-    transcription: connect({ transcriptions }),
+    transcription: (model: string, { stream, ...options }: { stream?: boolean } = {}) =>
+      connect({ transcriptions: stream === true ? transcriptions : transcriptionsNonStreaming })(model, options),
   } as ProviderClient<TModel>
 }
