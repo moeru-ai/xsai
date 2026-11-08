@@ -45,6 +45,8 @@ Implemented on 2026-11-08 in `e5d6d3b0` on this branch. The package lives at `pa
 
 The root entry has types only. `route()` and `accepts()` are left to issue 05.
 
+Amended by issue 05 amendment 2: the data modules moved to `src/models/<id>.ts` (`/models/*`); `src/providers/<id>.ts` now holds client modules with routes only.
+
 Validation:
 
 - Acceptance, checked against a packed tarball: importing `/deepseek` bundles 5.8 KB with only DeepSeek models (rolldown). `dist/index.js` is empty. Node and TypeScript (`nodenext`) resolve `/full` to `dist/full.*` and `/wafer.ai` through the pattern.
