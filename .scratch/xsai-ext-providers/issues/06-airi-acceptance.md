@@ -2,8 +2,8 @@
 
 Parent: ../map.md
 Type: research
-Labels: needs-triage
-Status: claimed
+Labels: wayfinder:research
+Status: resolved
 Blocked by: 01, 02
 
 ## Question
@@ -64,3 +64,8 @@ These are request-option builders and provider types. xsAI 1.0 replaces them wit
 - Enrichment stays exact-ID and official-endpoint-only, with one discovery request.
 - AIRI imports only the provider subpaths it enriches, not `/full`.
 - No AIRI file imports `@xsai-ext/providers/create` or `@xsai-ext/providers/utils`.
+
+### Gap decisions
+
+- `description`: generated data keeps no description. Runtime data from `/fetch` includes it. Issue 04 defines the runtime model type.
+- `abilities.search`: not provided. AIRI server keeps its own list of OpenAI models with hosted search until models.dev has a capability field.

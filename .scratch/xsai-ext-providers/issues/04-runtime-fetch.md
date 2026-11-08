@@ -10,3 +10,7 @@ Blocked by: 01
 
 What does `/fetch` return, from which URL, with which cache and fallback?
 Decide whether the bundled snapshot is the generated data or a separate trimmed file, how large it may be for browser callers, whether the source URL and fetch function are configurable, and how decode failures fall back.
+
+## Comments
+
+2026-11-08: Runtime data includes `description`, which generated modules omit (issue 06). Decide how the runtime model type extends `Model`.

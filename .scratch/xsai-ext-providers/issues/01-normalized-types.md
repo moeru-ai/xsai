@@ -115,3 +115,7 @@ interface Route {
 
 Add `serviceTiers?: string[]` to `ModelCapabilities`, from v2 `capabilities.service_tier` (values such as `flex`, `priority`, `fast`, `standby`, `ultrafast`).
 Reason: 284 models list service tiers, and tier multipliers change prices by up to 2x (OpenAI `gpt-5`: priority 2x, flex 0.5x). It is useful for display. Tier selection in requests moved to `../../text-service-tier/`.
+
+### Amendment 2 (2026-11-08)
+
+Generated provider modules keep no `description`. Runtime data from `/fetch` includes `description` (issue 06: AIRI model pickers render and search it). Issue 04 defines how the runtime model type extends `Model`.

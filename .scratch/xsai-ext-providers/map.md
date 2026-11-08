@@ -27,13 +27,13 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - [Define the normalized types](issues/01-normalized-types.md): Include model types with an xsAI package. Protocol names equal xsAI factory names. Routes live on each model; capabilities split into model and route levels. Unknown values stay `undefined`. Data subpaths have no `@xsai/*` dependency. Amended to add `serviceTiers` to model capabilities.
 - [Define cost semantics](issues/02-cost-semantics.md): Price data only. `Model.cost` holds text token prices per million tokens. No `cost()` function and no `/costs` subpath.
 - Messages `Usage.inputTokens` will include cache tokens to match Chat and Responses ([07](issues/07-messages-usage-input.md)). Service tier selection is tracked outside this map in `../text-service-tier/`.
+- [Define AIRI acceptance](issues/06-airi-acceptance.md): Existing fields cover AIRI's model-bank reads. `description` comes only from `/fetch`. Hosted search support, provider ID mapping, and reasoning `mandatory` stay in AIRI. 0.x imports move to xsAI 1.0 factories in the AIRI migration.
 
 ## Not yet specified
 
 - Whether `route()` may fall back to a provider-level base URL, and how route `path` meets adapter paths.
 - How local corrections and extra providers (Ollama, LiteLLM, and so on) are authored.
 - Runtime fetch: source URL, cache, snapshot size, and refresh policy.
-- AIRI acceptance for replacing `model-bank` and the 0.x imports.
 
 ## Out of scope
 
