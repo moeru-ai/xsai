@@ -1,12 +1,6 @@
 import type { Protocol, Provider, ProviderOptions, RouteTarget } from './types'
 
-import { speech, transcriptions } from '@xsai/audio'
-import { decisions, systemone } from '@xsai/decide'
-import { embeddings } from '@xsai/embed'
-import { generations } from '@xsai/image'
-import { chat } from '@xsai/text-chat'
-import { messages } from '@xsai/text-messages'
-import { responses } from '@xsai/text-responses'
+import { chat, decisions, embeddings, generations, messages, responses, speech, systemone, transcriptions, XSAIError } from 'xsai'
 
 import { route } from './route'
 
@@ -53,7 +47,14 @@ export const createProvider = <TModel extends string>(provider: Provider<TModel>
   const resolved = withEnv(provider, options)
   const connect = <TProtocol extends Protocol, T>(adapters: Record<TProtocol, Adapter<T>>, protocols: readonly TProtocol[]) =>
     (model: string, { protocol }: { protocol?: TProtocol } = {}): T => {
-      const { protocol: matched, ...target } = route(provider, model, protocol ?? protocols, resolved)
+      let resolvedRoute: RouteTarget
+      try {
+        resolvedRoute = route(provider, model, protocol ?? protocols, resolved)
+      }
+      catch (error) {
+        throw new XSAIError('invalid-input', (error as Error).message)
+      }
+      const { protocol: matched, ...target } = resolvedRoute
       return adapters[matched as TProtocol]({ ...target, apiKey: resolved.apiKey, fetch: resolved.fetch, headers: resolved.headers })
     }
 

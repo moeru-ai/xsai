@@ -116,10 +116,28 @@ describe('createProvider', () => {
     ])
   })
 
+  it('replaces the route base URL and keeps its path', async () => {
+    const { fetch, requests } = capture()
+    const client = createProvider(provider, { baseURL: 'https://gpu-box.example.com:8000/', fetch })
+    await expect(client.decision('decider')({
+      input: 'hi',
+      questions: { ok: { instructions: 'Is it ok?', type: 'boolean' } },
+    })).rejects.toThrow()
+    await expect(client.text('new-model')({ input: 'hi' })).rejects.toThrow()
+
+    expect(requests.map(r => r.url)).toEqual([
+      'https://gpu-box.example.com:8000/v1/decisions',
+      'https://gpu-box.example.com:8000/chat/completions',
+    ])
+  })
+
   it('throws before fetch when the model has no route for the method', () => {
     const { fetch } = capture()
     const client = createProvider(provider, { fetch })
-    expect(() => client.embedding('all')).toThrow('No embeddings route for model all on provider example')
+    expect(() => client.embedding('all')).toThrow(expect.objectContaining({
+      code: 'invalid-input',
+      message: 'No embeddings route for model all on provider example',
+    }))
     expect(() => client.text('chat-only', { protocol: 'responses' })).toThrow('No responses route')
     expect(() => client.text('regional')).toThrow('Missing variable REGION for provider example')
     expect(fetch).not.toHaveBeenCalled()

@@ -55,11 +55,10 @@ export interface Provider<TModel extends string = string> {
   name: string
 }
 
-export interface ProviderOptions {
+export interface ProviderOptions extends RouteOptions {
   apiKey?: string
   fetch?: (request: Request) => Promise<Response>
   headers?: Record<string, string | undefined>
-  variables?: Record<string, string>
 }
 
 export interface ReasoningCapabilities {
@@ -92,6 +91,7 @@ export interface RouteCompatibility {
 }
 
 export interface RouteOptions {
+  baseURL?: string
   variables?: Record<string, string>
 }
 

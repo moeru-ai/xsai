@@ -426,27 +426,9 @@ importers:
 
   packages-ext/providers:
     devDependencies:
-      '@xsai/audio':
+      xsai:
         specifier: 'workspace:'
-        version: link:../../packages/audio
-      '@xsai/decide':
-        specifier: 'workspace:'
-        version: link:../../packages/decide
-      '@xsai/embed':
-        specifier: 'workspace:'
-        version: link:../../packages/embed
-      '@xsai/image':
-        specifier: 'workspace:'
-        version: link:../../packages/image
-      '@xsai/text-chat':
-        specifier: 'workspace:'
-        version: link:../../packages/text-chat
-      '@xsai/text-messages':
-        specifier: 'workspace:'
-        version: link:../../packages/text-messages
-      '@xsai/text-responses':
-        specifier: 'workspace:'
-        version: link:../../packages/text-responses
+        version: link:../../packages/xsai
 
   packages/audio:
     dependencies:

@@ -2,7 +2,7 @@ import type { Protocol, Provider, RouteOptions, RouteTarget } from './types'
 
 /**
  * Resolves the first of `protocols` that the model has a route for.
- * A model that is not in the catalog uses `provider.defaults`.
+ * A model that is not in the catalog uses `provider.defaults`. `options.baseURL` replaces the route's base URL and keeps its path.
  */
 export const route = <TModel extends string>(
   provider: Provider<TModel>,
@@ -16,7 +16,7 @@ export const route = <TModel extends string>(
     if (target === undefined)
       continue
 
-    const baseURL = target.baseURL.replace(/\$\{(\w+)\}/g, (_, name: string) => {
+    const baseURL = options.baseURL ?? target.baseURL.replace(/\$\{(\w+)\}/g, (_, name: string) => {
       const value = options.variables?.[name]
       if (value === undefined)
         throw new Error(`Missing variable ${name} for provider ${provider.id}`)
