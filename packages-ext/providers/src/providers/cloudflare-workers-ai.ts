@@ -5,7 +5,7 @@ import type { ProviderOptions } from '../types'
 
 import { createClient } from '../client'
 
-type Model = "@cf/aisingapore/gemma-sea-lion-v4-27b-it" | "@cf/black-forest-labs/flux-1-schnell" | "@cf/black-forest-labs/flux-2-dev" | "@cf/black-forest-labs/flux-2-klein-4b" | "@cf/black-forest-labs/flux-2-klein-9b" | "@cf/bytedance/stable-diffusion-xl-lightning" | "@cf/cloudflare/clef" | "@cf/cloudflare/clef-flash" | "@cf/cloudflare/clef-omni" | "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b" | "@cf/deepseek-ai/deepseek-v4-flash-0731" | "@cf/deepseek-ai/deepseek-v4-pro-0813" | "@cf/deepseek-ai/deepseek-v4.1-flash-1017" | "@cf/google/gemma-4-26b-a4b-it" | "@cf/ibm-granite/granite-4.0-h-micro" | "@cf/leonardo/lucid-origin" | "@cf/leonardo/phoenix-1.0" | "@cf/lykon/dreamshaper-8-lcm" | "@cf/meta/llama-3.1-8b-instruct-fp8" | "@cf/meta/llama-3.2-11b-vision-instruct" | "@cf/meta/llama-3.2-1b-instruct" | "@cf/meta/llama-3.2-3b-instruct" | "@cf/meta/llama-3.3-70b-instruct-fp8-fast" | "@cf/meta/llama-4-scout-17b-16e-instruct" | "@cf/meta/llama-guard-3-8b" | "@cf/mistralai/mistral-small-3.1-24b-instruct" | "@cf/moonshotai/kimi-k2.6" | "@cf/moonshotai/kimi-k2.7-code" | "@cf/nvidia/nemotron-3-120b-a12b" | "@cf/openai/gpt-oss-120b" | "@cf/openai/gpt-oss-20b" | "@cf/qwen/qwen2.5-coder-32b-instruct" | "@cf/qwen/qwen3-30b-a3b-fp8" | "@cf/qwen/qwen3.8-27b" | "@cf/qwen/qwq-32b" | "@cf/stabilityai/stable-diffusion-xl-base-1.0" | "@cf/zai-org/glm-4.7-flash" | "@cf/zai-org/glm-5.2" | "@cf/zai-org/glm-5.3" | "@cf/zai-org/glm-5.3-flash"
+type Model = "@cf/aisingapore/gemma-sea-lion-v4-27b-it" | "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b" | "@cf/deepseek-ai/deepseek-v4-flash-0731" | "@cf/deepseek-ai/deepseek-v4-pro-0813" | "@cf/deepseek-ai/deepseek-v4.1-flash-1017" | "@cf/google/gemma-4-26b-a4b-it" | "@cf/ibm-granite/granite-4.0-h-micro" | "@cf/meta/llama-3.1-8b-instruct-fp8" | "@cf/meta/llama-3.2-11b-vision-instruct" | "@cf/meta/llama-3.2-1b-instruct" | "@cf/meta/llama-3.2-3b-instruct" | "@cf/meta/llama-3.3-70b-instruct-fp8-fast" | "@cf/meta/llama-4-scout-17b-16e-instruct" | "@cf/meta/llama-guard-3-8b" | "@cf/mistralai/mistral-small-3.1-24b-instruct" | "@cf/moonshotai/kimi-k2.6" | "@cf/moonshotai/kimi-k2.7-code" | "@cf/nvidia/nemotron-3-120b-a12b" | "@cf/openai/gpt-oss-120b" | "@cf/openai/gpt-oss-20b" | "@cf/qwen/qwen2.5-coder-32b-instruct" | "@cf/qwen/qwen3-30b-a3b-fp8" | "@cf/qwen/qwen3.8-27b" | "@cf/qwen/qwq-32b" | "@cf/zai-org/glm-4.7-flash" | "@cf/zai-org/glm-5.2" | "@cf/zai-org/glm-5.3" | "@cf/zai-org/glm-5.3-flash"
 
 const routes: ProviderRoutes<Model> = {
   "apiKeyEnv": [
@@ -22,23 +22,12 @@ const routes: ProviderRoutes<Model> = {
   "id": "cloudflare-workers-ai",
   "models": {
     "@cf/aisingapore/gemma-sea-lion-v4-27b-it": ["chat"],
-    "@cf/black-forest-labs/flux-1-schnell": [],
-    "@cf/black-forest-labs/flux-2-dev": [],
-    "@cf/black-forest-labs/flux-2-klein-4b": [],
-    "@cf/black-forest-labs/flux-2-klein-9b": [],
-    "@cf/bytedance/stable-diffusion-xl-lightning": [],
-    "@cf/cloudflare/clef": [],
-    "@cf/cloudflare/clef-flash": [],
-    "@cf/cloudflare/clef-omni": [],
     "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b": ["chat"],
     "@cf/deepseek-ai/deepseek-v4-flash-0731": ["chat"],
     "@cf/deepseek-ai/deepseek-v4-pro-0813": ["chat"],
     "@cf/deepseek-ai/deepseek-v4.1-flash-1017": ["chat"],
     "@cf/google/gemma-4-26b-a4b-it": ["chat"],
     "@cf/ibm-granite/granite-4.0-h-micro": ["chat"],
-    "@cf/leonardo/lucid-origin": [],
-    "@cf/leonardo/phoenix-1.0": [],
-    "@cf/lykon/dreamshaper-8-lcm": [],
     "@cf/meta/llama-3.1-8b-instruct-fp8": ["chat"],
     "@cf/meta/llama-3.2-11b-vision-instruct": ["chat"],
     "@cf/meta/llama-3.2-1b-instruct": ["chat"],
@@ -56,7 +45,6 @@ const routes: ProviderRoutes<Model> = {
     "@cf/qwen/qwen3-30b-a3b-fp8": ["chat"],
     "@cf/qwen/qwen3.8-27b": ["chat"],
     "@cf/qwen/qwq-32b": ["chat"],
-    "@cf/stabilityai/stable-diffusion-xl-base-1.0": [],
     "@cf/zai-org/glm-4.7-flash": ["chat"],
     "@cf/zai-org/glm-5.2": ["chat"],
     "@cf/zai-org/glm-5.3": ["chat"],

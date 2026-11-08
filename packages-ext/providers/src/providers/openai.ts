@@ -5,7 +5,7 @@ import type { ProviderOptions } from '../types'
 
 import { createClient } from '../client'
 
-type Model = "chat-latest" | "chatgpt-image-latest" | "gpt-3.5-turbo" | "gpt-4" | "gpt-4-turbo" | "gpt-4.1" | "gpt-4.1-mini" | "gpt-4.1-nano" | "gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-2024-11-20" | "gpt-4o-mini" | "gpt-4o-mini-transcribe" | "gpt-4o-mini-tts" | "gpt-4o-transcribe" | "gpt-4o-transcribe-diarize" | "gpt-5" | "gpt-5-mini" | "gpt-5-nano" | "gpt-5-pro" | "gpt-5-search-api" | "gpt-5.1" | "gpt-5.2" | "gpt-5.2-pro" | "gpt-5.3-codex" | "gpt-5.3-codex-spark" | "gpt-5.4" | "gpt-5.4-mini" | "gpt-5.4-nano" | "gpt-5.4-pro" | "gpt-5.5" | "gpt-5.5-pro" | "gpt-5.6" | "gpt-5.6-cyber" | "gpt-5.6-luna" | "gpt-5.6-sol" | "gpt-5.6-terra" | "gpt-6-astra" | "gpt-6-luna" | "gpt-6-sol" | "gpt-6.1-sol" | "gpt-6.1-terra" | "gpt-audio" | "gpt-audio-1.5" | "gpt-audio-mini" | "gpt-daybreak-blue-latest" | "gpt-daybreak-red-latest" | "gpt-image-1-mini" | "gpt-image-1.5" | "gpt-image-2" | "gpt-image-2.5-flare" | "gpt-image-2.5-sunburst" | "gpt-live-transcribe" | "gpt-realtime-whisper" | "gpt-transcribe" | "o1" | "o1-pro" | "o3" | "o3-mini" | "o3-pro" | "o4-mini" | "omni-moderation-latest" | "text-embedding-3-large" | "text-embedding-3-small" | "text-embedding-ada-002" | "tts-1" | "tts-1-hd" | "whisper-1"
+type Model = "chat-latest" | "chatgpt-image-latest" | "gpt-3.5-turbo" | "gpt-4" | "gpt-4-turbo" | "gpt-4.1" | "gpt-4.1-mini" | "gpt-4.1-nano" | "gpt-4o" | "gpt-4o-2024-05-13" | "gpt-4o-2024-08-06" | "gpt-4o-2024-11-20" | "gpt-4o-mini" | "gpt-4o-mini-transcribe" | "gpt-4o-mini-tts" | "gpt-4o-transcribe" | "gpt-4o-transcribe-diarize" | "gpt-5" | "gpt-5-mini" | "gpt-5-nano" | "gpt-5-pro" | "gpt-5-search-api" | "gpt-5.1" | "gpt-5.2" | "gpt-5.2-pro" | "gpt-5.3-codex" | "gpt-5.3-codex-spark" | "gpt-5.4" | "gpt-5.4-mini" | "gpt-5.4-nano" | "gpt-5.4-pro" | "gpt-5.5" | "gpt-5.5-pro" | "gpt-5.6" | "gpt-5.6-cyber" | "gpt-5.6-luna" | "gpt-5.6-sol" | "gpt-5.6-terra" | "gpt-6-astra" | "gpt-6-luna" | "gpt-6-sol" | "gpt-6.1-sol" | "gpt-6.1-terra" | "gpt-audio" | "gpt-audio-1.5" | "gpt-audio-mini" | "gpt-daybreak-blue-latest" | "gpt-daybreak-red-latest" | "gpt-image-1-mini" | "gpt-image-1.5" | "gpt-image-2" | "gpt-image-2.5-flare" | "gpt-image-2.5-sunburst" | "gpt-transcribe" | "o1" | "o1-pro" | "o3" | "o3-mini" | "o3-pro" | "o4-mini" | "text-embedding-3-large" | "text-embedding-3-small" | "text-embedding-ada-002" | "tts-1" | "tts-1-hd" | "whisper-1"
 
 const routes: ProviderRoutes<Model> = {
   "apiKeyEnv": [
@@ -92,8 +92,6 @@ const routes: ProviderRoutes<Model> = {
     "gpt-image-2": ["generations"],
     "gpt-image-2.5-flare": ["generations"],
     "gpt-image-2.5-sunburst": ["generations"],
-    "gpt-live-transcribe": [],
-    "gpt-realtime-whisper": [],
     "gpt-transcribe": ["transcriptions"],
     "o1": ["responses","chat"],
     "o1-pro": ["responses"],
@@ -101,7 +99,6 @@ const routes: ProviderRoutes<Model> = {
     "o3-mini": ["responses","chat"],
     "o3-pro": ["responses"],
     "o4-mini": ["responses","chat"],
-    "omni-moderation-latest": [],
     "text-embedding-3-large": ["embeddings"],
     "text-embedding-3-small": ["embeddings"],
     "text-embedding-ada-002": ["embeddings"],

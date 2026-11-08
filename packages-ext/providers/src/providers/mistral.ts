@@ -5,7 +5,7 @@ import type { ProviderOptions } from '../types'
 
 import { createClient } from '../client'
 
-type Model = "codestral-2508" | "codestral-embed" | "codestral-latest" | "deepseek-v4-1-flash-1017" | "devstral-2512" | "devstral-latest" | "devstral-medium-latest" | "glm-5-2" | "labs-devstral-small-2512" | "labs-leanstral-1-5-1" | "magistral-medium-latest" | "ministral-14b-2512" | "ministral-3b-2512" | "ministral-3b-latest" | "ministral-8b-2512" | "ministral-8b-latest" | "mistral-embed" | "mistral-large-2512" | "mistral-large-4" | "mistral-large-4-0-8" | "mistral-large-latest" | "mistral-medium-2505" | "mistral-medium-2508" | "mistral-medium-2604" | "mistral-medium-latest" | "mistral-moderation-2603" | "mistral-ocr-2512" | "mistral-ocr-4-1" | "mistral-small-2506" | "mistral-small-2603" | "mistral-small-latest" | "open-mistral-nemo" | "pixtral-12b" | "voxtral-mini-latest" | "voxtral-mini-transcribe-realtime-2602" | "voxtral-mini-tts-latest" | "voxtral-small-2507" | "voxtral-small-latest" | "zai-glm-5-2" | "zai-glm-5-3" | "zai-glm-5-3-flash"
+type Model = "codestral-2508" | "codestral-embed" | "codestral-latest" | "deepseek-v4-1-flash-1017" | "devstral-2512" | "devstral-latest" | "devstral-medium-latest" | "glm-5-2" | "labs-devstral-small-2512" | "labs-leanstral-1-5-1" | "magistral-medium-latest" | "ministral-14b-2512" | "ministral-3b-2512" | "ministral-3b-latest" | "ministral-8b-2512" | "ministral-8b-latest" | "mistral-embed" | "mistral-large-2512" | "mistral-large-4" | "mistral-large-4-0-8" | "mistral-large-latest" | "mistral-medium-2505" | "mistral-medium-2508" | "mistral-medium-2604" | "mistral-medium-latest" | "mistral-small-2506" | "mistral-small-2603" | "mistral-small-latest" | "open-mistral-nemo" | "pixtral-12b" | "voxtral-mini-latest" | "voxtral-mini-tts-latest" | "voxtral-small-2507" | "voxtral-small-latest" | "zai-glm-5-2" | "zai-glm-5-3" | "zai-glm-5-3-flash"
 
 const routes: ProviderRoutes<Model> = {
   "apiKeyEnv": [
@@ -52,16 +52,12 @@ const routes: ProviderRoutes<Model> = {
     "mistral-medium-2508": ["chat"],
     "mistral-medium-2604": ["chat"],
     "mistral-medium-latest": ["chat"],
-    "mistral-moderation-2603": [],
-    "mistral-ocr-2512": [],
-    "mistral-ocr-4-1": [],
     "mistral-small-2506": ["chat"],
     "mistral-small-2603": ["chat"],
     "mistral-small-latest": ["chat"],
     "open-mistral-nemo": ["chat"],
     "pixtral-12b": ["chat"],
     "voxtral-mini-latest": ["transcriptions"],
-    "voxtral-mini-transcribe-realtime-2602": [],
     "voxtral-mini-tts-latest": ["speech"],
     "voxtral-small-2507": ["chat"],
     "voxtral-small-latest": ["chat"],

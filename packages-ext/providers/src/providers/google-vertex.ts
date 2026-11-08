@@ -5,7 +5,7 @@ import type { ProviderOptions } from '../types'
 
 import { createClient } from '../client'
 
-type Model = "claude-fable-5-1@default" | "claude-fable-5@default" | "claude-haiku-4-5@20251001" | "claude-haiku-5-5@default" | "claude-opus-4-1@20250805" | "claude-opus-4-5@20251101" | "claude-opus-4-6@default" | "claude-opus-4-7@default" | "claude-opus-4-8@default" | "claude-opus-4@20250514" | "claude-opus-5-5@default" | "claude-opus-5@default" | "claude-sonnet-4-5@20250929" | "claude-sonnet-4-6@default" | "claude-sonnet-4@20250514" | "claude-sonnet-5-5@default" | "claude-sonnet-5@default" | "codestral-2" | "deepseek-ai/deepseek-v3.1-maas" | "deepseek-ai/deepseek-v3.2-maas" | "gemini-2.5-flash" | "gemini-2.5-flash-image" | "gemini-2.5-flash-lite" | "gemini-2.5-flash-tts" | "gemini-2.5-pro" | "gemini-2.5-pro-tts" | "gemini-3-flash-preview" | "gemini-3-pro-image" | "gemini-3.1-flash-image" | "gemini-3.1-flash-lite" | "gemini-3.1-flash-lite-image" | "gemini-3.1-pro-preview" | "gemini-3.1-pro-preview-customtools" | "gemini-3.5-flash" | "gemini-3.5-flash-lite" | "gemini-3.6-flash" | "gemini-3.7-flash" | "gemini-3.8-flash" | "gemini-4-argon" | "gemini-embedding-001" | "gemini-nano-banana-2.1" | "google/gemma-4-26b-a4b-it-maas" | "meta/llama-3.3-70b-instruct-maas" | "meta/llama-4-maverick-17b-128e-instruct-maas" | "meta/llama-4-scout-17b-16e-instruct-maas" | "mistral-medium-3" | "mistral-small-2503" | "moonshotai/kimi-k2-thinking-maas" | "openai/gpt-oss-120b-maas" | "openai/gpt-oss-20b-maas" | "qwen/qwen3-235b-a22b-instruct-2507-maas" | "xai/grok-4.1-fast-non-reasoning" | "xai/grok-4.1-fast-reasoning" | "xai/grok-4.20-non-reasoning" | "xai/grok-4.20-reasoning" | "xai/grok-4.3" | "xai/grok-4.6" | "xai/grok-4.7" | "zai-org/glm-4.7-maas" | "zai-org/glm-5-maas" | "zai-org/glm-5.2-maas"
+type Model = "claude-fable-5-1@default" | "claude-fable-5@default" | "claude-haiku-4-5@20251001" | "claude-haiku-5-5@default" | "claude-opus-4-1@20250805" | "claude-opus-4-5@20251101" | "claude-opus-4-6@default" | "claude-opus-4-7@default" | "claude-opus-4-8@default" | "claude-opus-4@20250514" | "claude-opus-5-5@default" | "claude-opus-5@default" | "claude-sonnet-4-5@20250929" | "claude-sonnet-4-6@default" | "claude-sonnet-4@20250514" | "claude-sonnet-5-5@default" | "claude-sonnet-5@default" | "codestral-2" | "deepseek-ai/deepseek-v3.1-maas" | "deepseek-ai/deepseek-v3.2-maas" | "gemini-2.5-flash-image" | "gemini-2.5-flash-tts" | "gemini-2.5-pro-tts" | "gemini-3-pro-image" | "gemini-3.1-flash-image" | "gemini-3.1-flash-lite-image" | "gemini-embedding-001" | "gemini-nano-banana-2.1" | "google/gemma-4-26b-a4b-it-maas" | "meta/llama-3.3-70b-instruct-maas" | "meta/llama-4-maverick-17b-128e-instruct-maas" | "meta/llama-4-scout-17b-16e-instruct-maas" | "mistral-medium-3" | "mistral-small-2503" | "moonshotai/kimi-k2-thinking-maas" | "openai/gpt-oss-120b-maas" | "openai/gpt-oss-20b-maas" | "qwen/qwen3-235b-a22b-instruct-2507-maas" | "xai/grok-4.1-fast-non-reasoning" | "xai/grok-4.1-fast-reasoning" | "xai/grok-4.20-non-reasoning" | "xai/grok-4.20-reasoning" | "xai/grok-4.3" | "xai/grok-4.6" | "xai/grok-4.7" | "zai-org/glm-4.7-maas" | "zai-org/glm-5-maas" | "zai-org/glm-5.2-maas"
 
 const routes: ProviderRoutes<Model> = {
   "apiKeyEnv": [],
@@ -48,25 +48,12 @@ const routes: ProviderRoutes<Model> = {
     "codestral-2": [["chat","https://${GOOGLE_VERTEX_ENDPOINT}/v1/projects/${GOOGLE_VERTEX_PROJECT}/locations/${GOOGLE_VERTEX_LOCATION}/publishers/mistralai/models"]],
     "deepseek-ai/deepseek-v3.1-maas": [["chat","https://${GOOGLE_VERTEX_ENDPOINT}/v1/projects/${GOOGLE_VERTEX_PROJECT}/locations/${GOOGLE_VERTEX_LOCATION}/endpoints/openapi"]],
     "deepseek-ai/deepseek-v3.2-maas": [["chat","https://${GOOGLE_VERTEX_ENDPOINT}/v1/projects/${GOOGLE_VERTEX_PROJECT}/locations/${GOOGLE_VERTEX_LOCATION}/endpoints/openapi"]],
-    "gemini-2.5-flash": [],
     "gemini-2.5-flash-image": ["generations"],
-    "gemini-2.5-flash-lite": [],
     "gemini-2.5-flash-tts": ["speech"],
-    "gemini-2.5-pro": [],
     "gemini-2.5-pro-tts": ["speech"],
-    "gemini-3-flash-preview": [],
     "gemini-3-pro-image": ["generations"],
     "gemini-3.1-flash-image": ["generations"],
-    "gemini-3.1-flash-lite": [],
     "gemini-3.1-flash-lite-image": ["generations"],
-    "gemini-3.1-pro-preview": [],
-    "gemini-3.1-pro-preview-customtools": [],
-    "gemini-3.5-flash": [],
-    "gemini-3.5-flash-lite": [],
-    "gemini-3.6-flash": [],
-    "gemini-3.7-flash": [],
-    "gemini-3.8-flash": [],
-    "gemini-4-argon": [],
     "gemini-embedding-001": ["embeddings"],
     "gemini-nano-banana-2.1": ["generations"],
     "google/gemma-4-26b-a4b-it-maas": [["chat","https://${GOOGLE_VERTEX_ENDPOINT}/v1/projects/${GOOGLE_VERTEX_PROJECT}/locations/${GOOGLE_VERTEX_LOCATION}/endpoints/openapi"]],

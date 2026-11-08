@@ -3,6 +3,7 @@ import type { Provider } from '../src/types'
 import { describe, expect, it } from 'vitest'
 
 import { buildProviders, exportName, factoryName, renderClient, renderFull, renderModels } from '../scripts/codegen'
+import { normalizeCatalog } from '../src/normalize'
 
 const catalog = (...ids: string[]) => Object.fromEntries(ids.map(id => [id, {
   doc: `https://${id}.example.com/docs`,
@@ -94,6 +95,20 @@ describe('buildProviders', () => {
     input.alpha.models.m1.limit = 'none' as never
     expect(() => buildProviders(input, { extra: [], overrides: {} })).toThrow('alpha.models.m1.limit')
   })
+
+  it.each(['converse', 'workers-ai-run', 'generate-content'])('leaves out models served only through %s', (api) => {
+    const input = catalog('alpha')
+    const { m1 } = input.alpha.models
+    Object.assign(input.alpha.models, {
+      both: { ...m1, api: { ...m1.api, [api]: { base_url: 'https://alpha.example.com' } }, id: 'both' },
+      only: { ...m1, api: { [api]: { base_url: 'https://alpha.example.com' } }, id: 'only' },
+    })
+
+    const [alpha] = buildProviders(input, { extra: [], overrides: {} })
+
+    expect(Object.keys(alpha.models)).toEqual(['both', 'm1'])
+    expect(Object.keys(normalizeCatalog(input).alpha.models)).toEqual(['both', 'm1', 'only'])
+  })
 })
 
 describe('render', () => {
@@ -105,6 +120,34 @@ describe('render', () => {
     expect(source).toContain('export const _302ai: Provider<"m1"> = {')
     expect(source).toContain('    "m1": {"capabilities":')
     expect(renderModels(extraProvider)).toContain('export const local: Provider<never> = {')
+  })
+
+  it('keeps $ patterns in model names', () => {
+    const [alpha] = buildProviders(catalog('alpha'), { extra: [], overrides: {} })
+    const models = { m1: { ...alpha.models.m1, name: 'Latest ($$$$) $& $1' } }
+
+    expect(renderModels({ ...alpha, models })).toContain('"name":"Latest ($$$$) $& $1"')
+    expect(renderClient({ ...alpha, models: { a$$b: alpha.models.m1 } })).toContain('    "a$$b": ["chat"],')
+  })
+
+  describe('shared values', () => {
+    const provider = (...ids: string[]) => {
+      const [alpha] = buildProviders(catalog('alpha'), { extra: [], overrides: {} })
+      return { ...alpha, models: Object.fromEntries(ids.map(id => [id, { ...alpha.models.m1, id }])) }
+    }
+    const modelLine = (source: string, id: string) => source.split('\n').find(line => line.startsWith(`    "${id}": `))
+
+    it('stores a repeated value once and keeps values that differ', () => {
+      const input = provider('a', 'b')
+      input.models.b = { ...input.models.b, limit: { context: 2000 } }
+      const source = renderModels(input)
+
+      expect(source.match(/^import .*$/gm)).toEqual(['import type { Model, Provider } from \'../types\''])
+      expect(source.match(/"tools":\{"supported":true\}/g)).toHaveLength(1)
+      expect(source).toMatch(/^const _0: Model\['capabilities'\] = \{/m)
+      expect(modelLine(source, 'a')).toContain('"limit":{"context":1000}')
+      expect(modelLine(source, 'b')).toContain('"limit":{"context":2000}')
+    })
   })
 
   it('renders a client module with routes only', () => {
