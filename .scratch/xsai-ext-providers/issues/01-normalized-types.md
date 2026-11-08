@@ -127,3 +127,13 @@ Add `defaults?: Partial<Record<Protocol, { baseURL: string }>>` to `Provider`, c
 ### Amendment 4 (2026-11-08)
 
 Add `apiKeyEnv?: string[]` to `Provider`: the variables in `env` that hold an API key. `createProvider` reads them (issue 05 amendment).
+
+### Amendment 5 (2026-11-08): PR review
+
+From review comments on PR #350, implemented in `3f3f1bb5`:
+
+- `ModelCapabilities.supportedParams?: { outputFormat?, temperature?, topK?, topP? }` replaces `structuredOutput`, `temperature`, `topK`, and `topP`. Keys follow xsAI option names (`outputFormat` and `temperature` on `LanguageModelOptions`, `topK` in Chat provider options). An object keeps unknown apart from unsupported; a list would not. LobeHub uses a deny-list (`disabledParams`) for the same problem (Claude Opus 4.7 rejects non-default `temperature` and `top_p`).
+- `RouteCapabilities.tools.search?: boolean` keeps models.dev `tools.search` (hosted search), which AIRI's server needs and LobeHub models as `abilities.search`.
+- Tool calling was not missing: it is `capabilities.tools.supported` on every model. AIRI learns tool support from failures today and could seed it from this field.
+- Reasoning during tool calls: no source models interleaved thinking. The practical need is sending reasoning back on tool-call turns; `@xsai/text-chat` already sends every reasoning part back in the field it arrived in (`reasoning_content` or `reasoning`). `reasoning_details` (92 routes) is not read by the adapter; that is an adapter gap, outside this package.
+- Cache: undecided. Floway and LobeHub model cache only through prices (Floway prices 1-hour writes separately); models.dev also has `ttl`, `max_breakpoints`, `min_tokens`, and `targets`.
