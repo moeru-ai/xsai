@@ -8,7 +8,7 @@ import { collect } from '@xsai/text'
 import { DecisionRefusalError } from './decide'
 import { toText } from './utils'
 
-export type ToDecisionModelOptions = Pick<LanguageModelOptions, 'maxOutputTokens' | 'providerOptions' | 'reasoningEffort' | 'temperature' | 'topP'>
+export type ToDecisionModelOptions = Pick<LanguageModelOptions, 'maxOutputTokens' | 'providerOptions' | 'reasoningEffort' | 'serviceTier' | 'temperature' | 'topP'>
 
 export const toDecisionModel = (model: LanguageModel, options: ToDecisionModelOptions = {}): DecisionModel => async (modelOptions) => {
   const questions = Object.entries(modelOptions.questions)

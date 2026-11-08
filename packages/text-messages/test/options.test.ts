@@ -55,6 +55,16 @@ describe('messages options', () => {
     expect(bodies[0]).not.toHaveProperty('providerOptions')
   })
 
+  it('sends serviceTier unchanged and omits it when unset', async () => {
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+    await (await model({ input: 'hi', maxOutputTokens: 10, serviceTier: 'standard_only' })).cancel()
+    await (await model({ input: 'hi', maxOutputTokens: 10 })).cancel()
+
+    expect(bodies[0].service_tier).toBe('standard_only')
+    expect(bodies[1]).not.toHaveProperty('service_tier')
+  })
+
   it('sends provider tools, beta headers, and MCP servers with local tools', async () => {
     let requestBody: Record<string, unknown> | undefined
     let requestHeaders: Headers | undefined
