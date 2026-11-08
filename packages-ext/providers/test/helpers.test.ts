@@ -99,6 +99,16 @@ describe('createProvider', () => {
     ])
   })
 
+  it('sends extraBody only for the model that sets it', async () => {
+    const { fetch, requests } = capture()
+    const client = createProvider(provider, { fetch })
+    await expect(client.text('all', { extraBody: { thinking: { type: 'enabled' } } })({ input: 'hi' })).rejects.toThrow()
+    await expect(client.text('all')({ input: 'hi' })).rejects.toThrow()
+
+    const bodies = await Promise.all(requests.map(async r => r.json() as Promise<Record<string, unknown>>))
+    expect(bodies.map(({ thinking }) => thinking)).toEqual([{ type: 'enabled' }, undefined])
+  })
+
   it('passes auth, headers, and the route path to the adapter', async () => {
     const { fetch, requests } = capture()
     await expect(createProvider(provider, { apiKey: 'key', fetch, headers: { 'x-extra': '1' } }).decision('decider')({

@@ -2,9 +2,9 @@ import type { Protocol, Provider, ProviderOptions } from './types'
 
 import { chat, decisions, embeddings, generations, messages, responses, speech, systemone, transcriptions, transcriptionsNonStreaming, XSAIError } from 'xsai'
 
-/** `protocol` selects one protocol; other fields are defaults for every call. */
+/** `protocol` selects one protocol and `extraBody` goes to the adapter; other fields are defaults for every call. */
 export type ModelDefaults<TModel extends (options: never) => unknown, TProtocol extends Protocol>
-  = Partial<Omit<CallOptions<TModel>, 'input' | 'signal'>> & { protocol?: TProtocol }
+  = Partial<Omit<CallOptions<TModel>, 'input' | 'signal'>> & { extraBody?: Record<string, unknown>, protocol?: TProtocol }
 
 /** A protocol whose route uses `defaults`, or `[protocol, baseURL, path?]`. Ordered by preference. */
 export type ModelRoutes = ([Protocol, string, string] | [Protocol, string] | Protocol)[]
@@ -27,7 +27,7 @@ export interface ProviderRoutes<TModel extends string = string> {
   protocols?: Protocol[]
 }
 
-type Adapter = (options: Pick<ProviderOptions, 'apiKey' | 'fetch' | 'headers'> & { baseURL: string, model: string, path?: string }) => CallableModel
+type Adapter = (options: Pick<ProviderOptions, 'apiKey' | 'fetch' | 'headers'> & { baseURL: string, extraBody?: Record<string, unknown>, model: string, path?: string }) => CallableModel
 
 type CallableModel = (options: never) => unknown
 
@@ -95,7 +95,7 @@ const mergeDefaults = (model: CallableModel, defaults: Record<string, unknown>):
  * `process.env` when each model is created, so a client can be created at import time.
  */
 export const createClient = <TModel extends string>(routes: ProviderRoutes<TModel>, options: ProviderOptions = {}): ProviderClient<TModel> => {
-  const connect = (adapters: Partial<Record<Protocol, Adapter>>) => (model: string, { protocol, ...defaults }: { protocol?: Protocol } = {}) => {
+  const connect = (adapters: Partial<Record<Protocol, Adapter>>) => (model: string, { extraBody, protocol, ...defaults }: { extraBody?: Record<string, unknown>, protocol?: Protocol } = {}) => {
     const candidates = protocol === undefined ? Object.keys(adapters) as Protocol[] : [protocol]
     const known = Object.hasOwn(routes.models, model) ? routes.models[model as TModel] : undefined
     const available: [Protocol, string, string?][] = known === undefined
@@ -113,7 +113,7 @@ export const createClient = <TModel extends string>(routes: ProviderRoutes<TMode
       return value
     })
     const apiKey = options.apiKey ?? routes.apiKeyEnv?.map(readEnv).find(value => value !== undefined)
-    const created = adapters[matched]!({ apiKey, baseURL, fetch: options.fetch, headers: options.headers, model, path })
+    const created = adapters[matched]!({ apiKey, baseURL, extraBody, fetch: options.fetch, headers: options.headers, model, path })
     return mergeDefaults(created, defaults)
   }
 

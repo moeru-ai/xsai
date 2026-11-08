@@ -46,6 +46,14 @@ const model = openai.text('gpt-5', {
 })
 ```
 
+`extraBody` in the second argument adds fields that an adapter does not map to the JSON request body. Field names are sent as written:
+
+```ts
+const model = deepseek.text('deepseek-v4-pro', {
+  extraBody: { thinking: { type: 'enabled' } },
+})
+```
+
 Factory options:
 
 - `apiKey`, `headers`, and `fetch` go to the adapter.
