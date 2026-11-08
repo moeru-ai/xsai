@@ -1,8 +1,24 @@
-export interface Cost {
+export interface CachePrices {
   cacheRead?: number
-  cacheWrite?: number
+  cacheWrite?: number | Record<string, number>
+}
+
+export interface Cost extends CachePrices {
+  explicit?: CachePrices
   input?: number
   output?: number
+}
+
+export interface ExplicitCache {
+  maxBreakpoints?: number
+  minTokens?: number
+  targets?: string[]
+  ttl?: string[]
+}
+
+export interface ImplicitCache {
+  minTokens?: number
+  ttl?: string[]
 }
 
 export interface Model {
@@ -17,8 +33,13 @@ export interface Model {
   type: ModelType
 }
 
+export interface ModelCache {
+  explicit: ExplicitCache | false
+  implicit: false | ImplicitCache
+}
+
 export interface ModelCapabilities {
-  cache?: { explicit?: boolean, implicit?: boolean }
+  cache?: ModelCache
   reasoning: ReasoningCapabilities
   serviceTiers?: string[]
   supportedParams?: SupportedParams

@@ -72,7 +72,10 @@ describe('normalizeCatalog', () => {
       models: {
         m1: {
           capabilities: {
-            cache: { explicit: true, implicit: true },
+            cache: {
+              explicit: { maxBreakpoints: undefined, minTokens: undefined, targets: undefined, ttl: ['5m'] },
+              implicit: { minTokens: undefined, ttl: undefined },
+            },
             reasoning: {
               budget: undefined,
               default: { type: 'effort', value: 'medium' },
@@ -84,7 +87,7 @@ describe('normalizeCatalog', () => {
             supportedParams: { outputFormat: true, temperature: false },
             tools: { supported: true },
           },
-          cost: { cacheRead: 0.1, cacheWrite: 2, input: 1, output: 4 },
+          cost: { cacheRead: 0.1, cacheWrite: { '1h': 2, '5m': 1.25 }, input: 1, output: 4 },
           description: undefined,
           id: 'm1',
           limit: { context: 1000, input: undefined, output: 100 },
@@ -156,6 +159,18 @@ describe('normalizeCatalog', () => {
     }))
 
     expect(example.defaults).toEqual({ responses: { baseURL: 'https://api.example.com/v1' } })
+  })
+
+  it('marks unlisted cache kinds as unsupported and keeps explicit cache prices', () => {
+    const { example } = normalizeCatalog(catalog({
+      m1: model({
+        capabilities: { cache: { implicit: { min_tokens: 1024 } }, reasoning: { supported: false }, tools: { supported: true } },
+        cost: { text: { input: { cache: { explicit: { read: 0.3, write: { '5m': 3.5 } }, read: 0.2 }, price: 2 } } },
+      }),
+    }))
+
+    expect(example.models.m1.capabilities.cache).toEqual({ explicit: false, implicit: { minTokens: 1024 } })
+    expect(example.models.m1.cost).toEqual({ cacheRead: 0.2, explicit: { cacheRead: 0.3, cacheWrite: { '5m': 3.5 } }, input: 2 })
   })
 
   it('drops prices in other units than tokens', () => {

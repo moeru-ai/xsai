@@ -1,4 +1,4 @@
-import type { Cost, Model, ModelCapabilities, ModelType, Protocol, Provider, Route, RuntimeModel, RuntimeProvider } from './types'
+import type { CachePrices, Cost, ExplicitCache, ImplicitCache, Model, ModelCapabilities, ModelType, Protocol, Provider, Route, RuntimeModel, RuntimeProvider } from './types'
 
 export interface NormalizeOptions {
   /** Keeps model descriptions. Generated modules drop them. */
@@ -60,9 +60,21 @@ const attempt = <T>(decode: () => T, options: NormalizeOptions): T | undefined =
   }
 }
 
-const decodeCacheMode = (value: unknown, path: string) => typeof value === 'boolean'
-  ? value
-  : (record(value, path), true)
+/** A listed cache kind is `true` or a details table; an unlisted kind is not supported. */
+const decodeCacheKind = <T>(value: unknown, path: string, decode: (kind: Record<string, unknown>) => T): false | T =>
+  value === undefined ? false : decode(value === true ? {} : record(value, path))
+
+const decodeExplicitCache = (value: unknown, path: string) => decodeCacheKind(value, path, (kind): ExplicitCache => ({
+  maxBreakpoints: optional(kind.max_breakpoints, `${path}.max_breakpoints`, number),
+  minTokens: optional(kind.min_tokens, `${path}.min_tokens`, number),
+  targets: optional(kind.targets, `${path}.targets`, strings),
+  ttl: optional(kind.ttl, `${path}.ttl`, strings),
+}))
+
+const decodeImplicitCache = (value: unknown, path: string) => decodeCacheKind(value, path, (kind): ImplicitCache => ({
+  minTokens: optional(kind.min_tokens, `${path}.min_tokens`, number),
+  ttl: optional(kind.ttl, `${path}.ttl`, strings),
+}))
 
 const decodeCapabilities = (value: unknown, path: string): ModelCapabilities => {
   const capabilities = record(value, path)
@@ -73,10 +85,10 @@ const decodeCapabilities = (value: unknown, path: string): ModelCapabilities => 
     cache: optional(capabilities.cache, `${path}.cache`, (cache, cachePath) => {
       if (cache === false)
         return { explicit: false, implicit: false }
-      const modes = record(cache, cachePath)
+      const kinds = record(cache, cachePath)
       return {
-        explicit: optional(modes.explicit, `${cachePath}.explicit`, decodeCacheMode),
-        implicit: optional(modes.implicit, `${cachePath}.implicit`, decodeCacheMode),
+        explicit: decodeExplicitCache(kinds.explicit, `${cachePath}.explicit`),
+        implicit: decodeImplicitCache(kinds.implicit, `${cachePath}.implicit`),
       }
     }),
     reasoning: {
@@ -111,6 +123,17 @@ const decodeCapabilities = (value: unknown, path: string): ModelCapabilities => 
 }
 
 /** USD per million text tokens. Prices in other units are dropped. */
+const decodeCachePrices = (value: unknown, path: string): CachePrices | undefined => {
+  const prices = record(value, path)
+  return compact({
+    cacheRead: optional(prices.read, `${path}.read`, number),
+    // A number, or prices per TTL such as `{ '5m': 3.75, '1h': 6 }`.
+    cacheWrite: optional(prices.write, `${path}.write`, (write, writePath) => typeof write === 'number'
+      ? number(write, writePath)
+      : Object.fromEntries(Object.entries(record(write, writePath)).map(([ttl, price]) => [ttl, number(price, `${writePath}.${ttl}`)]))),
+  })
+}
+
 const decodeCost = (value: unknown, path: string): Cost | undefined => {
   const text = record(value, path).text
   if (text === undefined)
@@ -124,13 +147,12 @@ const decodeCost = (value: unknown, path: string): Cost | undefined => {
   }
   const inputPrice = tokenPrice(input, `${path}.text.input`)
   const outputPrice = tokenPrice(output, `${path}.text.output`)
-  const cache = optional(inputPrice?.cache, `${path}.text.input.cache`, record)
+  const cachePath = `${path}.text.input.cache`
+  const cache = optional(inputPrice?.cache, cachePath, record)
 
   return compact({
-    cacheRead: optional(cache?.read, `${path}.text.input.cache.read`, number),
-    cacheWrite: optional(cache?.write, `${path}.text.input.cache.write`, (write, writePath) => typeof write === 'number'
-      ? number(write, writePath)
-      : number(Object.values(record(write, writePath))[0], writePath)),
+    ...cache === undefined ? {} : decodeCachePrices(cache, cachePath),
+    explicit: optional(cache?.explicit, `${cachePath}.explicit`, decodeCachePrices),
     input: optional(inputPrice?.price, `${path}.text.input.price`, number),
     output: optional(outputPrice?.price, `${path}.text.output.price`, number),
   })
