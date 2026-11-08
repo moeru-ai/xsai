@@ -60,3 +60,29 @@ Validation:
 
 - Acceptance: helpers throw before fetch without a route (test). The `/embed` and `/audio` bundles contain no text adapter (rolldown). Only `apiKey`, `headers`, and `fetch` reach the adapter from options (test).
 - `vitest run`: 58 files, 466 tests. `pnpm typecheck`. ESLint: no errors.
+
+### Amendment (2026-11-08): `createProvider`
+
+Implemented in `7f755a09`. Replaces the helper subpaths above after a second usability review: `languageModel(openai, 'gpt-5', { apiKey })` passes credentials per model, and the names were clumsy.
+
+Other SDKs bind credentials to the provider, not the model: Vercel AI SDK (`createOpenAI({ apiKey })`, then `openai('gpt-5')`, `openai.responses()`, `openai.chat()`), Rig (`OpenAI::from_env()?.completion(...)`), Pydantic AI (`OpenAIProvider(api_key=...)`). String registries (Mastra `"openai/gpt-x"`, Pydantic `'openai:...'`, Vercel `registry.languageModel`) would need all provider data in the bundle, so they do not fit. pi-ai also lets model data choose the protocol.
+
+```ts
+import { createProvider } from '@xsai-ext/providers/create'
+import { openai } from '@xsai-ext/providers/openai'
+
+const provider = createProvider(openai, { apiKey })
+provider.text('gpt-5')
+provider.text('gpt-5', { protocol: 'chat' })
+provider.embedding('text-embedding-3-small')
+```
+
+- One subpath, `/create`, with `createProvider(provider, options)` returning `ProviderClient<TModel>`: `text`, `embedding`, `image`, `speech`, `transcription`, `decision`. Protocol order is unchanged; `text` and `decision` take `{ protocol }`.
+- Provider data subpaths stay data only. Methods on the data objects would make every data import carry adapters.
+- `/create` imports every adapter. All adapters bundle to 11.9 KB gzipped against 9.7 KB for the text adapters alone, so separate subpaths are not worth it. `createProvider` with OpenAI data is 15.1 KB gzipped.
+- `ProviderOptions` (`apiKey`, `headers`, `fetch`, `variables`) replaces `ModelOptions`.
+- When `process.env` exists, unset `apiKey` comes from the first set variable in `provider.apiKeyEnv`, and unset template variables from variables of the same name. Explicit options win; empty strings count as unset.
+- New data field `Provider.apiKeyEnv?: string[]`, computed by normalization: `env` minus template variables; when several remain, only names with `API_KEY`, `APIKEY`, or `TOKEN`, or ending in `_PAT`. Correct on 225 of 235 providers by inspection; overrides set `[]` for `google-vertex` (service account file) and `sap-ai-core` (JSON service key).
+- Reserved subpaths: `create` replaces `text`, `embed`, `image`, `audio`, and `decide`.
+
+Validation: `vitest run` 58 files, 471 tests; `pnpm typecheck`; ESLint clean. A run with only `OPENAI_API_KEY`, `AWS_REGION`, and `AWS_BEARER_TOKEN_BEDROCK` set reached `https://api.openai.com/v1/responses`, `.../chat/completions`, `.../embeddings`, and `https://bedrock-mantle.us-east-1.api.aws/anthropic/v1/messages`.

@@ -123,3 +123,7 @@ Generated provider modules keep no `description`. Runtime data from `/fetch` inc
 ### Amendment 3 (2026-11-08)
 
 Add `defaults?: Partial<Record<Protocol, { baseURL: string }>>` to `Provider`, computed by codegen (issue 03). `route()` uses it for model IDs that are not in the catalog.
+
+### Amendment 4 (2026-11-08)
+
+Add `apiKeyEnv?: string[]` to `Provider`: the variables in `env` that hold an API key. `createProvider` reads them (issue 05 amendment).
