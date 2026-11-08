@@ -22,7 +22,7 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - The root entry exports types and `route()` only. It never exports all provider data. All providers live at `/full`.
 - Each provider is a subpath (`@xsai-ext/providers/deepseek`) through one `"./*"` export pattern. Exact keys (`./capabilities`, `./fetch`, `./full`, helper subpaths) take precedence. Codegen fails when a provider ID matches a reserved subpath.
 - `route()` is pure data and returns `HttpOptions`-compatible fields plus the protocol.
-- Protocol helpers live in one subpath per xsAI package (`/text-chat`, `/text-messages`, `/text-responses`, `/embed`, `/image`, `/audio`, `/decide`). Each imports only its own package, declared as an optional peer dependency. Helpers take a provider data object, not an ID string. A model without a route for that protocol throws before fetch.
+- Helpers take a provider data object, not an ID string. A model without a route for that protocol throws before fetch. Subpath layout superseded by [Add per-protocol helper subpaths](issues/05-protocol-helpers.md).
 - Peer ranges pin the current xsAI beta until 1.0, then widen to `^1.0.0`.
 - [Define the normalized types](issues/01-normalized-types.md): Include model types with an xsAI package. Protocol names equal xsAI factory names. Routes live on each model; capabilities split into model and route levels. Unknown values stay `undefined`. Data subpaths have no `@xsai/*` dependency. Amended to add `serviceTiers` to model capabilities.
 - [Define cost semantics](issues/02-cost-semantics.md): Price data only. `Model.cost` holds text token prices per million tokens. No `cost()` function and no `/costs` subpath.
@@ -31,6 +31,7 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - [Define runtime fetch](issues/04-runtime-fetch.md): Fetch models.dev v2 with ETag revalidation. No bundled snapshot and no persistent cache; the caller owns fallback and storage. Runtime decoding skips invalid entries; codegen is strict.
 - [Generate per-provider modules and the export map](issues/03-codegen-and-exports.md): `packages-ext/providers` with a shared models.dev normalizer and `pnpm sync`. Modules export `<name>: Provider<'ids'>`; `/full` exports `providers`. Codegen fails on reserved, invalid, or clashing IDs.
 - Providers get computed `defaults` per protocol, so `route()` works for model IDs missing from the catalog. Corrections live in `scripts/overrides.ts`, extra providers (`ollama`, `litellm`) in `scripts/extra.ts`. Route `path` reaches adapters through a new `HttpOptions.path` ([09](issues/09-http-options-path.md)).
+- [Add per-protocol helper subpaths](issues/05-protocol-helpers.md): Reworked after a usability review. One subpath per xsAI package (`/text`, `/embed`, `/image`, `/audio`, `/decide`) with `languageModel`-style helpers that pick the protocol themselves; text prefers `responses`, `messages`, `chat`. Root exports `route()` and `accepts()`.
 
 ## Not yet specified
 
