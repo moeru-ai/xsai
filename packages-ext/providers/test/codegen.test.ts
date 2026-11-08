@@ -2,7 +2,7 @@ import type { Provider } from '../src/types'
 
 import { describe, expect, it } from 'vitest'
 
-import { buildProviders, exportName, renderFull, renderProvider } from '../scripts/codegen'
+import { buildProviders, exportName, factoryName, renderClient, renderFull, renderModels } from '../scripts/codegen'
 
 const catalog = (...ids: string[]) => Object.fromEntries(ids.map(id => [id, {
   doc: `https://${id}.example.com/docs`,
@@ -39,6 +39,14 @@ describe('exportName', () => {
     ['302ai', '_302ai'],
   ])('maps %s to %s', (id, name) => {
     expect(exportName(id)).toBe(name)
+  })
+
+  it.each([
+    ['openai', 'createOpenai'],
+    ['amazon-bedrock', 'createAmazonBedrock'],
+    ['302ai', 'create302ai'],
+  ])('names the factory for %s %s', (id, name) => {
+    expect(factoryName(id)).toBe(name)
   })
 })
 
@@ -89,20 +97,31 @@ describe('buildProviders', () => {
 })
 
 describe('render', () => {
-  it('renders a provider module with literal model IDs and a type-only import', () => {
+  it('renders a models module with literal model IDs and a type-only import', () => {
     const [alpha] = buildProviders(catalog('302ai'), { extra: [], overrides: {} })
-    const source = renderProvider(alpha)
+    const source = renderModels(alpha)
 
     expect(source.match(/^import .*$/gm)).toEqual(['import type { Provider } from \'../types\''])
     expect(source).toContain('export const _302ai: Provider<"m1"> = {')
     expect(source).toContain('    "m1": {"capabilities":')
-    expect(renderProvider(extraProvider)).toContain('export const local: Provider<never> = {')
+    expect(renderModels(extraProvider)).toContain('export const local: Provider<never> = {')
   })
 
-  it('renders /full keyed by provider ID', () => {
+  it('renders a client module with routes only', () => {
+    const [alpha] = buildProviders(catalog('302ai'), { extra: [], overrides: {} })
+    const source = renderClient(alpha)
+
+    expect(source).toContain('type Model = "m1"')
+    expect(source).toContain('    "m1": ["chat"],')
+    expect(source).not.toContain('capabilities')
+    expect(source).toContain('export const create302ai = (options?: ProviderOptions) => createClient(routes, options)')
+    expect(source).toContain('export const _302ai = /* @__PURE__ */ create302ai()')
+  })
+
+  it('renders /full from the models modules, keyed by provider ID', () => {
     const source = renderFull([{ ...extraProvider, id: 'wafer.ai' }])
 
-    expect(source).toContain('import { waferAi } from \'./providers/wafer.ai\'')
+    expect(source).toContain('import { waferAi } from \'./models/wafer.ai\'')
     expect(source).toContain('  "wafer.ai": waferAi,')
   })
 })

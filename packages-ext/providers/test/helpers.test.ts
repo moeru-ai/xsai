@@ -77,17 +77,33 @@ describe('accepts', () => {
 describe('createProvider', () => {
   afterEach(() => vi.unstubAllEnvs())
 
-  it('prefers Responses, then Messages, then Chat Completions', async () => {
+  it('prefers Chat Completions unless the provider data sets an order', async () => {
     const { fetch, requests } = capture()
     const client = createProvider(provider, { fetch })
     await expect(client.text('all')({ input: 'hi' })).rejects.toThrow()
     await expect(client.text('all', { protocol: 'messages' })({ input: 'hi', maxOutputTokens: 5 })).rejects.toThrow()
-    await expect(client.text('chat-only')({ input: 'hi' })).rejects.toThrow()
+    await expect(createProvider({ ...provider, protocols: ['responses'] }, { fetch }).text('all')({ input: 'hi' })).rejects.toThrow()
 
     expect(requests.map(r => r.url)).toEqual([
-      'https://api.example.com/v1/responses',
-      'https://api.example.com/anthropic/v1/messages',
       'https://api.example.com/v1/chat/completions',
+      'https://api.example.com/anthropic/v1/messages',
+      'https://api.example.com/v1/responses',
+    ])
+  })
+
+  it('merges model defaults into every call, with call options winning', async () => {
+    const { fetch, requests } = capture()
+    const model = createProvider(provider, { fetch }).text('all', {
+      providerOptions: { chat: { seed: 1, topK: 5 } },
+      temperature: 0.2,
+    })
+    await expect(model({ input: 'hi' })).rejects.toThrow()
+    await expect(model({ input: 'hi', providerOptions: { chat: { seed: 2 } }, temperature: 1 })).rejects.toThrow()
+
+    const bodies = await Promise.all(requests.map(async r => r.json() as Promise<Record<string, unknown>>))
+    expect(bodies.map(({ seed, temperature, top_k }) => ({ seed, temperature, top_k }))).toEqual([
+      { seed: 1, temperature: 0.2, top_k: 5 },
+      { seed: 2, temperature: 1, top_k: 5 },
     ])
   })
 

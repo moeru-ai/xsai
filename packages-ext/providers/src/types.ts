@@ -53,6 +53,7 @@ export interface Provider<TModel extends string = string> {
   id: string
   models: Record<TModel, Model>
   name: string
+  protocols?: Protocol[]
 }
 
 export interface ProviderOptions extends RouteOptions {

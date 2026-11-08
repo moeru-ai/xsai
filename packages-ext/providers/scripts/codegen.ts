@@ -1,6 +1,7 @@
 import type { CorrectionOptions } from '../src/corrections'
 import type { Provider } from '../src/types'
 
+import { toRoutes } from '../src/client'
 import { applyCorrections } from '../src/corrections'
 import { normalizeCatalog } from '../src/normalize'
 
@@ -11,6 +12,7 @@ export const RESERVED_SUBPATHS = [
   'fetch',
   'full',
   'index',
+  'models',
   'package.json',
   'types',
 ]
@@ -25,6 +27,12 @@ export const exportName = (id: string) => {
     .map((part, index) => index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1))
     .join('')
   return /^\d/.test(name) ? `_${name}` : name
+}
+
+/** The client factory name, such as `createOpenai` or `create302ai`. */
+export const factoryName = (id: string) => {
+  const name = exportName(id).replace(/^_/, '')
+  return `create${name.charAt(0).toUpperCase()}${name.slice(1)}`
 }
 
 /** Strictly normalizes the catalog, applies corrections, and checks IDs. */
@@ -47,31 +55,48 @@ export const buildProviders = (catalog: unknown, options: Omit<CorrectionOptions
   return providers
 }
 
-/** Pretty-prints the provider but keeps each model on one line, so diffs stay per model. */
-const renderObject = ({ models, ...provider }: Provider) => {
+/** Pretty-prints an object but keeps each model on one line, so diffs stay per model. */
+const renderObject = ({ models, ...rest }: { models: Record<string, unknown> }) => {
   const entries = Object.entries(models).map(([id, model]) => `    ${JSON.stringify(id)}: ${JSON.stringify(model)},`)
-  const body = JSON.stringify({ ...provider, models: {} }, null, 2)
+  const body = JSON.stringify({ ...rest, models: {} }, null, 2)
   return entries.length === 0
     ? body
     : body.replace('"models": {}', ['"models": {', ...entries, '  }'].join('\n'))
 }
 
-export const renderProvider = (provider: Provider) => {
+const modelUnion = (provider: Provider) => {
   const ids = Object.keys(provider.models)
-  const models = ids.length === 0 ? 'never' : ids.map(id => JSON.stringify(id)).join(' | ')
-  return [
-    HEADER,
-    'import type { Provider } from \'../types\'',
-    `export const ${exportName(provider.id)}: Provider<${models}> = ${renderObject(provider)}`,
-  ].join('\n\n').concat('\n')
+  return ids.length === 0 ? 'never' : ids.map(id => JSON.stringify(id)).join(' | ')
 }
+
+/** `src/models/<id>.ts`: all provider data, with no xsAI dependency. */
+export const renderModels = (provider: Provider) => [
+  HEADER,
+  'import type { Provider } from \'../types\'',
+  `export const ${exportName(provider.id)}: Provider<${modelUnion(provider)}> = ${renderObject(provider)}`,
+].join('\n\n').concat('\n')
+
+/** `src/providers/<id>.ts`: a client factory and a default client, with routes only. */
+export const renderClient = (provider: Provider) => [
+  HEADER,
+  [
+    'import type { ProviderRoutes } from \'../client\'',
+    'import type { ProviderOptions } from \'../types\'',
+    '',
+    'import { createClient } from \'../client\'',
+  ].join('\n'),
+  `type Model = ${modelUnion(provider)}`,
+  `const routes: ProviderRoutes<Model> = ${renderObject(toRoutes(provider))}`,
+  `export const ${factoryName(provider.id)} = (options?: ProviderOptions) => createClient(routes, options)`,
+  `export const ${exportName(provider.id)} = /* @__PURE__ */ ${factoryName(provider.id)}()`,
+].join('\n\n').concat('\n')
 
 export const renderFull = (providers: Provider[]) => [
   HEADER,
   [
     'import type { Provider } from \'./types\'',
     '',
-    ...providers.map(({ id }) => `import { ${exportName(id)} } from './providers/${id}'`),
+    ...providers.map(({ id }) => `import { ${exportName(id)} } from './models/${id}'`),
   ].join('\n'),
   [
     'export const providers: Record<string, Provider> = {',

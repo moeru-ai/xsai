@@ -25,6 +25,7 @@
     "./create": "./src/create.ts",
     "./fetch": "./src/fetch.ts",
     "./full": "./src/full.ts",
+    "./models/*": "./src/models/*.ts",
     "./*": "./src/providers/*.ts"
   },
   "files": [
@@ -51,6 +52,10 @@
       "./full": {
         "types": "./dist/full.d.ts",
         "default": "./dist/full.js"
+      },
+      "./models/*": {
+        "types": "./dist/models/*.d.ts",
+        "default": "./dist/models/*.js"
       },
       "./*": {
         "types": "./dist/providers/*.d.ts",

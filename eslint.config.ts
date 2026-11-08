@@ -7,6 +7,7 @@ export default defineConfig()
       '.scratch/**',
       'packages/text-responses/src/generated/**/*.ts',
       'packages-ext/providers/src/full.ts',
+      'packages-ext/providers/src/models/**',
       'packages-ext/providers/src/providers/**',
       // Historical code uses the frozen API and formatting.
       'docs-v0/**/*.md/*',
