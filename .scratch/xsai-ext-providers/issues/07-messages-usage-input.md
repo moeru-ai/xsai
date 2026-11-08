@@ -25,10 +25,10 @@ This is a breaking change for Messages callers that read `inputTokens`.
 
 ## Answer
 
-Implemented on 2026-11-08 in `7b88c299` on branch `fix/messages-usage-input`.
+Implemented on 2026-11-08 in `379357f3` on branch `fix/messages-usage-input`.
 
 - Messages adds `cache_read_input_tokens` and `cache_creation_input_tokens` to `inputTokens`. `totalTokens` is `inputTokens + outputTokens`.
-- `Usage` field comments state the subset rules. `docs/text/api.md` states them too.
+- `docs/text/api.md` states the subset rules.
 
 Validation:
 
