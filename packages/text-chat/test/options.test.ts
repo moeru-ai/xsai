@@ -34,6 +34,15 @@ describe('chat options', () => {
     }])
   })
 
+  it('sends extraBody with the adapter fields', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = chat({ baseURL: 'https://x/v1/', extraBody: { thinking: { type: 'disabled' } }, fetch, model: 'm' })
+    const stream = await model({ input: 'hi' })
+    await stream.cancel()
+
+    expect(bodies[0]).toMatchObject({ model: 'm', stream: true, thinking: { type: 'disabled' } })
+  })
+
   it('maps compatible Chat provider options to request fields', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
