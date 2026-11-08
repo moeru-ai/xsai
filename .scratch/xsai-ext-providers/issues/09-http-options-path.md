@@ -2,8 +2,8 @@
 
 Parent: ../map.md
 Type: task
-Labels: needs-triage
-Status: open
+Labels: ready-for-agent
+Status: resolved
 Blocked by: none
 
 ## Scope
@@ -19,3 +19,17 @@ Motivation: models.dev v2 routes for Inception and Perplexity `systemone` use a 
 
 - Each single-path adapter sends to the override when set and to its default otherwise.
 - Tests cover a leading slash, no leading slash, and a `baseURL` with and without a trailing slash.
+
+## Answer
+
+Implemented on 2026-11-08 in `d69a772b` on branch `feat/http-options-path`.
+
+- `HttpOptions.path?: string` replaces the adapter's default path in `sendRequest`. Messages and Responses also use it for their replay source URL.
+- Changed from the scope above: a leading `/` keeps the standard URL rule and resolves from the origin. `docs/shared.md` already documented that rule for `requestURL`, so changing it would silently break a public function. `@xsai-ext/providers` strips the leading `/` from v2 paths during normalization instead (issue 03).
+- `models()` takes `Omit<HttpOptions, 'model' | 'path'>` and ignores a `path` from reused adapter options at runtime.
+
+Validation:
+
+- `vitest run` for shared, decide, model, text-chat, text-messages, and text-responses: 33 files, 213 tests.
+- `pnpm typecheck`.
+- ESLint on changed files: no errors; 6 existing TODO warnings.

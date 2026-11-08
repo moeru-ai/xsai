@@ -27,4 +27,4 @@ Decide how corrections and extra providers (Ollama, LiteLLM, Qianfan, Hunyuan) a
 - Extra providers live in `scripts/extra.ts` as complete normalized `Provider` objects. Include only `ollama` (`http://localhost:11434/v1/`) and `litellm` (`http://localhost:4000/v1/`). Send other missing providers (Qianfan, Tencent Hunyuan) upstream.
 - Overrides and extras pass the same checks as generated data: reserved subpaths and no ID clash with v2.
 - Codegen computes `Provider.defaults?: Partial<Record<Protocol, { baseURL: string }>>`. A protocol gets a default only when all of the provider's models share one base URL for it. Extras usually have `defaults` and no models.
-- Keep route `path` from v2, without the leading-slash ambiguity (see issue 09).
+- Keep route `path` from v2 and strip its leading `/`, because `HttpOptions.path` follows standard URL rules (issue 09).
