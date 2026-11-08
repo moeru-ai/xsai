@@ -132,6 +132,32 @@ describe('normalize input', () => {
     }])
   })
 
+  it('replays reasoning_details unchanged next to the reasoning text', () => {
+    const details = [
+      { signature: 'sig_1', text: 'Think', type: 'reasoning.text' },
+      { data: 'enc_1', id: 'rs_1', type: 'reasoning.encrypted' },
+    ]
+    expect(normalizeInput({
+      input: [{
+        content: [
+          {
+            content: [{ text: 'Think', type: 'text' }],
+            providerMetadata: { chat: { reasoning_details: details, reasoning_field: 'reasoning' } },
+            type: 'reasoning',
+          },
+          { arguments: '{}', callId: 'call_1', id: 'call_1', name: 'lookup', type: 'tool-call' },
+        ],
+        role: 'assistant',
+      }],
+    })).toEqual([{
+      content: '',
+      reasoning: 'Think',
+      reasoning_details: details,
+      role: 'assistant',
+      tool_calls: [{ function: { arguments: '{}', name: 'lookup' }, id: 'call_1', type: 'function' }],
+    }])
+  })
+
   it('maps image parts to image_url blocks', () => {
     expect(normalizeInput({
       input: [{

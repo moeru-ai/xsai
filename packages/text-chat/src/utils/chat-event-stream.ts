@@ -1,7 +1,7 @@
 import type { FinishReason, StepStatus, Usage } from '@xsai/text'
 import type { EventBuilder } from '@xsai/text/internal'
 
-import type { ChatChunk, ChatDelta, ChatUsage } from '../types'
+import type { ChatChunk, ChatDelta, ChatReasoningDetail, ChatUsage } from '../types'
 
 import { XSAIError } from '@xsai/shared'
 import { WireEventStream } from '@xsai/text/internal'
@@ -38,9 +38,25 @@ const normalizeUsage = (usage: ChatUsage): Usage => {
   }
 }
 
+/**
+ * Streamed `reasoning_details` arrive in fragments. Consecutive text fragments merge until one is
+ * signed and consecutive summaries merge; other entries stay separate.
+ */
+const appendReasoningDetail = (details: ChatReasoningDetail[], { signature, summary, text, ...detail }: ChatReasoningDetail): void => {
+  const last = details.at(-1)
+  if (last?.type === detail.type && (detail.type === 'reasoning.summary' || (detail.type === 'reasoning.text' && last.signature == null))) {
+    last.summary = summary == null ? last.summary : (last.summary ?? '') + summary
+    last.text = text == null ? last.text : (last.text ?? '') + text
+    last.signature ??= signature
+    return
+  }
+  details.push({ ...detail, signature, summary, text })
+}
+
 export class ChatEventStream extends WireEventStream<ChatChunk> {
   // Preserve the wire field for assistant-message replay.
   private hasRefusal = false
+  private readonly reasoningDetails: ChatReasoningDetail[] = []
   private reasoningField?: 'reasoning' | 'reasoning_content'
 
   constructor(includeRawEvents = false) {
@@ -64,13 +80,21 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
           this.onDelta(builder, choice.delta)
 
         if (choice.finish_reason != null) {
-          if (this.reasoningField != null)
-            builder.end('reasoning', { providerMetadata: { chat: { reasoning_field: this.reasoningField } } })
+          this.endReasoning(builder)
           const finish = mapFinish(choice.finish_reason, this.hasRefusal)
           builder.done(finish.status, finish.reason)
         }
       }
     }, includeRawEvents)
+  }
+
+  private endReasoning(builder: EventBuilder): void {
+    if (this.reasoningField == null && this.reasoningDetails.length === 0)
+      return
+    builder.end('reasoning', { providerMetadata: { chat: {
+      reasoning_details: this.reasoningDetails.length === 0 ? undefined : this.reasoningDetails,
+      reasoning_field: this.reasoningField,
+    } } })
   }
 
   private onDelta(builder: EventBuilder, delta: ChatDelta): void {
@@ -79,6 +103,12 @@ export class ChatEventStream extends WireEventStream<ChatChunk> {
       this.reasoningField ??= delta.reasoning_content != null ? 'reasoning_content' : 'reasoning'
       builder.start('reasoning', 'reasoning')
       builder.delta('reasoning', reasoning)
+    }
+
+    // Visible text also arrives in `reasoning`; details are kept for replay only.
+    for (const detail of delta.reasoning_details ?? []) {
+      builder.start('reasoning', 'reasoning')
+      appendReasoningDetail(this.reasoningDetails, detail)
     }
 
     const content = delta.content ?? ''

@@ -26,6 +26,7 @@ export interface ChatDelta {
   content?: null | string
   reasoning?: string
   reasoning_content?: string
+  reasoning_details?: ChatReasoningDetail[]
   refusal?: string
   role?: string
   tool_calls?: ChatToolCallDelta[]
@@ -34,10 +35,19 @@ export interface ChatDelta {
 export interface ChatMessage {
   content?: ChatContentPart[] | null | string
   reasoning_content?: string
+  reasoning_details?: ChatReasoningDetail[]
   refusal?: string
   role: 'assistant' | 'developer' | 'system' | 'tool' | 'user'
   tool_call_id?: string
   tool_calls?: ChatToolCall[]
+}
+
+export interface ChatReasoningDetail {
+  [key: string]: unknown
+  signature?: null | string
+  summary?: string
+  text?: null | string
+  type: string
 }
 
 export interface ChatResponseFormat {

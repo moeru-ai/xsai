@@ -10,6 +10,7 @@ import { ChatEventStream, normalizeFormat, normalizeInput, normalizeToolChoice, 
 
 export type * from './metadata'
 export type * from './provider-options'
+export type { ChatReasoningDetail } from './types'
 
 declare module '@xsai/text' {
   interface LanguageModelProviderOptions {
