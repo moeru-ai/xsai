@@ -3,7 +3,7 @@
 Parent: ../map.md
 Type: task
 Labels: needs-triage
-Status: open
+Status: claimed
 Blocked by: 03
 
 ## Scope
