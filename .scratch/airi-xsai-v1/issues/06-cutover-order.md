@@ -39,7 +39,7 @@ Use the following package actions:
 
 - Update the existing Apple Speech packages, including their native and Electron packages.
 - Update `@sherpaw/xsai-transcription`. Keep its implementation in its own package.
-- Replace old `@xsai-ext/providers` factory calls with calls that use the 1.0 contracts. Keep AIRI provider configuration and lifecycle.
+- Replace old `@xsai-ext/providers` factory calls with the 1.0 `@xsai-ext/providers` clients. Providers absent from its catalog use the xsAI 1.0 adapters directly. Keep AIRI provider configuration and lifecycle.
 - Remove unused Transformers runtime declarations after a source search. Keep required type dependencies until their callers change.
 - Preserve active local providers and server integrations. Do not remove a capability to complete the dependency upgrade.
 

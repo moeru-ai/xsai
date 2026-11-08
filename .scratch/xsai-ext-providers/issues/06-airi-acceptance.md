@@ -78,3 +78,11 @@ nekomeowww asked for format and codec support (webp, Opus for audio).
 - No helpers: AIRI reads `modalities.input` and `modalities.output` directly. `accepts()` is removed (issue 01, amendment 7).
 - Realtime, Live, and other protocols without an xsAI package stay out of scope, so GPT Live Opus support is not covered.
 
+### Amendment (2026-11-08): AIRI uses the provider clients
+
+AIRI moves to this package's provider clients in the same migration. This replaces "adapter factories" in the 0.x imports section and the `@xsai-ext/providers/create` part of the acceptance list, which refers to the 0.x API.
+
+- Providers in the catalog use the clients, such as `createDeepseek({ apiKey }).text(model)`. Providers absent from it (`featherless-ai`, `comet-api`, `runcrate`) use `chat()` and the other 1.0 adapters directly.
+- Client methods take `extraBody` per model, because AIRI chooses fields such as `thinking` for each `chat(model, { reasoning })` call. There is no provider-level `extraBody`.
+- AIRI's provider configuration and lifecycle do not change.
+
