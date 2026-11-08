@@ -22,7 +22,7 @@ Check whether Anthropic Messages has an equivalent parameter, and add it only if
 
 ## Answer
 
-Implemented on 2026-11-08 on branch `feat/text-service-tier` (from `main`).
+Implemented on 2026-11-08 in `49e9bdb1` on branch `feat/text-service-tier` (from `main`), PR #349.
 
 - All three wires define `service_tier` as a string: Chat Completions, Responses, and Anthropic Messages (`auto`, `standard_only`). So `serviceTier` is a shared field on `LanguageModelOptions`, not a provider option.
 - The type lists common values and accepts any string: `'auto' | 'default' | 'flex' | 'priority' | 'standard_only' | (string & {})`. Compatible endpoints add their own values, for example Groq `on_demand`/`performance`, Bedrock `reserved`, and xAI `fast`.
