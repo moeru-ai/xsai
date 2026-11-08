@@ -80,6 +80,9 @@ Details of the hooks are in [Control the tool loop](/text/tools#control-the-loop
 | `totalUsage` | `usage` summed over the steps. Absent when no step reports usage. |
 
 `Usage` has `inputTokens`, `outputTokens`, and `totalTokens`, and it can have `reasoningTokens`, `cacheReadInputTokens`, and `cacheCreationInputTokens`.
+`inputTokens` counts all input, including cache reads and cache writes, on every wire.
+`cacheReadInputTokens` and `cacheCreationInputTokens` are parts of `inputTokens`, and `reasoningTokens` is part of `outputTokens`.
+`totalTokens` is `inputTokens + outputTokens`.
 
 ## Messages
 

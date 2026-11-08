@@ -122,7 +122,7 @@ describe('messages event stream', () => {
         usage: {
           cacheCreationInputTokens: undefined,
           cacheReadInputTokens: 4,
-          inputTokens: 10,
+          inputTokens: 14,
           outputTokens: 20,
           reasoningTokens: undefined,
           totalTokens: 34,
@@ -226,6 +226,30 @@ describe('messages event stream', () => {
         },
       },
     ])
+  })
+
+  it('counts cache reads and cache writes in inputTokens', async () => {
+    const events = await readEvents([
+      message({
+        message: { id: 'msg_1', usage: { cache_creation_input_tokens: 30, cache_read_input_tokens: 20, input_tokens: 10 } },
+        type: 'message_start',
+      }),
+      message({
+        delta: { stop_reason: 'end_turn', stop_sequence: null },
+        type: 'message_delta',
+        usage: { output_tokens: 5, output_tokens_details: { thinking_tokens: 3 } },
+      }),
+      message({ type: 'message_stop' }),
+    ])
+
+    expect((events.at(-1) as StepEndEvent).usage).toEqual({
+      cacheCreationInputTokens: 30,
+      cacheReadInputTokens: 20,
+      inputTokens: 60,
+      outputTokens: 5,
+      reasoningTokens: 3,
+      totalTokens: 65,
+    })
   })
 
   it('maps provider error events to a step.end error', async () => {
