@@ -32,6 +32,7 @@ Ship `@xsai-ext/providers` 1.0: provider routes, model capabilities, and costs n
 - [Generate per-provider modules and the export map](issues/03-codegen-and-exports.md): `packages-ext/providers` with a shared models.dev normalizer and `pnpm sync`. Modules export `<name>: Provider<'ids'>`; `/full` exports `providers`. Codegen fails on reserved, invalid, or clashing IDs.
 - Providers get computed `defaults` per protocol, so `route()` works for model IDs missing from the catalog. Corrections live in `scripts/overrides.ts`, extra providers (`ollama`, `litellm`) in `scripts/extra.ts`. Route `path` reaches adapters through a new `HttpOptions.path` ([09](issues/09-http-options-path.md)).
 - [Add per-protocol helper subpaths](issues/05-protocol-helpers.md): Reworked twice after usability reviews. `/create` exports `createProvider(provider, { apiKey })`, whose `text`, `embedding`, `image`, `speech`, `transcription`, and `decision` methods pick the protocol themselves (text: `responses`, `messages`, `chat`). Unset keys come from `process.env` via `Provider.apiKeyEnv`. Root exports `route()` and `accepts()`.
+- [Add the runtime /fetch subpath](issues/10-runtime-fetch-subpath.md): `fetchProviders()` with ETag revalidation returns the generated data plus descriptions. Runtime applies the same overrides and extra providers, now in `src/corrections/`.
 
 ## Not yet specified
 
