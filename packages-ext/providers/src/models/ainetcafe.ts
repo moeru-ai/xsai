@@ -18,6 +18,6 @@ export const ainetcafe: Provider<"Kimi-K3"> = {
   "id": "ainetcafe",
   "name": "ainetcafe",
   "models": {
-    "Kimi-K3": {"capabilities":{"reasoning":{"efforts":["low","high","max"],"supported":true},"structuredOutput":true,"temperature":false,"tools":{"supported":true},"topK":false,"topP":false},"cost":{"cacheRead":0.3,"input":2.1,"output":10.5},"id":"Kimi-K3","limit":{"context":262144,"output":32768},"modalities":{"input":["text","image/jpeg","image/png","image/gif","image/webp","image/bmp","image/heic","image/heif"],"output":["text"]},"name":"Kimi K3","routes":{"chat":{"baseURL":"https://microquickjs.com/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
+    "Kimi-K3": {"capabilities":{"reasoning":{"efforts":["low","high","max"],"supported":true},"supportedParams":{"outputFormat":true,"temperature":false,"topK":false,"topP":false},"tools":{"supported":true}},"cost":{"cacheRead":0.3,"input":2.1,"output":10.5},"id":"Kimi-K3","limit":{"context":262144,"output":32768},"modalities":{"input":["text","image/jpeg","image/png","image/gif","image/webp","image/bmp","image/heic","image/heif"],"output":["text"]},"name":"Kimi K3","routes":{"chat":{"baseURL":"https://microquickjs.com/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
   }
 }

@@ -18,6 +18,6 @@ export const reflection: Provider<"Beam-1.0-501B-A23B"> = {
   "id": "reflection",
   "name": "Reflection",
   "models": {
-    "Beam-1.0-501B-A23B": {"capabilities":{"reasoning":{"efforts":["low","medium","high","xhigh","max"],"supported":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":false,"topP":true},"cost":{"cacheRead":0,"input":0,"output":0},"id":"Beam-1.0-501B-A23B","limit":{"context":1048576,"output":131072},"modalities":{"input":["text"],"output":["text"]},"name":"Beam 1.0 501B A23B","routes":{"chat":{"baseURL":"https://api.reflection.ai/openai/v1","capabilities":{"tools":{"choice":["auto","none","required","tool"],"strict":true}},"compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
+    "Beam-1.0-501B-A23B": {"capabilities":{"reasoning":{"efforts":["low","medium","high","xhigh","max"],"supported":true},"supportedParams":{"outputFormat":true,"temperature":true,"topK":false,"topP":true},"tools":{"supported":true}},"cost":{"cacheRead":0,"input":0,"output":0},"id":"Beam-1.0-501B-A23B","limit":{"context":1048576,"output":131072},"modalities":{"input":["text"],"output":["text"]},"name":"Beam 1.0 501B A23B","routes":{"chat":{"baseURL":"https://api.reflection.ai/openai/v1","capabilities":{"tools":{"choice":["auto","none","required","tool"],"strict":true}},"compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
   }
 }

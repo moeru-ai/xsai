@@ -99,11 +99,14 @@ const decodeCapabilities = (value: unknown, path: string): ModelCapabilities => 
       toggle: optional(reasoning.toggle, `${path}.reasoning.toggle`, boolean),
     },
     serviceTiers: optional(capabilities.service_tier, `${path}.service_tier`, strings),
-    structuredOutput: optional(capabilities.structured_output, `${path}.structured_output`, boolean),
-    temperature: optional(capabilities.temperature, `${path}.temperature`, boolean),
+    // Keys follow xsAI option names: `outputFormat` and `temperature` on `LanguageModelOptions`, `topK` in Chat provider options.
+    supportedParams: compact({
+      outputFormat: optional(capabilities.structured_output, `${path}.structured_output`, boolean),
+      temperature: optional(capabilities.temperature, `${path}.temperature`, boolean),
+      topK: optional(capabilities.top_k, `${path}.top_k`, boolean),
+      topP: optional(capabilities.top_p, `${path}.top_p`, boolean),
+    }),
     tools: { supported: boolean(tools.supported, `${path}.tools.supported`) },
-    topK: optional(capabilities.top_k, `${path}.top_k`, boolean),
-    topP: optional(capabilities.top_p, `${path}.top_p`, boolean),
   }
 }
 
@@ -144,9 +147,10 @@ const decodeRoute = (protocol: Protocol, value: unknown, path: string): Route =>
     baseURL,
     capabilities: compact({
       tools: optional(tools, `${path}.capabilities.tools`, (toolsValue, toolsPath) => {
-        const { choice, strict } = record(toolsValue, toolsPath)
+        const { choice, search, strict } = record(toolsValue, toolsPath)
         return compact({
           choice: optional(choice, `${toolsPath}.choice`, strings),
+          search: optional(search, `${toolsPath}.search`, boolean),
           strict: optional(strict, `${toolsPath}.strict`, boolean),
         })
       }),

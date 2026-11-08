@@ -18,6 +18,6 @@ export const saladCloud: Provider<"qwen3.6-35b-a3b"> = {
   "id": "salad-cloud",
   "name": "SaladCloud AI Gateway",
   "models": {
-    "qwen3.6-35b-a3b": {"capabilities":{"reasoning":{"supported":true,"toggle":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"input":0.09,"output":0.6},"id":"qwen3.6-35b-a3b","limit":{"context":262144,"input":262144,"output":262144},"modalities":{"input":["text","image/bmp","image/jpeg","image/png","image/tiff","image/webp","image/heic"],"output":["text"]},"name":"Qwen3.6 35B-A3B","routes":{"chat":{"baseURL":"https://ai.salad.cloud/v1","protocol":"chat"}},"type":"chat"},
+    "qwen3.6-35b-a3b": {"capabilities":{"reasoning":{"supported":true,"toggle":true},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"input":0.09,"output":0.6},"id":"qwen3.6-35b-a3b","limit":{"context":262144,"input":262144,"output":262144},"modalities":{"input":["text","image/bmp","image/jpeg","image/png","image/tiff","image/webp","image/heic"],"output":["text"]},"name":"Qwen3.6 35B-A3B","routes":{"chat":{"baseURL":"https://ai.salad.cloud/v1","protocol":"chat"}},"type":"chat"},
   }
 }

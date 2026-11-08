@@ -18,6 +18,6 @@ export const tokenrouter: Provider<"z-ai/glm-5.3-free"> = {
   "id": "tokenrouter",
   "name": "TokenRouter",
   "models": {
-    "z-ai/glm-5.3-free": {"capabilities":{"reasoning":{"efforts":["low","high","max"],"supported":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"input":0,"output":0},"id":"z-ai/glm-5.3-free","limit":{"context":1000000,"output":131072},"modalities":{"input":["text"],"output":["text"]},"name":"GLM-5.3 (free)","routes":{"chat":{"baseURL":"https://api.tokenrouter.com/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
+    "z-ai/glm-5.3-free": {"capabilities":{"reasoning":{"efforts":["low","high","max"],"supported":true},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"input":0,"output":0},"id":"z-ai/glm-5.3-free","limit":{"context":1000000,"output":131072},"modalities":{"input":["text"],"output":["text"]},"name":"GLM-5.3 (free)","routes":{"chat":{"baseURL":"https://api.tokenrouter.com/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
   }
 }

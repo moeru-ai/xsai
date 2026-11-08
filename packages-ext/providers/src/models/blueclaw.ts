@@ -18,6 +18,6 @@ export const blueclaw: Provider<"Qwen3.8-27B"> = {
   "id": "blueclaw",
   "name": "Blue Claw",
   "models": {
-    "Qwen3.8-27B": {"capabilities":{"reasoning":{"efforts":["low","medium","xhigh"],"supported":true,"toggle":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"id":"Qwen3.8-27B","limit":{"context":131072,"output":32768},"modalities":{"input":["text"],"output":["text"]},"name":"Qwen3.8 27B","routes":{"chat":{"baseURL":"https://openai.blueclaw.network/v1","protocol":"chat"}},"status":"beta","type":"chat"},
+    "Qwen3.8-27B": {"capabilities":{"reasoning":{"efforts":["low","medium","xhigh"],"supported":true,"toggle":true},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"id":"Qwen3.8-27B","limit":{"context":131072,"output":32768},"modalities":{"input":["text"],"output":["text"]},"name":"Qwen3.8 27B","routes":{"chat":{"baseURL":"https://openai.blueclaw.network/v1","protocol":"chat"}},"status":"beta","type":"chat"},
   }
 }

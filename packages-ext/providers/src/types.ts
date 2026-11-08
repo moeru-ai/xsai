@@ -21,11 +21,8 @@ export interface ModelCapabilities {
   cache?: { explicit?: boolean, implicit?: boolean }
   reasoning: ReasoningCapabilities
   serviceTiers?: string[]
-  structuredOutput?: boolean
-  temperature?: boolean
+  supportedParams?: SupportedParams
   tools: { supported: boolean }
-  topK?: boolean
-  topP?: boolean
 }
 
 export interface ModelLimit {
@@ -82,7 +79,7 @@ export interface Route {
 }
 
 export interface RouteCapabilities {
-  tools?: { choice?: string[], strict?: boolean }
+  tools?: { choice?: string[], search?: boolean, strict?: boolean }
 }
 
 export interface RouteCompatibility {
@@ -109,4 +106,11 @@ export interface RuntimeModel extends Model {
 
 export interface RuntimeProvider extends Provider {
   models: Record<string, RuntimeModel>
+}
+
+export interface SupportedParams {
+  outputFormat?: boolean
+  temperature?: boolean
+  topK?: boolean
+  topP?: boolean
 }

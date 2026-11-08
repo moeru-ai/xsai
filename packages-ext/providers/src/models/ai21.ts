@@ -18,7 +18,7 @@ export const ai21: Provider<"jamba-large" | "jamba-mini"> = {
   "id": "ai21",
   "name": "AI21 Labs",
   "models": {
-    "jamba-large": {"capabilities":{"reasoning":{"supported":false},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"input":2,"output":8},"id":"jamba-large","limit":{"context":256000,"output":4096},"modalities":{"input":["text"],"output":["text"]},"name":"Jamba Large","routes":{"chat":{"baseURL":"https://api.ai21.com/studio/v1","protocol":"chat"}},"type":"chat"},
-    "jamba-mini": {"capabilities":{"reasoning":{"supported":false},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"input":0.2,"output":0.4},"id":"jamba-mini","limit":{"context":256000,"output":4096},"modalities":{"input":["text"],"output":["text"]},"name":"Jamba Mini","routes":{"chat":{"baseURL":"https://api.ai21.com/studio/v1","protocol":"chat"}},"type":"chat"},
+    "jamba-large": {"capabilities":{"reasoning":{"supported":false},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"input":2,"output":8},"id":"jamba-large","limit":{"context":256000,"output":4096},"modalities":{"input":["text"],"output":["text"]},"name":"Jamba Large","routes":{"chat":{"baseURL":"https://api.ai21.com/studio/v1","protocol":"chat"}},"type":"chat"},
+    "jamba-mini": {"capabilities":{"reasoning":{"supported":false},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"input":0.2,"output":0.4},"id":"jamba-mini","limit":{"context":256000,"output":4096},"modalities":{"input":["text"],"output":["text"]},"name":"Jamba Mini","routes":{"chat":{"baseURL":"https://api.ai21.com/studio/v1","protocol":"chat"}},"type":"chat"},
   }
 }

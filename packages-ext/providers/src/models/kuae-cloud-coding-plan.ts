@@ -18,6 +18,6 @@ export const kuaeCloudCodingPlan: Provider<"GLM-4.7"> = {
   "id": "kuae-cloud-coding-plan",
   "name": "KUAE Cloud Coding Plan",
   "models": {
-    "GLM-4.7": {"capabilities":{"reasoning":{"supported":true,"toggle":true},"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"cacheRead":0,"cacheWrite":0,"input":0,"output":0},"id":"GLM-4.7","limit":{"context":204800,"output":131072},"modalities":{"input":["text"],"output":["text"]},"name":"GLM-4.7","routes":{"chat":{"baseURL":"https://coding-plan-endpoint.kuaecloud.net/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
+    "GLM-4.7": {"capabilities":{"reasoning":{"supported":true,"toggle":true},"supportedParams":{"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"cacheRead":0,"cacheWrite":0,"input":0,"output":0},"id":"GLM-4.7","limit":{"context":204800,"output":131072},"modalities":{"input":["text"],"output":["text"]},"name":"GLM-4.7","routes":{"chat":{"baseURL":"https://coding-plan-endpoint.kuaecloud.net/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
   }
 }

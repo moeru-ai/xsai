@@ -18,6 +18,6 @@ export const coralbricks: Provider<"deepseek-v4.1-flash-fast"> = {
   "id": "coralbricks",
   "name": "CoralBricks",
   "models": {
-    "deepseek-v4.1-flash-fast": {"capabilities":{"reasoning":{"efforts":["none","low","high","max"],"supported":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"cacheRead":0.005,"cacheWrite":0,"input":0.25,"output":1.2},"id":"deepseek-v4.1-flash-fast","limit":{"context":1048576,"output":393216},"modalities":{"input":["text","image/jpeg","image/png","image/gif","image/webp"],"output":["text"]},"name":"DeepSeek V4.1 Flash","routes":{"chat":{"baseURL":"https://inference.coralbricks.ai/v1","protocol":"chat"}},"type":"chat"},
+    "deepseek-v4.1-flash-fast": {"capabilities":{"reasoning":{"efforts":["none","low","high","max"],"supported":true},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"cacheRead":0.005,"cacheWrite":0,"input":0.25,"output":1.2},"id":"deepseek-v4.1-flash-fast","limit":{"context":1048576,"output":393216},"modalities":{"input":["text","image/jpeg","image/png","image/gif","image/webp"],"output":["text"]},"name":"DeepSeek V4.1 Flash","routes":{"chat":{"baseURL":"https://inference.coralbricks.ai/v1","protocol":"chat"}},"type":"chat"},
   }
 }

@@ -18,6 +18,6 @@ export const lynkr: Provider<"lynkr-auto"> = {
   "id": "lynkr",
   "name": "Lynkr",
   "models": {
-    "lynkr-auto": {"capabilities":{"reasoning":{"supported":false},"temperature":true,"tools":{"supported":true}},"cost":{"input":0,"output":0},"id":"lynkr-auto","limit":{"context":128000,"output":8192},"modalities":{"input":["text"],"output":["text"]},"name":"Lynkr Auto (complexity routing)","routes":{"chat":{"baseURL":"http://127.0.0.1:8081/v1","protocol":"chat"}},"type":"chat"},
+    "lynkr-auto": {"capabilities":{"reasoning":{"supported":false},"supportedParams":{"temperature":true},"tools":{"supported":true}},"cost":{"input":0,"output":0},"id":"lynkr-auto","limit":{"context":128000,"output":8192},"modalities":{"input":["text"],"output":["text"]},"name":"Lynkr Auto (complexity routing)","routes":{"chat":{"baseURL":"http://127.0.0.1:8081/v1","protocol":"chat"}},"type":"chat"},
   }
 }

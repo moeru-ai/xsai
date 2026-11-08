@@ -7,7 +7,7 @@ const model = (overrides: Record<string, unknown> = {}) => ({
   api: {
     'chat-completions': {
       base_url: 'https://api.example.com/v1',
-      capabilities: { tools: { choice: ['auto', 'none'], freeform: ['text'], strict: true, updates: false } },
+      capabilities: { tools: { choice: ['auto', 'none'], freeform: ['text'], search: true, strict: true, updates: false } },
       compatibility: { max_tokens_field: 'max_completion_tokens' },
       sdk: { aisdk: '@ai-sdk/openai' },
     },
@@ -81,11 +81,8 @@ describe('normalizeCatalog', () => {
               toggle: undefined,
             },
             serviceTiers: ['flex', 'priority'],
-            structuredOutput: true,
-            temperature: false,
+            supportedParams: { outputFormat: true, temperature: false },
             tools: { supported: true },
-            topK: undefined,
-            topP: undefined,
           },
           cost: { cacheRead: 0.1, cacheWrite: 2, input: 1, output: 4 },
           description: undefined,
@@ -96,7 +93,7 @@ describe('normalizeCatalog', () => {
           routes: {
             chat: {
               baseURL: 'https://api.example.com/v1',
-              capabilities: { tools: { choice: ['auto', 'none'], strict: true } },
+              capabilities: { tools: { choice: ['auto', 'none'], search: true, strict: true } },
               compatibility: { maxTokensField: 'max_completion_tokens' },
               path: undefined,
               protocol: 'chat',
@@ -132,6 +129,7 @@ describe('normalizeCatalog', () => {
 
     expect(Object.keys(example.models)).toEqual(['m1'])
     expect(example.models.m1.capabilities.cache).toEqual({ explicit: false, implicit: false })
+    expect(example.models.m1.capabilities.supportedParams).toBeUndefined()
   })
 
   it('strips the leading slash from paths, lists template variables, and keeps such routes out of defaults', () => {

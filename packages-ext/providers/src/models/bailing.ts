@@ -18,7 +18,7 @@ export const bailing: Provider<"Ling-1T" | "Ring-1T"> = {
   "id": "bailing",
   "name": "Bailing",
   "models": {
-    "Ling-1T": {"capabilities":{"reasoning":{"supported":false},"temperature":true,"tools":{"supported":true}},"cost":{"input":0.57,"output":2.29},"id":"Ling-1T","limit":{"context":128000,"output":32000},"modalities":{"input":["text"],"output":["text"]},"name":"Ling-1T","routes":{"chat":{"baseURL":"https://api.tbox.cn/api/llm/v1","protocol":"chat"}},"type":"chat"},
-    "Ring-1T": {"capabilities":{"reasoning":{"supported":true},"temperature":true,"tools":{"supported":false}},"cost":{"input":0.57,"output":2.29},"id":"Ring-1T","limit":{"context":128000,"output":32000},"modalities":{"input":["text"],"output":["text"]},"name":"Ring-1T","routes":{"chat":{"baseURL":"https://api.tbox.cn/api/llm/v1","protocol":"chat"}},"type":"chat"},
+    "Ling-1T": {"capabilities":{"reasoning":{"supported":false},"supportedParams":{"temperature":true},"tools":{"supported":true}},"cost":{"input":0.57,"output":2.29},"id":"Ling-1T","limit":{"context":128000,"output":32000},"modalities":{"input":["text"],"output":["text"]},"name":"Ling-1T","routes":{"chat":{"baseURL":"https://api.tbox.cn/api/llm/v1","protocol":"chat"}},"type":"chat"},
+    "Ring-1T": {"capabilities":{"reasoning":{"supported":true},"supportedParams":{"temperature":true},"tools":{"supported":false}},"cost":{"input":0.57,"output":2.29},"id":"Ring-1T","limit":{"context":128000,"output":32000},"modalities":{"input":["text"],"output":["text"]},"name":"Ring-1T","routes":{"chat":{"baseURL":"https://api.tbox.cn/api/llm/v1","protocol":"chat"}},"type":"chat"},
   }
 }

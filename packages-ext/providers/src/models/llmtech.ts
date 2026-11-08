@@ -18,6 +18,6 @@ export const llmtech: Provider<"nvidia/Qwen3.8-27B-NVFP4"> = {
   "id": "llmtech",
   "name": "LLM Tech",
   "models": {
-    "nvidia/Qwen3.8-27B-NVFP4": {"capabilities":{"reasoning":{"efforts":["low","medium","xhigh"],"supported":true,"toggle":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"cacheRead":0.04,"input":0.25,"output":2.09},"id":"nvidia/Qwen3.8-27B-NVFP4","limit":{"context":262144,"output":32768},"modalities":{"input":["text","image/bmp","image/jpeg","image/png","image/tiff","image/webp","image/heic"],"output":["text"]},"name":"Qwen3.8 27B","routes":{"chat":{"baseURL":"https://api.llmtech.eu/v1","protocol":"chat"}},"type":"chat"},
+    "nvidia/Qwen3.8-27B-NVFP4": {"capabilities":{"reasoning":{"efforts":["low","medium","xhigh"],"supported":true,"toggle":true},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"cacheRead":0.04,"input":0.25,"output":2.09},"id":"nvidia/Qwen3.8-27B-NVFP4","limit":{"context":262144,"output":32768},"modalities":{"input":["text","image/bmp","image/jpeg","image/png","image/tiff","image/webp","image/heic"],"output":["text"]},"name":"Qwen3.8 27B","routes":{"chat":{"baseURL":"https://api.llmtech.eu/v1","protocol":"chat"}},"type":"chat"},
   }
 }

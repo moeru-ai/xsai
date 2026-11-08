@@ -18,6 +18,6 @@ export const liquid: Provider<"liquid.auto"> = {
   "id": "liquid",
   "name": "Liquid Inference",
   "models": {
-    "liquid.auto": {"capabilities":{"reasoning":{"supported":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true}},"id":"liquid.auto","limit":{"context":10000000,"output":1048576},"modalities":{"input":["text","image/png","image/jpeg","image/webp","image/gif","audio/wav","audio/mpeg","application/pdf"],"output":["text"]},"name":"Liquid Auto","routes":{"chat":{"baseURL":"https://router.inference.ai.exchange/v1","protocol":"chat"}},"type":"chat"},
+    "liquid.auto": {"capabilities":{"reasoning":{"supported":true},"supportedParams":{"outputFormat":true,"temperature":true},"tools":{"supported":true}},"id":"liquid.auto","limit":{"context":10000000,"output":1048576},"modalities":{"input":["text","image/png","image/jpeg","image/webp","image/gif","audio/wav","audio/mpeg","application/pdf"],"output":["text"]},"name":"Liquid Auto","routes":{"chat":{"baseURL":"https://router.inference.ai.exchange/v1","protocol":"chat"}},"type":"chat"},
   }
 }

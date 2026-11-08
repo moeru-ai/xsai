@@ -18,6 +18,6 @@ export const kosmik: Provider<"qwen/qwen3.8-27b"> = {
   "id": "kosmik",
   "name": "Kosmik Compute",
   "models": {
-    "qwen/qwen3.8-27b": {"capabilities":{"reasoning":{"efforts":["none","low","medium","xhigh"],"supported":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"cacheRead":0.09,"input":0.35,"output":2.2},"id":"qwen/qwen3.8-27b","limit":{"context":262144,"output":32768},"modalities":{"input":["text","image/bmp","image/jpeg","image/png","image/tiff","image/webp","image/heic"],"output":["text"]},"name":"Qwen3.8 27B","routes":{"chat":{"baseURL":"https://api.koscompute.com/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
+    "qwen/qwen3.8-27b": {"capabilities":{"reasoning":{"efforts":["none","low","medium","xhigh"],"supported":true},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"cacheRead":0.09,"input":0.35,"output":2.2},"id":"qwen/qwen3.8-27b","limit":{"context":262144,"output":32768},"modalities":{"input":["text","image/bmp","image/jpeg","image/png","image/tiff","image/webp","image/heic"],"output":["text"]},"name":"Qwen3.8 27B","routes":{"chat":{"baseURL":"https://api.koscompute.com/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
   }
 }

@@ -18,6 +18,6 @@ export const zenifra: Provider<"alibaba/qwen3.6-35b-a3b"> = {
   "id": "zenifra",
   "name": "Zenifra",
   "models": {
-    "alibaba/qwen3.6-35b-a3b": {"capabilities":{"reasoning":{"supported":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true},"topK":true,"topP":true},"cost":{"input":0.19,"output":0.48},"id":"alibaba/qwen3.6-35b-a3b","limit":{"context":262144,"output":65536},"modalities":{"input":["text"],"output":["text"]},"name":"Qwen3.6 35B-A3B","routes":{"chat":{"baseURL":"https://ai.zenifra.com/v1","protocol":"chat"}},"type":"chat"},
+    "alibaba/qwen3.6-35b-a3b": {"capabilities":{"reasoning":{"supported":true},"supportedParams":{"outputFormat":true,"temperature":true,"topK":true,"topP":true},"tools":{"supported":true}},"cost":{"input":0.19,"output":0.48},"id":"alibaba/qwen3.6-35b-a3b","limit":{"context":262144,"output":65536},"modalities":{"input":["text"],"output":["text"]},"name":"Qwen3.6 35B-A3B","routes":{"chat":{"baseURL":"https://ai.zenifra.com/v1","protocol":"chat"}},"type":"chat"},
   }
 }

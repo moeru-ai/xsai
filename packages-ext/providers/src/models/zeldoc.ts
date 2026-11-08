@@ -18,6 +18,6 @@ export const zeldoc: Provider<"zdev"> = {
   "id": "zeldoc",
   "name": "Zeldoc",
   "models": {
-    "zdev": {"capabilities":{"reasoning":{"efforts":["low","high","max"],"supported":true},"structuredOutput":true,"temperature":true,"tools":{"supported":true}},"cost":{"input":0,"output":0},"id":"zdev","limit":{"context":1000000,"output":131072},"modalities":{"input":["text","image"],"output":["text"]},"name":"ZDev","routes":{"chat":{"baseURL":"https://api.zeldoc.ai/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
+    "zdev": {"capabilities":{"reasoning":{"efforts":["low","high","max"],"supported":true},"supportedParams":{"outputFormat":true,"temperature":true},"tools":{"supported":true}},"cost":{"input":0,"output":0},"id":"zdev","limit":{"context":1000000,"output":131072},"modalities":{"input":["text","image"],"output":["text"]},"name":"ZDev","routes":{"chat":{"baseURL":"https://api.zeldoc.ai/v1","compatibility":{"reasoningField":"reasoning_content"},"protocol":"chat"}},"type":"chat"},
   }
 }

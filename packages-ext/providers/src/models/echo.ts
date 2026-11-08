@@ -18,6 +18,6 @@ export const echo: Provider<"echo"> = {
   "id": "echo",
   "name": "Echo",
   "models": {
-    "echo": {"capabilities":{"reasoning":{"efforts":["none","low","medium","high"],"supported":true},"structuredOutput":false,"temperature":true,"tools":{"supported":true}},"cost":{"input":10,"output":50},"id":"echo","limit":{"context":262144,"output":65536},"modalities":{"input":["text"],"output":["text"]},"name":"Echo","routes":{"chat":{"baseURL":"https://echo.tracerml.ai/v1","protocol":"chat"}},"status":"beta","type":"chat"},
+    "echo": {"capabilities":{"reasoning":{"efforts":["none","low","medium","high"],"supported":true},"supportedParams":{"outputFormat":false,"temperature":true},"tools":{"supported":true}},"cost":{"input":10,"output":50},"id":"echo","limit":{"context":262144,"output":65536},"modalities":{"input":["text"],"output":["text"]},"name":"Echo","routes":{"chat":{"baseURL":"https://echo.tracerml.ai/v1","protocol":"chat"}},"status":"beta","type":"chat"},
   }
 }
