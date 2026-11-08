@@ -1,0 +1,58 @@
+{
+  "name": "@xsai-ext/providers",
+  "type": "module",
+  "version": "1.0.0-beta.7",
+  "description": "extra-small AI SDK: provider routes, model capabilities, and costs from models.dev.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages-ext/providers"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "models.dev",
+    "provider",
+    "providers"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./full": "./src/full.ts",
+    "./*": "./src/providers/*.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=26"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json",
+      "./full": {
+        "types": "./dist/full.d.ts",
+        "default": "./dist/full.js"
+      },
+      "./*": {
+        "types": "./dist/providers/*.d.ts",
+        "default": "./dist/providers/*.js"
+      }
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "pkgroll --clean-dist",
+    "sync": "tsx scripts/sync.ts",
+    "test": "vitest run"
+  }
+}

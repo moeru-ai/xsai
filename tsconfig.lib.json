@@ -7,6 +7,9 @@
   "include": [
     "packages/**/src",
     "packages/**/e2e",
-    "packages/**/test"
+    "packages/**/test",
+    "packages-ext/**/src",
+    "packages-ext/**/scripts",
+    "packages-ext/**/test"
   ]
 }

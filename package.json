@@ -8,7 +8,7 @@
   "scripts": {
     "build": "turbo build && pnpm docs:assemble",
     "build:docs": "turbo build --filter=@xsai/docs --filter=@xsai/docs-v0 && pnpm docs:assemble",
-    "build:packages": "turbo build --filter=./packages/*",
+    "build:packages": "turbo build --filter=./packages/* --filter=./packages-ext/*",
     "bump": "bumpp",
     "dev:docs": "turbo dev --filter=@xsai/docs --filter=@xsai/docs-v0",
     "docs:assemble": "rm -rf docs/out && cp -R docs/.vitepress/dist docs/out && cp -R docs-v0/.vitepress/dist docs/out/v0",
