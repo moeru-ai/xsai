@@ -47,10 +47,32 @@ A method throws before any request when the model has no route for its protocols
 `route(provider, model, protocols)` from the root entry returns the resolved `{ baseURL, model, path, protocol }` without creating a model.
 `accepts(model, 'image/*')` checks the model's input MIME types.
 
+## Runtime data
+
+`fetchProviders()` from `/fetch` downloads the current models.dev catalog and returns the same data as the provider subpaths, plus model descriptions.
+
+```ts
+import type { RuntimeProvider } from '@xsai-ext/providers'
+
+import { fetchProviders } from '@xsai-ext/providers/fetch'
+
+let stored: undefined | { etag?: string, providers: Record<string, RuntimeProvider> }
+
+const result = await fetchProviders({ etag: stored?.etag })
+if (!result.notModified)
+  stored = { etag: result.etag, providers: result.providers }
+```
+
+- Pass the `etag` of a previous result to get `{ notModified: true }` when the catalog has not changed.
+- `url` and `fetch` replace the default catalog URL and `fetch`.
+- Invalid models and routes are skipped. It throws on an HTTP error, or when no valid provider is left.
+- It has no fallback and no cache. Store the result yourself, or fall back to `/full` or the provider subpaths.
+
 ## Sync
 
 `pnpm sync` downloads the models.dev v2 catalog and regenerates `src/providers/*.ts` and `src/full.ts`.
 Pass a local catalog path to skip the download: `pnpm sync ./api.json`.
 
-- Put corrections in `scripts/overrides.ts`, with a comment that gives the reason. Prefer fixing models.dev upstream.
-- Put providers that models.dev does not list in `scripts/extra.ts`.
+- Put corrections in `src/corrections/overrides.ts`, with a comment that gives the reason. Prefer fixing models.dev upstream.
+- Put providers that models.dev does not list in `src/corrections/extra.ts`.
+- `/fetch` applies the same corrections at runtime.

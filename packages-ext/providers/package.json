@@ -23,6 +23,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./create": "./src/create.ts",
+    "./fetch": "./src/fetch.ts",
     "./full": "./src/full.ts",
     "./*": "./src/providers/*.ts"
   },
@@ -42,6 +43,10 @@
       "./create": {
         "types": "./dist/create.d.ts",
         "default": "./dist/create.js"
+      },
+      "./fetch": {
+        "types": "./dist/fetch.d.ts",
+        "default": "./dist/fetch.js"
       },
       "./full": {
         "types": "./dist/full.d.ts",

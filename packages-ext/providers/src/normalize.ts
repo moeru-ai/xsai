@@ -1,6 +1,4 @@
-import type { Cost, Model, ModelCapabilities, ModelType, Protocol, Provider, Route } from './types'
-
-export type NormalizedModel = Model & { description?: string }
+import type { Cost, Model, ModelCapabilities, ModelType, Protocol, Provider, Route, RuntimeModel, RuntimeProvider } from './types'
 
 export interface NormalizeOptions {
   /** Keeps model descriptions. Generated modules drop them. */
@@ -167,7 +165,7 @@ const decodeRoute = (protocol: Protocol, value: unknown, path: string): Route =>
   }
 }
 
-const decodeModel = (value: unknown, path: string, options: NormalizeOptions): NormalizedModel | undefined => {
+const decodeModel = (value: unknown, path: string, options: NormalizeOptions): RuntimeModel | undefined => {
   const model = record(value, path)
   const type = string(model.type, `${path}.type`)
   if (!MODEL_TYPES.has(type))
@@ -244,9 +242,9 @@ export const computeApiKeyEnv = (env: string[], models: Record<string, Model>): 
   return keys.length === 0 ? undefined : keys
 }
 
-const decodeProvider = (value: unknown, path: string, options: NormalizeOptions): Provider => {
+const decodeProvider = (value: unknown, path: string, options: NormalizeOptions): RuntimeProvider => {
   const provider = record(value, path)
-  const models: Record<string, NormalizedModel> = {}
+  const models: Record<string, RuntimeModel> = {}
   const entries = Object.entries(record(provider.models, `${path}.models`))
     .toSorted(([a], [b]) => a.localeCompare(b))
   for (const [key, model] of entries) {
@@ -268,8 +266,8 @@ const decodeProvider = (value: unknown, path: string, options: NormalizeOptions)
 }
 
 /** Normalizes the models.dev v2 catalog, sorted by provider and model ID. */
-export const normalizeCatalog = (catalog: unknown, options: NormalizeOptions = {}): Record<string, Provider> => {
-  const providers: Record<string, Provider> = {}
+export const normalizeCatalog = (catalog: unknown, options: NormalizeOptions = {}): Record<string, RuntimeProvider> => {
+  const providers: Record<string, RuntimeProvider> = {}
   const entries = Object.entries(record(catalog, 'catalog'))
     .toSorted(([a], [b]) => a.localeCompare(b))
   for (const [key, provider] of entries) {

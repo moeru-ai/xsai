@@ -2,11 +2,10 @@ import process from 'node:process'
 
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 
+import { extra } from '../src/corrections/extra'
+import { overrides } from '../src/corrections/overrides'
+import { CATALOG_URL } from '../src/fetch'
 import { buildProviders, renderFull, renderProvider } from './codegen'
-import { extra } from './extra'
-import { overrides } from './overrides'
-
-const CATALOG_URL = 'https://models.dev/experimental/v2.0/api.json?type=chat,decision,embedding,image,speech,transcription'
 
 // Pass a local catalog path to skip the download.
 const input = process.argv.at(2)

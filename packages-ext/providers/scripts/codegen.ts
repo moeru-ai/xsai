@@ -1,8 +1,8 @@
+import type { CorrectionOptions } from '../src/corrections'
 import type { Provider } from '../src/types'
-import type { DeepPartial } from './merge'
 
-import { computeApiKeyEnv, computeDefaults, normalizeCatalog } from '../src/normalize'
-import { merge } from './merge'
+import { applyCorrections } from '../src/corrections'
+import { normalizeCatalog } from '../src/normalize'
 
 /** Exact subpaths of the package. They take precedence over provider subpaths. */
 export const RESERVED_SUBPATHS = [
@@ -27,41 +27,9 @@ export const exportName = (id: string) => {
   return /^\d/.test(name) ? `_${name}` : name
 }
 
-export interface BuildOptions {
-  extra: Provider[]
-  overrides: Record<string, Override>
-}
-
-/** `defaults` replaces computed defaults per protocol; other fields deep-merge. */
-export type Override = DeepPartial<Omit<Provider, 'defaults'>> & Pick<Provider, 'defaults'>
-
-/** Strictly normalizes the catalog, applies overrides, adds extra providers, and checks IDs. */
-export const buildProviders = (catalog: unknown, { extra, overrides }: BuildOptions): Provider[] => {
-  const normalized = normalizeCatalog(catalog, { strict: true })
-
-  for (const id of Object.keys(overrides)) {
-    if (!Object.hasOwn(normalized, id))
-      throw new Error(`Override for unknown provider: ${id}`)
-  }
-  for (const provider of extra) {
-    if (Object.hasOwn(normalized, provider.id))
-      throw new Error(`Extra provider clashes with models.dev: ${provider.id}`)
-  }
-
-  const providers = [
-    ...Object.values(normalized).map((provider) => {
-      if (!Object.hasOwn(overrides, provider.id))
-        return provider
-      const { defaults, ...patch } = overrides[provider.id]
-      const merged = merge<Provider>(provider, patch)
-      return {
-        ...merged,
-        apiKeyEnv: 'apiKeyEnv' in patch ? merged.apiKeyEnv : computeApiKeyEnv(merged.env, merged.models),
-        defaults: defaults === undefined ? computeDefaults(merged.models) : { ...computeDefaults(merged.models), ...defaults },
-      }
-    }),
-    ...extra,
-  ].toSorted((a, b) => a.id.localeCompare(b.id))
+/** Strictly normalizes the catalog, applies corrections, and checks IDs. */
+export const buildProviders = (catalog: unknown, options: Omit<CorrectionOptions, 'strict'>): Provider[] => {
+  const providers = Object.values(applyCorrections(normalizeCatalog(catalog, { strict: true }), { ...options, strict: true }))
 
   const names = new Map<string, string>()
   for (const { id } of providers) {

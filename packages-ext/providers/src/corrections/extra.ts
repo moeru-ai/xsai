@@ -1,4 +1,4 @@
-import type { Provider } from '../src/types'
+import type { Provider } from '../types'
 
 /** Providers that models.dev does not list. */
 export const extra: Provider[] = [

@@ -101,3 +101,11 @@ export interface RouteTarget {
   path?: string
   protocol: Protocol
 }
+
+export interface RuntimeModel extends Model {
+  description?: string
+}
+
+export interface RuntimeProvider extends Provider {
+  models: Record<string, RuntimeModel>
+}

@@ -1,4 +1,4 @@
-import type { Override } from './codegen'
+import type { Override } from '.'
 
 /**
  * Corrections deep-merged into normalized providers.
