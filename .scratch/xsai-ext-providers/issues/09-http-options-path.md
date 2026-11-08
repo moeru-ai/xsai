@@ -22,7 +22,7 @@ Motivation: models.dev v2 routes for Inception and Perplexity `systemone` use a 
 
 ## Answer
 
-Implemented on 2026-11-08 in `c6232ccc` on branch `feat/http-options-path`.
+Implemented on 2026-11-08 in `795cc648` on branch `feat/http-options-path`.
 
 - `HttpOptions.path?: string` replaces the adapter's default path in `sendRequest`. Messages and Responses also use it for their replay source URL.
 - Changed from the scope above: a leading `/` keeps the standard URL rule and resolves from the origin. `docs/shared.md` already documented that rule for `requestURL`, so changing it would silently break a public function. `@xsai-ext/providers` strips the leading `/` from v2 paths during normalization instead (issue 03).
