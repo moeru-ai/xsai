@@ -113,11 +113,16 @@ An assistant message can also have an `id` and `providerMetadata`.
 ## Tools
 
 ```ts:no-twoslash
-tool({ name, inputSchema, description?, outputSchema?, execute? })
+tool({ name, inputSchema, description?, outputSchema?, execute?, strict? })
 ```
 
 Without `execute`, `tool()` returns a declaration.
+
 With `execute`, it returns an `ExecutableTool` that the loop can run.
+
+`strict` enables strict schema enforcement and defaults to `false`.
+Adapters send the input schema as given.
+When `strict` is `true`, the schema must meet the provider's strict mode requirements.
 
 `execute(input, { callId, signal })` receives validated input when the schema has a validator.
 `callId` identifies the tool invocation and matches its result.

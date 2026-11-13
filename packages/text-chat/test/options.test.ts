@@ -135,7 +135,7 @@ describe('chat options', () => {
     })
   })
 
-  it('normalizes strict output and tool schemas with OpenAI constraints', async () => {
+  it('normalizes strict output and sends tool schemas as given', async () => {
     const { bodies, fetch } = captureRequests()
     const model = chat({ baseURL: 'https://x/v1/', fetch, model: 'm' })
     const schema: JSONSchema7 = {
@@ -149,7 +149,11 @@ describe('chat options', () => {
     const stream = await model({
       input: 'hi',
       outputFormat: schema,
-      tools: [tool({ inputSchema: schema, name: 'measure' })],
+      tools: [
+        tool({ inputSchema: schema, name: 'measure' }),
+        tool({ inputSchema: schema, name: 'strict_measure', strict: true }),
+        tool({ inputSchema: schema, name: 'loose_measure', strict: false }),
+      ],
     })
     await stream.cancel()
 
@@ -163,7 +167,11 @@ describe('chat options', () => {
       type: 'object',
     }
     expect(bodies[0].response_format).toMatchObject({ json_schema: { schema: normalized } })
-    expect(bodies[0].tools).toMatchObject([{ function: { parameters: normalized } }])
+    expect(bodies[0].tools).toMatchObject([
+      { function: { parameters: schema, strict: false } },
+      { function: { parameters: schema, strict: true } },
+      { function: { parameters: schema, strict: false } },
+    ])
     expect(schema).toEqual({
       properties: {
         amount: { maximum: 10, minimum: 0, type: 'number' },

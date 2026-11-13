@@ -104,6 +104,7 @@ export interface MessagesTool {
   description?: string
   input_schema: Record<string, unknown>
   name: string
+  strict?: boolean
 }
 
 export type MessagesToolChoice

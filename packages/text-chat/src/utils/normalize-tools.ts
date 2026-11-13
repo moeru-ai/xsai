@@ -2,15 +2,14 @@ import type { Tool, ToolChoice } from '@xsai/text'
 
 import type { ChatTool, ChatToolChoice } from '../types'
 
-import { normalizeSchema } from './normalize-schema'
 
 /** @internal */
 export const normalizeTools = (tools?: readonly Tool[]): ChatTool[] | undefined => tools?.map(tool => ({
   function: {
     description: tool.description,
     name: tool.name,
-    parameters: normalizeSchema(tool.inputSchema.schema) as Record<string, unknown>,
-    strict: true,
+    parameters: tool.inputSchema.schema as Record<string, unknown>,
+    strict: tool.strict ?? false,
   },
   type: 'function',
 }))
