@@ -2,7 +2,6 @@ import type { Tool, ToolChoice } from '@xsai/text'
 
 import type { ChatTool, ChatToolChoice } from '../types'
 
-
 /** @internal */
 export const normalizeTools = (tools?: readonly Tool[]): ChatTool[] | undefined => tools?.map(tool => ({
   function: {

@@ -3,7 +3,6 @@ import type { Tool } from '@xsai/text'
 import type { FunctionToolParam } from '../generated'
 import type { ResponsesProviderTool } from '../types/provider-options'
 
-
 /** @internal */
 export const normalizeTools = (tools?: readonly Tool[]): FunctionToolParam[] | undefined => tools?.map(tool => ({
   description: tool.description,
