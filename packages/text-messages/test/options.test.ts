@@ -100,7 +100,7 @@ describe('messages options', () => {
       { mcp_server_name: 'docs', type: 'mcp_toolset' },
       { name: 'tool_search_tool_bm25', type: 'tool_search_tool_bm25_20251119' },
       {
-        input_schema: { additionalProperties: false, properties: {}, type: 'object' },
+        input_schema: { type: 'object' },
         name: 'local_tool',
       },
     ])
@@ -241,12 +241,13 @@ describe('messages options', () => {
     })
   })
 
-  it('normalizes tool schemas with Messages constraints', async () => {
+  it('sends tool schemas as given', async () => {
     const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
     const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
     const schema: JSONSchema7 = {
       properties: {
         amount: { maximum: 10, minimum: 0, type: 'number' },
+        data: { additionalProperties: { type: 'string' }, type: 'object' },
         list: { items: { type: 'string' }, maxItems: 3, minItems: 2, type: 'array' },
         optional: { type: 'string' },
       },
@@ -257,33 +258,45 @@ describe('messages options', () => {
     const stream = await model({
       input: 'hi',
       maxOutputTokens: 10,
-      tools: [tool({ inputSchema: schema, name: 'measure' })],
+      tools: [tool({ inputSchema: schema, name: 'measure' }), tool({ inputSchema: schema, name: 'strict_measure', strict: true })],
     })
     await stream.cancel()
 
-    expect(bodies[0].tools).toEqual([{
-      description: undefined,
-      input_schema: {
-        additionalProperties: false,
-        properties: {
-          amount: { type: 'number' },
-          list: { items: { type: 'string' }, type: 'array' },
-          optional: { type: 'string' },
-        },
-        required: ['amount'],
-        type: 'object',
-      },
-      name: 'measure',
-    }])
+    expect(bodies[0].tools).toEqual([
+      { input_schema: schema, name: 'measure' },
+      { input_schema: schema, name: 'strict_measure', strict: true },
+    ])
     expect(schema).toEqual({
       properties: {
         amount: { maximum: 10, minimum: 0, type: 'number' },
+        data: { additionalProperties: { type: 'string' }, type: 'object' },
         list: { items: { type: 'string' }, maxItems: 3, minItems: 2, type: 'array' },
         optional: { type: 'string' },
       },
       required: ['amount'],
       type: 'object',
     })
+  })
+
+  it('sends explicit tool strict settings', async () => {
+    const { bodies, fetch } = captureRequests('{"type":"message_stop"}')
+    const model = messages({ baseURL: 'https://x/', fetch, model: 'm' })
+    const stream = await model({
+      input: 'hi',
+      maxOutputTokens: 10,
+      tools: [
+        tool({ inputSchema: { type: 'object' }, name: 'default' }),
+        tool({ inputSchema: { type: 'object' }, name: 'strict', strict: true }),
+        tool({ execute: () => 'ok', inputSchema: { type: 'object' }, name: 'loose', strict: false }),
+      ],
+    })
+    await stream.cancel()
+
+    expect(bodies[0].tools).toEqual([
+      { input_schema: { type: 'object' }, name: 'default' },
+      { input_schema: { type: 'object' }, name: 'strict', strict: true },
+      { input_schema: { type: 'object' }, name: 'loose', strict: false },
+    ])
   })
 
   it('preserves an x-api-key supplied through headers', async () => {

@@ -94,15 +94,31 @@ describe('responses options', () => {
       { type: 'file_search', vector_store_ids: ['vs_1'] },
       {
         name: 'local_tool',
-        parameters: {
-          additionalProperties: false,
-          properties: {},
-          required: [],
-          type: 'object',
-        },
-        strict: true,
+        parameters: { type: 'object' },
+        strict: false,
         type: 'function',
       },
+    ])
+  })
+
+  it('sends tool strict settings and schemas as given', async () => {
+    const { bodies, fetch } = captureRequests()
+    const model = responses({ baseURL: 'https://x/', fetch, model: 'm' })
+    const schema: JSONSchema7 = { properties: { optional: { type: 'string' } }, type: 'object' }
+    const stream = await model({
+      input: 'hi',
+      tools: [
+        tool({ inputSchema: schema, name: 'default' }),
+        tool({ inputSchema: schema, name: 'strict', strict: true }),
+        tool({ execute: () => 'ok', inputSchema: schema, name: 'loose', strict: false }),
+      ],
+    })
+    await stream.cancel()
+
+    expect(bodies[0].tools).toMatchObject([
+      { parameters: schema, strict: false },
+      { parameters: schema, strict: true },
+      { parameters: schema, strict: false },
     ])
   })
 

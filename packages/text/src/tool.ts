@@ -14,6 +14,7 @@ export interface Tool {
   inputSchema: ResolvedSchema
   name: string
   outputSchema?: ResolvedSchema
+  strict?: boolean
 }
 
 export interface ToolExecuteOptions {
@@ -29,6 +30,7 @@ export interface ToolOptions<TInput extends UnresolvedSchema, TOutput extends un
   inputSchema: TInput
   name: string
   outputSchema?: TOutput
+  strict?: boolean
 }
 
 interface ToolFactory {
@@ -48,6 +50,7 @@ export const tool = ((options: ToolOptions<UnresolvedSchema, undefined | Unresol
     inputSchema,
     name: options.name,
     outputSchema,
+    strict: options.strict,
   }
 
   if (options.execute == null)

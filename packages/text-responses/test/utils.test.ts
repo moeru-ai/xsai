@@ -304,18 +304,13 @@ describe('normalizeTools', () => {
         description: 'Get the weather.',
         name: 'weather',
         parameters: tools[0].inputSchema.schema,
-        strict: true,
+        strict: false,
         type: 'function',
       },
       {
         name: 'noop',
-        parameters: {
-          additionalProperties: false,
-          properties: {},
-          required: [],
-          type: 'object',
-        },
-        strict: true,
+        parameters: { type: 'object' },
+        strict: false,
         type: 'function',
       },
     ])
