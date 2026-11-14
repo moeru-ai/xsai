@@ -424,6 +424,12 @@ importers:
         specifier: 'catalog:'
         version: 3.5.43(typescript@6.0.3)
 
+  packages-ext/providers:
+    devDependencies:
+      xsai:
+        specifier: 'workspace:'
+        version: link:../../packages/xsai
+
   packages/audio:
     dependencies:
       '@xsai/shared':

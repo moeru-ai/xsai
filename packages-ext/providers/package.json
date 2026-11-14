@@ -1,0 +1,84 @@
+{
+  "name": "@xsai-ext/providers",
+  "type": "module",
+  "version": "1.0.0-beta.7",
+  "description": "extra-small AI SDK: provider routes, model capabilities, and costs from models.dev.",
+  "author": "Moeru AI",
+  "license": "MIT",
+  "homepage": "https://xsai.js.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai.git",
+    "directory": "packages-ext/providers"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai/issues",
+  "keywords": [
+    "xsai",
+    "ai",
+    "models.dev",
+    "provider",
+    "providers"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./create": "./src/create.ts",
+    "./fetch": "./src/fetch.ts",
+    "./full": "./src/full.ts",
+    "./models/*": "./src/models/*.ts",
+    "./*": "./src/providers/*.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=26"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./package.json": "./package.json",
+      "./create": {
+        "types": "./dist/create.d.ts",
+        "default": "./dist/create.js"
+      },
+      "./fetch": {
+        "types": "./dist/fetch.d.ts",
+        "default": "./dist/fetch.js"
+      },
+      "./full": {
+        "types": "./dist/full.d.ts",
+        "default": "./dist/full.js"
+      },
+      "./models/*": {
+        "types": "./dist/models/*.d.ts",
+        "default": "./dist/models/*.js"
+      },
+      "./*": {
+        "types": "./dist/providers/*.d.ts",
+        "default": "./dist/providers/*.js"
+      }
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "pkgroll --clean-dist",
+    "sync": "tsx scripts/sync.ts",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "xsai": "workspace:"
+  },
+  "peerDependenciesMeta": {
+    "xsai": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "xsai": "workspace:"
+  }
+}
