@@ -1,7 +1,7 @@
 {
   "name": "@xsai/text",
   "type": "module",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "description": "extra-small AI SDK: provider-agnostic text generation, streaming and tool calling.",
   "author": "Moeru AI",
   "license": "MIT",
