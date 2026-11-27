@@ -9,6 +9,7 @@ packages:
   - docs-v0
   - examples/*
   - packages/*
+  - packages-ext/*
 
 allowBuilds:
   '@parcel/watcher': false
